@@ -8,10 +8,12 @@
 */
 package eu.etaxonomy.cdm.io.jaxb;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.InputStreamReader;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -26,8 +28,8 @@ public class CdmDocumentBuilderTest {
         URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
         DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
-        Assert.assertFalse("agents should exist", dataSet.getAgents().isEmpty());
+        assertFalse(dataSet.getAgents().isEmpty(), "agents should exist");
 		Person person = (Person)dataSet.getAgents().get(0);
-		Assert.assertNotNull(person);
+		assertNotNull(person);
     }
 }

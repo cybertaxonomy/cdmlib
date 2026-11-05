@@ -8,13 +8,12 @@
 */
 package eu.etaxonomy.cdm.io.sdd.in;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,15 +48,15 @@ public class SDDImportBenchmark extends CdmIoTransactionalSpringIntegrationTest 
     @BeforeEach
     public void setUp() throws URISyntaxException {
         URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/Cichorieae-DA.sdd.xml");
-        Assert.assertNotNull(url);
+        assertNotNull(url);
         configurator = SDDImportConfigurator.NewInstance(URI.fromUrl(url), null);
     }
 
     @BenchmarkOptions(benchmarkRounds = 1, warmupRounds = 0)
     @Test
     public void testInit() {
-        assertNotNull("sddImport should not be null", sddImport);
-        assertNotNull("nameService should not be null", nameService);
+        assertNotNull(sddImport, "sddImport should not be null");
+        assertNotNull(nameService, "nameService should not be null");
     }
 
     @BenchmarkOptions(benchmarkRounds = 2, warmupRounds = 0)

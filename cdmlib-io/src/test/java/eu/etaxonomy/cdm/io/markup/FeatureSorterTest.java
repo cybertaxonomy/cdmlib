@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.io.markup;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,9 +18,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.mueller
@@ -49,7 +50,7 @@ public class FeatureSorterTest {
 	static UUID[]  uuidList3;
 	static UUID[]  uuidList4;
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUpBeforeClass() throws Exception {
 		uuidList1 = new UUID[]{uuid1a, uuid1b, uuid1c, uuid1d, uuid4c};
 		uuidList2 = new UUID[]{uuid1a, uuid2a, uuid2c, uuid4d};
@@ -68,10 +69,10 @@ public class FeatureSorterTest {
 		List<UUID> result = sorter.getSortOrder(orderLists);
 //		System.out.println("A:" + result);
 		int i = 0;
-		Assert.assertEquals("uuid1a should be first", uuid1a, result.get(i++));
-		Assert.assertEquals("uuid1b should be next", uuid1b, result.get(i++));
-		Assert.assertEquals("uuid2b should be next", uuid2b, result.get(i++));
-//		Assert.assertEquals("uuid1c should be next", uuid1c, result.get(i++));
+		assertEquals(uuid1a, result.get(i++), "uuid1a should be first");
+		assertEquals(uuid1b, result.get(i++), "uuid1b should be next");
+		assertEquals(uuid2b, result.get(i++), "uuid2b should be next");
+//		assertEquals(uuid1c, result.get(i++), "uuid1c should be next");
 	}
 
 	@Test
@@ -82,12 +83,12 @@ public class FeatureSorterTest {
 		List<UUID> result = sorter.getSortOrder(orderLists);
 //		System.out.println("B:" + result);
 		int i = 0;
-		Assert.assertEquals("uuid1a should be first", uuid1a, result.get(i++));
-		Assert.assertEquals("uuid1b should be next", uuid1b, result.get(i++));
-		Assert.assertEquals("uuid2b should be next", uuid2b, result.get(i++));
-//		Assert.assertEquals("uuid1c should be next", uuid1c, result.get(i++));
+		assertEquals(uuid1a, result.get(i++), "uuid1a should be first");
+		assertEquals(uuid1b, result.get(i++), "uuid1b should be next");
+		assertEquals(uuid2b, result.get(i++), "uuid2b should be next");
+//		assertEquals(uuid1c, result.get(i++), "uuid1c should be next");
 
-		Assert.assertEquals(2 + getAllUuids().size(), result.size());
+		assertEquals(2 + getAllUuids().size(), result.size());
 	}
 
 

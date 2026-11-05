@@ -8,6 +8,10 @@
 */
 package eu.etaxonomy.cdm.io.wfo.out;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +19,6 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -93,26 +96,26 @@ public class WfoBackboneExportTest
 
         //counts and result lists
         List<String> taxonResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
-        Assert.assertEquals("There should be 1 taxon (1 accepted)", 1, taxonResult.size() - COUNT_HEADER);
+        assertEquals(1, taxonResult.size() - COUNT_HEADER, "There should be 1 taxon (1 accepted)");
 
 //        List<String> synonymResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
-//        Assert.assertEquals("There should be no synonym", 0, synonymResult.size() - COUNT_HEADER);
+//        assertEquals(0, synonymResult.size() - COUNT_HEADER, "There should be no synonym");
 
         List<String> referenceResult = getStringList(data, WfoBackboneExportTable.REFERENCE);
-        Assert.assertEquals("There should be 1 references (1 sec reference)", 1, referenceResult.size() - COUNT_HEADER);
+        assertEquals(1, referenceResult.size() - COUNT_HEADER, "There should be 1 references (1 sec reference)");
 
         //taxon
         //... species
         String taxonStr = getTableString(data, WfoBackboneExportTable.CLASSIFICATION);
         String notExpected = speciesTaxonUuid.toString();
-        Assert.assertFalse("Result must not contain root of subtree taxon (species taxon)", taxonStr.startsWith(notExpected));
+        assertFalse(taxonStr.startsWith(notExpected), "Result must not contain root of subtree taxon (species taxon)");
         //... subspecies
         String subspeciesLine = getLine(taxonResult, subspeciesWfoId);
-        Assert.assertEquals(expectedSubspeciesTaxonLine, subspeciesLine);
+        assertEquals(expectedSubspeciesTaxonLine, subspeciesLine);
 
         //reference
         String secRefLine = getLine(referenceResult, ref1UUID);
-        Assert.assertEquals(expectedSecRefLine, secRefLine);
+        assertEquals(expectedSecRefLine, secRefLine);
     }
 
     @Test
@@ -132,24 +135,23 @@ public class WfoBackboneExportTest
         //test counts
         List<String> taxonResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
 //      taxonResult.stream().forEach(tr->System.out.println(tr));
-        Assert.assertEquals("There should be 8 taxa (5 accepted + 4 synonyms)", 9, taxonResult.size() - COUNT_HEADER);
-        Assert.assertEquals("There should be 5 accepted taxa", 5, filterAccepted(taxonResult).size());
-        Assert.assertEquals("There should be 3 synonyms", 4, filterSynonyms(taxonResult).size());
+        assertEquals(9, taxonResult.size() - COUNT_HEADER, "There should be 8 taxa (5 accepted + 4 synonyms)");
+        assertEquals(5, filterAccepted(taxonResult).size(), "There should be 5 accepted taxa");
+        assertEquals(4, filterSynonyms(taxonResult).size(), "There should be 3 synonyms");
 
         //reference counts
         List<String> referenceResult = getStringList(data, WfoBackboneExportTable.REFERENCE);
-        Assert.assertEquals("There should be 3 reference (3 sec reference)", 3, referenceResult.size() - COUNT_HEADER);
+        assertEquals(3, referenceResult.size() - COUNT_HEADER, "There should be 3 reference (3 sec reference)");
 
         //test single data
 
         //... invisible root node
-        Assert.assertEquals("Result must not contain root taxon",
-                0, taxonResult.stream().filter(line->line.contains(rootNodeUuid.toString())).count());
+        assertEquals(0, taxonResult.stream().filter(line->line.contains(rootNodeUuid.toString())).count(), "Result must not contain root taxon");
 
         //subspecies taxon
         String subspeciesLine = getLine(taxonResult, subspeciesWfoId);
         String expectedSubspecies = expectedSubspeciesTaxonLine.replace("Myfamily", "Familyname").replace("https://", "http://");
-        Assert.assertEquals(expectedSubspecies , subspeciesLine);
+        assertEquals(expectedSubspecies , subspeciesLine);
 
         //unpublished/excluded/note
         String unpublishedLine = getLine(taxonResult, subspeciesUnpublishedWfoId);
@@ -160,7 +162,7 @@ public class WfoBackboneExportTest
                 str ("Valid") + str("The book of botany 3: 22. 1804") +
                 str("Accepted") + NONE2 + uuid(ref1UUID) + NONE3 + str("http://www.abc.de/mytaxon/cdm_dataportal/taxon/" + subspeciesUnpublishedTaxonUuid)
                 + strEnd("Excluded: My status note");
-        Assert.assertEquals(expectedExcluded, unpublishedLine);
+        assertEquals(expectedExcluded, unpublishedLine);
 
         //original spelling
         String originalSpellingLine = getLine(taxonResult, speciesOrigSpellingWfoId);
@@ -172,23 +174,23 @@ public class WfoBackboneExportTest
                 str(speciesWfoId) + NONE + NONE + NONE3 +
                 str("http://www.abc.de/mytaxon/cdm_dataportal/name/bde06b48-bbda-428c-af4e-50c39db55821")
                 + NONE_END;
-        Assert.assertEquals(expectedOrigSpellingLine, originalSpellingLine);
+        assertEquals(expectedOrigSpellingLine, originalSpellingLine);
 
         //... family => test nom. status 'conserved'
         String nameStr = getLine(taxonResult, familyWfoId);
-        Assert.assertEquals(expectedFamilyNameLine, nameStr);
+        assertEquals(expectedFamilyNameLine, nameStr);
 
         //... species => has basionym
         String speciesStr = getLine(taxonResult, speciesWfoId);
-        Assert.assertEquals(expectedSpeciesNameLine, speciesStr);
+        assertEquals(expectedSpeciesNameLine, speciesStr);
 
         //... species basionym/synonym
         String speciesBasionymStr = getLine(taxonResult, speciesBasionymWfoId);
-        Assert.assertEquals(expectedSpeciesBasionymNameLine, speciesBasionymStr);
+        assertEquals(expectedSpeciesBasionymNameLine, speciesBasionymStr);
 
         //references
         String secRefLine = getLine(referenceResult, ref1UUID);
-        Assert.assertEquals(expectedSecRefLine, secRefLine);
+        assertEquals(expectedSecRefLine, secRefLine);
 
     }
 
@@ -215,16 +217,16 @@ public class WfoBackboneExportTest
         WfoBackboneExportConfigurator config = newConfigurator();
         ExportResult result = defaultExport.invoke(config);
         Map<String, byte[]> data = (Map<String, byte[]>)checkAndGetData(result, 0, 1, 1);  //1 warning expected for missing basionym author,one error because of a missing wfo identifier
-        Assert.assertTrue(result.getExportType().equals(ExportType.WFO_BACKBONE)); //test export type
+        assertTrue(result.getExportType().equals(ExportType.WFO_BACKBONE)); //test export type
 
         //test counts
         List<String> taxonResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
 //      taxonResult.stream().forEach(tr->System.out.println(tr));
-        Assert.assertEquals("There should be 7 taxa (4 acceptd + 3 synonym)", 7, taxonResult.size() - COUNT_HEADER);
-        Assert.assertEquals("There should be 4 accepted taxa", 4, filterAccepted(taxonResult).size());
-        Assert.assertEquals("There should be 3 synonyms", 3, filterSynonyms(taxonResult).size());
+        assertEquals(7, taxonResult.size() - COUNT_HEADER, "There should be 7 taxa (4 acceptd + 3 synonym)");
+        assertEquals(4, filterAccepted(taxonResult).size(), "There should be 4 accepted taxa");
+        assertEquals(3, filterSynonyms(taxonResult).size(), "There should be 3 synonyms");
         List<String> referenceResult = getStringList(data, WfoBackboneExportTable.REFERENCE);
-        Assert.assertEquals("There should be 3 reference", 3, referenceResult.size() - COUNT_HEADER);
+        assertEquals(3, referenceResult.size() - COUNT_HEADER, "There should be 3 reference");
 
         //tbc
     }

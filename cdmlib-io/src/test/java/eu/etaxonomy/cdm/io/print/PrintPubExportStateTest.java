@@ -8,8 +8,9 @@
 */
 package eu.etaxonomy.cdm.io.print;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author k.luther
@@ -26,6 +27,6 @@ public class PrintPubExportStateTest {
         for (int i=1;i < 12;i++) {
             result += state.incrementShortCitation(refStr);
         }
-        Assert.assertEquals("abcdefghikl", result);
+        assertEquals("abcdefghikl", result);
     }
 }

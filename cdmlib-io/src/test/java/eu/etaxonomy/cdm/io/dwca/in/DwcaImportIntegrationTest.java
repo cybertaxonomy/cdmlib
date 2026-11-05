@@ -8,7 +8,9 @@
 */
 package eu.etaxonomy.cdm.io.dwca.in;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
@@ -16,7 +18,6 @@ import java.net.URL;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,28 +49,28 @@ public class DwcaImportIntegrationTest extends CdmIoTransactionalSpringIntegrati
 		String inputFile = "/eu/etaxonomy/cdm/io/dwca/in/DwcaZipToStreamConverterTest-input.zip";
 		URL url = this.getClass().getResource(inputFile);
 		uri = URI.fromUrl(url);
-		assertNotNull("URI for the test file '" + inputFile + "' does not exist", uri);
+		assertNotNull(uri, "URI for the test file '" + inputFile + "' does not exist");
 		try {
 			configurator = DwcaImportConfigurator.NewInstance(URI.fromUrl(url), null);
 			configurator.addObserver(new LoggingIoObserver());
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
-			Assert.fail();
+			fail();
 		}
-		assertNotNull("Configurator could not be created", configurator);
+		assertNotNull(configurator, "Configurator could not be created");
 	}
 
 	@Test
 	public void testInit() {
-		assertNotNull("import instance should not be null", defaultImport);
-		assertNotNull("configurator instance should not be null", configurator);
+		assertNotNull(defaultImport, "import instance should not be null");
+		assertNotNull(configurator, "configurator instance should not be null");
 	}
 
 	@Test
 	public void testInvoke() {
 		configurator.setDefaultPartitionSize(3);
 		boolean result = defaultImport.invoke(configurator).isSuccess();
-		Assert.assertTrue("Invoke should return true", result);
+		assertTrue(result, "Invoke should return true");
 		//to be continued
 //		final String[]tableNames = {"TaxonBase","TaxonName","Classification",
 //                "TaxonNode","HomotypicalGroup"};

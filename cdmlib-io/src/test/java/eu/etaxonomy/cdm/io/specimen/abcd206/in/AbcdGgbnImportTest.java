@@ -8,9 +8,10 @@
 */
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
@@ -23,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,7 +104,7 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
 
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_2taxa.xml";
         URL url = this.getClass().getResource(inputFile);
-        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+        assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 
         Abcd206ImportConfigurator importConfigurator = null;
         try {
@@ -112,15 +112,15 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
             importConfigurator.setGetSiblings(false);
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            Assert.fail();
+            fail();
         }
-        assertNotNull("Configurator could not be created", importConfigurator);
+        assertNotNull(importConfigurator, "Configurator could not be created");
 
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-        assertTrue("Return value for import.invoke should be true", result);
-        assertEquals("Number of derived units is incorrect", 4, occurrenceService.count(DerivedUnit.class));
-        assertEquals("Number of dna samples is incorrect", 2, occurrenceService.count(DnaSample.class));
-        assertEquals("Number of field units is incorrect", 2, occurrenceService.count(FieldUnit.class));
+        assertTrue(result, "Return value for import.invoke should be true");
+        assertEquals(4, occurrenceService.count(DerivedUnit.class), "Number of derived units is incorrect");
+        assertEquals(2, occurrenceService.count(DnaSample.class), "Number of dna samples is incorrect");
+        assertEquals(2, occurrenceService.count(FieldUnit.class), "Number of field units is incorrect");
         /*
          * Default classification
          *  - Campanula
@@ -130,11 +130,11 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
         List<TaxonNode> nodes = taxonNodeService.list(TaxonNode.class, 100, 0, null, null);
         for (TaxonNode node: nodes){
             if (node.getTaxon() != null){
-                assertTrue("The sortindex should not be smaller than 0", node.getSortIndex() > -1 );
+                assertTrue(node.getSortIndex() > -1, "The sortindex should not be smaller than 0");
             }
         }
-        assertEquals("Number of taxon nodes is incorrect", 4, taxonNodeService.count(TaxonNode.class));
-        assertEquals("Number of taxa is incorrect", 3, taxonService.count(TaxonBase.class));
+        assertEquals(4, taxonNodeService.count(TaxonNode.class), "Number of taxon nodes is incorrect");
+        assertEquals(3, taxonService.count(TaxonBase.class), "Number of taxa is incorrect");
         assertEquals(1, taxonService.findByTitleWithRestrictions(Taxon.class, "Campanula bononiensis", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
         Pager<Taxon> taxonPager = taxonService.findByTitleWithRestrictions(Taxon.class, "Campanula isaurica", MatchMode.ANYWHERE, null, null, null, null, null);
         assertEquals(1, taxonPager.getRecords().size());
@@ -153,20 +153,20 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
     public void testImportTwoSequencesWithSameReference() {
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_DNA_CAM_90-91.xml";
         URL url = this.getClass().getResource(inputFile);
-        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+        assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 
         Abcd206ImportConfigurator importConfigurator = null;
         try {
             importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            Assert.fail();
+            fail();
         }
-        assertNotNull("Configurator could not be created", importConfigurator);
+        assertNotNull(importConfigurator, "Configurator could not be created");
 
         importConfigurator.setMapUnitIdToCatalogNumber(true);
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-        assertTrue("Return value for import.invoke should be true", result);
+        assertTrue(result, "Return value for import.invoke should be true");
     }
 
 	/**
@@ -181,22 +181,22 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
  	public void testImport59Units() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_59taxa.xml";
         URL url = this.getClass().getResource(inputFile);
-        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+        assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 
         Abcd206ImportConfigurator importConfigurator = null;
         try {
             importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            Assert.fail();
+            fail();
         }
-        assertNotNull("Configurator could not be created", importConfigurator);
+        assertNotNull(importConfigurator, "Configurator could not be created");
 
         importConfigurator.setIgnoreAuthorship(true);
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-       assertTrue("Return value for import.invoke should be true", result);
-       assertEquals("Number of derived units is incorrect", 118, occurrenceService.count(DerivedUnit.class));
-       assertEquals("Number of dna samples is incorrect", 59, occurrenceService.count(DnaSample.class));
+       assertTrue(result, "Return value for import.invoke should be true");
+       assertEquals(118, occurrenceService.count(DerivedUnit.class), "Number of derived units is incorrect");
+       assertEquals(59, occurrenceService.count(DnaSample.class), "Number of dna samples is incorrect");
 
 	}
 
@@ -206,25 +206,25 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
 
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_test_missing_fieldnumber.xml";
         URL url = this.getClass().getResource(inputFile);
-        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+        assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 
         Abcd206ImportConfigurator importConfigurator = null;
         try {
             importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            Assert.fail();
+            fail();
         }
-        assertNotNull("Configurator could not be created", importConfigurator);
+        assertNotNull(importConfigurator, "Configurator could not be created");
 
         importConfigurator.setIgnoreAuthorship(true);
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-       assertTrue("Return value for import.invoke should be true", result);
+       assertTrue(result, "Return value for import.invoke should be true");
 
-       assertEquals("Number of dna samples is incorrect", 6, occurrenceService.count(DnaSample.class));
-       assertEquals("Number of derived units is incorrect", 12, occurrenceService.count(DerivedUnit.class));
+       assertEquals(6, occurrenceService.count(DnaSample.class), "Number of dna samples is incorrect");
+       assertEquals(12, occurrenceService.count(DerivedUnit.class), "Number of derived units is incorrect");
        // there should be 5 field units because there are two specimen with the same (and existing) collectorsFieldnumber
-       assertEquals("Number of fieldUnits is incorrect", 5, occurrenceService.count(FieldUnit.class));
+       assertEquals(5, occurrenceService.count(FieldUnit.class), "Number of fieldUnits is incorrect");
 
     }
 
@@ -238,22 +238,22 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
     public void testImportGgbn() throws ParseException {
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_without_association.xml";
         URL url = this.getClass().getResource(inputFile);
-        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+        assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 
         Abcd206ImportConfigurator importConfigurator = null;
         try {
             importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            Assert.fail();
+            fail();
         }
-        assertNotNull("Configurator could not be created", importConfigurator);
+        assertNotNull(importConfigurator, "Configurator could not be created");
 
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-        assertTrue("Return value for import.invoke should be true", result);
-        assertEquals("Number of derived units is incorrect", 1, occurrenceService.count(DerivedUnit.class));
-        assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
-        assertEquals("Number of field units is incorrect", 1, occurrenceService.count(FieldUnit.class));
+        assertTrue(result, "Return value for import.invoke should be true");
+        assertEquals(1, occurrenceService.count(DerivedUnit.class), "Number of derived units is incorrect");
+        assertEquals(1, occurrenceService.count(DnaSample.class), "Number of dna samples is incorrect");
+        assertEquals(1, occurrenceService.count(FieldUnit.class), "Number of field units is incorrect");
 
         //dna sample
         FindOccurrencesConfigurator dnaConfig = new FindOccurrencesConfigurator();
@@ -267,8 +267,8 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
         DnaSample dnaSample = (DnaSample) dnaSpecimen;
         DerivationEvent derivedFrom = dnaSample.getDerivedFrom();
         assertNotNull(derivedFrom);
-        assertEquals("Wrong derivation type!", DerivationEventType.DNA_EXTRACTION(), derivedFrom.getType());
-        assertEquals("Wrong number of originals", 1, derivedFrom.getOriginals().size());
+        assertEquals(DerivationEventType.DNA_EXTRACTION(), derivedFrom.getType(), "Wrong derivation type!");
+        assertEquals(1, derivedFrom.getOriginals().size(), "Wrong number of originals");
         assertTrue(derivedFrom.getOriginals().iterator().next() instanceof FieldUnit);
         assertEquals("DNA Bank", dnaSample.getCollection().getCode());
         assertEquals(SpecimenOrObservationType.DnaSample, dnaSample.getRecordBasis());
@@ -289,7 +289,7 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
 
         //dna quality
         DnaQuality dnaQuality = dnaSample.getDnaQuality();
-        assertNotNull("Dna quality is null", dnaQuality);
+        assertNotNull(dnaQuality, "Dna quality is null");
         assertEquals(Double.valueOf("0.77"),dnaQuality.getRatioOfAbsorbance260_230());
         assertEquals(Double.valueOf("1.38"),dnaQuality.getRatioOfAbsorbance260_280());
         assertEquals(ZonedDateTime.of(2008, 4, 15, 0, 0, 0, 0, ZoneId.systemDefault()), dnaQuality.getQualityCheckDate());
@@ -301,7 +301,7 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
         assertEquals(1,  amplificationResults.size());
         AmplificationResult amplificationResult = amplificationResults.iterator().next();
         Amplification amplification = amplificationResult.getAmplification();
-        assertNotNull("Amplification is null", amplification);
+        assertNotNull(amplification, "Amplification is null");
         DefinedTerm dnaMarker = amplification.getDnaMarker();
         assertNotNull(dnaMarker);
         assertEquals("ITS (ITS1, 5.8S rRNA, ITS2)", dnaMarker.getLabel());
@@ -384,22 +384,22 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
 
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_parent_child_association.xml";
 	    URL url = this.getClass().getResource(inputFile);
-	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+	    assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
 	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
-	        Assert.fail();
+	        fail();
 	    }
-	    assertNotNull("Configurator could not be created", importConfigurator);
+	    assertNotNull(importConfigurator, "Configurator could not be created");
 
 	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-	    assertTrue("Return value for import.invoke should be true", result);
-	    assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
-	    assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
-	    assertEquals("Number of field units is incorrect", 1, occurrenceService.count(FieldUnit.class));
+	    assertTrue(result, "Return value for import.invoke should be true");
+	    assertEquals(2, occurrenceService.count(DerivedUnit.class), "Number of derived units is incorrect");
+	    assertEquals(1, occurrenceService.count(DnaSample.class), "Number of dna samples is incorrect");
+	    assertEquals(1, occurrenceService.count(FieldUnit.class), "Number of field units is incorrect");
 
 	    //associated specimen
 	    FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
@@ -426,8 +426,8 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
 	    DnaSample dnaSample = (DnaSample) dnaSpecimen;
 	    DerivationEvent derivedFrom = dnaSample.getDerivedFrom();
 	    assertNotNull(derivedFrom);
-	    assertEquals("Wrong derivation type!", DerivationEventType.DNA_EXTRACTION(), derivedFrom.getType());
-	    assertEquals("Wrong number of originals", 1, derivedFrom.getOriginals().size());
+	    assertEquals(DerivationEventType.DNA_EXTRACTION(), derivedFrom.getType(), "Wrong derivation type!");
+	    assertEquals(1, derivedFrom.getOriginals().size(), "Wrong number of originals");
 	    assertTrue(derivedFrom.getOriginals().iterator().next() instanceof DerivedUnit);
 	    assertEquals("DNA Bank", dnaSample.getCollection().getCode());
 	    assertEquals(SpecimenOrObservationType.DnaSample, dnaSample.getRecordBasis());
@@ -443,22 +443,22 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
 
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_sibling_association.xml";
 	    URL url = this.getClass().getResource(inputFile);
-	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+	    assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
 	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null, false);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
-	        Assert.fail();
+	        fail();
 	    }
-	    assertNotNull("Configurator could not be created", importConfigurator);
+	    assertNotNull(importConfigurator, "Configurator could not be created");
 
 	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-	    assertTrue("Return value for import.invoke should be true", result);
-	    assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
-	    assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
-	    assertEquals("Number of field units is incorrect", 1, occurrenceService.count(FieldUnit.class));
+	    assertTrue(result, "Return value for import.invoke should be true");
+	    assertEquals(2, occurrenceService.count(DerivedUnit.class), "Number of derived units is incorrect");
+	    assertEquals(1, occurrenceService.count(DnaSample.class), "Number of dna samples is incorrect");
+	    assertEquals(1, occurrenceService.count(FieldUnit.class), "Number of field units is incorrect");
 
 	    //associated specimen
 	    FindOccurrencesConfigurator config = new FindOccurrencesConfigurator();
@@ -483,8 +483,8 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
 	    DnaSample dnaSample = (DnaSample) dnaSpecimen;
 	    DerivationEvent derivedFrom = dnaSample.getDerivedFrom();
 	    assertNotNull(derivedFrom);
-	    assertEquals("Wrong derivation type!", DerivationEventType.DNA_EXTRACTION(), derivedFrom.getType());
-	    assertEquals("Wrong number of originals", 1, derivedFrom.getOriginals().size());
+	    assertEquals(DerivationEventType.DNA_EXTRACTION(), derivedFrom.getType(), "Wrong derivation type!");
+	    assertEquals(1, derivedFrom.getOriginals().size(), "Wrong number of originals");
 	    //TODO
 	    //assertTrue(derivedFrom.getOriginals().iterator().next() instanceof FieldUnit);
 	    assertEquals("DNA Bank", dnaSample.getCollection().getCode());
@@ -507,33 +507,33 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
 
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_parent_child_association.xml";
 	    URL url = this.getClass().getResource(inputFile);
-	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+	    assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
 	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
-	        Assert.fail();
+	        fail();
 	    }
-	    assertNotNull("Configurator could not be created", importConfigurator);
+	    assertNotNull(importConfigurator, "Configurator could not be created");
 
 	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-	    assertTrue("Return value for import.invoke should be true", result);occurrenceService.list(DerivedUnit.class, null, null, null, null);
-	    assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
+	    assertTrue(result, "Return value for import.invoke should be true");occurrenceService.list(DerivedUnit.class, null, null, null, null);
+	    assertEquals(2, occurrenceService.count(DerivedUnit.class), "Number of derived units is incorrect");
 	    List<DerivedUnit> derivedUnits = occurrenceService.list(DerivedUnit.class, null, null, null, null);
-	    assertEquals("Number of derived units is incorrect", 2, derivedUnits.size());
-	    assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
-	    assertEquals("Number of field units is incorrect", 1, occurrenceService.count(FieldUnit.class));
+	    assertEquals(2, derivedUnits.size(), "Number of derived units is incorrect");
+	    assertEquals(1, occurrenceService.count(DnaSample.class), "Number of dna samples is incorrect");
+	    assertEquals(1, occurrenceService.count(FieldUnit.class), "Number of field units is incorrect");
 
 	    DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(derivedUnit1Uuid);
 	    assertTrue(derivedUnits.contains(derivedUnit));
 
-	    assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
+	    assertEquals(1, occurrenceService.count(DnaSample.class), "Number of dna samples is incorrect");
 	    DnaSample dnaSample = occurrenceService.list(DnaSample.class, null, null, null, null).get(0);
-	    assertEquals("Wrong derivation type!", DerivationEventType.DNA_EXTRACTION(), dnaSample.getDerivedFrom().getType());
+	    assertEquals(DerivationEventType.DNA_EXTRACTION(), dnaSample.getDerivedFrom().getType(), "Wrong derivation type!");
 
-	    assertEquals("Wrong number of originals", 1, dnaSample.getDerivedFrom().getOriginals().size());
+	    assertEquals(1, dnaSample.getDerivedFrom().getOriginals().size(), "Wrong number of originals");
 
 	    FieldUnit specimenFieldUnit = (FieldUnit) occurrenceService.load(fieldUnit1Uuid);
 	    Collection<FieldUnit> fieldUnits = occurrenceService.findFieldUnits(dnaSample.getUuid(), null);
@@ -544,8 +544,7 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
 
         //test deduplication of collector
         Pager<Person> persons = agentService.findByTitle(Person.class, "Leon", MatchMode.BEGINNING, null, null, null, null, null);
-        assertEquals("Collector Leonhard,A. already in database, therefore only one should be found.",
-                Long.valueOf(1), persons.getCount());
+        assertEquals(Long.valueOf(1), persons.getCount(), "Collector Leonhard,A. already in database, therefore only one should be found.");
 	}
 
 	/**
@@ -561,40 +560,40 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
 
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_parent_child_association.xml";
 	    URL url = this.getClass().getResource(inputFile);
-	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+	    assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
 	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
-	        Assert.fail();
+	        fail();
 	    }
-	    assertNotNull("Configurator could not be created", importConfigurator);
+	    assertNotNull(importConfigurator, "Configurator could not be created");
 
 	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-	    assertTrue("Return value for import.invoke should be true", result);
+	    assertTrue(result, "Return value for import.invoke should be true");
 	    List<DerivedUnit> derivedUnits = occurrenceService.list(DerivedUnit.class, null, null, null, null);
 	    for (DerivedUnit derivedUnit:derivedUnits){
 	        System.out.println(derivedUnit.getTitleCache());
 	    }
-	    assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
+	    assertEquals(2, occurrenceService.count(DerivedUnit.class), "Number of derived units is incorrect");
 	   // List<DerivedUnit> derivedUnits = occurrenceService.list(DerivedUnit.class, null, null, null, null);
 
 	    List<FieldUnit> fieldUnitsTemp = occurrenceService.list(FieldUnit.class, null, null, null, null);
-	    assertEquals("Number of derived units is incorrect", 2, derivedUnits.size());
+	    assertEquals(2, derivedUnits.size(), "Number of derived units is incorrect");
 
-        assertEquals("Number of field units is incorrect", 1, occurrenceService.count(FieldUnit.class));
-	    assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
+        assertEquals(1, occurrenceService.count(FieldUnit.class), "Number of field units is incorrect");
+	    assertEquals(1, occurrenceService.count(DnaSample.class), "Number of dna samples is incorrect");
 
 	    DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(derivedUnit1Uuid);
 	    assertTrue(derivedUnits.contains(derivedUnit));
 
-	    assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
+	    assertEquals(1, occurrenceService.count(DnaSample.class), "Number of dna samples is incorrect");
 	    DnaSample dnaSample = occurrenceService.list(DnaSample.class, null, null, null, null).get(0);
-	    assertEquals("Wrong derivation type!", DerivationEventType.DNA_EXTRACTION(), dnaSample.getDerivedFrom().getType());
+	    assertEquals(DerivationEventType.DNA_EXTRACTION(), dnaSample.getDerivedFrom().getType(), "Wrong derivation type!");
 
-	    assertEquals("Wrong number of originals", 1, dnaSample.getDerivedFrom().getOriginals().size());
+	    assertEquals(1, dnaSample.getDerivedFrom().getOriginals().size(), "Wrong number of originals");
         FieldUnit specimenFieldUnit = (FieldUnit) occurrenceService.load(fieldUnit1Uuid);
         Collection<FieldUnit> fieldUnits = occurrenceService.findFieldUnits(dnaSample.getUuid(), null);
         assertEquals(1, fieldUnits.size());
@@ -609,23 +608,23 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
 
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/match_team_test2.xml";
         URL url = this.getClass().getResource(inputFile);
-        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+        assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 
         Abcd206ImportConfigurator importConfigurator = null;
         try {
             importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            Assert.fail();
+            fail();
         }
-        assertNotNull("Configurator could not be created", importConfigurator);
+        assertNotNull(importConfigurator, "Configurator could not be created");
 
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-        assertTrue("Return value for import.invoke should be true", result);
+        assertTrue(result, "Return value for import.invoke should be true");
 
         int count = agentService.count(Team.class);
 
-        assertEquals("There should be only one because the used one is already in the database", 1, count);
+        assertEquals(1, count, "There should be only one because the used one is already in the database");
         List<Taxon> taxonList = taxonService.list(Taxon.class, null, null, null, null);
 
         FindOccurrencesConfigurator dnaConfig = new FindOccurrencesConfigurator();
@@ -633,7 +632,7 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
         List<DerivedUnitDTO> derivedUnitDtos = occurrenceService.findByTitleDerivedUnitDTO(dnaConfig);
 
         assertNotNull(derivedUnitDtos.get(0).getCollectorsString());
-        assertEquals("Collectors String is wrong", derivedUnitDtos.get(0).getCollectorsString(), "C. Schweinfurt & B. Meyer Rec.It2993/88");
+        assertEquals(derivedUnitDtos.get(0).getCollectorsString(), "C. Schweinfurt & B. Meyer Rec.It2993/88", "Collectors String is wrong");
     }
 
 	@Test //#10570
@@ -642,44 +641,41 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
 
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/match_team_test.xml";
         URL url = this.getClass().getResource(inputFile);
-        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+        assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
         int count = agentService.count(Team.class);
         //agentService.find(Team.class, "Sch", MatchMode.B);
-        assertEquals("There should be one team already in the database", 1, count);
+        assertEquals(1, count, "There should be one team already in the database");
         Abcd206ImportConfigurator importConfigurator = null;
         try {
             importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            Assert.fail();
+            fail();
         }
-        assertNotNull("Configurator could not be created", importConfigurator);
+        assertNotNull(importConfigurator, "Configurator could not be created");
 
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-        assertTrue("Return value for import.invoke should be true", result);
+        assertTrue(result, "Return value for import.invoke should be true");
 
         count = agentService.count(Team.class);
 
-        assertEquals("There should be two teams because the used one is not in the database", 2, count);
+        assertEquals(2, count, "There should be two teams because the used one is not in the database");
 
         count = agentService.count(Person.class);
 
-        assertEquals("There should be 5 persons because all used are already in the database (3 existing + Jana + L.)", 5, count);
+        assertEquals(5, count, "There should be 5 persons because all used are already in the database (3 existing + Jana + L.)");
         Pager<Person> persons = agentService.findByTitle(Person.class, "Leon", MatchMode.BEGINNING, null, null, null, null, null);
-        assertEquals("Collector Leonhard,A. already in database, therefore only one should be found.",
-                Long.valueOf(1), persons.getCount());
+        assertEquals(Long.valueOf(1), persons.getCount(), "Collector Leonhard,A. already in database, therefore only one should be found.");
         persons = agentService.findByTitle(Person.class, "Schw", MatchMode.BEGINNING, null, null, null, null, null);
-        assertEquals("Collector Schweinfurt already in database, therefore only one should be found.",
-                Long.valueOf(1), persons.getCount());
+        assertEquals(Long.valueOf(1), persons.getCount(), "Collector Schweinfurt already in database, therefore only one should be found.");
         persons = agentService.findByTitle(Person.class, "Mey", MatchMode.BEGINNING, null, null, null, null, null);
-        assertEquals("Collector Meyer already in database, therefore only one should be found.",
-                Long.valueOf(1), persons.getCount());
+        assertEquals(Long.valueOf(1), persons.getCount(), "Collector Meyer already in database, therefore only one should be found.");
 
         FindOccurrencesConfigurator dnaConfig = new FindOccurrencesConfigurator();
         dnaConfig.setSignificantIdentifier("B 10 0066577");
         List<DerivedUnitDTO> derivedUnitDtos = occurrenceService.findByTitleDerivedUnitDTO(dnaConfig);
         assertNotNull(derivedUnitDtos.get(0).getCollectorsString());
-        assertEquals("Collectors String is wrong", derivedUnitDtos.get(0).getCollectorsString(), "C. Schweinfurt, A. Leonard & B. Meyer Rec.It2993/88");
+        assertEquals(derivedUnitDtos.get(0).getCollectorsString(), "C. Schweinfurt, A. Leonard & B. Meyer Rec.It2993/88", "Collectors String is wrong");
 
     }
 
@@ -700,20 +696,20 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
     public void testImportGgbnSparseData(){
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_sparse_data.xml";
         URL url = this.getClass().getResource(inputFile);
-	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+	    assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
 	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
-	        Assert.fail();
+	        fail();
 	    }
-	    assertNotNull("Configurator could not be created", importConfigurator);
+	    assertNotNull(importConfigurator, "Configurator could not be created");
 
 	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
 	    List<DerivedUnit> derivedUnits = occurrenceService.list(DerivedUnit.class, null, null, null, null);
-	    assertTrue("Return value for import.invoke should be true", result);
+	    assertTrue(result, "Return value for import.invoke should be true");
 	}
 
 	/**
@@ -750,33 +746,33 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
 
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_without_association.xml";
 	    URL url = this.getClass().getResource(inputFile);
-	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+	    assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
 	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
-	        Assert.fail();
+	        fail();
 	    }
-	    assertNotNull("Configurator could not be created", importConfigurator);
+	    assertNotNull(importConfigurator, "Configurator could not be created");
 
-	    assertEquals("Number of derived units is incorrect", 1, occurrenceService.count(DerivedUnit.class));
+	    assertEquals(1, occurrenceService.count(DerivedUnit.class), "Number of derived units is incorrect");
 	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-	    assertTrue("Return value for import.invoke should be true", result);
-	    assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
+	    assertTrue(result, "Return value for import.invoke should be true");
+	    assertEquals(2, occurrenceService.count(DerivedUnit.class), "Number of derived units is incorrect");
 	    List<DerivedUnit> derivedUnits = occurrenceService.list(DerivedUnit.class, null, null, null, null);
-	    assertEquals("Number of derived units is incorrect", 2, derivedUnits.size());
-	    assertEquals("Number of field units is incorrect", 2, occurrenceService.count(FieldUnit.class));
-	    assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
+	    assertEquals(2, derivedUnits.size(), "Number of derived units is incorrect");
+	    assertEquals(2, occurrenceService.count(FieldUnit.class), "Number of field units is incorrect");
+	    assertEquals(1, occurrenceService.count(DnaSample.class), "Number of dna samples is incorrect");
 
 	    DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(derivedUnit1Uuid);
 	    assertTrue(derivedUnits.contains(derivedUnit));
 
 	    DnaSample dnaSample = occurrenceService.list(DnaSample.class, null, null, null, null).get(0);
-	    assertEquals("Wrong derivation type!", DerivationEventType.DNA_EXTRACTION(), dnaSample.getDerivedFrom().getType());
+	    assertEquals(DerivationEventType.DNA_EXTRACTION(), dnaSample.getDerivedFrom().getType(), "Wrong derivation type!");
 
-	    assertEquals("Wrong number of originals", 1, dnaSample.getDerivedFrom().getOriginals().size());
+	    assertEquals(1, dnaSample.getDerivedFrom().getOriginals().size(), "Wrong number of originals");
 	    FieldUnit specimenFieldUnit = (FieldUnit) occurrenceService.load(fieldUnit1Uuid);
 	    SpecimenOrObservationBase<?> dnaSampleFieldUnit = dnaSample.getDerivedFrom().getOriginals().iterator().next();
 	    assertTrue(!specimenFieldUnit.equals(dnaSampleFieldUnit));
@@ -793,14 +789,14 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
 
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/DNA_AlgaTerra.xml";
         URL url = this.getClass().getResource(inputFile);
-        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+        assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 
         Abcd206ImportConfigurator importConfigurator = null;
         try {
             importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            Assert.fail();
+            fail();
         }
         URI dnaProvider;
         try {
@@ -814,16 +810,16 @@ public class AbcdGgbnImportTest extends CdmIoTransactionalSpringIntegrationTest 
         importConfigurator.setGetSiblings(true);
         importConfigurator.setAddIndividualsAssociations(true);
         importConfigurator.setNomenclaturalCode(NomenclaturalCode.ICNAFP);
-        assertNotNull("Configurator could not be created", importConfigurator);
+        assertNotNull(importConfigurator, "Configurator could not be created");
 
-        assertEquals("Number of derived units is incorrect", 1, occurrenceService.count(DerivedUnit.class));
+        assertEquals(1, occurrenceService.count(DerivedUnit.class), "Number of derived units is incorrect");
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
 
-        assertTrue("Return value for import.invoke should be true", result);
-        assertEquals("Number of derived units is incorrect", 4, occurrenceService.count(DerivedUnit.class));
+        assertTrue(result, "Return value for import.invoke should be true");
+        assertEquals(4, occurrenceService.count(DerivedUnit.class), "Number of derived units is incorrect");
 
-        assertEquals("Number of field units is incorrect", 2, occurrenceService.count(FieldUnit.class));
-        assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
+        assertEquals(2, occurrenceService.count(FieldUnit.class), "Number of field units is incorrect");
+        assertEquals(1, occurrenceService.count(DnaSample.class), "Number of dna samples is incorrect");
 
     }
 

@@ -8,8 +8,9 @@
 */
 package eu.etaxonomy.cdm.io.cdmLight;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author muellera
@@ -26,6 +27,6 @@ public class CdmLightExportStateTest {
         for (int i=1;i < 12;i++) {
             result += state.incrementShortCitation(refStr);
         }
-        Assert.assertEquals("abcdefghikl", result);
+        assertEquals("abcdefghikl", result);
     }
 }

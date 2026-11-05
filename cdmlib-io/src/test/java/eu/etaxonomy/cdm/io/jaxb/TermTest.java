@@ -8,14 +8,14 @@
 */
 package eu.etaxonomy.cdm.io.jaxb;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStreamReader;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -32,25 +32,25 @@ public class TermTest {
         DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
 		NamedArea africa = (NamedArea)dataSet.getTerms().get(2);
-		assertNotNull("DefinedTermBase must not be null", africa);
-		assertNotNull("DefinedTermBase.includes must not be null", africa.getIncludes());
-		assertFalse("DefinedTermBase.includes must contain NamedArea instances", africa.getIncludes().isEmpty());
-		assertEquals("DefinedTermBase.includes must contain eight NamedArea instances", 8, africa.getIncludes().size());
+		assertNotNull(africa, "DefinedTermBase must not be null");
+		assertNotNull(africa.getIncludes(), "DefinedTermBase.includes must not be null");
+		assertFalse(africa.getIncludes().isEmpty(), "DefinedTermBase.includes must contain NamedArea instances");
+		assertEquals(8, africa.getIncludes().size(), "DefinedTermBase.includes must contain eight NamedArea instances");
 		NamedArea northAfrica = (NamedArea)dataSet.getTerms().get(4);
-		assertNotNull("DefinedTermBase must not be null", northAfrica);
-		assertTrue("Africa must include North Africa", africa.getIncludes().contains(northAfrica));
-		assertNotNull("DefinedTermBase.partOf must not be null", northAfrica.getPartOf());
-		assertEquals("North Africa must be part of Africa",africa, northAfrica.getPartOf());
+		assertNotNull(northAfrica, "DefinedTermBase must not be null");
+		assertTrue(africa.getIncludes().contains(northAfrica), "Africa must include North Africa");
+		assertNotNull(northAfrica.getPartOf(), "DefinedTermBase.partOf must not be null");
+		assertEquals(africa, northAfrica.getPartOf(), "North Africa must be part of Africa");
 
 		Feature discussion = (Feature)dataSet.getTerms().get(13);
-		assertNotNull("DefinedTermBase must not be null", discussion);
-		assertNotNull("DefinedTermBase.generalizationOf must not be null", discussion.getGeneralizationOf());
-		assertFalse("DefinedTermBase.generalizationOf must contain Feature instances", discussion.getGeneralizationOf().isEmpty());
-		assertEquals("DefinedTermBase.generalizationOf must contain two Feature instances", 2, discussion.getGeneralizationOf().size());
+		assertNotNull(discussion, "DefinedTermBase must not be null");
+		assertNotNull(discussion.getGeneralizationOf(), "DefinedTermBase.generalizationOf must not be null");
+		assertFalse(discussion.getGeneralizationOf().isEmpty(), "DefinedTermBase.generalizationOf must contain Feature instances");
+		assertEquals(2, discussion.getGeneralizationOf().size(), "DefinedTermBase.generalizationOf must contain two Feature instances");
 		Feature taxonomicDiscussion = (Feature)dataSet.getTerms().get(14);
-		assertNotNull("DefinedTermBase must not be null",taxonomicDiscussion);
-		assertTrue("Discussion must be the generalization of Taxonomic Discussion", discussion.getGeneralizationOf().contains(taxonomicDiscussion));
-		assertNotNull("DefinedTermBase.kindOf must not be null", taxonomicDiscussion.getKindOf());
-		assertEquals("Taxonomic Discussion must be a kind of Discussion", discussion, taxonomicDiscussion.getKindOf());
+		assertNotNull(taxonomicDiscussion, "DefinedTermBase must not be null");
+		assertTrue(discussion.getGeneralizationOf().contains(taxonomicDiscussion), "Discussion must be the generalization of Taxonomic Discussion");
+		assertNotNull(taxonomicDiscussion.getKindOf(), "DefinedTermBase.kindOf must not be null");
+		assertEquals(discussion, taxonomicDiscussion.getKindOf(), "Taxonomic Discussion must be a kind of Discussion");
     }
 }

@@ -8,11 +8,11 @@
 */
 package eu.etaxonomy.cdm.io.jaxb;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.InputStreamReader;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -28,13 +28,13 @@ public class LanguageStringTest {
         DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
 		Media media = dataSet.getMedia().get(0);
-		assertNotNull("Media must not be null",media);
+		assertNotNull(media, "Media must not be null");
 		/* TODO: Does not work because the term loading does not work in test cases...
-		assertNotNull("Media.title must not be null", media.getTitle(Language.ENGLISH()));
-		assertFalse("Media.title must contain LanguageString elements",media.getAllTitles().isEmpty());
+		assertNotNull(media.getTitle(Language.ENGLISH()), "Media.title must not be null");
+		assertFalse(media.getAllTitles().isEmpty(), "Media.title must contain LanguageString elements");
 		LanguageString languageString = media.getAllTitles().values().iterator().next();
-		assertNotNull("LanguageString.text must not be null", languageString.getText());
-		assertEquals("LanguageString.text must contain the expected value","<i xmlns=\"http://www.w3.org/1999/xhtml\">English</i> Title",languageString.getText());
+		assertNotNull(languageString.getText(), "LanguageString.text must not be null");
+		assertEquals("<i xmlns=\"http://www.w3.org/1999/xhtml\">English</i> Title", languageString.getText(), "LanguageString.text must contain the expected value");
    		*/
     }
 }

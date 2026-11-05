@@ -8,14 +8,14 @@
 */
 package eu.etaxonomy.cdm.io.jaxb;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStreamReader;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
@@ -35,26 +35,26 @@ public class TaxonNameTest {
         DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
 		IBotanicalName botanicalName = dataSet.getTaxonomicNames().get(0);
-		assertNotNull("BotanicalName must not be null",botanicalName);
+		assertNotNull(botanicalName, "BotanicalName must not be null");
 		DerivedUnit specimen = (DerivedUnit)dataSet.getOccurrences().get(0);
 
-		assertNotNull("BotanicalName.typeDesignations must not be null",botanicalName.getTypeDesignations());
-		assertFalse("BotanicalName.typeDesignations must contain TypeDesignation entities", botanicalName.getTypeDesignations().isEmpty());
+		assertNotNull(botanicalName.getTypeDesignations(), "BotanicalName.typeDesignations must not be null");
+		assertFalse(botanicalName.getTypeDesignations().isEmpty(), "BotanicalName.typeDesignations must contain TypeDesignation entities");
 
 		SpecimenTypeDesignation specimenTypeDesignation = (SpecimenTypeDesignation)botanicalName.getTypeDesignations().iterator().next();
-		assertNotNull("SpecimenTypeDesignation.typifiedNames must not be null",specimenTypeDesignation.getTypifiedNames());
-		assertFalse("SpecimenTypeDesignation.typifiedNames must not be empty",specimenTypeDesignation.getTypifiedNames().isEmpty());
-		assertTrue("SpecimenTypeDesignation.typifiedNames must contain BotanicalName",specimenTypeDesignation.getTypifiedNames().contains(botanicalName));
+		assertNotNull(specimenTypeDesignation.getTypifiedNames(), "SpecimenTypeDesignation.typifiedNames must not be null");
+		assertFalse(specimenTypeDesignation.getTypifiedNames().isEmpty(), "SpecimenTypeDesignation.typifiedNames must not be empty");
+		assertTrue(specimenTypeDesignation.getTypifiedNames().contains(botanicalName), "SpecimenTypeDesignation.typifiedNames must contain BotanicalName");
 
-		assertNotNull("SpecimenTypeDesignation.typeSpecimen must not be null",specimenTypeDesignation.getTypeSpecimen());
-		assertEquals("SpecimenTypeDesignation.typeSpecimen must equal Specimen",specimen,specimenTypeDesignation.getTypeSpecimen());
+		assertNotNull(specimenTypeDesignation.getTypeSpecimen(), "SpecimenTypeDesignation.typeSpecimen must not be null");
+		assertEquals(specimen, specimenTypeDesignation.getTypeSpecimen(), "SpecimenTypeDesignation.typeSpecimen must equal Specimen");
 
 		IZoologicalName zoologicalName = dataSet.getTaxonomicNames().get(5);
-		assertNotNull("ZoologicalName must not be null",zoologicalName);
+		assertNotNull(zoologicalName, "ZoologicalName must not be null");
 
 		NameTypeDesignation nameTypeDesignation = (NameTypeDesignation)zoologicalName.getTypeDesignations().iterator().next();
-		assertNotNull("NameTypeDesignation.typeName must not be null",nameTypeDesignation.getTypeName());
-		assertEquals("NameTypeDesignation.typeName must equal ZoologicalName",dataSet.getTaxonomicNames().get(6),nameTypeDesignation.getTypeName());
+		assertNotNull(nameTypeDesignation.getTypeName(), "NameTypeDesignation.typeName must not be null");
+		assertEquals(dataSet.getTaxonomicNames().get(6), nameTypeDesignation.getTypeName(), "NameTypeDesignation.typeName must equal ZoologicalName");
 
     }
 }

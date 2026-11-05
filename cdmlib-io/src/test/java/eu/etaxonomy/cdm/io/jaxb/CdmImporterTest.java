@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.io.jaxb;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrat
 public class CdmImporterTest extends CdmIoTransactionalSpringIntegrationTest{
 
 	@Autowired
-	JaxbImport jaxbImport;
+	private JaxbImport jaxbImport;
 
 	private JaxbImportConfigurator configurator;
 
@@ -50,7 +50,7 @@ public class CdmImporterTest extends CdmIoTransactionalSpringIntegrationTest{
 
 	@Test
 	public void testInit() {
-		assertNotNull("jaxbImport should not be null",jaxbImport);
+		assertNotNull(jaxbImport, "jaxbImport should not be null");
 //		IncludeTableFilter filter = new IncludeTableFilter();
 //		filter.includeTable("T*");
 //		ExcludeTableFilter filter2 = new ExcludeTableFilter();

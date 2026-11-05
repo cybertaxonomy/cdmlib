@@ -8,13 +8,13 @@
 */
 package eu.etaxonomy.cdm.io.jaxb;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 import java.io.InputStreamReader;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.reference.IArticle;
@@ -32,14 +32,14 @@ public class ReferenceTest {
         URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
         DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
-        assertNotSame("Reference list should not be empty", 0, dataSet.getReferences().size());
+        assertNotSame(0, dataSet.getReferences().size(), "Reference list should not be empty");
 
         IArticle article = dataSet.getReferences().get(0);
-        assertNotNull("Article must not be null",article);
+        assertNotNull(article, "Article must not be null");
 
         IJournal journal = dataSet.getReferences().get(1);
-        assertNotNull("Journal must not be null", journal);
-        assertEquals("Journal must equal Article.inJournal",journal,article.getInJournal());
+        assertNotNull(journal, "Journal must not be null");
+        assertEquals(journal, article.getInJournal(), "Journal must equal Article.inJournal");
     }
 
     @Test
@@ -49,7 +49,7 @@ public class ReferenceTest {
         DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
         IArticle article = dataSet.getReferences().get(0);
-        assertNotNull("Article must not be null",article);
+        assertNotNull(article, "Article must not be null");
 
         IJournal journal = ((Reference)article).castReferenceToJournal();
         assertEquals("Journal", journal.getType().name());

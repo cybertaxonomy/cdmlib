@@ -8,12 +8,12 @@
 */
 package eu.etaxonomy.cdm.io.jaxb;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.InputStreamReader;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -29,9 +29,9 @@ public class AnnotationTest {
         DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
 		AnnotatableEntity annotatableEntity = dataSet.getTaxonBases().get(0);
-		assertNotNull("annotatableEntity must exist",annotatableEntity);
+		assertNotNull(annotatableEntity, "annotatableEntity must exist");
 
-		assertNotNull("annotatableEntity must have annotations",annotatableEntity.getAnnotations());
-		assertEquals("There should be one annotation",1,annotatableEntity.getAnnotations().size());
+		assertNotNull(annotatableEntity.getAnnotations(), "annotatableEntity must have annotations");
+		assertEquals(1, annotatableEntity.getAnnotations().size(), "There should be one annotation");
     }
 }

@@ -8,13 +8,15 @@
 */
 package eu.etaxonomy.cdm.io.tropicos;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -58,22 +60,22 @@ public class TropicosNameImportTest extends CdmIoTransactionalSpringIntegrationT
 
         try {
             URL url = this.getClass().getResource(inputFile);
-            assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+            assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 
             String inputFileLong = "/eu/etaxonomy/cdm/io/tropicos/TropicosNameImportTest-input.txt";
             URL urlLong = this.getClass().getResource(inputFileLong);
-            assertNotNull("URL for the test file '" + inputFileLong + "' does not exist", urlLong);
+            assertNotNull(urlLong, "URL for the test file '" + inputFileLong + "' does not exist");
 
             configShort = TropicosNameImportConfigurator.NewInstance(URI.fromUrl(url), null);
             configLong = TropicosNameImportConfigurator.NewInstance(URI.fromUrl(urlLong), null);
 
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail();
+            fail();
         }
-        assertNotNull("Configurator could not be created", configShort);
-        assertNotNull("Configurator could not be created", configLong);
-        assertNotNull("nameService should not be null", nameService);
+        assertNotNull(configShort, "Configurator could not be created");
+        assertNotNull(configLong, "Configurator could not be created");
+        assertNotNull(nameService, "nameService should not be null");
     }
 
 //***************************** TESTS *************************************//
@@ -83,25 +85,25 @@ public class TropicosNameImportTest extends CdmIoTransactionalSpringIntegrationT
     public void testShort() {
         configShort.setCreateTaxa(true);
         ImportResult result = defaultImport.invoke(configShort);
-        Assert.assertTrue(result.isSuccess());
-        Assert.assertEquals(0,result.getExceptions().size());
-        Assert.assertEquals(0,result.getErrors().size());
+        assertTrue(result.isSuccess());
+        assertEquals(0,result.getExceptions().size());
+        assertEquals(0,result.getErrors().size());
         String report = result.createReport().toString();
 
         Integer expected = 2;
-        Assert.assertEquals(expected, result.getNewRecords(TaxonName.class));
+        assertEquals(expected, result.getNewRecords(TaxonName.class));
 
-        Assert.assertTrue(report.length() > 0);
+        assertTrue(report.length() > 0);
         System.out.println(report);
 
         List<TaxonName> list = nameService.list(TaxonName.class, null, null, null, null);
-        Assert.assertEquals("There should be 2 new taxon names", 2, list.size());
+        assertEquals(2, list.size(), "There should be 2 new taxon names");
         for (TaxonName name : list){
             //TODO
         }
 
         expected = 1;
-        Assert.assertEquals(expected, result.getNewRecords(Reference.class));
+        assertEquals(expected, result.getNewRecords(Reference.class));
     }
 
     @Test
@@ -110,15 +112,15 @@ public class TropicosNameImportTest extends CdmIoTransactionalSpringIntegrationT
     public void testShortCreateTaxa() {
         configShort.setCreateTaxa(true);
         ImportResult result = defaultImport.invoke(configShort);
-        Assert.assertTrue(result.isSuccess());
-        Assert.assertEquals(0,result.getExceptions().size());
-        Assert.assertEquals(0,result.getErrors().size());
+        assertTrue(result.isSuccess());
+        assertEquals(0,result.getExceptions().size());
+        assertEquals(0,result.getErrors().size());
 
         Integer expected = 2;
-        Assert.assertEquals(expected, result.getNewRecords(Taxon.class));
+        assertEquals(expected, result.getNewRecords(Taxon.class));
 
         List<Taxon> list = taxonService.list(Taxon.class, null, null, null, null);
-        Assert.assertEquals("There should be 2 new taxa", 2, list.size());
+        assertEquals(2, list.size(), "There should be 2 new taxa");
     }
 
     @Test
@@ -129,7 +131,7 @@ public class TropicosNameImportTest extends CdmIoTransactionalSpringIntegrationT
         System.out.println(report);
 
         Integer expected = 118;  //did not count yet
-        Assert.assertEquals(expected, result.getNewRecords(Reference.class));
+        assertEquals(expected, result.getNewRecords(Reference.class));
     }
 
     @Override

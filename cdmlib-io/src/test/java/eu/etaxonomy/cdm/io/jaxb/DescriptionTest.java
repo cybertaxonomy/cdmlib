@@ -8,13 +8,13 @@
 */
 package eu.etaxonomy.cdm.io.jaxb;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.InputStreamReader;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -32,18 +32,18 @@ public class DescriptionTest {
         DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
 		Taxon taxon = (Taxon)dataSet.getTaxonBases().get(0);
-		assertNotNull("Taxon must not be null",taxon);
-		assertNotNull("Taxon.descriptions must not be null",taxon.getDescriptions());
-		assertFalse("Taxon.descriptions must not be empty",taxon.getDescriptions().isEmpty());
-		assertEquals("Taxon.descriptions must contain one description",1,taxon.getDescriptions().size());
+		assertNotNull(taxon, "Taxon must not be null");
+		assertNotNull(taxon.getDescriptions(), "Taxon.descriptions must not be null");
+		assertFalse(taxon.getDescriptions().isEmpty(), "Taxon.descriptions must not be empty");
+		assertEquals(1, taxon.getDescriptions().size(), "Taxon.descriptions must contain one description");
 
 		TaxonDescription taxonDescription = taxon.getDescriptions().iterator().next();
 
-		assertNotNull("TaxonDescription.descriptionElements must not be null",taxonDescription.getElements());
-		assertFalse("TaxonDescription.descriptionElements must not be empty",taxonDescription.getElements().isEmpty());
-		assertEquals("TaxonDescription.descriptionElements should contain one DescriptionElement",1,taxonDescription.getElements().size());
+		assertNotNull(taxonDescription.getElements(), "TaxonDescription.descriptionElements must not be null");
+		assertFalse(taxonDescription.getElements().isEmpty(), "TaxonDescription.descriptionElements must not be empty");
+		assertEquals(1, taxonDescription.getElements().size(), "TaxonDescription.descriptionElements should contain one DescriptionElement");
 
 		TextData textData = (TextData)taxonDescription.getElements().iterator().next();
-		assertEquals("TaxonDescription should equal TextData.inDescription",taxonDescription,textData.getInDescription());
+		assertEquals(taxonDescription, textData.getInDescription(), "TaxonDescription should equal TextData.inDescription");
     }
 }

@@ -8,9 +8,9 @@
 */
 package eu.etaxonomy.cdm.io.excel.stream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
@@ -86,23 +86,23 @@ public class ExcelStreamImportTest extends CdmIoTransactionalSpringIntegrationTe
 		//TODO create own test file
 		String inputFile = "/eu/etaxonomy/cdm/io/excel/stream/ExcelStreamImport-TestInput.xls";
 		URL url = this.getClass().getResource(inputFile);
-	 	assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+	 	assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 		configurator = ExcelStreamImportConfigurator.NewInstance(URI.fromUrl(url), null, NomenclaturalCode.ICNAFP, null);
-		assertNotNull("Configurator could not be created", configurator);
+		assertNotNull(configurator, "Configurator could not be created");
 		configurator.addObserver(new LoggingIoObserver());
 
 		inputFile = "/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.testUuid-input.xls";
 		url = this.getClass().getResource(inputFile);
-	 	assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+	 	assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 		uuidConfigurator = ExcelStreamImportConfigurator.NewInstance(URI.fromUrl(url), null, NomenclaturalCode.ICNAFP, null);
-		assertNotNull("Configurator could not be created", configurator);
+		assertNotNull(configurator, "Configurator could not be created");
 
 	}
 
 	@Test
 	public void testInit() {
-		assertNotNull("normalExplicitImport should not be null", defaultImport);
-		assertNotNull("nameService should not be null", nameService);
+		assertNotNull(defaultImport, "normalExplicitImport should not be null");
+		assertNotNull(nameService, "nameService should not be null");
 	}
 
 	@Test
@@ -110,37 +110,37 @@ public class ExcelStreamImportTest extends CdmIoTransactionalSpringIntegrationTe
 	public void testDoInvoke() {
 //		printDataSet(System.out, new String[]{"ANNOTATION"});
 		boolean result = defaultImport.invoke(configurator).isSuccess();
-		assertTrue("Return value for import.invoke should be true", result);
+		assertTrue(result, "Return value for import.invoke should be true");
 		commitAndStartNewTransaction(new String[]{"TAXONNAME", "ANNOTATION"});
-		assertEquals("Number of TaxonNames should be 10", 10 /*TODO */, nameService.count(null));
+		assertEquals(10 /*TODO */, nameService.count(null), "Number of TaxonNames should be 10");
 		List<Classification> treeList = classificationService.list(null, null,null,null,null);
-		assertEquals("Number of classifications should be 1", 1, treeList.size());
+		assertEquals(1, treeList.size(), "Number of classifications should be 1");
 		Classification tree = treeList.get(0);
 		List<TaxonNode> rootNodes = tree.getChildNodes();
-		assertEquals("Number of root nodes should be 1", 1, rootNodes.size());
+		assertEquals(1, rootNodes.size(), "Number of root nodes should be 1");
 		TaxonNode rootNode = rootNodes.iterator().next();
 
 //		printDataSet(System.out, new String[]{"ANNOTATION"});
 		Set<Annotation> annotationSet = rootNode.getTaxon().getAnnotations();
-		assertTrue("Annotation is set for first Taxon", !annotationSet.isEmpty());
+		assertTrue(!annotationSet.isEmpty(), "Annotation is set for first Taxon");
 
-		assertEquals("Root taxon name should be Metazoa", "Metazoa", rootNode.getTaxon().getName().getTitleCache());
+		assertEquals("Metazoa", rootNode.getTaxon().getName().getTitleCache(), "Root taxon name should be Metazoa");
 		TaxonNode secondTaxon = rootNode.getChildNodes().iterator().next();
 
 		Set<Annotation> secondAnnotation = secondTaxon.getTaxon().getAnnotations();
-		assertTrue("Annotation is empty for second Taxon", secondAnnotation.isEmpty());
+		assertTrue(secondAnnotation.isEmpty(), "Annotation is empty for second Taxon");
 
 		Set<TaxonDescription> taxonSet = secondTaxon.getTaxon().getDescriptions();
-		assertTrue("Description is not Empty", !taxonSet.isEmpty());
-		assertEquals("Number of Distributions should be 7", 7, descriptionService.listDescriptionElements(null, null, null, Distribution.class, false, null, null, null).size());
-//		assertEquals("Number of Vernecular Names should be 7", 6, descriptionService.listDescriptionElements(null, null, CommonTaxonName.class, null, null, null).size());
+		assertTrue(!taxonSet.isEmpty(), "Description is not Empty");
+		assertEquals(7, descriptionService.listDescriptionElements(null, null, null, Distribution.class, false, null, null, null).size(), "Number of Distributions should be 7");
+//		assertEquals(6, descriptionService.listDescriptionElements(null, null, CommonTaxonName.class, null, null, null).size(), "Number of Vernecular Names should be 7");
 		List<CommonTaxonName> list = descriptionService.listDescriptionElements(null, null, null, CommonTaxonName.class, false, null, null, null);
 		for(DescriptionElementBase db : list){
 			System.out.println(db.toString());
 		}
 		//TODO: write test for Refences Sources
 		Set<IdentifiableSource> sourcesSet = secondTaxon.getTaxon().getSources();
-		assertTrue("Sources are set for second Taxon", !sourcesSet.isEmpty());
+		assertTrue(!sourcesSet.isEmpty(), "Sources are set for second Taxon");
 		for(IdentifiableSource s : sourcesSet){
 			System.out.println("ID: "+ s.getId());
 			System.out.println("External ID: " +s.getIdInSource());
@@ -148,12 +148,12 @@ public class ExcelStreamImportTest extends CdmIoTransactionalSpringIntegrationTe
 			System.out.println("Reference: " + s.getCitation().toString());
 		}
 
-		//		assertEquals("Arthropoda node taxon name should be Arthropoda", "Arthropoda", arthropodaNode.getTaxon().getName().getTitleCache());
+		//		assertEquals("Arthropoda", arthropodaNode.getTaxon().getName().getTitleCache(), "Arthropoda node taxon name should be Arthropoda");
 //		TaxonNode insectaNode = arthropodaNode.getChildNodes().iterator().next();
 //		TaxonNode lepidopteraNode = insectaNode.getChildNodes().iterator().next();
 //		TaxonNode noctuidaeNode = lepidopteraNode.getChildNodes().iterator().next();
 //		TaxonNode noctuaNode = noctuidaeNode.getChildNodes().iterator().next();
-//		assertEquals("Number of child nodes of noctuca should be 2", 2, noctuaNode.getChildNodes().size());
+//		assertEquals(2, noctuaNode.getChildNodes().size(), "Number of child nodes of noctuca should be 2");
 //
 //		Iterator<TaxonNode> it = noctuaNode.getChildNodes().iterator();
 //		TaxonNode childNode1 = it.next();
@@ -166,14 +166,14 @@ public class ExcelStreamImportTest extends CdmIoTransactionalSpringIntegrationTe
 //			noctuaPronubaNode = childNode2;
 //		}
 //
-//		assertEquals("Noctua pronuba taxon name should be ", "Noctua pronuba", noctuaPronubaNode.getTaxon().getName().getTitleCache());
+//		assertEquals("Noctua pronuba", noctuaPronubaNode.getTaxon().getName().getTitleCache(), "Noctua pronuba taxon name should be ");
 //		Taxon noctuaPronubaTaxon = noctuaPronubaNode.getTaxon();
 //		Set<Synonym> synonyms = noctuaPronubaTaxon.getSynonyms();
-//		assertEquals("Number of synonyms should be 1", 3 /*TODO*/, synonyms.size());
+//		assertEquals(3 /*TODO*/, synonyms.size(), "Number of synonyms should be 1");
 //		Synonym synonym = synonyms.iterator().next();
-//		assertEquals("Synonym name should be ", "Noctua atlantica", synonym.getName().getNameCache());
+//		assertEquals("Noctua atlantica", synonym.getName().getNameCache(), "Synonym name should be ");
 //		Set<TaxonDescription> descriptions = noctuaPronubaTaxon.getDescriptions();
-//		Assert.assertEquals("Number of descriptions should be 1", 1, descriptions.size());
+//		assertEquals(1, descriptions.size(), "Number of descriptions should be 1");
 //		TaxonDescription taxonDescription = descriptions.iterator().next();
 //		Set<DescriptionElementBase> elements = taxonDescription.getElements();
 //		List<CommonTaxonName> commonNames = new ArrayList<CommonTaxonName>();
@@ -182,12 +182,12 @@ public class ExcelStreamImportTest extends CdmIoTransactionalSpringIntegrationTe
 //				commonNames.add((CommonTaxonName)element);
 //			}
 //		}
-//		Assert.assertEquals("Number of common names should be 2", 2, commonNames.size());
+//		assertEquals(2, commonNames.size(), "Number of common names should be 2");
 //		Set<String> commonNameStrings = new HashSet<>();
 //		commonNameStrings.add(commonNames.get(0).getName());
 //		commonNameStrings.add(commonNames.get(1).getName());
-//		Assert.assertTrue("Common names must include Yellow Underwing", commonNameStrings.contains("Large Sunshine Underwing"));
-//		Assert.assertTrue("Common names must include Yellow Underwing", commonNameStrings.contains("Yellow Underwing"));
+//		assertTrue(commonNameStrings.contains("Large Sunshine Underwing"), "Common names must include Yellow Underwing");
+//		assertTrue(commonNameStrings.contains("Yellow Underwing"), "Common names must include Yellow Underwing");
 	}
 
 //	@Test
@@ -198,70 +198,70 @@ public class ExcelStreamImportTest extends CdmIoTransactionalSpringIntegrationTe
 //
 //
 //		//test data set
-//		assertEquals("Number of taxon bases should be 2", 2, taxonService.count(null));
+//		assertEquals(2, taxonService.count(null), "Number of taxon bases should be 2");
 //		Taxon taxon = (Taxon)taxonService.find(taxonUuid);
-//		assertNotNull("Taxon with given uuid should exist", taxon);
-//		assertEquals("Taxon should have no description", 0, taxon.getDescriptions().size());
+//		assertNotNull(taxon, "Taxon with given uuid should exist");
+//		assertEquals(0, taxon.getDescriptions().size(), "Taxon should have no description");
 //		Synonym synonym = (Synonym)taxonService.find(synonymUuid);
-//		assertNotNull("Synonym with given uuid should exist", synonym);
-//		assertEquals("Synonym should have 1 accepted taxon", 1, synonym.getAcceptedTaxa().size());
+//		assertNotNull(synonym, "Synonym with given uuid should exist");
+//		assertEquals(1, synonym.getAcceptedTaxa().size(), "Synonym should have 1 accepted taxon");
 //
 //		//import
 //		boolean result = defaultImport.invoke(uuidConfigurator);
 //		//test result
-//		assertTrue("Return value for import.invoke should be true", result);
-//		assertEquals("Number of taxon names should be 2", 2, nameService.count(null));
-//		assertEquals("Number of taxa should be 2", 2, taxonService.count(null));
+//		assertTrue(result, "Return value for import.invoke should be true");
+//		assertEquals(2, nameService.count(null), "Number of taxon names should be 2");
+//		assertEquals(2, taxonService.count(null), "Number of taxa should be 2");
 //		taxon = (Taxon)taxonService.find(taxonUuid);
-//		assertEquals("Taxon should have 1 description", 1, taxon.getDescriptions().size());
+//		assertEquals(1, taxon.getDescriptions().size(), "Taxon should have 1 description");
 //		TaxonDescription description = taxon.getDescriptions().iterator().next();
-//		assertEquals("Number of description elements should be 2", 2, description.getElements().size());
+//		assertEquals(2, description.getElements().size(), "Number of description elements should be 2");
 //
 //		String expectedText = "Description for the first taxon";
 //		TextData textData = getTextElement(description, expectedText);
-//		assertNotNull("The element should exists", textData);
+//		assertNotNull(textData, "The element should exists");
 //		Feature feature = textData.getFeature();
-//		assertEquals("Unexpected feature", Feature.DESCRIPTION(), feature);
-//		assertEquals("There should be exactly 1 language", 1,textData.getMultilanguageText().size());
+//		assertEquals(Feature.DESCRIPTION(), feature, "Unexpected feature");
+//		assertEquals(1, textData.getMultilanguageText().size(), "There should be exactly 1 language");
 //		Language language = textData.getMultilanguageText().keySet().iterator().next();
-//		assertEquals("Language should be German", Language.GERMAN(), language);
+//		assertEquals(Language.GERMAN(), language, "Language should be German");
 //		String text = textData.getText(language);
-//		assertEquals("Unexpected description text", expectedText, text);
-//		assertEquals("Number of source elements should be 1", 1, textData.getSources().size());
+//		assertEquals(expectedText, text, "Unexpected description text");
+//		assertEquals(1, textData.getSources().size(), "Number of source elements should be 1");
 //		DescriptionElementSource source = textData.getSources().iterator().next();
 //		Reference ref = source.getCitation();
-//		assertNotNull("Citation should not be null", ref);
-//		assertNotNull("Authorship should not be null", ref.getAuthorship());
-//		assertEquals("Source author should be 'Meyer et. al.'", "Meyer et. al.",ref.getAuthorship().getTitleCache());
-//		assertEquals("Publication title should be 'My first book'", "My first book", ref.getTitle());
-//		assertEquals("Publication year should be '1987'", "1987", ref.getYear());
+//		assertNotNull(ref, "Citation should not be null");
+//		assertNotNull(ref.getAuthorship(), "Authorship should not be null");
+//		assertEquals("Meyer et. al.", ref.getAuthorship().getTitleCache(), "Source author should be 'Meyer et. al.'");
+//		assertEquals("My first book", ref.getTitle(), "Publication title should be 'My first book'");
+//		assertEquals("1987", ref.getYear(), "Publication year should be '1987'");
 //		TaxonName nameUsedInSource = source.getNameUsedInSource();
-//		assertNotNull("Name used in source should not be null", nameUsedInSource);
-//		assertEquals("Name used in source title should be ", "Abies", nameUsedInSource.getTitleCache());
+//		assertNotNull(nameUsedInSource, "Name used in source should not be null");
+//		assertEquals("Abies", nameUsedInSource.getTitleCache(), "Name used in source title should be ");
 //
 //
 //		//synonym
 //		expectedText = "A synonym description";
 //		textData = getTextElement(description, expectedText);
-//		assertNotNull("The element should exists", textData);
+//		assertNotNull(textData, "The element should exists");
 //		feature = textData.getFeature();
-//		assertEquals("Unexpected feature", Feature.DESCRIPTION(), feature);
-//		assertEquals("There should be exactly 1 language", 1,textData.getMultilanguageText().size());
+//		assertEquals(Feature.DESCRIPTION(), feature, "Unexpected feature");
+//		assertEquals(1, textData.getMultilanguageText().size(), "There should be exactly 1 language");
 //		language = textData.getMultilanguageText().keySet().iterator().next();
-//		assertEquals("Language should be Spanish", Language.SPANISH_CASTILIAN(), language);
+//		assertEquals(Language.SPANISH_CASTILIAN(), language, "Language should be Spanish");
 //		text = textData.getText(language);
-//		assertEquals("Unexpected description text", expectedText, text);
-//		assertEquals("Number of source elements should be 1", 1, textData.getSources().size());
+//		assertEquals(expectedText, text, "Unexpected description text");
+//		assertEquals(1, textData.getSources().size(), "Number of source elements should be 1");
 //		source = textData.getSources().iterator().next();
 //		ref = source.getCitation();
-//		assertNotNull("Citation should not be null", ref);
-//		assertNotNull("Authorship should not be null", ref.getAuthorship());
-//		assertEquals("Source author should be 'Theys, A.'", "Theys, A.",ref.getAuthorship().getTitleCache());
-//		assertEquals("Publication title should be 'The ultimate book'", "The ultimate book", ref.getTitle());
-//		assertEquals("Publication year should be '2011'", "2011", ref.getYear());
+//		assertNotNull(ref, "Citation should not be null");
+//		assertNotNull(ref.getAuthorship(), "Authorship should not be null");
+//		assertEquals("Theys, A.", ref.getAuthorship().getTitleCache(), "Source author should be 'Theys, A.'");
+//		assertEquals("The ultimate book", ref.getTitle(), "Publication title should be 'The ultimate book'");
+//		assertEquals("2011", ref.getYear(), "Publication year should be '2011'");
 //		nameUsedInSource = source.getNameUsedInSource();
-//		assertNotNull("Name used in source should not be null", nameUsedInSource);
-//		assertEquals("Name used in source title should be Pinus", "Pinus", nameUsedInSource.getTitleCache());
+//		assertNotNull(nameUsedInSource, "Name used in source should not be null");
+//		assertEquals("Pinus", nameUsedInSource.getTitleCache(), "Name used in source title should be Pinus");
 //
 //	}
 

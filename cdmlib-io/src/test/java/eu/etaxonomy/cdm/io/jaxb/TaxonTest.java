@@ -8,14 +8,14 @@
 */
 package eu.etaxonomy.cdm.io.jaxb;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStreamReader;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.LSID;
@@ -34,32 +34,32 @@ public class TaxonTest {
         DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
 		Taxon parent = (Taxon)dataSet.getTaxonBases().get(0);
-		assertNotNull("Taxon must not be null",parent);
+		assertNotNull(parent, "Taxon must not be null");
 		Taxon child = (Taxon)dataSet.getTaxonBases().get(1);
-		assertNotNull("Taxon must not be null", child);
+		assertNotNull(child, "Taxon must not be null");
 
 		Synonym synonym = (Synonym)dataSet.getTaxonBases().get(2);
-		assertNotNull("Synonym must not be null", synonym);
+		assertNotNull(synonym, "Synonym must not be null");
 
-		assertNotNull("Taxon.relationsFromThisTaxon should not be null", parent.getRelationsFromThisTaxon());
-		assertFalse("Taxon.relationsFromThisTaxon should not be empty",parent.getRelationsFromThisTaxon().isEmpty());
+		assertNotNull(parent.getRelationsFromThisTaxon(), "Taxon.relationsFromThisTaxon should not be null");
+		assertFalse(parent.getRelationsFromThisTaxon().isEmpty(), "Taxon.relationsFromThisTaxon should not be empty");
 		TaxonRelationship taxonRelationship = parent.getRelationsFromThisTaxon().iterator().next();
-		assertNotNull("TaxonRelationship.fromTaxon must not be null",taxonRelationship.getFromTaxon());
-		assertEquals("parent Taxon should equal TaxonRelationship.fromTaxon",parent,taxonRelationship.getFromTaxon());
-		assertNotNull("TaxonRelationship.toTaxon must not be null", taxonRelationship.getToTaxon());
-		assertEquals("TaxonRelationship.toTaxon should equal child Taxon",child,taxonRelationship.getToTaxon());
-		assertNotNull("Taxon.relationsToThisTaxon must not be null",child.getRelationsToThisTaxon());
-		assertTrue("child Taxon.relationsToThisTaxon should contain TaxonRelationship",child.getRelationsToThisTaxon().contains(taxonRelationship));
+		assertNotNull(taxonRelationship.getFromTaxon(), "TaxonRelationship.fromTaxon must not be null");
+		assertEquals(parent, taxonRelationship.getFromTaxon(), "parent Taxon should equal TaxonRelationship.fromTaxon");
+		assertNotNull(taxonRelationship.getToTaxon(), "TaxonRelationship.toTaxon must not be null");
+		assertEquals(child, taxonRelationship.getToTaxon(), "TaxonRelationship.toTaxon should equal child Taxon");
+		assertNotNull(child.getRelationsToThisTaxon(), "Taxon.relationsToThisTaxon must not be null");
+		assertTrue(child.getRelationsToThisTaxon().contains(taxonRelationship), "child Taxon.relationsToThisTaxon should contain TaxonRelationship");
 
-		assertNotNull("Taxon.synonyms should not be null", parent.getSynonyms());
-		assertFalse("Taxon.synonyms should not be empty", parent.getSynonyms().isEmpty());
+		assertNotNull(parent.getSynonyms(), "Taxon.synonyms should not be null");
+		assertFalse(parent.getSynonyms().isEmpty(), "Taxon.synonyms should not be empty");
 		Synonym parentSynonym = parent.getSynonyms().iterator().next();
-		assertNotNull("parentSynonym must not be null", parentSynonym);
-		assertNotNull("parentSynonym.acceptedTaxon must not be null", parentSynonym.getAcceptedTaxon());
-		assertEquals("parent Taxon should equal parentSynonym.acceptedTaxon",parent, parentSynonym.getAcceptedTaxon());
-		assertEquals("parentSynonym should equal synonym", synonym, parentSynonym);
+		assertNotNull(parentSynonym, "parentSynonym must not be null");
+		assertNotNull(parentSynonym.getAcceptedTaxon(), "parentSynonym.acceptedTaxon must not be null");
+		assertEquals(parent, parentSynonym.getAcceptedTaxon(), "parent Taxon should equal parentSynonym.acceptedTaxon");
+		assertEquals(synonym, parentSynonym, "parentSynonym should equal synonym");
 
-		assertNotNull("Taxon.lsid should not be null",parent.getLsid());
-		assertEquals("Taxon.lsid should equal urn:lsid:example.org:taxonconcept:1",new LSID("urn:lsid:example.org:taxonconcept:1"),parent.getLsid());
+		assertNotNull(parent.getLsid(), "Taxon.lsid should not be null");
+		assertEquals(new LSID("urn:lsid:example.org:taxonconcept:1"), parent.getLsid(), "Taxon.lsid should equal urn:lsid:example.org:taxonconcept:1");
     }
 }

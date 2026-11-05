@@ -8,9 +8,10 @@
 */
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
@@ -20,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -102,62 +102,62 @@ public class SpecimenImportConfiguratorTest extends CdmIoTransactionalSpringInte
 	public void setUp() {
 		String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/AbcdImportTestCalvumPart1.xml";
         URL url = this.getClass().getResource(inputFile);
-        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+        assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
         configurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
-        assertNotNull("Configurator could not be created", configurator);
+        assertNotNull(configurator, "Configurator could not be created");
 
         //test2
         String inputFile2 = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml";
 		URL url2 = this.getClass().getResource(inputFile2);
-		assertNotNull("URL for the test file '" + inputFile2 + "' does not exist", url2);
+		assertNotNull(url2, "URL for the test file '" + inputFile2 + "' does not exist");
 		try {
 			configurator2 = Abcd206ImportConfigurator.NewInstance(new URI(url2), null, false);
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
-			Assert.fail();
+			fail();
 		}
-		assertNotNull("Configurator2 could not be created", configurator2);
+		assertNotNull(configurator2, "Configurator2 could not be created");
 	}
 
 	@Test
 	public void testInit() {
 	    System.out.println("TEST INIT");
-		assertNotNull("import instance should not be null", defaultImport);
-		assertNotNull("nameService should not be null", nameService);
-		assertNotNull("occurence service should not be null", occurrenceService);
-		assertNotNull("term service should not be null", termService);
-		assertNotNull("common service should not be null", commonService);
-		assertNotNull("taxon node service should not be null", taxonNodeService);
-		assertNotNull("agent service should not be null", agentService);
-		assertNotNull("reference service should not be null", referenceService);
+		assertNotNull(defaultImport, "import instance should not be null");
+		assertNotNull(nameService, "nameService should not be null");
+		assertNotNull(occurrenceService, "occurence service should not be null");
+		assertNotNull(termService, "term service should not be null");
+		assertNotNull(commonService, "common service should not be null");
+		assertNotNull(taxonNodeService, "taxon node service should not be null");
+		assertNotNull(agentService, "agent service should not be null");
+		assertNotNull(referenceService, "reference service should not be null");
 	}
 
 	@Test
 	@CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
 	public void testDoInvoke() {
         boolean result = defaultImport.invoke(configurator).isSuccess();
-        assertTrue("Return value for import.invoke should be true", result);
-        assertEquals("Number of TaxonNames is incorrect", 2, nameService.count(TaxonName.class));
+        assertTrue(result, "Return value for import.invoke should be true");
+        assertEquals(2, nameService.count(TaxonName.class), "Number of TaxonNames is incorrect");
         /*
          * Classification
          * - Cichorium
          *   - Cichorium calvum
          */
-        assertEquals("Number of TaxonNodes is incorrect", 3, taxonNodeService.count(TaxonNode.class));
-        assertEquals("Number of specimen and observation is incorrect", 10, occurrenceService.count(DerivedUnit.class));
+        assertEquals(3, taxonNodeService.count(TaxonNode.class), "Number of TaxonNodes is incorrect");
+        assertEquals(10, occurrenceService.count(DerivedUnit.class), "Number of specimen and observation is incorrect");
         //Asch. + Mitarbeiter der Floristischen Kartierung Deutschlands
-        assertEquals("Number of persons is incorrect", 2, agentService.count(Person.class));
+        assertEquals(2, agentService.count(Person.class), "Number of persons is incorrect");
         //BfN
-        assertEquals("Number of institutions is incorrect", 1, agentService.count(Institution.class));
+        assertEquals(1, agentService.count(Institution.class), "Number of institutions is incorrect");
     }
 
 	@Test
 	@CdmDataSet(cleanSweep = true, value = "SpecimenImportConfiguratorTest.doInvoke2.xml")
 	public void testDoInvoke2() {
 		boolean result = defaultImport.invoke(configurator2).isSuccess();
-		assertTrue("Return value for import.invoke should be true", result);
+		assertTrue(result, "Return value for import.invoke should be true");
 
-		assertEquals("Number of TaxonNames is incorrect", 4, nameService.count(TaxonName.class));
+		assertEquals(4, nameService.count(TaxonName.class), "Number of TaxonNames is incorrect");
 		List<TaxonName> listNames = nameService.list(TaxonName.class, 100, 0, null, null);
 
 		for (TaxonName name: listNames){
@@ -172,13 +172,13 @@ public class SpecimenImportConfiguratorTest extends CdmIoTransactionalSpringInte
          *   - Campanula tridentata
          *   - Campanula lactiflora
          */
-        assertEquals("Number of TaxonNodes is incorrect", 5, taxonNodeService.count(TaxonNode.class));
-		assertEquals("Number of derived units is incorrect", 11, occurrenceService.count(DerivedUnit.class));
-		assertEquals("Number of field units is incorrect", 11, occurrenceService.count(FieldUnit.class));
-		assertEquals("Number of gathering agents is incorrect", 4, agentService.count(Person.class));
+        assertEquals(5, taxonNodeService.count(TaxonNode.class), "Number of TaxonNodes is incorrect");
+		assertEquals(11, occurrenceService.count(DerivedUnit.class), "Number of derived units is incorrect");
+		assertEquals(11, occurrenceService.count(FieldUnit.class), "Number of field units is incorrect");
+		assertEquals(4, agentService.count(Person.class), "Number of gathering agents is incorrect");
 		//BGBM
-		assertEquals("Number of institutions is incorrect", 1, agentService.count(Institution.class));
-		assertEquals("Number of references is incorrect", 1, referenceService.count(Reference.class));
+		assertEquals(1, agentService.count(Institution.class), "Number of institutions is incorrect");
+		assertEquals(1, referenceService.count(Reference.class), "Number of references is incorrect");
 	}
 
 	@Test
@@ -187,21 +187,21 @@ public class SpecimenImportConfiguratorTest extends CdmIoTransactionalSpringInte
 
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/camapanula_abietina_subspecies.xml";
         URL url = this.getClass().getResource(inputFile);
-        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+        assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 
         Abcd206ImportConfigurator importConfigurator = null;
         importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
 
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-        assertTrue("Return value for import.invoke should be true", result);
-        assertEquals("Number of TaxonNames is incorrect", 3, nameService.count(TaxonName.class));
+        assertTrue(result, "Return value for import.invoke should be true");
+        assertEquals(3, nameService.count(TaxonName.class), "Number of TaxonNames is incorrect");
         /*
          * Classification
          * - Campanula
          *   - Campanula patula
          *      - Campanula patula subsp. abietina
          */
-        assertEquals("Number of TaxonNodes is incorrect", 4, taxonNodeService.count(TaxonNode.class));
+        assertEquals(4, taxonNodeService.count(TaxonNode.class), "Number of TaxonNodes is incorrect");
 	}
 
 	@Test
@@ -209,11 +209,11 @@ public class SpecimenImportConfiguratorTest extends CdmIoTransactionalSpringInte
 	public void testImportVariety() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_variety.xml";
 	    URL url = this.getClass().getResource(inputFile);
-	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+	    assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 	    Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
 
 	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-	    assertTrue("Return value for import.invoke should be true", result);
+	    assertTrue(result, "Return value for import.invoke should be true");
 
 	    /*
 	     * Classification
@@ -230,7 +230,7 @@ public class SpecimenImportConfiguratorTest extends CdmIoTransactionalSpringInte
 	            varietyFound = true;
 	        }
 	    }
-	    assertTrue("Variety rank not set", varietyFound);
+	    assertTrue(varietyFound, "Variety rank not set");
 	}
 
 	@Test
@@ -238,12 +238,12 @@ public class SpecimenImportConfiguratorTest extends CdmIoTransactionalSpringInte
 	public void testMultipleIdentificationsPreferredFlag() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/MultipleIdentificationsPreferredFlag.xml";
 	    URL url = this.getClass().getResource(inputFile);
-	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+	    assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 	    Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
 	    importConfigurator.setAddDeterminations(true);
 
 	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-	    assertTrue("Return value for import.invoke should be true", result);
+	    assertTrue(result, "Return value for import.invoke should be true");
 
 	    String nonPreferredNameCache = "Campanula flagellaris";
 	    String preferredNameCache = "Campanula tymphaea";
@@ -273,11 +273,11 @@ public class SpecimenImportConfiguratorTest extends CdmIoTransactionalSpringInte
     public void testImportForm() {
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/C_drabifolia_major.xml";
         URL url = this.getClass().getResource(inputFile);
-        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+        assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
         Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
 
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-        assertTrue("Return value for import.invoke should be true", result);
+        assertTrue(result, "Return value for import.invoke should be true");
     }
 
 	@Test
@@ -285,13 +285,13 @@ public class SpecimenImportConfiguratorTest extends CdmIoTransactionalSpringInte
 	public void testMapUnitIDAsBarcode() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml";
 	    URL url = this.getClass().getResource(inputFile);
-	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+	    assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 
 	    Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
 
 	    importConfigurator.setMapUnitIdToBarcode(true);
 	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-	    assertTrue("Return value for import.invoke should be true", result);
+	    assertTrue(result, "Return value for import.invoke should be true");
 	    List<DerivedUnit> list = occurrenceService.list(DerivedUnit.class, null, null, null, null);
 	    for (DerivedUnit derivedUnit : list) {
             assertTrue(derivedUnit.getBarcode()!=null);
@@ -303,12 +303,12 @@ public class SpecimenImportConfiguratorTest extends CdmIoTransactionalSpringInte
 	public void testMapUnitIDAsAccessionNumber() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml";
 	    URL url = this.getClass().getResource(inputFile);
-	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+	    assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 	    Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
 
 	    importConfigurator.setMapUnitIdToAccessionNumber(true);
 	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-	    assertTrue("Return value for import.invoke should be true", result);
+	    assertTrue(result, "Return value for import.invoke should be true");
 	    List<DerivedUnit> list = occurrenceService.list(DerivedUnit.class, null, null, null, null);
 	    for (DerivedUnit derivedUnit : list) {
 	        assertTrue(derivedUnit.getAccessionNumber()!=null);
@@ -320,12 +320,12 @@ public class SpecimenImportConfiguratorTest extends CdmIoTransactionalSpringInte
 	public void testMapUnitIDAsCatalogNumber() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml";
 	    URL url = this.getClass().getResource(inputFile);
-	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+	    assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 	    Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
 	    importConfigurator.setMapUnitIdToCatalogNumber(true);
 
 	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-	    assertTrue("Return value for import.invoke should be true", result);
+	    assertTrue(result, "Return value for import.invoke should be true");
 	    List<DerivedUnit> list = occurrenceService.list(DerivedUnit.class, null, null, null, null);
 	    for (DerivedUnit derivedUnit : list) {
 	        assertTrue(derivedUnit.getCatalogNumber()!=null);
@@ -361,16 +361,16 @@ public class SpecimenImportConfiguratorTest extends CdmIoTransactionalSpringInte
 
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_B_10_0066577.xml";
         URL url = this.getClass().getResource(inputFile);
-        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+        assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
         Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
         importConfigurator.setDnaSoure(null);
         importConfigurator.setIgnoreImportOfExistingSpecimen(true);
 
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-        assertTrue("Return value for import.invoke should be true", result);
-        assertEquals("Number of derived units is incorrect", 1, occurrenceService.count(DerivedUnit.class));
+        assertTrue(result, "Return value for import.invoke should be true");
+        assertEquals(1, occurrenceService.count(DerivedUnit.class), "Number of derived units is incorrect");
         List<DerivedUnit> derivedUnits = occurrenceService.list(DerivedUnit.class, null, null, null, null);
-        assertEquals("Number of derived units is incorrect", 1, derivedUnits.size());
+        assertEquals(1, derivedUnits.size(), "Number of derived units is incorrect");
 
         DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(derivedUnit1Uuid);
         assertTrue(derivedUnits.contains(derivedUnit));
@@ -383,16 +383,16 @@ public class SpecimenImportConfiguratorTest extends CdmIoTransactionalSpringInte
 
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_B_10_0066577.xml";
         URL url = this.getClass().getResource(inputFile);
-        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+        assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
         Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
         importConfigurator.setDnaSoure(URI.create("https://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=DNA_Bank"));
         importConfigurator.setIgnoreImportOfExistingSpecimen(true);
 
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-        assertTrue("Return value for import.invoke should be true", result);
-        assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
+        assertTrue(result, "Return value for import.invoke should be true");
+        assertEquals(2, occurrenceService.count(DerivedUnit.class), "Number of derived units is incorrect");
         List<DerivedUnit> derivedUnits = occurrenceService.list(DerivedUnit.class, null, null, null, null);
-        assertEquals("Number of derived units is incorrect", 2, derivedUnits.size());
+        assertEquals(2, derivedUnits.size(), "Number of derived units is incorrect");
 
         DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(derivedUnit1Uuid);
         assertTrue(derivedUnits.contains(derivedUnit));
@@ -410,7 +410,7 @@ public class SpecimenImportConfiguratorTest extends CdmIoTransactionalSpringInte
 
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_B_10_0066577_two_units_almost_same.xml";
 	    URL url = this.getClass().getResource(inputFile);
-	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+	    assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 	    Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
 	    importConfigurator.setDnaSoure(null);
 
@@ -429,7 +429,7 @@ public class SpecimenImportConfiguratorTest extends CdmIoTransactionalSpringInte
 	    importConfigurator.setClassificationUuid(classificationUUID);
 //	    importConfigurator.setIgnoreAuthorship(true);
 	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-	    assertTrue("Return value for import.invoke should be true", result);
+	    assertTrue(result, "Return value for import.invoke should be true");
 
 	    //re-load classification to avoid session conflicts
 	    classification = classificationService.load(classificationUUID);
@@ -511,7 +511,7 @@ public class SpecimenImportConfiguratorTest extends CdmIoTransactionalSpringInte
 
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_B_10_0066577.xml";
 	    URL url = this.getClass().getResource(inputFile);
-	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+	    assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 	    Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
 
 	    //test initial state
@@ -526,7 +526,7 @@ public class SpecimenImportConfiguratorTest extends CdmIoTransactionalSpringInte
 	    importConfigurator.setIgnoreAuthorship(true);
 	    importConfigurator.setClassificationUuid(classificationUUID);
 	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-	    assertTrue("Return value for import.invoke should be true", result);
+	    assertTrue(result, "Return value for import.invoke should be true");
 
 	    assertEquals(1, classificationService.count(Classification.class));
 	    assertEquals(1, classification.getAllNodes().size());//taxon node
@@ -551,7 +551,7 @@ public class SpecimenImportConfiguratorTest extends CdmIoTransactionalSpringInte
 
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_barbata.xml";
         URL url = this.getClass().getResource(inputFile);
-        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+        assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
         Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
 
         //test initial state
@@ -563,7 +563,7 @@ public class SpecimenImportConfiguratorTest extends CdmIoTransactionalSpringInte
         importConfigurator.setIgnoreAuthorship(true);
         importConfigurator.setClassificationUuid(classificationUUID);
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-        assertTrue("Return value for import.invoke should be true", result);
+        assertTrue(result, "Return value for import.invoke should be true");
 
         assertEquals(0, classification.getAllNodes().size());
         assertEquals(2, classificationService.count(Classification.class));
@@ -595,22 +595,22 @@ public class SpecimenImportConfiguratorTest extends CdmIoTransactionalSpringInte
     public void testImportNonParsableName() {
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_americana.xml";
         URL url = this.getClass().getResource(inputFile);
-        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+        assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
         Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
 
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-        assertTrue("Return value for import.invoke should be true", result);
-        assertEquals("Number of derived units is incorrect", 1, occurrenceService.count(DerivedUnit.class));
-        assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
-        assertEquals("Number of field units is incorrect", 1, occurrenceService.count(FieldUnit.class));
+        assertTrue(result, "Return value for import.invoke should be true");
+        assertEquals(1, occurrenceService.count(DerivedUnit.class), "Number of derived units is incorrect");
+        assertEquals(1, occurrenceService.count(DnaSample.class), "Number of dna samples is incorrect");
+        assertEquals(1, occurrenceService.count(FieldUnit.class), "Number of field units is incorrect");
         List<TaxonNode> nodes = taxonNodeService.list(TaxonNode.class, null, null, null, null);
         occurrenceService.list(SpecimenOrObservationBase.class, null, null, null, null);
         /*
          * Default classification
          *   - Campanula ..g... americana --- hort. ttt ex Steud.
          */
-        assertEquals("Number of taxon nodes is incorrect", 2, taxonNodeService.count(TaxonNode.class));
-        assertEquals("Number of taxa is incorrect", 1, taxonService.count(TaxonBase.class));
+        assertEquals(2, taxonNodeService.count(TaxonNode.class), "Number of taxon nodes is incorrect");
+        assertEquals(1, taxonService.count(TaxonBase.class), "Number of taxa is incorrect");
         assertEquals(1, taxonService.findByTitleWithRestrictions(Taxon.class, "Campanula ..g... americana --- hort. ttt ex Steud.", MatchMode.ANYWHERE, null, null, null, null, null).getRecords().size());
     }
 

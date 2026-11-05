@@ -8,16 +8,17 @@
 */
 package eu.etaxonomy.cdm.io.dwca.in;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.net.URL;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Extension;
@@ -36,14 +37,14 @@ public class DwcaZipToStreamConverterTest {
 	private URI uri;
 	private DwcaZipToStreamConverter<?> converter;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		String inputFile = "/eu/etaxonomy/cdm/io/dwca/in/DwcaZipToStreamConverterTest-input.zip";
 		URL url = this.getClass().getResource(inputFile);
 		uri = URI.fromUrl(url);
-		assertNotNull("URI for the test file '" + inputFile + "' does not exist", uri);
+		assertNotNull(uri, "URI for the test file '" + inputFile + "' does not exist");
 		converter = DwcaZipToStreamConverter.NewInstance(uri);
-		assertNotNull("Converter must be created",converter);
+		assertNotNull(converter, "Converter must be created");
 	}
 
 //************* TEST ********************************************
@@ -51,21 +52,21 @@ public class DwcaZipToStreamConverterTest {
 	@Test
 	public void testInitMetadata(){
 		String coreEncoding = converter.getArchive().getCore().getEncoding();
-		Assert.assertEquals("Encoding for core must be 'UTF-8'", "UTF-8", coreEncoding);
+		assertEquals("UTF-8", coreEncoding, "Encoding for core must be 'UTF-8'");
 	}
 
 	@Test
 	public void testGetCoreStream(){
 		try {
 			CsvStream coreStream = converter.getCoreStream(null);
-			Assert.assertNotNull("core stream should not be null", coreStream);
+			assertNotNull(coreStream, "core stream should not be null");
 			StreamItem next = coreStream.read();
-			Assert.assertNotNull("Entry should exist in core stream", next);
-			Assert.assertEquals("First entry should be id1", "1", next.get("id"));
-			Assert.assertEquals("First entries acceptedNameUsage should be ", "1", next.map.get("http://rs.tdwg.org/dwc/terms/acceptedNameUsageID"));
+			assertNotNull(next, "Entry should exist in core stream");
+			assertEquals("1", next.get("id"), "First entry should be id1");
+			assertEquals("1", next.map.get("http://rs.tdwg.org/dwc/terms/acceptedNameUsageID"), "First entries acceptedNameUsage should be ");
 
 		} catch (IOException e) {
-			Assert.fail();
+			fail();
 		}
 	}
 
@@ -73,11 +74,11 @@ public class DwcaZipToStreamConverterTest {
 	public void testGetVernacularStream(){
 		try {
 			CsvStream vernacularStream = converter.getStream(Extension.VERNACULAR_NAME,null);
-			Assert.assertNotNull("Vernacular stream should not be null", vernacularStream);
+			assertNotNull(vernacularStream, "Vernacular stream should not be null");
 			StreamItem next = vernacularStream.read();
-			Assert.assertNotNull("Entry should exist in vernacular name stream", next);
+			assertNotNull(next, "Entry should exist in vernacular name stream");
 		} catch (IOException e) {
-			Assert.fail();
+			fail();
 		}
 	}
 
@@ -91,12 +92,12 @@ public class DwcaZipToStreamConverterTest {
 		try {
 			CsvStream vernacularStream = converter.getStream(Extension.VERNACULAR_NAME,null);
 			StreamItem next = vernacularStream.read();
-			Assert.assertNotNull("Entry should exist in vernacular name stream", next);
-			Assert.assertEquals("First entry should be coreid1", "1", next.get("coreId"));
-			Assert.assertEquals("First entries language should be 'en' ", "en", next.map.get("http://purl.org/dc/terms/language"));
+			assertNotNull(next, "Entry should exist in vernacular name stream");
+			assertEquals("1", next.get("coreId"), "First entry should be coreid1");
+			assertEquals("en", next.map.get("http://purl.org/dc/terms/language"), "First entries language should be 'en' ");
 
 		} catch (IOException e) {
-			Assert.fail();
+			fail();
 		}
 	}
 }

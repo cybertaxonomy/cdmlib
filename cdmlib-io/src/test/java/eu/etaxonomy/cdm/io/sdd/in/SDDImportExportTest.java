@@ -8,8 +8,9 @@
 */
 package eu.etaxonomy.cdm.io.sdd.in;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,7 +19,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -84,7 +84,7 @@ public class SDDImportExportTest extends CdmIoTransactionalSpringIntegrationTest
 
         // URI.create("file:///C:/localCopy/Data/xper/Cichorieae-DA2.sdd.xml");
 
-        Assert.assertNotNull(url);
+        assertNotNull(url);
 
         ICdmDataSource loadedDataSource = null;
 
@@ -101,8 +101,8 @@ public class SDDImportExportTest extends CdmIoTransactionalSpringIntegrationTest
     @Disabled
     public void testDoInvoke() {
 
-        assertNotNull("sddImport should not be null", sddImport);
-        assertNotNull("sddCdmExporter should not be null", sddCdmExporter);
+        assertNotNull(sddImport, "sddImport should not be null");
+        assertNotNull(sddCdmExporter, "sddCdmExporter should not be null");
 
         setDefaultRollback(false);
 
@@ -119,7 +119,7 @@ public class SDDImportExportTest extends CdmIoTransactionalSpringIntegrationTest
 
         //sddCdmExporter.doInvoke(null);
         sddCdmExporter.doInvoke(new SDDExportState((SDDExportConfigurator) exportConfigurator));
-        assertEquals("Number of TaxonNames should be 1", 1, nameService.count(null));
+        assertEquals(1, nameService.count(null), "Number of TaxonNames should be 1");
     }
 
     private ICdmDataSource customDataSource() {
@@ -134,7 +134,7 @@ public class SDDImportExportTest extends CdmIoTransactionalSpringIntegrationTest
         try {
             connectionAvailable = dataSource.testConnection();
             logger.debug("Is connection avaiable " + connectionAvailable);
-            Assert.assertTrue("Testdatabase is not available", connectionAvailable);
+            assertTrue(connectionAvailable, "Testdatabase is not available");
 
         } catch (ClassNotFoundException e1) {
             e1.printStackTrace();
@@ -148,7 +148,7 @@ public class SDDImportExportTest extends CdmIoTransactionalSpringIntegrationTest
 //			CdmApplicationController.NewInstance(loadedDataSource, DbSchemaValidation.CREATE);
 //            NomenclaturalCode loadedCode = loadedDataSource.getNomenclaturalCode();
 //
-//            Assert.assertEquals(NomenclaturalCode.ICNAFP, loadedCode);
+//            assertEquals(NomenclaturalCode.ICNAFP, loadedCode);
         } catch (DataSourceNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

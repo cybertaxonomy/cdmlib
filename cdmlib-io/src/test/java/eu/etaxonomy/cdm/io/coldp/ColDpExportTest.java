@@ -8,13 +8,16 @@
 */
 package eu.etaxonomy.cdm.io.coldp;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -108,41 +111,41 @@ public class ColDpExportTest
 
         //counts and result lists
         List<String> taxonResult = getStringList(data, ColDpExportTable.TAXON);
-        Assert.assertEquals("There should be 1 taxon", 1, taxonResult.size() - COUNT_HEADER);
+        assertEquals(1, taxonResult.size() - COUNT_HEADER, "There should be 1 taxon");
 
         List<String> synonymResult = getStringList(data, ColDpExportTable.SYNONYM);
-        Assert.assertEquals("There should be no synonym", 0, synonymResult.size() - COUNT_HEADER);
+        assertEquals(0, synonymResult.size() - COUNT_HEADER, "There should be no synonym");
 
         List<String> referenceResult = getStringList(data, ColDpExportTable.REFERENCE);
-        Assert.assertEquals("There should be 3 references (1 nomenclatural references and 1 sec reference, 1 fact reference)", 3, referenceResult.size() - COUNT_HEADER);
+        assertEquals(3, referenceResult.size() - COUNT_HEADER, "There should be 3 references (1 nomenclatural references and 1 sec reference, 1 fact reference)");
 
         List<String> distributionResult = getStringList(data, ColDpExportTable.DISTRIBUTION);
-        Assert.assertEquals("There should be 1 distribution", 1, distributionResult.size() - COUNT_HEADER);
+        assertEquals(1, distributionResult.size() - COUNT_HEADER, "There should be 1 distribution");
 
         List<String> nameResult = getStringList(data, ColDpExportTable.NAME_WITH_FULLNAME);
-        Assert.assertEquals("There should be 1 name", 1, nameResult.size() - COUNT_HEADER);
+        assertEquals(1, nameResult.size() - COUNT_HEADER, "There should be 1 name");
 
         //taxon
         //... species
         String taxonStr = getTableString(data, ColDpExportTable.TAXON);
         String notExpected = speciesTaxonUuid.toString();
-        Assert.assertFalse("Result must not contain root of subtree taxon (species taxon)", taxonStr.startsWith(notExpected));
+        assertFalse(taxonStr.startsWith(notExpected), "Result must not contain root of subtree taxon (species taxon)");
         //... subspecies
         String subspeciesLine = getLine(taxonResult, subspeciesTaxonUuid);
-        Assert.assertEquals(expectedSubspeciesTaxonLine, subspeciesLine);
+        assertEquals(expectedSubspeciesTaxonLine, subspeciesLine);
 
         //reference
         String nomRefLine = getLine(referenceResult, subspeciesNomRefUuid);
-        Assert.assertEquals(expectedNomRefLine, nomRefLine);
+        assertEquals(expectedNomRefLine, nomRefLine);
 
         //distribution
         String distributionStr = getLine(distributionResult, subspeciesTaxonUuid); // new String(distribution);
-        Assert.assertEquals(expectedArmenianDistributionLine, distributionStr);
+        assertEquals(expectedArmenianDistributionLine, distributionStr);
 
         //name
         //TODO duplicated check withUnpublished
         String nameStr = getLine(nameResult, subspeciesNameUuid);
-        Assert.assertEquals(expectedSubspeciesNameLineWithFullName, nameStr);
+        assertEquals(expectedSubspeciesNameLineWithFullName, nameStr);
     }
 
     @Test
@@ -160,58 +163,57 @@ public class ColDpExportTest
 
         //test counts
         List<String> taxonResult = getStringList(data, ColDpExportTable.TAXON);
-        Assert.assertEquals("There should be 5 taxa", 5, taxonResult.size() - COUNT_HEADER);
+        assertEquals(5, taxonResult.size() - COUNT_HEADER, "There should be 5 taxa");
 
         List<String> synonymResult = getStringList(data, ColDpExportTable.SYNONYM);
-        Assert.assertEquals("There should be 4 synonym", 4, synonymResult.size() - COUNT_HEADER);
+        assertEquals(4, synonymResult.size() - COUNT_HEADER, "There should be 4 synonym");
 
         List<String> nameResult = getStringList(data, ColDpExportTable.NAME);
-        Assert.assertEquals("There should be 9 names", 9, nameResult.size() - COUNT_HEADER);
+        assertEquals(9, nameResult.size() - COUNT_HEADER, "There should be 9 names");
 
         List<String> referenceResult = getStringList(data, ColDpExportTable.REFERENCE);
-        Assert.assertEquals("There should be 14 references (9 nomenclatural references and 3 sec reference, 2 fact references)", 14, referenceResult.size() - COUNT_HEADER);
+        assertEquals(14, referenceResult.size() - COUNT_HEADER, "There should be 14 references (9 nomenclatural references and 3 sec reference, 2 fact references)");
 
         List<String> distributionResult = getStringList(data, ColDpExportTable.DISTRIBUTION);
-        Assert.assertEquals("There should be 1 distribution", 1, distributionResult.size() - COUNT_HEADER);
+        assertEquals(1, distributionResult.size() - COUNT_HEADER, "There should be 1 distribution");
 
         List<String> vernacularNameResult = getStringList(data, ColDpExportTable.VERNACULAR_NAME);
-        Assert.assertEquals("There should be 1 vernacular names", 1, vernacularNameResult.size() - COUNT_HEADER);
+        assertEquals(1, vernacularNameResult.size() - COUNT_HEADER, "There should be 1 vernacular names");
 
         //FIXME should be 2 at least, include name type designations
         List<String> nameRelationResult = getStringList(data, ColDpExportTable.NAME_RELATION);
-        Assert.assertEquals("There should be 1 name relations", 1, nameRelationResult.size() - COUNT_HEADER);
+        assertEquals(1, nameRelationResult.size() - COUNT_HEADER, "There should be 1 name relations");
 
         List<String> mediaResult = getStringList(data, ColDpExportTable.MEDIA);
-        Assert.assertEquals("There should be 1 media", 1, mediaResult.size() - COUNT_HEADER);
+        assertEquals(1, mediaResult.size() - COUNT_HEADER, "There should be 1 media");
 
         List<String> typeMaterialResult = getStringList(data, ColDpExportTable.TYPE_MATERIAL);
-        Assert.assertEquals("There should be 1 type materials", 1, typeMaterialResult.size() - COUNT_HEADER);
+        assertEquals(1, typeMaterialResult.size() - COUNT_HEADER, "There should be 1 type materials");
 
         //not yet necessary
 
         List<String> taxonConceptRelResult = getStringList(data, ColDpExportTable.TAXON_CONCEPT_RELATION);
-        Assert.assertEquals("There should be 0 taxon concept relations", 0, taxonConceptRelResult.size() - COUNT_HEADER);
+        assertEquals(0, taxonConceptRelResult.size() - COUNT_HEADER, "There should be 0 taxon concept relations");
 
         List<String> speciesInteractionResult = getStringList(data, ColDpExportTable.SPECIES_INTERACTION);
-        Assert.assertEquals("There should be 0 species interaction", 0, speciesInteractionResult.size() - COUNT_HEADER);
+        assertEquals(0, speciesInteractionResult.size() - COUNT_HEADER, "There should be 0 species interaction");
 
         //not yet in model
 
         List<String> speciesEstimateResult = getStringList(data, ColDpExportTable.SPECIES_ESTIMATE);
-        Assert.assertEquals("There should be 0 species estimates", 0, speciesEstimateResult.size() - COUNT_HEADER);
+        assertEquals(0, speciesEstimateResult.size() - COUNT_HEADER, "There should be 0 species estimates");
 
         List<String> treatmentResult = getStringList(data, ColDpExportTable.TREATMENT);
-        Assert.assertEquals("There should be 0 taxon concept relations", 0, treatmentResult.size() - COUNT_HEADER);
+        assertEquals(0, treatmentResult.size() - COUNT_HEADER, "There should be 0 taxon concept relations");
 
         //test single data
 
         //... invisible root node
-        Assert.assertEquals("Result must not contain root taxon",
-                0, taxonResult.stream().filter(line->line.contains(rootNodeUuid.toString())).count());
+        assertEquals(0, taxonResult.stream().filter(line->line.contains(rootNodeUuid.toString())).count(), "Result must not contain root taxon");
 
         //subspecies taxon
         String subspeciesLine = getLine(taxonResult, subspeciesTaxonUuid);
-        Assert.assertEquals(expectedSubspeciesTaxonLine, subspeciesLine);
+        assertEquals(expectedSubspeciesTaxonLine, subspeciesLine);
 
         //unpublished/excluded/note
         //TODO evaluate unpublished flag and discuss how to handle excluded
@@ -219,43 +221,43 @@ public class ColDpExportTest
         String expectedExcluded = uuid(subspeciesUnpublishedTaxonUuid)+ NONE2 + uuid(speciesTaxonUuid) + NONE2 +
                 uuid(subspeciesUnpublishedNameUUID) + NONE + uuid(ref1UUID)+ NONE3 + FALSE + NONE + BOOL_NULL +
                 NONE20 + NONE_END;
-        Assert.assertEquals(expectedExcluded, unpublishedLine);
+        assertEquals(expectedExcluded, unpublishedLine);
 
         //references
         String nomRefLine = getLine(referenceResult, subspeciesNomRefUuid);
-        Assert.assertEquals(expectedNomRefLine, nomRefLine);
+        assertEquals(expectedNomRefLine, nomRefLine);
 
         //distribution
         String distributionStr = getLine(distributionResult, subspeciesTaxonUuid); // new String(distribution);
-        Assert.assertEquals(expectedArmenianDistributionLine, distributionStr);
+        assertEquals(expectedArmenianDistributionLine, distributionStr);
 
         //name
         //... family => test nom. status 'conserved'
         String nameStr = getLine(nameResult, familyNameUuid);
-        Assert.assertEquals(expectedFamilyNameLine, nameStr);
+        assertEquals(expectedFamilyNameLine, nameStr);
         //... subspecies
         nameStr = getLine(nameResult, subspeciesNameUuid);
-        Assert.assertEquals(expectedSubspeciesNameLine, nameStr);
+        assertEquals(expectedSubspeciesNameLine, nameStr);
 
         //media
 //        String mediaString = new String(data.get(ColDpExportTable.MEDIA.getTableName()));
 //        System.out.println(mediaString);
         String mediaStr = getLine(mediaResult, subspeciesTaxonUuid);
-        Assert.assertEquals(expectedMediaLine, mediaStr);
+        assertEquals(expectedMediaLine, mediaStr);
 
         //name relation
         //TODO is speciesNameUuid specific enough?
         String nameRelStr = getLine(nameRelationResult, speciesNameUuid);
-        Assert.assertEquals(expectedNameRelationLine1, nameRelStr);
+        assertEquals(expectedNameRelationLine1, nameRelStr);
 
         //type material
         print(typeMaterialResult);
         String typeMaterialStr = getLine(typeMaterialResult, specimenUuid);
-        Assert.assertEquals(expectedTypeMaterialLine, typeMaterialStr);
+        assertEquals(expectedTypeMaterialLine, typeMaterialStr);
 
         //vernacular name
         String vernacularNameStr = getLine(vernacularNameResult, speciesTaxonUuid);
-        Assert.assertEquals(expectedVernacularNameLine, vernacularNameStr);
+        assertEquals(expectedVernacularNameLine, vernacularNameStr);
 
         //TODO   Synonym,
         //     TaxonConceptRelation, SpeciesInteraction, SpeciesEstimate, Treatment
@@ -272,20 +274,20 @@ public class ColDpExportTest
         ColDpExportConfigurator config = newConfigurator();
         ExportResult result = defaultExport.invoke(config);
         Map<String, byte[]> data = (Map<String, byte[]>)checkAndGetData(result);
-        Assert.assertTrue(result.getExportType().equals(ExportType.COLDP)); //test export type
+        assertTrue(result.getExportType().equals(ExportType.COLDP)); //test export type
 
         //test counts
         List<String> taxonResult = getStringList(data, ColDpExportTable.TAXON);
-        Assert.assertEquals("There should be 4 taxa", 4, taxonResult.size() - COUNT_HEADER);
+        assertEquals(4, taxonResult.size() - COUNT_HEADER, "There should be 4 taxa");
 
         List<String> nameResult = getStringList(data, ColDpExportTable.NAME);
-        Assert.assertEquals("There should be 7 names", 7, nameResult.size() - COUNT_HEADER);
+        assertEquals(7, nameResult.size() - COUNT_HEADER, "There should be 7 names");
 
         List<String> referenceResult = getStringList(data, ColDpExportTable.REFERENCE);
-        Assert.assertEquals("There should be 12 references", 12, referenceResult.size() - COUNT_HEADER);
+        assertEquals(12, referenceResult.size() - COUNT_HEADER, "There should be 12 references");
 
         List<String> synonymResult = getStringList(data, ColDpExportTable.SYNONYM);
-        Assert.assertEquals("There should be three synonyms", 3, synonymResult.size() - COUNT_HEADER);
+        assertEquals(3, synonymResult.size() - COUNT_HEADER, "There should be three synonyms");
 
         //tbc
     }

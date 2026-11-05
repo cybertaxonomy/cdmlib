@@ -8,11 +8,11 @@
 */
 package eu.etaxonomy.cdm.io.jaxb;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.InputStreamReader;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -28,6 +28,6 @@ public class NamedAreaTest {
         DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
 		NamedArea namedArea = (NamedArea)dataSet.getTerms().get(1);
-		assertNotNull("NamedArea must not be null",namedArea);
+		assertNotNull(namedArea, "NamedArea must not be null");
     }
 }

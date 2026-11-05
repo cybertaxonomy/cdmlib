@@ -8,15 +8,15 @@
  */
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -60,34 +60,34 @@ public class ExcelSpecimenImportExampleTest extends CdmIoTransactionalSpringInte
 		try {
 			String inputFile = "/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest-input.xls";
 			URL url = this.getClass().getResource(inputFile);
-			assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+			assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 			configurator = SpecimenCdmExcelImportConfigurator.NewInstance(URI.fromUrl(url), null,false);
 			configurator.setNomenclaturalCode(NomenclaturalCode.ICNAFP);
-			assertNotNull("Configurator could not be created", configurator);
+			assertNotNull(configurator, "Configurator could not be created");
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
-			Assert.fail("xsl configurator could not be created");
+			fail("xsl configurator could not be created");
 		}
 
 		//xslx
 		try {
 			String inputFile = "/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest-input.xlsx";
 			URL url = this.getClass().getResource(inputFile);
-			assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+			assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 			configuratorXslx = SpecimenCdmExcelImportConfigurator.NewInstance(URI.fromUrl(url), null,false);
 			configuratorXslx.setNomenclaturalCode(NomenclaturalCode.ICNAFP);
-			assertNotNull("Configurator could not be created", configurator);
+			assertNotNull(configurator, "Configurator could not be created");
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
-			Assert.fail("Xslx configurator could not be created");
+			fail("Xslx configurator could not be created");
 		}
 	}
 
 	@Test
 	public void testInit() {
-		assertNotNull("import instance should not be null", defaultImport);
-		assertNotNull("nameService should not be null", nameService);
-		assertNotNull("occurence service should not be null", occurrenceService);
+		assertNotNull(defaultImport, "import instance should not be null");
+		assertNotNull(nameService, "nameService should not be null");
+		assertNotNull(occurrenceService, "occurence service should not be null");
 	}
 
 	 @Test
@@ -98,11 +98,9 @@ public class ExcelSpecimenImportExampleTest extends CdmIoTransactionalSpringInte
     })
 	 public void testDoInvoke() {
 		 boolean result = defaultImport.invoke(configurator).isSuccess();
-		 assertTrue("Return value for import.invoke should be true", result);
-		 assertEquals("Number of specimen should be 3", 3,
-		 occurrenceService.count(DerivedUnit.class));
-		 assertEquals("Number of field units should be 3", 3,
-		 occurrenceService.count(FieldUnit.class));
+		 assertTrue(result, "Return value for import.invoke should be true");
+		 assertEquals(3, occurrenceService.count(DerivedUnit.class), "Number of specimen should be 3");
+		 assertEquals(3, occurrenceService.count(FieldUnit.class), "Number of field units should be 3");
 
 //		 printDataSet(System.out, new String[]{"SpecimenOrObservationBase","GatheringEvent","DerivationEvent"});
 	 }
@@ -115,11 +113,9 @@ public class ExcelSpecimenImportExampleTest extends CdmIoTransactionalSpringInte
     })
 	 public void testDoInvokeXslx() {
 		 boolean result = defaultImport.invoke(configurator).isSuccess();
-		 assertTrue("Return value for import.invoke should be true", result);
-		 assertEquals("Number of specimen should be 3", 3,
-		 occurrenceService.count(DerivedUnit.class));
-		 assertEquals("Number of field units should be 3", 3,
-		 occurrenceService.count(FieldUnit.class));
+		 assertTrue(result, "Return value for import.invoke should be true");
+		 assertEquals(3, occurrenceService.count(DerivedUnit.class), "Number of specimen should be 3");
+		 assertEquals(3, occurrenceService.count(FieldUnit.class), "Number of field units should be 3");
 		 this.rollback();
 
 //		 printDataSet(System.out, new String[]{"SpecimenOrObservationBase","GatheringEvent","DerivationEvent"});
@@ -131,9 +127,9 @@ public class ExcelSpecimenImportExampleTest extends CdmIoTransactionalSpringInte
 	@Disabled
 	public void testResultSet() {
 		boolean result = defaultImport.invoke(configurator).isSuccess();
-		assertTrue("Return value for import.invoke should be true", result);
-		assertEquals("Number of specimen should be 3", 3, occurrenceService.count(DerivedUnit.class));
-		assertEquals("Number of field units should be 3", 3, occurrenceService.count(FieldUnit.class));
+		assertTrue(result, "Return value for import.invoke should be true");
+		assertEquals(3, occurrenceService.count(DerivedUnit.class), "Number of specimen should be 3");
+		assertEquals(3, occurrenceService.count(FieldUnit.class), "Number of field units should be 3");
 
 //		printDataSet(System.out, new String[]{"SpecimenOrObservationBase","DESCRIPTIONELEMENTBASE","DEFINEDTERMBASE"});
 //
@@ -155,7 +151,7 @@ public class ExcelSpecimenImportExampleTest extends CdmIoTransactionalSpringInte
 //					"TermVocabulary", "Representation" });
 //			// printDataSet(myOut);
 //		} catch (FileNotFoundException e) {
-//			Assert.fail(e.getLocalizedMessage());
+//			fail(e.getLocalizedMessage());
 //		}
 	}
 

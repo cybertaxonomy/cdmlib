@@ -8,14 +8,14 @@
 */
 package eu.etaxonomy.cdm.io.jaxb;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStreamReader;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -42,41 +42,41 @@ public class SpecimenTest {
 //	        List<SpecimenOrObservationBase> occurrences = dataSet.getOccurrences();
 
 		DerivedUnit specimen = (DerivedUnit)dataSet.getOccurrences().get(0);
-		assertNotNull("Specimen must not be null",specimen);
+		assertNotNull(specimen, "Specimen must not be null");
 
 		Institution institution = (Institution)dataSet.getAgents().get(0);
-		assertNotNull("Institution must not be null",institution);
+		assertNotNull(institution, "Institution must not be null");
 		Person person = (Person)dataSet.getAgents().get(1);
-		assertNotNull("Person must not be null", person);
+		assertNotNull(person, "Person must not be null");
 		Taxon taxon = (Taxon)dataSet.getTaxonBases().get(0);
-		assertNotNull("Taxon must not be null",taxon);
+		assertNotNull(taxon, "Taxon must not be null");
 		TaxonName name = dataSet.getTaxonomicNames().get(0);
-		assertNotNull("TaxonName must not be null",name);
+		assertNotNull(name, "TaxonName must not be null");
 		DefinedTerm sex = (DefinedTerm)dataSet.getTerms().get(1);
 
 		Collection collection = dataSet.getCollections().get(0);
-		assertNotNull("Collection must not be null", collection);
+		assertNotNull(collection, "Collection must not be null");
 
 		FieldUnit fieldUnit = (FieldUnit)dataSet.getOccurrences().get(1);
-		assertNotNull("FieldUnit must not be null", fieldUnit);
-		assertEquals("Specimen.collection must equal Collection",collection, specimen.getCollection());
-		assertEquals("Collection.institute must equal Institution",institution,collection.getInstitute());
+		assertNotNull(fieldUnit, "FieldUnit must not be null");
+		assertEquals(collection, specimen.getCollection(), "Specimen.collection must equal Collection");
+		assertEquals(institution, collection.getInstitute(), "Collection.institute must equal Institution");
 
-		assertEquals("Sex must equal Specimen.sex",sex,specimen.getSex());
+		assertEquals(sex, specimen.getSex(), "Sex must equal Specimen.sex");
 
-		assertNotNull("Specimen.determinations must not be null",specimen.getDeterminations());
-		assertFalse("Specimen.determinations must not be empty",specimen.getDeterminations().isEmpty());
+		assertNotNull(specimen.getDeterminations(), "Specimen.determinations must not be null");
+		assertFalse(specimen.getDeterminations().isEmpty(), "Specimen.determinations must not be empty");
 		DeterminationEvent determination = specimen.getDeterminations().iterator().next();
-		assertEquals("Person must equal Determination.actor",person,determination.getActor());
+		assertEquals(person, determination.getActor(), "Person must equal Determination.actor");
 
 		GatheringEvent gatheringEvent = (GatheringEvent)dataSet.getEventBases().get(0);
-		assertNotNull("GatheringEvent must not be null",gatheringEvent);
+		assertNotNull(gatheringEvent, "GatheringEvent must not be null");
 
 		DerivationEvent derivationEvent = (DerivationEvent)dataSet.getEventBases().get(1);
-		assertNotNull("DerivationEvent must not be null",derivationEvent);
+		assertNotNull(derivationEvent, "DerivationEvent must not be null");
 
-		assertEquals("GatheringEvent must be equal to FieldUnit.getGatheringEvent()",gatheringEvent, fieldUnit.getGatheringEvent());
-		assertTrue("DerivationEvent.derivatives must contain Specimen",derivationEvent.getDerivatives().contains(specimen));
-		assertEquals("DerivationEvent must equal Specimen.derivedFrom",derivationEvent,specimen.getDerivedFrom());
+		assertEquals(gatheringEvent, fieldUnit.getGatheringEvent(), "GatheringEvent must be equal to FieldUnit.getGatheringEvent()");
+		assertTrue(derivationEvent.getDerivatives().contains(specimen), "DerivationEvent.derivatives must contain Specimen");
+		assertEquals(derivationEvent, specimen.getDerivedFrom(), "DerivationEvent must equal Specimen.derivedFrom");
     }
 }

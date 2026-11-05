@@ -8,13 +8,16 @@
 */
 package eu.etaxonomy.cdm.io.wfo.out;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -87,31 +90,31 @@ public class WfoContentExportTest
 
         //counts and result lists
         List<String> taxonResult = getStringList(data, WfoContentExportTable.CLASSIFICATION);
-        Assert.assertEquals("There should be 1 taxon (1 accepted)", 1, taxonResult.size() - COUNT_HEADER);
+        assertEquals(1, taxonResult.size() - COUNT_HEADER, "There should be 1 taxon (1 accepted)");
 
 //        List<String> synonymResult = getStringList(data, WfoContentExportTable.CLASSIFICATION);
-//        Assert.assertEquals("There should be no synonym", 0, synonymResult.size() - COUNT_HEADER);
+//        assertEquals(0, synonymResult.size() - COUNT_HEADER, "There should be no synonym");
 
         List<String> referenceResult = getStringList(data, WfoContentExportTable.REFERENCE);
-        Assert.assertEquals("There should be 3 references (3 sec reference)", 3, referenceResult.size() - COUNT_HEADER);
+        assertEquals(3, referenceResult.size() - COUNT_HEADER, "There should be 3 references (3 sec reference)");
 
         //taxon
         //... species
         String taxonStr = getTableString(data, WfoContentExportTable.CLASSIFICATION);
         String notExpected = speciesTaxonUuid.toString();
-        Assert.assertFalse("Result must not contain root of subtree taxon (species taxon)", taxonStr.startsWith(notExpected));
+        assertFalse(taxonStr.startsWith(notExpected), "Result must not contain root of subtree taxon (species taxon)");
         //... subspecies
         String subspeciesLine = getLine(taxonResult, subspeciesWfoId);
-        Assert.assertEquals(expectedSubspeciesTaxonLine, subspeciesLine);
+        assertEquals(expectedSubspeciesTaxonLine, subspeciesLine);
 
         //reference
         String nomRefLine = getLine(referenceResult, subspeciesNomRefUuid);
-        Assert.assertEquals(expectedNomRefLine, nomRefLine);
+        assertEquals(expectedNomRefLine, nomRefLine);
 
 //        //name
 //        //TODO duplicated check withUnpublished
 //        String nameStr = getLine(nameResult, subspeciesNameUuid);
-//        Assert.assertEquals(expectedSubspeciesNameLineWithFullName, nameStr);
+//        assertEquals(expectedSubspeciesNameLineWithFullName, nameStr);
     }
 
     @Test
@@ -129,26 +132,25 @@ public class WfoContentExportTest
 
         //test counts
         List<String> taxonResult = getStringList(data, WfoContentExportTable.CLASSIFICATION);
-        Assert.assertEquals("There should be 7 taxa (5 accepted + 2 synonyms)", 7, taxonResult.size() - COUNT_HEADER);
+        assertEquals(7, taxonResult.size() - COUNT_HEADER, "There should be 7 taxa (5 accepted + 2 synonyms)");
 
 //        List<String> synonymResult = getStringList(data, WfoContentExportTable.CLASSIFICATION);
-//        Assert.assertEquals("There should be 2 synonym", 2, synonymResult.size() - COUNT_HEADER);
+//        assertEquals(2, synonymResult.size() - COUNT_HEADER, "There should be 2 synonym");
 
         List<String> nameResult = getStringList(data, WfoContentExportTable.CLASSIFICATION);
-        Assert.assertEquals("There should be 7 names", 7, nameResult.size() - COUNT_HEADER);
+        assertEquals(7, nameResult.size() - COUNT_HEADER, "There should be 7 names");
 
         List<String> referenceResult = getStringList(data, WfoContentExportTable.REFERENCE);
-        Assert.assertEquals("There should be 1 reference (1 sec reference)", 1, referenceResult.size() - COUNT_HEADER);
+        assertEquals(1, referenceResult.size() - COUNT_HEADER, "There should be 1 reference (1 sec reference)");
 
         //test single data
 
         //... invisible root node
-        Assert.assertEquals("Result must not contain root taxon",
-                0, taxonResult.stream().filter(line->line.contains(rootNodeUuid.toString())).count());
+        assertEquals(0, taxonResult.stream().filter(line->line.contains(rootNodeUuid.toString())).count(), "Result must not contain root taxon");
 
         //subspecies taxon
         String subspeciesLine = getLine(taxonResult, subspeciesTaxonUuid);
-        Assert.assertEquals(expectedSubspeciesTaxonLine, subspeciesLine);
+        assertEquals(expectedSubspeciesTaxonLine, subspeciesLine);
 
         //unpublished/excluded/note
         //TODO evaluate unpublished flag and discuss how to handle excluded
@@ -156,19 +158,19 @@ public class WfoContentExportTest
         String expectedExcluded = uuid(subspeciesUnpublishedTaxonUuid)+ NONE2 + uuid(speciesTaxonUuid) + NONE2 +
                 uuid(subspeciesUnpublishedNameUUID) + NONE + uuid(ref1UUID)+ NONE3 + FALSE + NONE + BOOL_NULL +
                 NONE20 + NONE_END;
-        Assert.assertEquals(expectedExcluded, unpublishedLine);
+        assertEquals(expectedExcluded, unpublishedLine);
 
         //references
         String nomRefLine = getLine(referenceResult, subspeciesNomRefUuid);
-        Assert.assertEquals(expectedNomRefLine, nomRefLine);
+        assertEquals(expectedNomRefLine, nomRefLine);
 
         //name
         //... family => test nom. status 'conserved'
         String nameStr = getLine(nameResult, familyNameUuid);
-        Assert.assertEquals(expectedFamilyNameLine, nameStr);
+        assertEquals(expectedFamilyNameLine, nameStr);
         //... subspecies
         nameStr = getLine(nameResult, subspeciesNameUuid);
-        Assert.assertEquals(expectedSubspeciesNameLine, nameStr);
+        assertEquals(expectedSubspeciesNameLine, nameStr);
     }
 
     @Test
@@ -182,20 +184,20 @@ public class WfoContentExportTest
         WfoContentExportConfigurator config = newConfigurator();
         ExportResult result = defaultExport.invoke(config);
         Map<String, byte[]> data = (Map<String, byte[]>)checkAndGetData(result);
-        Assert.assertTrue(result.getExportType().equals(ExportType.COLDP)); //test export type
+        assertTrue(result.getExportType().equals(ExportType.COLDP)); //test export type
 
         //test counts
         List<String> taxonResult = getStringList(data, WfoContentExportTable.CLASSIFICATION);
-        Assert.assertEquals("There should be 5 taxa (4 acceptd + 1 synonym)", 5, taxonResult.size() - COUNT_HEADER);
+        assertEquals(5, taxonResult.size() - COUNT_HEADER, "There should be 5 taxa (4 acceptd + 1 synonym)");
 
 //        List<String> synonymResult = getStringList(data, WfoContentExportTable.CLASSIFICATION);
-//        Assert.assertEquals("There should be no synonym", 1, synonymResult.size() - COUNT_HEADER);
+//        assertEquals(1, synonymResult.size() - COUNT_HEADER, "There should be no synonym");
 
         List<String> nameResult = getStringList(data, WfoContentExportTable.CLASSIFICATION);
-        Assert.assertEquals("There should be 5 names", 5, nameResult.size() - COUNT_HEADER);
+        assertEquals(5, nameResult.size() - COUNT_HEADER, "There should be 5 names");
 
         List<String> referenceResult = getStringList(data, WfoContentExportTable.REFERENCE);
-        Assert.assertEquals("There should be 1 reference", 1, referenceResult.size() - COUNT_HEADER);
+        assertEquals(1, referenceResult.size() - COUNT_HEADER, "There should be 1 reference");
 
         //tbc
     }

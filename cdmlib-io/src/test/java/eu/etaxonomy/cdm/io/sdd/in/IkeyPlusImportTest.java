@@ -8,14 +8,13 @@
 */
 package eu.etaxonomy.cdm.io.sdd.in;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,14 +44,14 @@ public class IkeyPlusImportTest extends CdmIoTransactionalSpringIntegrationTest 
 
         URL url = this.getClass().getResource(yyy);
         URI uri = URI.fromUrl(url);
-        Assert.assertNotNull(url);
+        assertNotNull(url);
 //        configurator = SDDImportConfigurator.NewInstance(uri, null);
         sddUri = uri;
     }
 
     @Test
     public void testInit() {
-        assertNotNull("sddUri must not be null", sddUri);
+        assertNotNull(sddUri, "sddUri must not be null");
     }
 
     @Test
@@ -73,9 +72,9 @@ public class IkeyPlusImportTest extends CdmIoTransactionalSpringIntegrationTest 
         commitAndStartNewTransaction(null);
 
         PolytomousKey pk = polytomousKeyService.find(newKeyUuid);
-        Assert.assertNotNull(pk);
+        assertNotNull(pk);
 
-//        assertEquals("Number of TaxonNames should be 1", 1, nameService.count(null));
+//        assertEquals(1, nameService.count(null), "Number of TaxonNames should be 1");
     }
 
     @Override

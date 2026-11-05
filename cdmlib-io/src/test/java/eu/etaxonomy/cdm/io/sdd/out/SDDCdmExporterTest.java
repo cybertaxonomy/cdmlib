@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.sdd.out;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.FileNotFoundException;
 
@@ -28,10 +28,10 @@ import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrat
 public class SDDCdmExporterTest extends CdmIoTransactionalSpringIntegrationTest {
 
 	@Autowired
-	SDDCdmExporter sddCdmExporter;
+	private SDDCdmExporter sddCdmExporter;
 
 	@Autowired
-	INameService nameService;
+	private INameService nameService;
 
 	private IExportConfigurator exportConfigurator;
 
@@ -45,14 +45,14 @@ public class SDDCdmExporterTest extends CdmIoTransactionalSpringIntegrationTest 
 
 	@Test
 	public void testInit() {
-		assertNotNull("sddCdmExporter should not be null", sddCdmExporter);
-		assertNotNull("nameService should not be null", nameService);
+		assertNotNull(sddCdmExporter, "sddCdmExporter should not be null");
+		assertNotNull(nameService, "nameService should not be null");
 	}
 
 	@Test
 	public void testDoInvoke() {
 		//sddCdmExporter.doInvoke(exportConfigurator, null);
-		//assertEquals("Number of TaxonNames should be 1", 1, nameService.count());
+		//assertEquals(1, nameService.count(), "Number of TaxonNames should be 1");
 	}
 
     @Override

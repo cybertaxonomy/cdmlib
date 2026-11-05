@@ -8,13 +8,13 @@
 */
 package eu.etaxonomy.cdm.io.jaxb;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.InputStreamReader;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.media.ImageFile;
@@ -32,14 +32,14 @@ public class MediaTest {
         DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
 		Media media = dataSet.getMedia().get(0);
-		assertNotNull("Media must not be null",media);
-		assertNotNull("Media.mediaRepresentations must not be null", media.getRepresentations());
-		assertFalse("Media.mediaRepresentations must not be empty", media.getRepresentations().isEmpty());
+		assertNotNull(media, "Media must not be null");
+		assertNotNull(media.getRepresentations(), "Media.mediaRepresentations must not be null");
+		assertFalse(media.getRepresentations().isEmpty(), "Media.mediaRepresentations must not be empty");
 
 		MediaRepresentation mediaRepresentation = media.getRepresentations().iterator().next();
-		assertEquals("Media must equal MediaRepresentation.media", media, mediaRepresentation.getMedia());
-		assertNotNull("MediaRepresentation.uri must not be null", mediaRepresentation.getUri());
-		assertEquals("Representation must be ImageFile", ImageFile.class, mediaRepresentation.getClass());
+		assertEquals(media, mediaRepresentation.getMedia(), "Media must equal MediaRepresentation.media");
+		assertNotNull(mediaRepresentation.getUri(), "MediaRepresentation.uri must not be null");
+		assertEquals(ImageFile.class, mediaRepresentation.getClass(), "Representation must be ImageFile");
 		assertEquals(Integer.valueOf(1200), ((ImageFile) mediaRepresentation).getHeight());
 		assertEquals(Integer.valueOf(1600), ((ImageFile) mediaRepresentation).getWidth());
     }

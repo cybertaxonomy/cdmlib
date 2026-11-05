@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
@@ -49,16 +49,16 @@ public class ExcelImportConfiguratorTest extends CdmIoTransactionalSpringIntegra
 	public void setUp() throws URISyntaxException {
 		String inputFile = "/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelImportConfiguratorTest-input.xls";
 		URL url = this.getClass().getResource(inputFile);
-		assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+		assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 		configurator = SpecimenSynthesysExcelImportConfigurator.NewInstance(URI.fromUrl(url), null, false);
-		assertNotNull("Configurator could not be created", configurator);
+		assertNotNull(configurator, "Configurator could not be created");
 	}
 
 	@Test
 	public void testInit() {
-		assertNotNull("import instance should not be null", defaultImport);
-		assertNotNull("nameService should not be null", nameService);
-		assertNotNull("occurence service should not be null", occurrenceService);
+		assertNotNull(defaultImport, "import instance should not be null");
+		assertNotNull(nameService, "nameService should not be null");
+		assertNotNull(occurrenceService, "occurence service should not be null");
 	}
 /*
 	@Test
@@ -68,11 +68,11 @@ public class ExcelImportConfiguratorTest extends CdmIoTransactionalSpringIntegra
     })
 	public void testDoInvoke() {
 		boolean result = defaultImport.invoke(configurator);
-		assertTrue("Return value for import.invoke should be true", result);
-		assertEquals("Number of TaxonNames should be 3", 3, nameService.count(null));
-		assertEquals("Number of specimen should be 6", 6, occurrenceService.count(SpecimenOrObservationBase.class));
-		assertEquals("Number of specimen should be 3", 3, occurrenceService.count(DerivedUnit.class));
-		assertEquals("Number of specimen should be 3", 3, occurrenceService.count(FieldUnit.class));
+		assertTrue(result, "Return value for import.invoke should be true");
+		assertEquals(3, nameService.count(null), "Number of TaxonNames should be 3");
+		assertEquals(6, occurrenceService.count(SpecimenOrObservationBase.class), "Number of specimen should be 6");
+		assertEquals(3, occurrenceService.count(DerivedUnit.class), "Number of specimen should be 3");
+		assertEquals(3, occurrenceService.count(FieldUnit.class), "Number of specimen should be 3");
 
 	}
 */

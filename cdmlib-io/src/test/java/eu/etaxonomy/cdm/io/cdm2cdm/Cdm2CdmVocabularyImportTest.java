@@ -8,7 +8,11 @@
 */
 package eu.etaxonomy.cdm.io.cdm2cdm;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -22,7 +26,6 @@ import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -141,7 +144,7 @@ public class Cdm2CdmVocabularyImportTest extends CdmIoTransactionalSpringIntegra
         configurator.setVocabularyFilter(vocFilter);
 
         configurator.addObserver(new LoggingIoObserver());
-        assertNotNull("Configurator could not be created", configurator);
+        assertNotNull(configurator, "Configurator could not be created");
     }
 
     @SuppressWarnings("unchecked")
@@ -171,8 +174,8 @@ public class Cdm2CdmVocabularyImportTest extends CdmIoTransactionalSpringIntegra
 
     @Test
     public void testInit() {
-        assertNotNull("import instance should not be null", defaultImport);
-        assertNotNull("configurator instance should not be null", configurator);
+        assertNotNull(defaultImport, "import instance should not be null");
+        assertNotNull(configurator, "configurator instance should not be null");
     }
 
     @Test
@@ -185,18 +188,18 @@ public class Cdm2CdmVocabularyImportTest extends CdmIoTransactionalSpringIntegra
         //test emptiness (ClearDB alone keeps TERMCOLLECTION/DEFINEDTERMBASE; with_Terms wipes them)
         @SuppressWarnings("unchecked")
         TermVocabulary<DefinedTerm> voc = vocService.find(uuidStructVoc);
-        Assert.assertNull("Vocabulary must not exist before invoke", voc);
+        assertNull(voc, "Vocabulary must not exist before invoke");
 
         //test initial import
         ImportResult result = defaultImport.invoke(this.configurator);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         commitAndStartNewTransaction();
         voc = vocService.find(uuidStructVoc);
-        Assert.assertNotNull("Vocabulary must exist after invoke", voc);
+        assertNotNull(voc, "Vocabulary must exist after invoke");
         @SuppressWarnings("unchecked")
         TermVocabulary<DefinedTerm> otherVoc = otherRepository.getVocabularyService().find(uuidStructVoc);
-        Assert.assertNotSame(otherVoc, voc);
-        Assert.assertEquals(1, voc.getTerms().size());
+        assertNotSame(otherVoc, voc);
+        assertEquals(1, voc.getTerms().size());
 
         //add term in other repo ...
         UUID uuidSecond = UUID.fromString("d167b52b-f88c-48a1-9463-ab5f9895cc51");
@@ -210,20 +213,20 @@ public class Cdm2CdmVocabularyImportTest extends CdmIoTransactionalSpringIntegra
         //... to test if added term gets imported
         commitAndStartNewTransaction();
         voc = vocService.find(uuidStructVoc);
-        Assert.assertEquals(1, voc.getTerms().size());
+        assertEquals(1, voc.getTerms().size());
         commitAndStartNewTransaction();
         result = defaultImport.invoke(this.configurator);
-        Assert.assertEquals("Second term should not be added as configuration does not allow adding terms", 1, voc.getTerms().size());
+        assertEquals(1, voc.getTerms().size(), "Second term should not be added as configuration does not allow adding terms");
         commitAndStartNewTransaction();
         configurator.setAddMissingTerms(true);
         result = defaultImport.invoke(this.configurator);
         commitAndStartNewTransaction();
         voc = vocService.find(uuidStructVoc);
-        Assert.assertEquals(2, voc.getTerms().size());
-        Assert.assertTrue("As contains works on equal() the term should be contained", voc.getTerms().contains(secondTerm));
+        assertEquals(2, voc.getTerms().size());
+        assertTrue(voc.getTerms().contains(secondTerm), "As contains works on equal() the term should be contained");
         voc.getTerms().stream().filter(a->a.getUuid().equals(uuidSecond)).forEach(t->{
-            Assert.assertEquals(secondTerm, t);
-            Assert.assertNotSame(secondTerm, t);
+            assertEquals(secondTerm, t);
+            assertNotSame(secondTerm, t);
         });
     }
 
@@ -238,23 +241,23 @@ public class Cdm2CdmVocabularyImportTest extends CdmIoTransactionalSpringIntegra
         configurator.setGraphFilter(new HashSet<>(Arrays.asList(uuidStructGraph)));
         @SuppressWarnings("unchecked")
         TermTree<DefinedTerm> graph = treeService.find(uuidStructGraph);
-        Assert.assertNull("Graph must not exist before invoke", graph);
+        assertNull(graph, "Graph must not exist before invoke");
         ImportResult result = defaultImport.invoke(this.configurator);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
         commitAndStartNewTransaction();
         graph = treeService.find(uuidStructGraph);
-        Assert.assertNotNull("Graph must exist after invoke", graph);
+        assertNotNull(graph, "Graph must exist after invoke");
         TransactionStatus txOther = otherRepository.startTransaction();
         @SuppressWarnings("unchecked")
         TermTree<DefinedTerm> otherGraph = otherRepository.getTermTreeService().find(uuidStructGraph);
-        Assert.assertNotSame(otherGraph, graph);
-        Assert.assertEquals(otherGraph.getRoot(), graph.getRoot());
-        Assert.assertNotSame(otherGraph.getRoot(), graph.getRoot());
-        Assert.assertEquals(1, graph.getRootChildren().size());
+        assertNotSame(otherGraph, graph);
+        assertEquals(otherGraph.getRoot(), graph.getRoot());
+        assertNotSame(otherGraph.getRoot(), graph.getRoot());
+        assertEquals(1, graph.getRootChildren().size());
         TermNode<DefinedTerm> otherSingleChild = otherGraph.getRootChildren().iterator().next();
         TermNode<DefinedTerm> thisSingleChild = graph.getRootChildren().iterator().next();
-        Assert.assertEquals(otherSingleChild, thisSingleChild);
-        Assert.assertNotSame(otherSingleChild, thisSingleChild);
+        assertEquals(otherSingleChild, thisSingleChild);
+        assertNotSame(otherSingleChild, thisSingleChild);
         otherRepository.commitTransaction(txOther);
 
         //add term in other repo to vocabulary and graph as child of top level node ...
@@ -273,14 +276,14 @@ public class Cdm2CdmVocabularyImportTest extends CdmIoTransactionalSpringIntegra
         commitAndStartNewTransaction();
         UUID uuidTopLevelNode = thisSingleChild.getUuid();
         TermNode<DefinedTerm> topLevelNode = termNodeService.find(uuidTopLevelNode);
-        Assert.assertEquals(0, topLevelNode.getChildCount());
+        assertEquals(0, topLevelNode.getChildCount());
         commitAndStartNewTransaction();
         configurator.setAddMissingTerms(true);
         result = defaultImport.invoke(this.configurator);
         commitAndStartNewTransaction();
         topLevelNode = termNodeService.find(uuidTopLevelNode);
-        Assert.assertEquals(1, topLevelNode.getChildCount());
-        Assert.assertEquals(uuidSecondTerm, topLevelNode.getChildAt(0).getTerm().getUuid());
+        assertEquals(1, topLevelNode.getChildCount());
+        assertEquals(uuidSecondTerm, topLevelNode.getChildAt(0).getTerm().getUuid());
     }
 
     private static DefinedTerm getStructure(String distinct, UUID uuid) {

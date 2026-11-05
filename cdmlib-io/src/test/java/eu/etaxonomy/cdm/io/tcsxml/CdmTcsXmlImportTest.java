@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.io.tcsxml;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
@@ -44,22 +44,22 @@ public class CdmTcsXmlImportTest extends CdmIoTransactionalSpringIntegrationTest
 	public void setUp() throws URISyntaxException {
 		String inputFile = "/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportConfiguratorTest-input.xml";
 		URL url = this.getClass().getResource(inputFile);
-		assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+		assertNotNull(url, "URL for the test file '" + inputFile + "' does not exist");
 		configurator = TcsXmlImportConfigurator.NewInstance(URI.fromUrl(url), null);
-		assertNotNull("Configurator could not be created", configurator);
+		assertNotNull(configurator, "Configurator could not be created");
 	}
 
 	@Test
 	public void testInit() {
-		assertNotNull("cdmTcsXmlImport should not be null", cdmTcsXmlImport);
-		assertNotNull("nameService should not be null", nameService);
+		assertNotNull(cdmTcsXmlImport, "cdmTcsXmlImport should not be null");
+		assertNotNull(nameService, "nameService should not be null");
 	}
 
 	@Test
 	public void testDoInvoke() {
 		boolean result = cdmTcsXmlImport.invoke(configurator).isSuccess();
-		assertTrue("Return value for import.invoke should be true", result);
-		//assertEquals("Number of TaxonNames should be 16", 16, nameService.count(null));
+		assertTrue(result, "Return value for import.invoke should be true");
+		//assertEquals(16, nameService.count(null), "Number of TaxonNames should be 16");
 	}
 
     @Override

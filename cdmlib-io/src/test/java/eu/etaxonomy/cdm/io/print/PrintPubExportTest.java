@@ -8,11 +8,12 @@
 */
 package eu.etaxonomy.cdm.io.print;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.FileNotFoundException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -55,7 +56,7 @@ public class PrintPubExportTest
         ExportResult result = defaultExport.invoke(config);
         checkAndGetData(result);
 
-        Assert.assertTrue(result.getExportType().equals(ExportType.PRINT_PUBLICATION));
+        assertTrue(result.getExportType().equals(ExportType.PRINT_PUBLICATION));
         //test export type
     }
 

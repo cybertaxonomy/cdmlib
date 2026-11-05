@@ -8,10 +8,11 @@
 */
 package eu.etaxonomy.cdm.io.print.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.io.print.util.PrintPubNonNestedHtmlTokenizer.PrintPubHtmlToken;
 import eu.etaxonomy.cdm.io.print.util.PrintPubNonNestedHtmlTokenizer.PrintPubHtmlTokenType;
@@ -27,24 +28,24 @@ public class PrintPubNonNestedHtmlTokenizerTest {
 
         List<PrintPubHtmlToken> tokens = PrintPubNonNestedHtmlTokenizer
                 .tokenize("But this line ends <Br/>\n And this is the next line");
-        Assert.assertEquals(3, tokens.size());
+        assertEquals(3, tokens.size());
 
         PrintPubHtmlToken first = tokens.get(0);
-        Assert.assertEquals("But this line ends ", first.value);
-        Assert.assertEquals(null, first.tagName);
-        Assert.assertEquals(null, first.rawMarkup);
-        Assert.assertEquals(PrintPubHtmlTokenType.TEXT, first.type);
+        assertEquals("But this line ends ", first.value);
+        assertEquals(null, first.tagName);
+        assertEquals(null, first.rawMarkup);
+        assertEquals(PrintPubHtmlTokenType.TEXT, first.type);
 
-        Assert.assertEquals("", tokens.get(1).value);
-        Assert.assertEquals(PrintPubHtmlTokenType.BR, tokens.get(1).type);
+        assertEquals("", tokens.get(1).value);
+        assertEquals(PrintPubHtmlTokenType.BR, tokens.get(1).type);
 
-        Assert.assertEquals("And this is the next line", tokens.get(2).value);
-        Assert.assertEquals(PrintPubHtmlTokenType.TEXT, tokens.get(2).type);
+        assertEquals("And this is the next line", tokens.get(2).value);
+        assertEquals(PrintPubHtmlTokenType.TEXT, tokens.get(2).type);
 
         //italics and bold
         tokens = PrintPubNonNestedHtmlTokenizer
                 .tokenize("The tree <I>Abies alba</I> is <B>really</b> nice.");
-        Assert.assertEquals(5, tokens.size());
+        assertEquals(5, tokens.size());
 
     }
 

@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.jaxb;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -21,8 +21,8 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
 
 import org.custommonkey.xmlunit.jaxp13.Validator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 import jakarta.xml.bind.JAXBException;
@@ -34,7 +34,7 @@ public class SimpleMarshalTest {
 
 	private CdmDocumentBuilder cdmDocumentBuilder;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 
 		 try {
@@ -66,7 +66,7 @@ public class SimpleMarshalTest {
 	@Test
     public void testCreation() throws JAXBException, SAXException, IOException, ParserConfigurationException
     {
-    	assertNotNull("cdmDocumentBuilder should be initialized without any problems",cdmDocumentBuilder);
+    	assertNotNull(cdmDocumentBuilder, "cdmDocumentBuilder should be initialized without any problems");
     }
 
 	/**
@@ -88,6 +88,6 @@ public class SimpleMarshalTest {
 		    validator.addSchemaSource(new StreamSource(this.getClass().getResourceAsStream(schemaName)));
 	    }
 		StreamSource streamSource = new StreamSource(new StringReader(writer.toString()));
-		//assertTrue("CdmDocumentBuilder.marshal should produce valid xml",validator.isInstanceValid(streamSource));
+		//assertTrue(validator.isInstanceValid(streamSource), "CdmDocumentBuilder.marshal should produce valid xml");
 	}
 }

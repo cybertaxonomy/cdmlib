@@ -8,6 +8,11 @@
 */
 package eu.etaxonomy.cdm.io.dwca.out;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
@@ -18,7 +23,6 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,28 +135,28 @@ public class DwcaExportTest  extends CdmIoTransactionalSpringIntegrationTest{
 
         //metadata
         byte[] metadata = data.get(DwcaTaxExportFile.METADATA.getTableName());
-        Assert.assertNotNull("Metadata must not be null", metadata);
+        assertNotNull(metadata, "Metadata must not be null");
         String metaDataStr = new String(metadata);
         String metaHeader = "<?xml version=\"1.0\" ?><archive xmlns=\"http://rs.tdwg.org/dwc/text/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://rs.tdwg.org/dwc/text/ http://rs.tdwg.org/dwc/text/tdwg_dwc_text.xsd\"></archive>";
-        Assert.assertTrue(metaDataStr.contains(metaHeader));
+        assertTrue(metaDataStr.contains(metaHeader));
         String metaCore = "<core";
-        Assert.assertFalse(metaDataStr.contains(metaCore));
+        assertFalse(metaDataStr.contains(metaCore));
         metaCore = "<field";
-        Assert.assertFalse(metaDataStr.contains(metaCore));
+        assertFalse(metaDataStr.contains(metaCore));
         metaCore = "<files";
-        Assert.assertFalse(metaDataStr.contains(metaCore));
+        assertFalse(metaDataStr.contains(metaCore));
 
         //core
         byte[] core = data.get(DwcaTaxExportFile.TAXON.getTableName());
-        Assert.assertNull("Core must not exist", core);
+        assertNull(core, "Core must not exist");
 
         //reference
         byte[] ref = data.get(DwcaTaxExportFile.REFERENCE.getTableName());
-        Assert.assertNull("Reference must not exist", ref);
+        assertNull(ref, "Reference must not exist");
 
         //distribution
         byte[] distribution = data.get(DwcaTaxExportFile.DISTRIBUTION.getTableName());
-        Assert.assertNull("Distribution must not exist", distribution);
+        assertNull(distribution, "Distribution must not exist");
     }
 
     @Test
@@ -176,50 +180,50 @@ public class DwcaExportTest  extends CdmIoTransactionalSpringIntegrationTest{
         }
         //metadata
         byte[] metadata = data.get(DwcaTaxExportFile.METADATA.getTableName());
-        Assert.assertNotNull("Metadata must not be null", metadata);
+        assertNotNull(metadata, "Metadata must not be null");
         //further tests in fullData
 
         //core
         byte[] core = data.get(DwcaTaxExportFile.TAXON.getTableName());
-        Assert.assertNotNull("Core must not be null", core);
+        assertNotNull(core, "Core must not be null");
         String coreStr = new String(core);
 //        String notExpected =  "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"f983cc5e-4c77-4c80-8cb0-73d43df31ee9\"";
-//        Assert.assertFalse("Result must not contain root taxon", coreStr.contains(notExpected));
+//        assertFalse(coreStr.contains(notExpected), "Result must not contain root taxon");
 //
 //        String expected;
 //        expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"f983cc5e-4c77-4c80-8cb0-73d43df31ee9\",\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"Genus species subsp. subspec Mill.\",\"Subspecies\",\"accepted\",,\"4b6acca1-959b-4790-b76e-e474a0882990\",";
-//        Assert.assertTrue(coreStr.contains(expected));
+//        assertTrue(coreStr.contains(expected));
 //
 //        expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"f983cc5e-4c77-4c80-8cb0-73d43df31ee9\",\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"Genus species subsp. subspec Mill.\",\"Subspecies\",\"accepted\",,\"4b6acca1-959b-4790-b76e-e474a0882990\",\"4aa0824a-1197-4143-bc63-702ebfada9d2\"";
-//        Assert.assertTrue(coreStr.contains(expected));
+//        assertTrue(coreStr.contains(expected));
 //        expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"f983cc5e-4c77-4c80-8cb0-73d43df31ee9\",\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"Genus species subsp. subspec Mill.\",\"Subspecies\",\"accepted\",,\"4b6acca1-959b-4790-b76e-e474a0882990\",\"4aa0824a-1197-4143-bc63-702ebfada9d2\",\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\"";
-//        Assert.assertTrue(coreStr.contains(expected));
+//        assertTrue(coreStr.contains(expected));
 //        expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"f983cc5e-4c77-4c80-8cb0-73d43df31ee9\",\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"Genus species subsp. subspec Mill.\",\"Subspecies\",\"accepted\",,\"4b6acca1-959b-4790-b76e-e474a0882990\",\"4aa0824a-1197-4143-bc63-702ebfada9d2\",\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"Genus species subsp. subspec Mill.\"";
-//        Assert.assertTrue(coreStr.contains(expected));
+//        assertTrue(coreStr.contains(expected));
 
         String expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"Genus species subsp. subspec Mill.\",\"Subspecies\",\"accepted\",,\"4b6acca1-959b-4790-b76e-e474a0882990\",\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"Genus species subsp. subspec Mill.\",\"Genus species Mill. sec. My sec ref\",";
 //        System.out.println(coreStr);
-        Assert.assertTrue(coreStr.contains(expected));
+        assertTrue(coreStr.contains(expected));
 
         expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"Genus species subsp. subspec Mill.\",\"Subspecies\",\"accepted\",,\"4b6acca1-959b-4790-b76e-e474a0882990\",\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"Genus species subsp. subspec Mill.\",\"Genus species Mill. sec. My sec ref\",,\"My sec ref\",\"Mill. 1804: The book of botany 3\",,\"Genus\",,\"species\",\"subspec\",\"subsp.\",,\"ICNAFP\",,,,,,,,,,\"DwcaExportTest Classification\",";
-        Assert.assertTrue(coreStr.contains(expected));
+        assertTrue(coreStr.contains(expected));
 
         //distribution
         byte[] distribution = data.get(DwcaTaxExportFile.DISTRIBUTION.getTableName());
-        Assert.assertNull("Distribution must not exist", distribution);
+        assertNull(distribution, "Distribution must not exist");
 
         //reference
         byte[] ref = data.get(DwcaTaxExportFile.REFERENCE.getTableName());
-        Assert.assertNotNull("Reference must not be null", ref);
+        assertNotNull(ref, "Reference must not be null");
         String refStr = new String(ref);
 //        System.out.println(refStr);
         expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",,,,,\"My sec ref\",\"My sec ref\",,,,,,,,,";
-        Assert.assertTrue(refStr.contains(expected));
+        assertTrue(refStr.contains(expected));
         expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",,,,,\"Mill. 1804: The book of botany 3\",,\"Mill.\",\"1804\",,,,,,,";
-        Assert.assertTrue(refStr.contains(expected));
+        assertTrue(refStr.contains(expected));
         //header
         expected = "coreid,identifier,identifier,identifier,identifier,bibliographicCitation,title,creator,date,source,description,subject,language,rights,taxonRemarks,type";
-        Assert.assertTrue(refStr.contains(expected));
+        assertTrue(refStr.contains(expected));
     }
 
     @Test
@@ -245,10 +249,10 @@ public class DwcaExportTest  extends CdmIoTransactionalSpringIntegrationTest{
 //      System.out.println();
         //metadata
         byte[] metadata = data.get(DwcaTaxExportFile.METADATA.getTableName());
-        Assert.assertNotNull("Metadata must not be null", metadata);
+        assertNotNull(metadata, "Metadata must not be null");
         String metaDataStr = new String(metadata);
         String metaHeader = "<?xml version=\"1.0\" ?><archive xmlns=\"http://rs.tdwg.org/dwc/text/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://rs.tdwg.org/dwc/text/ http://rs.tdwg.org/dwc/text/tdwg_dwc_text.xsd\">";
-        Assert.assertTrue(metaDataStr.contains(metaHeader));
+        assertTrue(metaDataStr.contains(metaHeader));
 
         String metaCore = "<core encoding=\"UTF-8\" linesTerminatedBy=\"\r\n\" fieldsEnclosedBy=\"&quot;\""
                 + " fieldsTerminatedBy=\",\" ignoreHeaderLines=\"1\" rowType=\"http://rs.tdwg.org/dwc/terms/Taxon\">"
@@ -268,54 +272,54 @@ public class DwcaExportTest  extends CdmIoTransactionalSpringIntegrationTest{
                 "";
         //TODO continue
 //        System.out.println(metaDataStr);
-        Assert.assertTrue(metaDataStr.contains(metaCore));
+        assertTrue(metaDataStr.contains(metaCore));
 
         //core
         byte[] core = data.get(DwcaTaxExportFile.TAXON.getTableName());
-        Assert.assertNotNull("Core must not be null", core);
+        assertNotNull(core, "Core must not be null");
         String coreStr = new String(core);
         String expected =  "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"f983cc5e-4c77-4c80-8cb0-73d43df31ee9\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"3f52e136-f2e1-4f9a-9010-2f35908fbd39\",\"Genus species Mill.\",\"Species\",\"accepted\"";
 //        System.out.println(coreStr);
-        Assert.assertTrue(coreStr.contains(expected));
+        assertTrue(coreStr.contains(expected));
         String expectedClassification = "\"Family|Genus|Genus species\"";
-        Assert.assertTrue(coreStr.contains(expectedClassification));
-        Assert.assertFalse(coreStr.contains(UUID_UNPUBLISHED_TAXON));
+        assertTrue(coreStr.contains(expectedClassification));
+        assertFalse(coreStr.contains(UUID_UNPUBLISHED_TAXON));
 
         //reference
         byte[] ref = data.get(DwcaTaxExportFile.REFERENCE.getTableName());
-        Assert.assertNotNull("Reference must not be null", ref);
+        assertNotNull(ref, "Reference must not be null");
         String refStr = new String(ref);
 
         expected = "\"3162e136-f2e2-4f9a-9010-3f35908fbae1\",,,,,\"My sec ref\",\"My sec ref\",,,,,,,,,";
 //        System.out.println(refStr);
-        Assert.assertTrue(refStr.contains(expected));
+        assertTrue(refStr.contains(expected));
         expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",,,,,\"Mill. 1804: The book of botany 3\",,\"Mill.\",\"1804\",,,,,,,";
-        Assert.assertTrue(refStr.contains(expected));
+        assertTrue(refStr.contains(expected));
 
         //distribution
         byte[] distribution = data.get(DwcaTaxExportFile.DISTRIBUTION.getTableName());
-        Assert.assertNotNull("Distribution must not be null", distribution);
+        assertNotNull(distribution, "Distribution must not be null");
         String distributionStr = new String(distribution);
         expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"c204c529-d8d2-458f-b939-96f0ebd2cbe8\",\"Africa\",,,\"present\",,\"uncertain\",,,,,,";
-        Assert.assertTrue(distributionStr.contains(expected));
+        assertTrue(distributionStr.contains(expected));
 
         //description
         byte[] description = data.get(DwcaTaxExportFile.DESCRIPTION.getTableName());
-        Assert.assertNotNull("Description must not be null", distribution);
+        assertNotNull(distribution, "Description must not be null");
         String descriptionStr = new String(description);
         System.out.println(descriptionStr);
 
         //   quantitative data
         String sep = QuantitativeDataFormatter.lowerUpperSep;
         expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"0.1"+sep+"1.3 [n=2]\",\"Chromosome Numbers\"";
-        Assert.assertTrue(descriptionStr.contains(expected));
+        assertTrue(descriptionStr.contains(expected));
         //   textdata
         expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"My Description\",\"Description\",,\"eng\",,,,,";
-        Assert.assertTrue(descriptionStr.contains(expected));
+        assertTrue(descriptionStr.contains(expected));
         //   categorical data
 //        expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"state1\",\"Ecology\""; FIXME #8891
         expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"-no state-\",\"Ecology\"";
-        Assert.assertTrue(descriptionStr.contains(expected));
+        assertTrue(descriptionStr.contains(expected));
     }
 
     @Test
@@ -335,12 +339,12 @@ public class DwcaExportTest  extends CdmIoTransactionalSpringIntegrationTest{
         @SuppressWarnings("unchecked")
         Map<String, byte[]> data = (Map<String, byte[]>) exportData.getExportData();
         byte[] core = data.get(DwcaTaxExportFile.TAXON.getTableName());
-        Assert.assertNotNull("Core must not be null", core);
+        assertNotNull(core, "Core must not be null");
         String coreStr = new String(core);
         String expected =  "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\"";
-        Assert.assertTrue(coreStr.contains(expected));
+        assertTrue(coreStr.contains(expected));
 
-        Assert.assertTrue(coreStr.contains(UUID_UNPUBLISHED_TAXON));
+        assertTrue(coreStr.contains(UUID_UNPUBLISHED_TAXON));
     }
 
     @Test
@@ -360,27 +364,27 @@ public class DwcaExportTest  extends CdmIoTransactionalSpringIntegrationTest{
         @SuppressWarnings("unchecked")
         Map<String, byte[]> data = (Map<String, byte[]>) exportData.getExportData();
         byte[] core = data.get(DwcaTaxExportFile.TAXON.getTableName());
-        Assert.assertNotNull("Core must not be null", core);
+        assertNotNull(core, "Core must not be null");
         String coreStr = new String(core);
         String expected =  "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\"";
-        Assert.assertTrue(coreStr.contains(expected));
+        assertTrue(coreStr.contains(expected));
 //        System.out.println(coreStr);
         expected = "coreid,identifier,identifier,identifier,identifier,bibliographicCitation,title,creator,date,source,description,subject,language,rights,taxonRemarks,type";
-        Assert.assertFalse(coreStr.contains(expected));
+        assertFalse(coreStr.contains(expected));
         expected = "coreid";
-        Assert.assertFalse(coreStr.startsWith(expected));
+        assertFalse(coreStr.startsWith(expected));
 
         //reference
         byte[] ref = data.get(DwcaTaxExportFile.REFERENCE.getTableName());
-        Assert.assertNotNull("Reference must not be null", ref);
+        assertNotNull(ref, "Reference must not be null");
         String refStr = new String(ref);
         expected = "\"3162e136-f2e2-4f9a-9010-3f35908fbae1\",,,,,\"My sec ref\",\"My sec ref\",,,,,,,,,";
 //        System.out.println(refStr);
-        Assert.assertTrue(refStr.contains(expected));
+        assertTrue(refStr.contains(expected));
         expected = "coreid,identifier,identifier,identifier,identifier,bibliographicCitation,title,creator,date,source,description,subject,language,rights,taxonRemarks,type";
-        Assert.assertFalse(refStr.contains(expected));
+        assertFalse(refStr.contains(expected));
         expected = "coreid";
-        Assert.assertFalse(refStr.startsWith(expected));
+        assertFalse(refStr.startsWith(expected));
 
     }
 

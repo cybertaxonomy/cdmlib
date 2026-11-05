@@ -8,6 +8,10 @@
 */
 package eu.etaxonomy.cdm.io.out;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -23,7 +27,6 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -247,12 +250,9 @@ public abstract class TaxonTreeExportTestBase
         if (result.getExceptions().size() > 0 && exceptions == 0) {
             result.getExceptions().iterator().next().getException().printStackTrace();
         }
-        Assert.assertEquals("The number of exceptions differs from the expected number of exceptions",
-                exceptions, result.getExceptions().size());
-        Assert.assertEquals("The number of errors differs from the expected number of errors",
-                errors, result.getErrors().size());
-        Assert.assertEquals("The number of warnings differs from the expected number of warnings",
-                warnings, result.getWarnings().size());
+        assertEquals(exceptions, result.getExceptions().size(), "The number of exceptions differs from the expected number of exceptions");
+        assertEquals(errors, result.getErrors().size(), "The number of errors differs from the expected number of errors");
+        assertEquals(warnings, result.getWarnings().size(), "The number of warnings differs from the expected number of warnings");
     }
 
     protected void setUuid(CdmBase cdmBase, String uuidStr) {
@@ -303,14 +303,14 @@ public abstract class TaxonTreeExportTestBase
                 result.add(line);
             }
         } catch (IOException e) {
-            Assert.fail("IOException during result read");
+            fail("IOException during result read");
         }
         return result;
     }
 
     protected String getTableString(Map<String, byte[]> data, ITaxonTreeExportTable table) {
         byte[] tableByte = data.get(table.getTableName());
-        Assert.assertNotNull(table.getTableName() + " table must not be null", tableByte);
+        assertNotNull(tableByte, table.getTableName() + " table must not be null");
         return new String(tableByte);
     }
 
@@ -325,7 +325,7 @@ public abstract class TaxonTreeExportTestBase
 
         //transform to data map
         ExportDataWrapper<?> exportData = result.getExportData();
-        Assert.assertNotNull("Export data must not be null", exportData);
+        assertNotNull(exportData, "Export data must not be null");
 
         Object data = exportData.getExportData();
 
@@ -531,7 +531,7 @@ public abstract class TaxonTreeExportTestBase
         try {
             facade.setExactLocationByParsing("15°13'12''W", "55°33'22''N", ReferenceSystem.WGS84(), 5);
         } catch (ParseException e) {
-            Assert.fail();
+            fail();
         }
         facade.setCollector(createTeam("Collector team", "Coll. team"));
         facade.setFieldNumber("CT222");

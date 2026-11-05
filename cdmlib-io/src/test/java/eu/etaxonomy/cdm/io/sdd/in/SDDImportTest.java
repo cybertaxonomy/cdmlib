@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.io.sdd.in;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
@@ -51,8 +51,8 @@ public class SDDImportTest extends CdmIoTransactionalSpringIntegrationTest {
 
     @Test
     public void testInit() {
-        assertNotNull("sddImport should not be null", sddImport);
-        assertNotNull("nameService should not be null", nameService);
+        assertNotNull(sddImport, "sddImport should not be null");
+        assertNotNull(nameService, "nameService should not be null");
     }
 
     @Test
@@ -63,7 +63,7 @@ public class SDDImportTest extends CdmIoTransactionalSpringIntegrationTest {
         logger.warn("Name service count: " + (nameService.count(null)));
 
         this.endTransaction();
-        assertEquals("Number of TaxonNames should be 1", 1, nameService.count(null));
+        assertEquals(1, nameService.count(null), "Number of TaxonNames should be 1");
     }
 
     @Override

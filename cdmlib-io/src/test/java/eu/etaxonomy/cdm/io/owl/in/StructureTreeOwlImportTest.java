@@ -8,9 +8,9 @@
 */
 package eu.etaxonomy.cdm.io.owl.in;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
@@ -77,7 +77,7 @@ public class StructureTreeOwlImportTest extends CdmIoTransactionalSpringIntegrat
 
     @Test
     public void testInit() {
-        assertNotNull("import should not be null", defaultImport);
+        assertNotNull(defaultImport, "import should not be null");
     }
 
     @Test
@@ -89,7 +89,7 @@ public class StructureTreeOwlImportTest extends CdmIoTransactionalSpringIntegrat
         StructureTreeOwlImportConfigurator importConfig = StructureTreeOwlImportConfigurator.NewInstance(uri);
 
         boolean result = defaultImport.invoke(importConfig).isSuccess();
-        assertTrue("Return value for import.invoke should be true", result);
+        assertTrue(result, "Return value for import.invoke should be true");
         this.setComplete();
         this.endTransaction();
 
@@ -98,70 +98,69 @@ public class StructureTreeOwlImportTest extends CdmIoTransactionalSpringIntegrat
         List<String> nodePath = Arrays.asList(new String[] {"term", "term.media"});
         @SuppressWarnings({ "unchecked", "rawtypes" })
         TermTree<Feature> tree = (TermTree)termTreeServcie.loadWithNodes(trees.get(0).getUuid(), null, nodePath);
-        assertNotNull("featureTree should not be null", tree);
+        assertNotNull(tree, "featureTree should not be null");
 
-        assertEquals("Tree has wrong term type", TermType.Structure, tree.getTermType());
-        assertEquals("Wrong number of distinct features", 4, tree.getDistinctTerms().size());
+        assertEquals(TermType.Structure, tree.getTermType(), "Tree has wrong term type");
+        assertEquals(4, tree.getDistinctTerms().size(), "Wrong number of distinct features");
         List<TermNode<Feature>> rootChildren = tree.getRootChildren();
-        assertEquals("Wrong number of root children", 1, rootChildren.size());
+        assertEquals(1, rootChildren.size(), "Wrong number of root children");
         TermNode<Feature> entirePlant = rootChildren.iterator().next();
-        assertEquals("Root node has wrong term type", TermType.Structure, ((TermNode<?>)entirePlant).getTermType());
+        assertEquals(TermType.Structure, ((TermNode<?>)entirePlant).getTermType(), "Root node has wrong term type");
 
         TermNode<DefinedTerm> entirePlantNode = (TermNode) entirePlant;
         List<TermNode<DefinedTerm>> childNodes = entirePlantNode.getChildNodes();
-        assertEquals("Wrong number of children", 2, childNodes.size());
+        assertEquals(2, childNodes.size(), "Wrong number of children");
 
         String inflorescenceLabel = "inflorescence";
         String inflorescenceDescription = " the part of the plant that bears the flowers, including all its bracts  branches and flowers  but excluding unmodified leaves               ";
         List<DefinedTerm> records = termService.listByTitle(DefinedTerm.class, inflorescenceLabel, MatchMode.EXACT, null, null, null, null, Arrays.asList("representations", "media"));
-        assertEquals("wrong number of terms found for \"inflorescence\"", 1, records.size());
+        assertEquals(1, records.size(), "wrong number of terms found for \"inflorescence\"");
         DefinedTerm inflorescence = records.iterator().next();
         assertEquals(inflorescenceDescription, inflorescence.getDescription(Language.ENGLISH()));
 
         for (TermNode<DefinedTerm> termNode : childNodes) {
-            assertTrue("Child node not found. Found node with term: "+termNode.getTerm().getLabel(),
-                    termNode.getTerm().getUuid().equals(inflorescence.getUuid())
-                    || termNode.getTerm().getLabel(Language.ENGLISH()).equals("Flower"));
+            assertTrue(termNode.getTerm().getUuid().equals(inflorescence.getUuid())
+                    || termNode.getTerm().getLabel(Language.ENGLISH()).equals("Flower"), "Child node not found. Found node with term: "+termNode.getTerm().getLabel());
             if(termNode.getTerm().getUuid().equals(inflorescence.getUuid())){
-                assertEquals("Term mismatch", inflorescence, termNode.getTerm());
+                assertEquals(inflorescence, termNode.getTerm(), "Term mismatch");
                 inflorescence = termNode.getTerm();
 
-                assertEquals("wrong id in vocabulary", "inflorescence", inflorescence.getIdInVocabulary());
-                assertEquals("wrong symbol", "infloSymbol", inflorescence.getSymbol());
-                assertEquals("wrong symbol2", "infloSymbol2", inflorescence.getSymbol2());
+                assertEquals("inflorescence", inflorescence.getIdInVocabulary(), "wrong id in vocabulary");
+                assertEquals("infloSymbol", inflorescence.getSymbol(), "wrong symbol");
+                assertEquals("infloSymbol2", inflorescence.getSymbol2(), "wrong symbol2");
 
                 Set<Media> mediaSet = inflorescence.getMedia();
-                assertEquals("wrong number of media", 1, mediaSet.size());
+                assertEquals(1, mediaSet.size(), "wrong number of media");
                 Media media = mediaSet.iterator().next();
                 MediaRepresentation rep = MediaUtils.getFirstMediaRepresentationPart(media);
-                assertNotNull("media part not found", rep);
-                assertEquals("incorrect URI", URI.create("https://upload.wikimedia.org/wikipedia/commons/8/82/Aloe_hereroensis_Auob_C15.JPG"), rep.getUri());
-                assertEquals("incorrect title", "Aloe hereroensis", media.getTitle(Language.DEFAULT()).getText());
+                assertNotNull(rep, "media part not found");
+                assertEquals(URI.create("https://upload.wikimedia.org/wikipedia/commons/8/82/Aloe_hereroensis_Auob_C15.JPG"), rep.getUri(), "incorrect URI");
+                assertEquals("Aloe hereroensis", media.getTitle(Language.DEFAULT()).getText(), "incorrect title");
 
                 Representation englishRepresentation = inflorescence.getRepresentation(Language.ENGLISH());
-                assertTrue("Description not found", CdmUtils.isNotBlank(englishRepresentation.getDescription()));
-                assertEquals("Description wrong", inflorescenceDescription, englishRepresentation.getDescription());
-                assertEquals("wrong plural", "inflorescences", englishRepresentation.getPlural());
-                assertEquals("wrong label abbrev", "inflo", englishRepresentation.getAbbreviatedLabel());
+                assertTrue(CdmUtils.isNotBlank(englishRepresentation.getDescription()), "Description not found");
+                assertEquals(inflorescenceDescription, englishRepresentation.getDescription(), "Description wrong");
+                assertEquals("inflorescences", englishRepresentation.getPlural(), "wrong plural");
+                assertEquals("inflo", englishRepresentation.getAbbreviatedLabel(), "wrong label abbrev");
 
                 // german representation
-                assertEquals("wrong number of representations", 2, inflorescence.getRepresentations().size());
+                assertEquals(2, inflorescence.getRepresentations().size(), "wrong number of representations");
                 Representation germanRepresentation = inflorescence.getRepresentation(Language.GERMAN());
-                assertNotNull("Representation is null for "+Language.GERMAN(), germanRepresentation);
-                assertEquals("wrong description", "Der Teil der Pflanze, der die Bluete traegt", germanRepresentation.getDescription());
-                assertEquals("wrong label", "Infloreszenz", germanRepresentation.getLabel());
+                assertNotNull(germanRepresentation, "Representation is null for "+Language.GERMAN());
+                assertEquals("Der Teil der Pflanze, der die Bluete traegt", germanRepresentation.getDescription(), "wrong description");
+                assertEquals("Infloreszenz", germanRepresentation.getLabel(), "wrong label");
             }
         }
-        assertNotNull("term is null", inflorescence);
-        assertEquals("Wrong term type", TermType.Structure, inflorescence.getTermType());
+        assertNotNull(inflorescence, "term is null");
+        assertEquals(TermType.Structure, inflorescence.getTermType(), "Wrong term type");
 
         String vocLabel = "03 Generative Structures";
         List<TermVocabulary> vocs = vocabularyService.findByTitle(TermVocabulary.class, vocLabel, MatchMode.EXACT, null, null, null, null, Arrays.asList("terms")).getRecords();
-        assertEquals("wrong number of vocabularies", 1, vocs.size());
+        assertEquals(1, vocs.size(), "wrong number of vocabularies");
         TermVocabulary<?> termVoc = vocs.iterator().next();
-        assertEquals("Wrong vocabulary label", vocLabel, termVoc.getTitleCache());
+        assertEquals(vocLabel, termVoc.getTitleCache(), "Wrong vocabulary label");
         Collection<TermDto> topLevelTerms = vocabularyService.getTopLevelTerms(termVoc.getUuid());
-        assertEquals("wrong number of top level terms", 4, topLevelTerms.size());
+        assertEquals(4, topLevelTerms.size(), "wrong number of top level terms");
 
     }
 
@@ -174,7 +173,7 @@ public class StructureTreeOwlImportTest extends CdmIoTransactionalSpringIntegrat
         StructureTreeOwlImportConfigurator configurator = StructureTreeOwlImportConfigurator.NewInstance(uri);
 
         boolean result = defaultImport.invoke(configurator).isSuccess();
-        assertTrue("Return value for import.invoke should be true", result);
+        assertTrue(result, "Return value for import.invoke should be true");
         this.setComplete();
         this.endTransaction();
 
@@ -183,16 +182,16 @@ public class StructureTreeOwlImportTest extends CdmIoTransactionalSpringIntegrat
         List<String> nodeProperties = new ArrayList<>();
         nodeProperties.add("term");
         TermTree<?> tree = termTreeServcie.loadWithNodes(trees.iterator().next().getUuid(), null, nodeProperties);
-        assertNotNull("featureTree should not be null", tree);
+        assertNotNull(tree, "featureTree should not be null");
 
-        assertEquals("Tree has wrong term type", TermType.Property, tree.getTermType());
-        assertEquals("Wrong number of distinct features", 12, tree.getDistinctTerms().size());
+        assertEquals(TermType.Property, tree.getTermType(), "Tree has wrong term type");
+        assertEquals(12, tree.getDistinctTerms().size(), "Wrong number of distinct features");
 
         String vocLabel = "Plant Glossary Properties";
         List<TermVocabulary> vocs = vocabularyService.findByTitle(TermVocabulary.class, vocLabel, MatchMode.EXACT, null, null, null, null, Arrays.asList("terms")).getRecords();
-        assertEquals("wrong number of vocabularies", 1, vocs.size());
+        assertEquals(1, vocs.size(), "wrong number of vocabularies");
         TermVocabulary termVoc = vocs.iterator().next();
-        assertEquals("Wrong vocabulary label", vocLabel, termVoc.getTitleCache());
+        assertEquals(vocLabel, termVoc.getTitleCache(), "Wrong vocabulary label");
         assertEquals(82, termVoc.getTerms().size());
 
         Set<DefinedTermBase> terms = termVoc.getTerms();
@@ -201,8 +200,8 @@ public class StructureTreeOwlImportTest extends CdmIoTransactionalSpringIntegrat
             termProperties.add("sources");
             definedTermBase = termService.load(definedTermBase.getUuid(), termProperties);
             Set<IdentifiableSource> sources = definedTermBase.getSources();
-            assertTrue("Import source is missing for term: "+definedTermBase, !sources.isEmpty());
-            assertTrue("import source type not found", sources.stream().anyMatch(source->OriginalSourceType.Import.getKey().equals(source.getType().getKey())));
+            assertTrue(!sources.isEmpty(), "Import source is missing for term: "+definedTermBase);
+            assertTrue(sources.stream().anyMatch(source->OriginalSourceType.Import.getKey().equals(source.getType().getKey())), "import source type not found");
         }
 
     }

@@ -8,10 +8,12 @@
 */
 package eu.etaxonomy.cdm.io.print;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.io.print.dto.PrintPubTaxonSummaryDTO;
 import eu.etaxonomy.cdm.io.print.mapper.PrintPubBibliographyCollector;
@@ -48,7 +50,7 @@ public class PrintPubDtoMapperTest extends TermTestBase {
     private TaxonNode taxonNode;
     private PrintPubDtoMapper mapper;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         config = PrintPubExportConfigurator.NewInstance();
@@ -98,13 +100,13 @@ public class PrintPubDtoMapperTest extends TermTestBase {
         PrintPubTaxonSummaryDTO taxonDto = mapper.mapNodeToDto(taxonNode, 1, state);
 
         //types
-        Assert.assertTrue(taxonDto.homotypicSynonymGroup != null);
-        Assert.assertTrue(taxonDto.homotypicSynonymGroup.typeSpecimenString != null);
+        assertTrue(taxonDto.homotypicSynonymGroup != null);
+        assertTrue(taxonDto.homotypicSynonymGroup.typeSpecimenString != null);
 
     }
 
     @Test
-    @Ignore   //temp ignored as language labels convert to idInVoc in jenkins
+    @Disabled   //temp ignored as language labels convert to idInVoc in jenkins
     public void testMapNodeToDto_Facts() {
         PrintPubExportConfigurator config = PrintPubExportConfigurator.NewInstance();
         PrintPubExportState state = new PrintPubExportState(config);
@@ -113,9 +115,9 @@ public class PrintPubDtoMapperTest extends TermTestBase {
         PrintPubTaxonSummaryDTO taxonDto = mapper.mapNodeToDto(taxonNode, 1, state);
 
         //facts
-        Assert.assertEquals("First flower name [Irish], My flower [English]", taxonDto.commonNameString);
+        assertEquals("First flower name [Irish], My flower [English]", taxonDto.commonNameString);
 
         //TODO preliminary
-        Assert.assertEquals("Africa, Europe", taxonDto.distributionString);
+        assertEquals("Africa, Europe", taxonDto.distributionString);
     }
 }
