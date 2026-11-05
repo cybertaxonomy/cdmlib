@@ -8,12 +8,13 @@
 */
 package eu.etaxonomy.cdm.remote;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.Collections;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -25,7 +26,7 @@ import org.springframework.web.client.RestTemplate;
  * @author a.kohlbecker
  * @since Feb 22, 2016
  */
-public class WebServiceTestBase extends Assert {
+public class WebServiceTestBase {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -35,7 +36,7 @@ public class WebServiceTestBase extends Assert {
     RestTemplate template = new RestTemplate();
 
 
-    @Before
+    @BeforeEach
     public void setUp() {
         if(System.getProperty("sun.java.command") != null && System.getProperty("sun.java.command").startsWith("org.eclipse.jdt.internal.junit.runner.RemoteTestRunner")){
             port = 8080;
@@ -65,8 +66,8 @@ public class WebServiceTestBase extends Assert {
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         ResponseEntity<String> entity = template.exchange(
                 uri.toString(), HttpMethod.GET, new HttpEntity<>(headers), String.class);
-        assertNotNull("HTTP response body is null for " + uri
-                + " (status=" + entity.getStatusCode() + ")", entity.getBody());
+        assertNotNull(entity.getBody(), "HTTP response body is null for " + uri
+                + " (status=" + entity.getStatusCode() + ")");
         return entity.getBody();
     }
 }

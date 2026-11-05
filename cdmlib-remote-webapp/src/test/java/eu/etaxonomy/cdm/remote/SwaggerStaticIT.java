@@ -17,8 +17,8 @@ import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.remote.config.SwaggerGroupsConfig;
 import eu.etaxonomy.cdm.remote.staticSwagger.StaticSwaggerApiDoc;
@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.remote.staticSwagger.StaticSwaggerApiDoc;
  * @author a.kohlbecker
  * @since Mar 3, 2014
  */
-@Ignore("Re-enable after StaticSwaggerApiDoc is updated for OpenAPI 3 / springdoc group URLs")
+@Disabled("Re-enable after StaticSwaggerApiDoc is updated for OpenAPI 3 / springdoc group URLs")
 public class SwaggerStaticIT extends WebServiceTestBase {
 
     private static final Logger logger = LogManager.getLogger();

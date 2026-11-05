@@ -8,8 +8,9 @@
 */
 package eu.etaxonomy.cdm.remote;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.kohlbecker
@@ -22,8 +23,8 @@ public class ClassificationIT extends WebServiceTestBase {
     public void checkInstanceIsOnline(){
     	
         String response = httpGetJson("/classification", null);
-        assertTrue("Response does not contain 'My Classification' but: " + response,
-                response.contains("My Classification"));
+        assertTrue(response.contains("My Classification"),
+                "Response does not contain 'My Classification' but: " + response);
                
     }
     
