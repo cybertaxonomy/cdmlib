@@ -115,12 +115,13 @@ public class TestingTermInitializer extends DefaultTermInitializer {
                 	.setMetaDataSetFromDtd(termsDtd.getInputStream())
                 	.build(termsDataSet.getInputStream());
 
-
-                //ITable definedTermBase = dataSet.getTable("DEFINEDTERMBASE");
-//				for(int rowId = 0; rowId < definedTermBase.getRowCount(); rowId++) {
-//					System.err.println(rowId + " : " + definedTermBase.getValue(rowId, "CREATEDBY_ID"));
-//				}
-                DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
+                // FlatXml order is not FK-safe; Unitils disabled constraints during load
+                connection.getConnection().createStatement().execute("SET REFERENTIAL_INTEGRITY FALSE");
+                try {
+                    DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
+                } finally {
+                    connection.getConnection().createStatement().execute("SET REFERENTIAL_INTEGRITY TRUE");
+                }
 
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
@@ -209,6 +210,8 @@ public class TestingTermInitializer extends DefaultTermInitializer {
             DatabaseConfig config = connection.getConfig();
             //FIXME must use unitils.properties: org.unitils.core.dbsupport.DbSupport.implClassName & database.dialect to find configured DataTypeFactory
             config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new H2DataTypeFactory());
+            // Term fixtures contain empty attribute values (e.g. DEFINEDTERMBASE.URI="")
+            config.setProperty(DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS, true);
         } catch (Exception e) {
             logger.error(e);
         }

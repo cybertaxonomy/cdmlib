@@ -37,6 +37,8 @@
     <hibernate-search.version>7.2.6.Final</hibernate-search.version>
     <lucene.version>9.11.1</lucene.version>
 	<unitils.version>3.4.6</unitils.version>
+    <junit-jupiter.version>5.12.2</junit-jupiter.version>
+    <dbunit.version>2.7.3</dbunit.version>
     <httpcomponents.version>4.5.14</httpcomponents.version>
     <doxia.version>2.1.0</doxia.version>
     <poi.version>5.5.1</poi.version>                    <!-- checked 2026-05 -->
@@ -745,6 +747,24 @@
         <artifactId>junit</artifactId>
         <version>4.13.2</version>
         <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>${junit-jupiter.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.dbunit</groupId>
+        <artifactId>dbunit</artifactId>
+        <version>${dbunit.version}</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>com.carrotsearch</groupId>

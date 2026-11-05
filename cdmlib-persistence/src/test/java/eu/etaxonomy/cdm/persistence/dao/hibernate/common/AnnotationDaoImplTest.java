@@ -8,18 +8,16 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -27,41 +25,37 @@ import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotationDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmSpringIntegrationTest;
 
-@DataSet
-public class AnnotationDaoImplTest extends CdmIntegrationTest {
+@CdmDataSet
+public class AnnotationDaoImplTest extends CdmSpringIntegrationTest {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-	@SpringBeanByType
+	@Autowired
 	private IAnnotationDao annotationDao;
 
 	@Test
 	public void testCount() {
-
 	    long numberOfAnnotations = annotationDao.count((User)null);
-		assertEquals("countAnnotations should return 5", 5, numberOfAnnotations);
+		assertEquals(5, numberOfAnnotations, "countAnnotations should return 5");
 	}
 
 	@Test
 	public void testListAnnotations() {
-
 	    Person person = null;
 
         List<Annotation> annotations = annotationDao.list(person, null, null, null, null);
-        assertEquals("getAnnotations should return 5", 5, annotations.size());
+        assertEquals(5, annotations.size(), "getAnnotations should return 5");
 
         List<OrderHint> orderHints = new ArrayList<>();
-//        orderHints.add(new OrderHint("commentator.titleCache", SortOrder.ASCENDING));  //requires to join the commentator first, see according comments in base method
         orderHints.add(new OrderHint("commentator", SortOrder.ASCENDING));
         orderHints.add(OrderHint.ORDER_BY_ID_DESC);
         annotations = annotationDao.list(person, null, null, orderHints, null);
-        assertEquals("getAnnotations should still return 5", 5, annotations.size());
-        assertEquals("First result should have highest ID (id=5)", UUID.fromString("76ff6174-a650-4cd8-88a0-cc140a1cbff2"), annotations.get(0).getUuid());
+        assertEquals(5, annotations.size(), "getAnnotations should still return 5");
+        assertEquals(UUID.fromString("76ff6174-a650-4cd8-88a0-cc140a1cbff2"), annotations.get(0).getUuid(),
+                "First result should have highest ID (id=5)");
 	}
-
-    @Override
-    public void createTestDataSet() throws FileNotFoundException {}
 }
