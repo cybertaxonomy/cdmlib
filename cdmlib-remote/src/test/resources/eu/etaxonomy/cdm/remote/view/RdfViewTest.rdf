@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<?xml-stylesheet type='text/xsl' href='/human.xsl'?>
-<rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/"
-         xmlns:tn="http://rs.tdwg.org/ontology/voc/TaxonName#" 
-         xmlns:tt="http://rs.tdwg.org/ontology/voc/Team#" 
+<?xml-stylesheet type='text/xsl' href='../xsl/human.xsl'?>
+<?xml-stylesheet type='text/xsl' href='../xsl/oai2.xsl'?>
+<rdf:RDF xmlns:tt="http://rs.tdwg.org/ontology/voc/Team#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#"
+         xmlns:cdmni="http://cybertaxonomy.org/cdm/ontology/voc/NameInformation#"
+         xmlns:tpc="http://rs.tdwg.org/ontology/voc/PublicationCitation#"
+         xmlns:dwcterms="http://rs.tdwg.org/dwc/terms/"
+         xmlns:gr="http://rs.tdwg.org/ontology/voc/GeographicRegion#"
          xmlns:tc="http://rs.tdwg.org/ontology/voc/TaxonConcept#"
-         xmlns:tp="http://rs.tdwg.org/ontology/voc/Person#" 
-         xmlns:owl="http://www.w3.org/2002/07/owl#" 
-         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
-         xmlns:spm="http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#" 
-         xmlns:tcom="http://rs.tdwg.org/ontology/voc/Common#" 
-         xmlns:tpc="http://rs.tdwg.org/ontology/voc/PublicationCitation#" 
-         xmlns:dcterms="http://purl.org/dc/terms/">
+         xmlns:spm="http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"
+         xmlns:oai="http://www.openarchives.org/OAI/2.0/"
+         xmlns:ns17="http://rs.tdwg.org/dwc/xsd/simpledarwincore/"
+         xmlns:dcterms="http://purl.org/dc/terms/"
+         xmlns:tn="http://rs.tdwg.org/ontology/voc/TaxonName#"
+         xmlns:tcom="http://rs.tdwg.org/ontology/voc/Common#"
+         xmlns:tp="http://rs.tdwg.org/ontology/voc/Person#"
+         xmlns:dc="http://purl.org/dc/elements/1.1/">
   <tc:TaxonConcept>
     <dc:title>Lorem ipsum</dc:title>
     <dc:identifier>urn:lsid:example.org:taxonconcepts:1</dc:identifier>
@@ -52,5 +59,3 @@
     </tc:describedBy>
   </tc:TaxonConcept>
 </rdf:RDF>
-
-

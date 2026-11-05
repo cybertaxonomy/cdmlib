@@ -155,7 +155,10 @@ http://www.w3.org/2001/XMLSchema
       <xs:element name="References" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
-            <xs:element ref="reference:ReferenceBase" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="reference:ReferenceBase"/>
+              <xs:element ref="reference:Reference"/>
+            </xs:choice>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -173,23 +176,55 @@ http://www.w3.org/2001/XMLSchema
         <xs:complexType>
           <xs:sequence>
             <xs:choice minOccurs="0" maxOccurs="unbounded">
-              <xs:element ref="description:TermTree" />
+              <xs:element ref="description:TermTree"/>
+              <!-- legacy: PolytomousKey used to live under TermTrees -->
               <xs:element ref="description:PolytomousKey"/>
             </xs:choice>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="Classification" minOccurs="0">
+      <!-- Aligned with eu.etaxonomy.cdm.io.jaxb.DataSet propOrder / wrappers -->
+      <xs:element name="PolytomousKeys" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
-            <xs:element ref="taxon:Classification" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="description:PolytomousKey" minOccurs="0" maxOccurs="unbounded"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="TaxonNodes" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="taxon:TaxonNode"/>
+              <!-- JAXB @XmlElement name is currently "TaxonNodes" (same as wrapper) -->
+              <xs:element name="TaxonNodes" type="taxon:TaxonNode"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:choice minOccurs="0">
+        <xs:element name="Classifications">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element ref="taxon:Classification" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <!-- legacy wrapper name -->
+        <xs:element name="Classification">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element ref="taxon:Classification" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
       <xs:element name="TaxonomicNames" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
             <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="name:TaxonName"/>
+              <!-- legacy concrete name elements (pre-unified TaxonName) -->
               <xs:element ref="name:BacterialName"/>
               <xs:element ref="name:BotanicalName"/>
               <xs:element ref="name:CultivarPlantName"/>

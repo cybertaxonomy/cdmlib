@@ -91,11 +91,6 @@
     </pluginManagement>
   </build>
   <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>compile</scope>
-    </dependency>
     <!-- JUnit 5 + Spring Test + DBUnit (Unitils migration path) -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -133,9 +128,9 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-		<groupId>xmlunit</groupId>
-		<artifactId>xmlunit</artifactId>
-        <scope>compile</scope>
+      <groupId>org.xmlunit</groupId>
+      <artifactId>xmlunit-core</artifactId>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
@@ -147,12 +142,6 @@
       <artifactId>jakarta.annotation-api</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>com.carrotsearch</groupId>
-      <artifactId>junit-benchmarks</artifactId>
-      <scope>compile</scope>
-    </dependency>
-
     <!-- ******* DATABASES DRIVER ******* -->
     
     <dependency> 

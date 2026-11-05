@@ -14,20 +14,18 @@ import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.TestRule;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
-import com.carrotsearch.junitbenchmarks.BenchmarkRule;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
 /**
+ * Lightweight timing harness for SDD import (replaces abandoned junit-benchmarks / JUnit 4 {@code @Rule}).
+ *
  * @author b.clark
  * @since 20.01.2009
  */
@@ -39,10 +37,6 @@ public class SDDImportBenchmark extends CdmIoTransactionalSpringIntegrationTest 
     @Autowired
     private INameService nameService;
 
-    @Rule
-    //was of Type MethodRule before but this was not implemented in junitbenchmarks 0.5.0 anymore
-	public TestRule benchmarkRun = new BenchmarkRule();
-
     private SDDImportConfigurator configurator;
 
     @BeforeEach
@@ -52,20 +46,29 @@ public class SDDImportBenchmark extends CdmIoTransactionalSpringIntegrationTest 
         configurator = SDDImportConfigurator.NewInstance(URI.fromUrl(url), null);
     }
 
-    @BenchmarkOptions(benchmarkRounds = 1, warmupRounds = 0)
     @Test
     public void testInit() {
         assertNotNull(sddImport, "sddImport should not be null");
         assertNotNull(nameService, "nameService should not be null");
     }
 
-    @BenchmarkOptions(benchmarkRounds = 2, warmupRounds = 0)
+    /**
+     * Manual timing only: imports the large Cichorieae-DA SDD twice and can take many minutes.
+     */
+    @Disabled("Manual benchmark against Cichorieae-DA.sdd.xml; too slow for the default suite")
     @Test
     public void testDoInvoke() {
-        sddImport.doInvoke(new SDDImportState(configurator));
+        final int rounds = 2;
+        for (int i = 1; i <= rounds; i++) {
+            long start = System.nanoTime();
+            sddImport.doInvoke(new SDDImportState(configurator));
+            long elapsedMs = (System.nanoTime() - start) / 1_000_000L;
+            logger.info("testDoInvoke round " + i + "/" + rounds + ": " + elapsedMs + " ms");
+        }
         this.setComplete();
         this.endTransaction();
     }
 
-    @Override    public void createTestDataSet() throws FileNotFoundException {}
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {}
 }

@@ -18,9 +18,10 @@ import java.io.StringWriter;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
-import org.custommonkey.xmlunit.jaxp13.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
@@ -70,24 +71,27 @@ public class SimpleMarshalTest {
     }
 
 	/**
-	 * Check that we can marshal an empty document
-	 * @throws JAXBException
-	 * @throws IOException
+	 * Check that we can marshal an empty document and that the result validates against the CDM schemas
+	 * (JAXP {@code javax.xml.validation}, formerly xmlunit {@code Validator}).
 	 */
 	@Test
-	public void testMarshalEmptyDocument() throws JAXBException, IOException {
+	public void testMarshalEmptyDocument() throws Exception {
 		DataSet dataSet = new DataSet();
 		StringWriter writer = new StringWriter();
 		cdmDocumentBuilder.marshal(dataSet, writer);
+		String xml = writer.toString();
+		assertNotNull(xml, "marshalled XML should not be null");
 
 		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-	    schemaFactory.setResourceResolver(new CdmResourceResolver());
+		schemaFactory.setResourceResolver(new CdmResourceResolver());
 
-		Validator validator = new Validator(schemaFactory);
-		for(String schemaName : CdmDocumentBuilder.CDM_SCHEMA_FILES) {
-		    validator.addSchemaSource(new StreamSource(this.getClass().getResourceAsStream(schemaName)));
-	    }
-		StreamSource streamSource = new StreamSource(new StringReader(writer.toString()));
-		//assertTrue(validator.isInstanceValid(streamSource), "CdmDocumentBuilder.marshal should produce valid xml");
+		StreamSource[] schemaSources = new StreamSource[CdmDocumentBuilder.CDM_SCHEMA_FILES.length];
+		for (int i = 0; i < CdmDocumentBuilder.CDM_SCHEMA_FILES.length; i++) {
+			String schemaName = CdmDocumentBuilder.CDM_SCHEMA_FILES[i];
+			schemaSources[i] = new StreamSource(this.getClass().getResourceAsStream(schemaName));
+		}
+		Schema schema = schemaFactory.newSchema(schemaSources);
+		Validator validator = schema.newValidator();
+		validator.validate(new StreamSource(new StringReader(xml)));
 	}
 }

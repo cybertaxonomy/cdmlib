@@ -431,6 +431,15 @@
                   <version>[3.9.16,)</version>
                   <message>You need at least maven 3.9.16 for this project!</message>
                 </requireMavenVersion>
+                <!-- Jupiter-only: no JUnit 4 / Vintage on the classpath -->
+                <bannedDependencies>
+                  <excludes>
+                    <exclude>junit:junit</exclude>
+                    <exclude>org.junit.vintage:junit-vintage-engine</exclude>
+                    <!-- xmlunit 1.x extends junit.framework.Assert; use org.xmlunit:xmlunit-core -->
+                    <exclude>xmlunit:xmlunit</exclude>
+                  </excludes>
+                </bannedDependencies>
               </rules>
             </configuration>
             <goals>
@@ -585,9 +594,9 @@
   <!-- **** DEPENDENCIES **** -->
   <dependencies>
     <dependency>
-      <!-- junit is required for all module tests, also those not depending on cdmlib-test, so it is added here on parent level with test scope -->
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <!-- junit-jupiter for all module tests, also those not depending on cdmlib-test -->
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -742,12 +751,6 @@
       
       <!-- ******* testing ******* -->
       <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.13.2</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter</artifactId>
         <version>${junit-jupiter.version}</version>
@@ -766,20 +769,14 @@
         </exclusions>
       </dependency>
       <dependency>
-        <groupId>com.carrotsearch</groupId>
-        <artifactId>junit-benchmarks</artifactId>
-        <version>0.7.2</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
         <groupId>org.objenesis</groupId>
         <artifactId>objenesis</artifactId>
         <version>3.6</version>
       </dependency>
       <dependency>
-        <groupId>xmlunit</groupId>
-        <artifactId>xmlunit</artifactId>
-        <version>1.6</version>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-core</artifactId>
+        <version>2.10.3</version>
       </dependency>
      <!--    <scope>test</scope>  -->
       <dependency>
@@ -1110,6 +1107,13 @@
         <groupId>org.cybertaxonomy.media</groupId>
         <artifactId>media-info-model</artifactId>
         <version>1.2.0</version>
+        <exclusions>
+          <!-- ships junit:junit:3.8.1 as compile; Surefire then activates Vintage and fails without JUnit 4 -->
+          <exclusion>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <!-- joda-time -->
       <dependency>

@@ -131,8 +131,8 @@
       <artifactId>spring-security-oauth2-jose</artifactId>
     </dependency>
     <dependency>
-      <groupId>xmlunit</groupId>
-      <artifactId>xmlunit</artifactId>
+      <groupId>org.xmlunit</groupId>
+      <artifactId>xmlunit-core</artifactId>
     </dependency>
 
     <dependency>

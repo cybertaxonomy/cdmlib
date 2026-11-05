@@ -26,6 +26,7 @@ import org.dbunit.dataset.filter.DefaultColumnFilter;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
+import org.opentest4j.AssertionFailedError;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -119,7 +120,7 @@ public final class CdmDbUnitSupport {
         // Unitils: empty expected table ⇒ actual table must be empty
         if (expected.getRowCount() == 0) {
             if (actual.getRowCount() != 0) {
-                throw new junit.framework.AssertionFailedError(
+                throw new AssertionFailedError(
                         "Expected table to be empty but found " + actual.getRowCount()
                                 + " rows for table " + meta.getTableName());
             }
@@ -140,7 +141,7 @@ public final class CdmDbUnitSupport {
                     wanted.append(column.getColumnName()).append('=').append(value);
                 }
             }
-            throw new junit.framework.AssertionFailedError(
+            throw new AssertionFailedError(
                     "Missing expected row in table " + meta.getTableName()
                             + " (expected row " + expectedRow + "): " + wanted);
         }

@@ -25,8 +25,6 @@ import java.util.Set;
 
 import javax.xml.transform.stream.StreamResult;
 
-import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +45,7 @@ import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonName;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonRelationshipTerm;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.Team;
+import eu.etaxonomy.cdm.test.xml.XmlAssert;
 import eu.etaxonomy.remote.dto.rdf.Rdf;
 
 @SpringJUnitConfig(locations = "classpath:/eu/etaxonomy/cdm/applicationContext-test.xml")
@@ -69,8 +68,6 @@ public class RdfViewTest {
 
 	@BeforeEach
 	public void setUp() throws Exception {
-
-	    XMLUnit.setIgnoreWhitespace(true);
 
 		taxonConcept = new TaxonConcept();
 
@@ -141,7 +138,7 @@ public class RdfViewTest {
 		String resource = "/eu/etaxonomy/cdm/remote/view/RdfViewTest.rdf";
 //		System.out.println(new String(outputStream.toByteArray()));
 
-		XMLAssert.assertXMLEqual(
+		XmlAssert.assertXmlEqual(
 		        new InputStreamReader(this.getClass().getResourceAsStream(resource)),
 		        new StringReader(new String(outputStream.toByteArray())));
 	}
@@ -194,6 +191,8 @@ public class RdfViewTest {
 //		System.out.println(new String(outputStream.toByteArray()));
 
 		String resource = "/eu/etaxonomy/cdm/remote/view/NameInformationTest.rdf";
-		XMLAssert.assertXMLEqual(new InputStreamReader(this.getClass().getResourceAsStream(resource)),new StringReader(new String(outputStream.toByteArray())));
+		XmlAssert.assertXmlEqual(
+		        new InputStreamReader(this.getClass().getResourceAsStream(resource)),
+		        new StringReader(new String(outputStream.toByteArray())));
 	}
 }

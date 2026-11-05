@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.api.service.lsid;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -18,7 +17,6 @@ import java.io.StringReader;
 
 import javax.xml.transform.Source;
 
-import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -31,6 +29,7 @@ import eu.etaxonomy.cdm.api.service.lsid.impl.LsidRegistryImpl;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
 import eu.etaxonomy.cdm.test.integration.spring.CdmServicesSpringIntegrationTest;
+import eu.etaxonomy.cdm.test.xml.XmlAssert;
 
 @CdmDataSet("LSIDAuthorityServiceTest.testGetAvailableServices.xml")
 public class LSIDAuthorityServiceTest extends CdmServicesSpringIntegrationTest {
@@ -48,7 +47,6 @@ public class LSIDAuthorityServiceTest extends CdmServicesSpringIntegrationTest {
 	public void setUp() throws Exception {
 		unknownLsid = new LSID("fred.org", "dagg", "1", null);
 		knownLsid = new LSID("example.org", "taxonconcepts", "1", null);
-	    XMLUnit.setIgnoreWhitespace(true);
 	    ((LsidRegistryImpl)lsidRegistry).init();
 	}
 
@@ -63,7 +61,7 @@ public class LSIDAuthorityServiceTest extends CdmServicesSpringIntegrationTest {
 		String resource = "/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityServiceTest.testGetAuthorityWSDL-result.wsdl";
 		String result = transformSourceToString((Source) expiringResponse.getValue());
 
-		assertXMLEqual("getAuthorityWSDL should return an xml source equal to the test resource",
+		XmlAssert.assertXmlEqual("getAuthorityWSDL should return an xml source equal to the test resource",
 		        new InputStreamReader(this.getClass().getResourceAsStream(resource)),
 		        new StringReader(result));
 	}
@@ -81,7 +79,9 @@ public class LSIDAuthorityServiceTest extends CdmServicesSpringIntegrationTest {
 
 		String resource = "/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityServiceTest.testGetAvailableServicesWithKnownLSID-result.wsdl";
 		String result = transformSourceToString((Source) expiringResponse.getValue());
-		assertXMLEqual("getAvailableServices should return an xml source equal to the test resource",new InputStreamReader(this.getClass().getResourceAsStream(resource)),new StringReader(result));
+		XmlAssert.assertXmlEqual("getAvailableServices should return an xml source equal to the test resource",
+		        new InputStreamReader(this.getClass().getResourceAsStream(resource)),
+		        new StringReader(result));
 	}
 
 	@Test

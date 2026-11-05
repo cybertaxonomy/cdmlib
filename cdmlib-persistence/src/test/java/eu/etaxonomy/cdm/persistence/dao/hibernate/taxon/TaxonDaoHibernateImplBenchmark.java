@@ -33,9 +33,6 @@ import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegratio
  */
 public class TaxonDaoHibernateImplBenchmark extends CdmTransactionalSpringIntegrationTest {
 
-//    @Rule
-//    public MethodRule benchmarkRun = new BenchmarkRule();
-
     @Autowired
     private ITaxonDao taxonDao;
 

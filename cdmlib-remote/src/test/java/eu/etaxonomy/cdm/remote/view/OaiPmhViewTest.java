@@ -18,7 +18,6 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.custommonkey.xmlunit.XMLUnit;
 import org.hibernate.envers.RevisionType;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.jupiter.api.BeforeEach;
@@ -87,8 +86,6 @@ public class OaiPmhViewTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-
-        XMLUnit.setIgnoreWhitespace(true);
 
         model = new HashMap<>();
         identifyView = new IdentifyView();
