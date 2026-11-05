@@ -8,12 +8,14 @@
  */
 package eu.etaxonomy.cdm.ext.bci;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.ext.ipni.IIpniService;
@@ -26,7 +28,7 @@ public class BciServiceTest {
 
 	private IBciServiceWrapper service1;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		service1 = new BciServiceWrapper();
 	}
@@ -35,30 +37,30 @@ public class BciServiceTest {
 
 	@Test
 	public void testBciService() {
-		Assert.assertNotNull("Service should not be null", service1);
-		Assert.assertNotNull("URL1 should not be null", service1.getServiceUrl(IIpniService.ADVANCED_NAME_SERVICE_URL));
+		assertNotNull(service1, "Service should not be null");
+		assertNotNull(service1.getServiceUrl(IIpniService.ADVANCED_NAME_SERVICE_URL), "URL1 should not be null");
 	}
 
 	@Test
-	@Ignore // service is under refactoring
+	@Disabled // service is under refactoring
 	public void testGetCollectionsByCode(){
 		ICdmRepository repository = null;
 		List<Collection> collectionList = service1.getCollectionsByCode("BG", repository);
 		//expected web service result: urn:lsid:biocol.org:col:15727	http://biocol.org/urn:lsid:biocol.org:col:15727	University of Bergen Herbarium
 
-		Assert.assertEquals("There should be exactly 1 result for 'BG'", 1, collectionList.size());
+		assertEquals(1, collectionList.size(), "There should be exactly 1 result for 'BG'");
 		Collection collection = collectionList.get(0);
 		//title cache
-		Assert.assertEquals("Name for BG should be 'University of Bergen Herbarium'", "University of Bergen Herbarium", collection.getName());
-		Assert.assertEquals("LSID should be urn:lsid:biocol.org:col:15727", "urn:lsid:biocol.org:col:15727", collection.getLsid().getLsid());
+		assertEquals("University of Bergen Herbarium", collection.getName(), "Name for BG should be 'University of Bergen Herbarium'");
+		assertEquals("urn:lsid:biocol.org:col:15727", collection.getLsid().getLsid(), "LSID should be urn:lsid:biocol.org:col:15727");
 
 		collectionList = service1.getCollectionsByCode("CM", repository);
-		Assert.assertEquals("There should be exactly 3 result for 'CM'. If not try http://www.biocol.org/rest/lookup/code/CM", 3, collectionList.size());
+		assertEquals(3, collectionList.size(), "There should be exactly 3 result for 'CM'. If not try http://www.biocol.org/rest/lookup/code/CM");
 	}
 
 	@Test
 	public void testGetServiceUrl() {
-		Assert.assertNotNull("Service should not be null", service1);
-		Assert.assertNotNull("URL1 should not be null", service1.getServiceUrl(IBciServiceWrapper.LOOKUP_CODE_REST));
+		assertNotNull(service1, "Service should not be null");
+		assertNotNull(service1.getServiceUrl(IBciServiceWrapper.LOOKUP_CODE_REST), "URL1 should not be null");
 	}
 }

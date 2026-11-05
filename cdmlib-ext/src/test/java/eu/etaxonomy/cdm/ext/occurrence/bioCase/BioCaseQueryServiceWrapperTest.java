@@ -8,9 +8,9 @@
  */
 package eu.etaxonomy.cdm.ext.occurrence.bioCase;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,11 +18,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.hc.client5.http.ClientProtocolException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -39,7 +41,8 @@ public class BioCaseQueryServiceWrapperTest {
     private static final int MAX_LINES_TO_READ = 1000;
     private static final int TIMEOUT = 60000;
 
-    @Test(timeout=TIMEOUT)
+    @Test
+    @Timeout(value = TIMEOUT, unit = TimeUnit.MILLISECONDS)
     public void testQuery() {
 
         if(UriUtils.isInternetAvailable(null)){
@@ -75,7 +78,7 @@ public class BioCaseQueryServiceWrapperTest {
                     line = reader.readLine();
                     count++;
                 } while (line!=null);
-                assertTrue("BioCase response did not have the expected format", isCorrectFormat);
+                assertTrue(isCorrectFormat, "BioCase response did not have the expected format");
             } catch (NumberFormatException e) {
                 fail(e.getMessage());
             } catch (ClientProtocolException e) {
@@ -122,14 +125,14 @@ public class BioCaseQueryServiceWrapperTest {
                         int index = line.indexOf(recordAttr);
                         if(index>-1){
                             String recordCount = line.substring(index+recordAttr.length(), index+recordAttr.length()+1);
-                            assertEquals("Incorrect number of occurrences", 1, Integer.parseInt(recordCount.trim()));
+                            assertEquals(1, Integer.parseInt(recordCount.trim()), "Incorrect number of occurrences");
                         }
                         String unitId = "<abcd:UnitID>";
                         int indexId = line.indexOf(unitId);
                         if(indexId>-1){
                             @SuppressWarnings("unused")
                             String id = line.substring(indexId+unitId.length(), indexId+unitId.length()+5);
-                           // assertEquals("Incorrect UnitId", 29596, Integer.parseInt(id));
+                           // assertEquals(29596, Integer.parseInt(id), "Incorrect UnitId");
                            // break;
                         }
                     }
@@ -162,7 +165,7 @@ public class BioCaseQueryServiceWrapperTest {
                         int index = line.indexOf(recordAttr);
                         if(index>-1){
                             String recordCount = line.substring(index+recordAttr.length(), index+recordAttr.length()+1);
-                            assertEquals("Incorrect number of occurrences", 2, Integer.parseInt(recordCount));
+                            assertEquals(2, Integer.parseInt(recordCount), "Incorrect number of occurrences");
                         }
                     }
                     line = reader.readLine();

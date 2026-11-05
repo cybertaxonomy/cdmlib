@@ -8,16 +8,20 @@
 */
 package eu.etaxonomy.cdm.ext.ipni;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.InputStream;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -33,7 +37,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 /**
  * @author a.mueller
  */
-@Ignore //preliminary, fix tests before unignore
+@Disabled //preliminary, fix tests before unignore
 public class IpniServiceTest extends TermTestBase {
 
 	@SuppressWarnings("unused")
@@ -42,12 +46,12 @@ public class IpniServiceTest extends TermTestBase {
 	private IpniService service1;
 	private static boolean internetIsAvailable = true;
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUpClass() throws Exception {
 		internetIsAvailable = true;
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		service1 = new IpniService();
 	}
@@ -59,8 +63,8 @@ public class IpniServiceTest extends TermTestBase {
 	 */
 	@Test
 	public void testIpniService() {
-		Assert.assertNotNull("Service should not be null", service1);
-		Assert.assertNotNull("URL1 should not be null", service1.getServiceUrl(IIpniService.ADVANCED_NAME_SERVICE_URL));
+		assertNotNull(service1, "Service should not be null");
+		assertNotNull(service1.getServiceUrl(IIpniService.ADVANCED_NAME_SERVICE_URL), "URL1 should not be null");
 	}
 
 	@Test
@@ -72,25 +76,25 @@ public class IpniServiceTest extends TermTestBase {
 		//List<Person> authorList = service1.getAuthors(null, "Greu*", null, null, null, config);
 		//expected web service result: 3379-1%1.1%Greuter%Werner Rodolfo%Greuter%PS%1938-%>Greuter, Werner Rodolfo
 		if(authorList == null){
-            Assert.fail("No results.");
+            fail("No results.");
             return;
 		}
 		if (testInternetConnectivity(authorList)){
 
-			Assert.assertEquals("There should be exactly 1 result for 'Greuter'", 1, authorList.size());
+			assertEquals(1, authorList.size(), "There should be exactly 1 result for 'Greuter'");
 			Person author = authorList.get(0);
 			//full title
-			Assert.assertEquals("Full title for Greuter should be 'Werner Rodolfo Greuter'", "Werner Rodolfo Greuter", author.getFullTitle());
+			assertEquals("Werner Rodolfo Greuter", author.getFullTitle(), "Full title for Greuter should be 'Werner Rodolfo Greuter'");
             //title cache
-            Assert.assertEquals("Title cache for Greuter should be 'Greuter, W.R.'", "Greuter, W.R.", author.getTitleCache());
+            assertEquals("Greuter, W.R.", author.getTitleCache(), "Title cache for Greuter should be 'Greuter, W.R.'");
 			//alternative names
-			Assert.assertEquals("One extension for the alternative name should exist", 1, author.getExtensions().size());
+			assertEquals(1, author.getExtensions().size(), "One extension for the alternative name should exist");
 			Extension alternativeName = author.getExtensions().iterator().next();
-			Assert.assertEquals("Alternative name should be ", "Greuter, Werner Rodolfo", alternativeName.getValue());
+			assertEquals("Greuter, Werner Rodolfo", alternativeName.getValue(), "Alternative name should be ");
 			//dates
 			String year = author.getLifespan().getYear();
-			Assert.assertNotNull("Year should be not null", year);
-			Assert.assertEquals("Year should be 1938", "1938", year);
+			assertNotNull(year, "Year should be not null");
+			assertEquals("1938", year, "Year should be 1938");
 
 			authorList = service1.getAuthors(null, "Greu*", null, null, null, config);
 
@@ -98,9 +102,9 @@ public class IpniServiceTest extends TermTestBase {
 			//20000981-1%1.1%Greuning%J.V. van%Greuning%M%1993%>Greuning, J.V. van
 			//3379-1%1.1%Greuter%Werner Rodolfo%Greuter%PS%1938-%>Greuter, Werner Rodolfo
 			if(authorList == null){
-			    Assert.fail("No results.");
+			    fail("No results.");
 			}else{
-			    Assert.assertEquals("There should be exactly 3 result for 'Greu*'. But maybe this changes over time", 3, authorList.size());
+			    assertEquals(3, authorList.size(), "There should be exactly 3 result for 'Greu*'. But maybe this changes over time");
 			}
 	//			for (Person person : authorList){
 	//			System.out.println(person.getTitleCache() + ";  " + person.getNomenclaturalTitle());
@@ -108,9 +112,9 @@ public class IpniServiceTest extends TermTestBase {
 	//
 			config.setFormat(DelimitedFormat.MINIMAL);
 			authorList = service1.getAuthors(null, "Greuter", null, null, services, config);
-			Assert.assertEquals("There should be exactly 1 result for 'Greuter'", 1, authorList.size());
+			assertEquals(1, authorList.size(), "There should be exactly 1 result for 'Greuter'");
 			author = authorList.get(0);
-			Assert.assertTrue("No alternative names should exist in the minimal version", author.getExtensions().isEmpty());
+			assertTrue(author.getExtensions().isEmpty(), "No alternative names should exist in the minimal version");
 		}
 	}
 
@@ -124,13 +128,13 @@ public class IpniServiceTest extends TermTestBase {
 
 		if (testInternetConnectivity(nameList)){
 		    if(nameList == null){
-                Assert.fail("No results.");
+                fail("No results.");
                 return;
             }
-			Assert.assertEquals("There should be exactly 1 result for 'Abies albertiana'", 1, nameList.size());
+			assertEquals(1, nameList.size(), "There should be exactly 1 result for 'Abies albertiana'");
 			IBotanicalName name = nameList.get(0);
 			//title cache
-			Assert.assertEquals("Title Cache for Abies albertiana should be 'Abies albertiana'", "Abies albertiana A.Murray bis", name.getTitleCache());
+			assertEquals("Abies albertiana A.Murray bis", name.getTitleCache(), "Title Cache for Abies albertiana should be 'Abies albertiana'");
 
 //			for (IBotanicalName listName : nameList){
 //				System.out.println(name.getFullTitleCache());
@@ -160,13 +164,13 @@ public class IpniServiceTest extends TermTestBase {
 
 		if (testInternetConnectivity(nameList)){
 		    if(nameList == null){
-                Assert.fail("No results.");
+                fail("No results.");
                 return;
             }
-			Assert.assertEquals("There should be exactly 1 result for 'Abies', 'alba', 'B*', Infraspecific ", 1, nameList.size());
+			assertEquals(1, nameList.size(), "There should be exactly 1 result for 'Abies', 'alba', 'B*', Infraspecific ");
 			IBotanicalName name = nameList.get(0);
 			//title cache
-			Assert.assertEquals("Title Cache for 'Abies', 'alba', 'ap*' should be 'Abies alba subsp. apennina Brullo, Scelsi & Spamp.'", "Abies alba subsp. apennina Brullo, Scelsi & Spamp.", name.getTitleCache());
+			assertEquals("Abies alba subsp. apennina Brullo, Scelsi & Spamp.", name.getTitleCache(), "Title Cache for 'Abies', 'alba', 'ap*' should be 'Abies alba subsp. apennina Brullo, Scelsi & Spamp.'");
 
 	//		for (IBotanicalName listName : nameList){
 	//			System.out.println(name.getFullTitleCache());
@@ -183,31 +187,31 @@ public class IpniServiceTest extends TermTestBase {
 
 		if (testInternetConnectivity(refList)){
 		    if (refList == null){
-	            Assert.fail("The list is empty, maybe the ipni service is not available.");
+	            fail("The list is empty, maybe the ipni service is not available.");
 	            return;
 	        }
-			Assert.assertEquals("There should be exactly 1 result for 'Species Plantarum, Edition 3'", 1, refList.size());
+			assertEquals(1, refList.size(), "There should be exactly 1 result for 'Species Plantarum, Edition 3'");
 			Reference ref = refList.get(0);
 			//title cache
 			//the author title may be improved in future
-			Assert.assertEquals("Title Cache should be 'Linnaeus, Carl, Species Plantarum, Edition 3'", "Linnaeus, Carl, Species Plantarum, Edition 3. 1764", ref.getTitleCache());
+			assertEquals("Linnaeus, Carl, Species Plantarum, Edition 3. 1764", ref.getTitleCache(), "Title Cache should be 'Linnaeus, Carl, Species Plantarum, Edition 3'");
 
 
 			refList = service1.getPublications("Flora of Macar", null, services, config);
 			if (refList == null){
-                Assert.fail("The list is empty, maybe the ipni service is not available.");
+                fail("The list is empty, maybe the ipni service is not available.");
                 return;
             }
-			Assert.assertNotNull("Empty resultset should not throw exception and should not be null", refList);
+			assertNotNull(refList, "Empty resultset should not throw exception and should not be null");
 
 			refList = service1.getPublications("Flora Europaea [ed. 2]", null, services, config);
 			if (refList == null){
-			    Assert.fail("The list is empty, maybe the ipni service is not available.");
+			    fail("The list is empty, maybe the ipni service is not available.");
 			    return;
 			}
-			Assert.assertEquals("There should be exactly 1 result for 'Flora Europaea [ed. 2]'", 1, refList.size());
+			assertEquals(1, refList.size(), "There should be exactly 1 result for 'Flora Europaea [ed. 2]'");
 			ref = refList.get(0);
-			Assert.assertEquals("", "Tutin, Thomas Gaskell", ref.getAuthorship().getTitleCache());
+			assertEquals("Tutin, Thomas Gaskell", ref.getAuthorship().getTitleCache(), "");
 
 
 	//		for (Reference ref : refList){
@@ -221,14 +225,14 @@ public class IpniServiceTest extends TermTestBase {
 	public void testNameID(){
 
 		InputStream content = service1.getNamesById("416415-1");
-		Assert.assertNotNull(content);
+		assertNotNull(content);
 	}
 
 
 	@Test
 	public void testGetServiceUrl() {
-		Assert.assertNotNull("Service should not be null", service1);
-		Assert.assertNotNull("URL1 should not be null", service1.getServiceUrl(IIpniService.ADVANCED_NAME_SERVICE_URL));
+		assertNotNull(service1, "Service should not be null");
+		assertNotNull(service1.getServiceUrl(IIpniService.ADVANCED_NAME_SERVICE_URL), "URL1 should not be null");
 	}
 
 

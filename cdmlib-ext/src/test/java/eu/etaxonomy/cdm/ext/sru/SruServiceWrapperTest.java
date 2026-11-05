@@ -8,15 +8,17 @@
  */
 package eu.etaxonomy.cdm.ext.sru;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.ext.dc.DublinCoreSchemaAdapter;
@@ -36,12 +38,12 @@ public class SruServiceWrapperTest {
 
     private static boolean internetIsAvailable = true;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() throws Exception {
         internetIsAvailable = true;
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         sruServiceWrapper = new SruServiceWrapper();
         sruServiceWrapper.setBaseUrl(baseUrl);
@@ -51,7 +53,7 @@ public class SruServiceWrapperTest {
 // ******************************* TESTS ******************************************************/
 
     @Test
-    @Ignore // ignoring since Global References Index to Biodiversity has problems
+    @Disabled // ignoring since Global References Index to Biodiversity has problems
     public void testDoSearchRetrieve(){
 
         List<Reference> refList_1 = sruServiceWrapper.doSearchRetrieve("pica.tit=\"Linnaei Species Plantarum\"", "dc");
@@ -59,18 +61,18 @@ public class SruServiceWrapperTest {
 
         if (testInternetConnectivity(refList_1)){
 
-            Assert.assertEquals("There should be exactly 5 results for 'Linnaei Species Plantarum'", 5, refList_1.size());
+            assertEquals(5, refList_1.size(), "There should be exactly 5 results for 'Linnaei Species Plantarum'");
             Reference reference_1 = refList_1.get(0);
             logger.info(reference_1.toString());
             //title cache
-            Assert.assertEquals("Title of first entry should be 'Caroli Linnaei species plantarum'", "Caroli Linnaei species plantarum", reference_1.getTitleCache());
+            assertEquals("Caroli Linnaei species plantarum", reference_1.getTitleCache(), "Title of first entry should be 'Caroli Linnaei species plantarum'");
 
             //--------------------------
 
             List<Reference> refList_2 = sruServiceWrapper.doSearchRetrieve("pica.all = \"Species+plantarum\" and pica.dst = \"8305\"", "dc");
             // -> http://gso.gbv.de/sru/DB=2.1/?version=1.1&operation=searchRetrieve&query=pica.tit%3D%22Species+Plantarum%22&recordSchema=dc
 
-            Assert.assertTrue("There should be at least 1 result for 'species+plantarum' and digitized", refList_2.size() > 0);
+            assertTrue(refList_2.size() > 0, "There should be at least 1 result for 'species+plantarum' and digitized");
             Reference reference_2 = refList_2.get(0);
             logger.info(reference_2.toString());
         }

@@ -8,7 +8,7 @@
  */
 package eu.etaxonomy.cdm.ext.geo.kml;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,8 +18,8 @@ import java.nio.charset.Charset;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.micromata.opengis.kml.v_2_2_0.Kml;
 import eu.etaxonomy.cdm.model.location.Point;
@@ -32,7 +32,7 @@ public class KmlJaxbMarshallerTest {
 
     private Kml kml;
 
-	@Before
+	@BeforeEach
 	public void makeKML() {
 		FieldUnit fu = FieldUnit.NewInstance();
 		fu.setGatheringEvent(GatheringEvent.NewInstance());

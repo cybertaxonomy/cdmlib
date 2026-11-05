@@ -8,16 +8,19 @@
  */
 package eu.etaxonomy.cdm.ext.openurl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.net.URISyntaxException;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -34,12 +37,12 @@ public class MobotOpenUrlServiceWrapperTest {
 	private MobotOpenUrlServiceWrapper openUrlServiceWrapper;
 	private static boolean internetIsAvailable = true;
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUpClass() throws Exception {
 		internetIsAvailable = true;
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		openUrlServiceWrapper = new MobotOpenUrlServiceWrapper();
 		openUrlServiceWrapper.setBaseUrl(baseUrl);
@@ -69,15 +72,14 @@ public class MobotOpenUrlServiceWrapperTest {
 
 		if (testInternetConnectivity(refList)){
 
-			// Assert.assertEquals("There should be exactly 2 result for 'Linnaei Species Plantarum Europae'",
-			// 2, refList.size());
+			// assertEquals(// 2, refList.size(), "There should be exactly 2 result for 'Linnaei Species Plantarum Europae'");
 			OpenUrlReference reference = refList.get(0);
 			logger.info(reference.toString());
 			// title cache
-			Assert.assertEquals("Manual of North American Diptera", reference.getTitleCache());
+			assertEquals("Manual of North American Diptera", reference.getTitleCache());
 			// TODO Authorship missing see #6939
-			// Assert.assertEquals("Williston, Samuel W. (Samuel Wendell),", reference.getAuthorship().getTitleCache());
-			Assert.assertEquals("Page 16", reference.getPages());
+			// assertEquals("Williston, Samuel W. (Samuel Wendell),", reference.getAuthorship().getTitleCache());
+			assertEquals("Page 16", reference.getPages());
 
 			// -------------------------
 
@@ -86,13 +88,13 @@ public class MobotOpenUrlServiceWrapperTest {
 			} catch (Exception e) {
 				refList = null;
 			}
-			Assert.assertNotNull(refList);
+			assertNotNull(refList);
 			OpenUrlReference reference_plus1 = refList.get(0);
 			logger.info(reference_plus1.toString());
-			Assert.assertEquals("Manual of North American Diptera", reference_plus1.getTitleCache());
-			Assert.assertEquals("Page 18", reference_plus1.getPages());
-			Assert.assertTrue(reference.getItemUri().equals(reference_plus1.getItemUri()));
-			Assert.assertTrue(! reference.getUri().equals(reference_plus1.getUri()));
+			assertEquals("Manual of North American Diptera", reference_plus1.getTitleCache());
+			assertEquals("Page 18", reference_plus1.getPages());
+			assertTrue(reference.getItemUri().equals(reference_plus1.getItemUri()));
+			assertTrue(! reference.getUri().equals(reference_plus1.getUri()));
 
 			logger.info(reference_plus1.getJpegImage(null, null));
 			logger.info(reference_plus1.getJpegImage(400, 600));
@@ -100,7 +102,7 @@ public class MobotOpenUrlServiceWrapperTest {
 	}
 
 	@Test
-	@Ignore // it seems as if oclc number are no longer supported by the api. Email send to mobot to clarify (a.kohlbecker 2016-07-11)
+	@Disabled // it seems as if oclc number are no longer supported by the api. Email send to mobot to clarify (a.kohlbecker 2016-07-11)
 	public void testDoResolveAndPage_2() {
 
 	    try {
@@ -119,12 +121,11 @@ public class MobotOpenUrlServiceWrapperTest {
 
 		if (testInternetConnectivity(refList)){
 
-			// Assert.assertEquals("There should be exactly 2 result for 'Linnaei Species Plantarum Europae'",
-			// 2, refList.size());
+			// assertEquals(// 2, refList.size(), "There should be exactly 2 result for 'Linnaei Species Plantarum Europae'");
 			OpenUrlReference reference = refList.get(0);
 			logger.info(reference.toString());
-			Assert.assertEquals("1830", reference.getDatePublished().getEndYear().toString());
-			Assert.assertEquals("1797", reference.getDatePublished().getStartYear().toString());
+			assertEquals("1830", reference.getDatePublished().getEndYear().toString());
+			assertEquals("1797", reference.getDatePublished().getStartYear().toString());
 		    logger.info(reference.getJpegImage(null, null));
 		}
 	}
@@ -149,7 +150,7 @@ public class MobotOpenUrlServiceWrapperTest {
 
 		List<OpenUrlReference> refList = openUrlServiceWrapper.doResolve(query);
 		if (testInternetConnectivity(refList)){
-			Assert.assertTrue("There should be at least one result", refList.size() > 0);
+			assertTrue(refList.size() > 0, "There should be at least one result");
 			OpenUrlReference reference = refList.get(0);
 		}
 	}

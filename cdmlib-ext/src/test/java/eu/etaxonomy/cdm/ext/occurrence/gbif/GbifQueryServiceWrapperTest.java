@@ -8,6 +8,10 @@
 */
 package eu.etaxonomy.cdm.ext.occurrence.gbif;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Collection;
@@ -17,9 +21,8 @@ import java.util.List;
 import org.apache.hc.client5.http.ClientProtocolException;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
@@ -95,18 +98,18 @@ public class GbifQueryServiceWrapperTest {
     @Test
     public void testJsonToCdmObject() throws URISyntaxException{
         Collection<GbifResponse> records = GbifJsonOccurrenceParser.parseJsonRecords(dummyJsonRecords);
-        Assert.assertEquals("number of records found is incorrect", 1, records.size());
+        assertEquals(1, records.size(), "number of records found is incorrect");
         GbifResponse gbifResponse = records.iterator().next();
-        Assert.assertEquals("Locality is incorrect", LOCALITY_STRING, gbifResponse.getDerivedUnitFacade().getLocalityText());
-        Assert.assertEquals("protocol is wrong", GbifDataSetProtocol.BIOCASE, gbifResponse.getDataSetProtocol());
-        Assert.assertEquals("protocol is wrong", new URI("https://api.gbif.org/v1/dataset/26a49731-9457-45b2-9105-1b96063deb26/endpoint"), gbifResponse.getDataSetUri());
+        assertEquals(LOCALITY_STRING, gbifResponse.getDerivedUnitFacade().getLocalityText(), "Locality is incorrect");
+        assertEquals(GbifDataSetProtocol.BIOCASE, gbifResponse.getDataSetProtocol(), "protocol is wrong");
+        assertEquals(new URI("https://api.gbif.org/v1/dataset/26a49731-9457-45b2-9105-1b96063deb26/endpoint"), gbifResponse.getDataSetUri(), "protocol is wrong");
     }
 
     @Test
     public void testJsonOriginalDataSetUriParsing(){
         DataSetResponse response = GbifJsonOccurrenceParser.parseOriginalDataSetUri(dummyJsonDataset);
-        Assert.assertEquals("Response protocol is incorrect!", GbifDataSetProtocol.BIOCASE, response.getProtocol());
-        Assert.assertEquals("Response endpoint is incorrect!", URI.create("http://www.flora-mv.de/biocase/pywrapper.cgi?dsa=hoeherePflanzen"), response.getEndpoint());
+        assertEquals(GbifDataSetProtocol.BIOCASE, response.getProtocol(), "Response protocol is incorrect!");
+        assertEquals(URI.create("http://www.flora-mv.de/biocase/pywrapper.cgi?dsa=hoeherePflanzen"), response.getEndpoint(), "Response endpoint is incorrect!");
     }
 
     @Test
@@ -114,29 +117,29 @@ public class GbifQueryServiceWrapperTest {
         OccurenceQuery query = new OccurenceQuery("Campanula persicifolia", "T. Henning", "1234", "ACC-2", "BGBM", "DE", "pollen herbarium", new GregorianCalendar(2014, 05, 27), new GregorianCalendar(2014,05,28), false);
         List<NameValuePair> queryParams = new GbifQueryGenerator().generateQueryParams(query);
         NameValuePair pair = new BasicNameValuePair("scientificName", "Campanula persicifolia");
-        Assert.assertTrue("query parameter is missing", queryParams.contains(pair));
+        assertTrue(queryParams.contains(pair), "query parameter is missing");
         //FIXME this will currently always fail because eventDate is still not supported by GBIF
         //"basisOfRecord" and "limit" is always set
         // + 8 from query (collectorsNumber will be represented in the two parameters "recordNumber" and "fieldNumber";
         // both dates are represented in one parameter "eventDate";
         // locality can still not be queried on GBIF web service)
-//        assertEquals("Number of generated URI parameters is incorrect", 10, queryParams.size());
+//        assertEquals(10, queryParams.size(), "Number of generated URI parameters is incorrect");
     }
 
     @Test
-    @Ignore //temporary ignored because service is unavailable
+    @Disabled //temporary ignored because service is unavailable
     public void testGbifWebService() {
         OccurenceQuery query = new OccurenceQuery("Campanula persicifolia", "E. J. Palmer", null, null, null, null, null, null, null, false);
         GbifQueryServiceWrapper service = new GbifQueryServiceWrapper();
         try {
             Collection<GbifResponse> gbifResponse = service.query(query);
-            Assert.assertEquals("Usually this query retrieves at least two units. " +
+            assertEquals(2, gbifResponse.size(), "Usually this query retrieves at least two units. " +
             		"Test failure may also be due to GBIF!" +
-            		"Check http://api.gbif.org/v1/occurrence/search?basisOfRecord=PRESERVED_SPECIMEN&limit=100&recordedBy=E.+J.+Palmer&scientificName=Campanula+persicifolia", 2, gbifResponse.size());
+            		"Check http://api.gbif.org/v1/occurrence/search?basisOfRecord=PRESERVED_SPECIMEN&limit=100&recordedBy=E.+J.+Palmer&scientificName=Campanula+persicifolia");
         } catch (ClientProtocolException | URISyntaxException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         } catch (IOException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         }
     }
 
@@ -147,7 +150,7 @@ public class GbifQueryServiceWrapperTest {
     	try {
     		service.query(query);
     	} catch (IOException | URISyntaxException e) {
-    		Assert.fail(e.getMessage());
+    		fail(e.getMessage());
     	}
     }
 }
