@@ -8,10 +8,12 @@
 */
 package eu.etaxonomy.cdm.common;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.net.URISyntaxException;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.mueller
@@ -24,45 +26,39 @@ public class UriTest {
         try {
             //see example in #9111
             URI uri = new URI("https://bioone.org/journals/Cactus-and-Succulent-Journal/volume-78/issue-2/0007-9367(2006)78[66:FKASLA]2.0.CO;2/Finders-Keepers-and-some-Lavranian-Adjustments-in-Mesembryanthema/10.2985/0007-9367(2006)78[66:FKASLA]2.0.CO;2.full");
-            Assert.assertEquals(
-                    "/journals/Cactus-and-Succulent-Journal/volume-78/issue-2/0007-9367(2006)78[66:FKASLA]2.0.CO;2/Finders-Keepers-and-some-Lavranian-Adjustments-in-Mesembryanthema/10.2985/0007-9367(2006)78[66:FKASLA]2.0.CO;2.full",
-                    uri.getPath());
+            assertEquals("/journals/Cactus-and-Succulent-Journal/volume-78/issue-2/0007-9367(2006)78[66:FKASLA]2.0.CO;2/Finders-Keepers-and-some-Lavranian-Adjustments-in-Mesembryanthema/10.2985/0007-9367(2006)78[66:FKASLA]2.0.CO;2.full", uri.getPath());
 
         } catch (URISyntaxException e) {
-            Assert.fail("Parsing example URI from #9111 should not throw exception");
+            fail("Parsing example URI from #9111 should not throw exception");
         }
 
         try {
             //see example in #9111
             URI uri = new URI("http:\\www.fail.de");
-            Assert.fail("Using backslash in URI instead of slash should fail");
+            fail("Using backslash in URI instead of slash should fail");
         } catch (URISyntaxException e) {
             //OK
         }
 
     }
-    
+
     @Test
     public void testFragment() {
         try {
             //see example in #9111
             URI uri = new URI("https://max:muster@www.example.com:8080/index.html?p1=A&p2=B#ressource");
-            Assert.assertEquals(
-                    "ressource",
-                    uri.getFragment());
-            
+            assertEquals("ressource", uri.getFragment());
+
             uri = new URI("https://max:muster@www.example.com:8080/index.html?p1=A&p2=B#ressource&#another-frag?");
-            Assert.assertEquals(
-                    "ressource&#another-frag?",
-                    uri.getFragment());
+            assertEquals("ressource&#another-frag?", uri.getFragment());
         } catch (URISyntaxException e) {
-            Assert.fail("Parsing example URI should find fragment");
+            fail("Parsing example URI should find fragment");
         }
 
         try {
             //see example in #9111
             URI uri = new URI("http:\\www.fail.de");
-            Assert.fail("Using backslash in URI instead of slash should fail");
+            fail("Using backslash in URI instead of slash should fail");
         } catch (URISyntaxException e) {
             //OK
         }

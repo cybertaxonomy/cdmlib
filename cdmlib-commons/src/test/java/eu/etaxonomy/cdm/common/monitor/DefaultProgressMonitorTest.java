@@ -8,8 +8,9 @@
 */
 package eu.etaxonomy.cdm.common.monitor;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.mueller
@@ -66,6 +67,6 @@ public class DefaultProgressMonitorTest {
         DefaultProgressMonitor monitor = DefaultProgressMonitor.NewInstance();
         monitor.beginTask("test", 33);
         monitor.worked(5);
-        Assert.assertEquals(Double.valueOf(15.15152), Double.valueOf(monitor.getPercentage()));
+        assertEquals(Double.valueOf(15.15152), Double.valueOf(monitor.getPercentage()));
     }
 }

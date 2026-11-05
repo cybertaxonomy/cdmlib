@@ -1,43 +1,50 @@
 /**
- *
- */
+* Copyright (C) 2013 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.common;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.mueller
  */
 public class GeneralParserTest {
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 	}
 
 	@Test
 	public void test() {
 		String isbn1 = "ISBN 90-71236-61-7";
-		Assert.assertTrue("isbn1 should be an ISBN", GeneralParser.isIsbn(isbn1));
+		assertTrue(GeneralParser.isIsbn(isbn1), "isbn1 should be an ISBN");
 
 		String isbn2 = "90-71236-61-7";
-		Assert.assertTrue("'ISBN' string should not be required", GeneralParser.isIsbn(isbn2));
+		assertTrue(GeneralParser.isIsbn(isbn2), "'ISBN' string should not be required");
 
 		String isbnToShort = "ISBN 90-7123-61-7";
-		Assert.assertFalse("ISBN must have 10 or 13 numbers, 9 numbered string should not be an ISBN", GeneralParser.isIsbn(isbnToShort));
+		assertFalse(GeneralParser.isIsbn(isbnToShort), "ISBN must have 10 or 13 numbers, 9 numbered string should not be an ISBN");
 
 		String isbn3 = "ISBN 123-456-789-112-3";
-		Assert.assertTrue("isbn3 (with 13 numbers) should be an ISBN", GeneralParser.isIsbn(isbn3));
+		assertTrue(GeneralParser.isIsbn(isbn3), "isbn3 (with 13 numbers) should be an ISBN");
 
 		String isbn4 = "ISBN 123-456-789-112-3-";
-		Assert.assertFalse("- at the end of ISBN is not allowed", GeneralParser.isIsbn(isbn4));
+		assertFalse(GeneralParser.isIsbn(isbn4), "- at the end of ISBN is not allowed");
 
 		String isbn5 = "ISBN 123-456-789-12-3";
-		Assert.assertFalse("12 numbers are not allowed, either 10 or 13", GeneralParser.isIsbn(isbn5));
+		assertFalse(GeneralParser.isIsbn(isbn5), "12 numbers are not allowed, either 10 or 13");
 
 		String isbn6 = "ISBN 123-456-789-112-X";
-		Assert.assertTrue("X should be allowed as a final digit", GeneralParser.isIsbn(isbn6));
+		assertTrue(GeneralParser.isIsbn(isbn6), "X should be allowed as a final digit");
 
 	}
 

@@ -8,15 +8,17 @@
 */
 package eu.etaxonomy.cdm.common;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.mueller
@@ -30,21 +32,21 @@ public class LogUtilsTest {
 
     private static final Level log4j2XmlDefaultLevel = Level.WARN;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpBeforeClass() throws Exception {
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownAfterClass() throws Exception {
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         Logger logger = LogManager.getLogger(LOGGER);
-        Assert.assertEquals("Level should be the same as in log4j2.xml" , log4j2XmlDefaultLevel, logger.getLevel());
+        assertEquals(log4j2XmlDefaultLevel, logger.getLevel(), "Level should be the same as in log4j2.xml");
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 
@@ -52,15 +54,15 @@ public class LogUtilsTest {
     public void testSetLevel() {
         Logger logger = LogManager.getLogger(LOGGER);
         Level levelBefore = LogManager.getLogger(LOGGER).getLevel();
-        Assert.assertEquals("Logger does not have the expected default level", log4j2XmlDefaultLevel, levelBefore);
+        assertEquals(log4j2XmlDefaultLevel, levelBefore, "Logger does not have the expected default level");
 
         LogUtils.setLevel(logger, Level.DEBUG);
-        Assert.assertEquals(Level.DEBUG, logger.getLevel());
-        Assert.assertSame(logger, LogManager.getLogger(LOGGER));
+        assertEquals(Level.DEBUG, logger.getLevel());
+        assertSame(logger, LogManager.getLogger(LOGGER));
 
         LogUtils.setLevel(LOGGER, Level.TRACE);
-        Assert.assertEquals(Level.TRACE, logger.getLevel());
-        Assert.assertSame(logger, LogManager.getLogger(LOGGER));
+        assertEquals(Level.TRACE, logger.getLevel());
+        assertSame(logger, LogManager.getLogger(LOGGER));
     }
 
     @Test
@@ -70,7 +72,7 @@ public class LogUtilsTest {
             logger.error("Level is already trace. LogAsTrace can not be tested!!");
         }else {
             LogUtils.logAsTrace(getClass(), "TRACE test");
-            Assert.assertEquals(Level.TRACE, traceLogger.getLevel());
+            assertEquals(Level.TRACE, traceLogger.getLevel());
         }
     }
 
@@ -81,7 +83,7 @@ public class LogUtilsTest {
             logger.error("Level is already trace. LogAsDebug can not be tested!!");
         }else {
             LogUtils.logAsDebug(getClass(), "DEBUG test");
-            Assert.assertEquals(Level.DEBUG, debugLogger.getLevel());
+            assertEquals(Level.DEBUG, debugLogger.getLevel());
         }
     }
 
@@ -92,7 +94,7 @@ public class LogUtilsTest {
             logger.error("Level is already trace. LogAsInfo can not be tested!!");
         }else {
             LogUtils.logAsInfo(getClass(), "INFO test");
-            Assert.assertEquals(Level.INFO, infoLogger.getLevel());
+            assertEquals(Level.INFO, infoLogger.getLevel());
         }
     }
 
@@ -103,7 +105,7 @@ public class LogUtilsTest {
             logger.error("Level is already trace. LogAsWarn can not be tested!!");
         }else {
             LogUtils.logAsWarn(getClass(), "WARN test");
-            Assert.assertEquals(Level.WARN, warnLogger.getLevel());
+            assertEquals(Level.WARN, warnLogger.getLevel());
         }
     }
 

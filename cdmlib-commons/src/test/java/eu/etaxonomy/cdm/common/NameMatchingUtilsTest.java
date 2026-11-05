@@ -8,13 +8,12 @@
 */
 package eu.etaxonomy.cdm.common;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author andreabee90
@@ -25,27 +24,27 @@ public class NameMatchingUtilsTest {
 	@Test
 	public void removeExtraElements() {
 		String name = "Quercus cf. robur";
-		Assert.assertEquals("QUERCUS ROBUR", NameMatchingUtils.removeExtraElements(name));
+		assertEquals("QUERCUS ROBUR", NameMatchingUtils.removeExtraElements(name));
 		name = "Quercus (something) robur";
-		Assert.assertEquals("QUERCUS ROBUR", NameMatchingUtils.removeExtraElements(name));
+		assertEquals("QUERCUS ROBUR", NameMatchingUtils.removeExtraElements(name));
 		name = "Quercus (something) cf. robur";
-		Assert.assertEquals("QUERCUS ROBUR", NameMatchingUtils.removeExtraElements(name));
+		assertEquals("QUERCUS ROBUR", NameMatchingUtils.removeExtraElements(name));
 		name = "Quercus (cf.) robur";
-		Assert.assertEquals("QUERCUS ROBUR", NameMatchingUtils.removeExtraElements(name));
+		assertEquals("QUERCUS ROBUR", NameMatchingUtils.removeExtraElements(name));
 	}
 
 
     @Test
     public void testDeleteEmptySpaces() {
         String name = "  Quercus  robur ";
-        Assert.assertEquals("Quercus robur", NameMatchingUtils.deleteEmptySpaces(name));
+        assertEquals("Quercus robur", NameMatchingUtils.deleteEmptySpaces(name));
 
     }
 
     @Test
     public void testReplaceSpecialCharacters() {
         String name = "áåâãàêèëôõøòóöìíîïüûúùñç";
-        Assert.assertEquals("AAAAAEEEOOOOOOIIIIUUUUNC",NameMatchingUtils.replaceSpecialCharacters(name));
+        assertEquals("AAAAAEEEOOOOOOIIIIUUUUNC", NameMatchingUtils.replaceSpecialCharacters(name));
     }
 
     @Test
@@ -53,43 +52,43 @@ public class NameMatchingUtilsTest {
         List <String> testList = new ArrayList<>();
         testList.add("name oNe");
         testList.add("nAmE 2");
-        Assert.assertEquals("NAME ONE", NameMatchingUtils.listToUpperCase(testList).get(0));
-        Assert.assertEquals("NAME 2", NameMatchingUtils.listToUpperCase(testList).get(1));
+        assertEquals("NAME ONE", NameMatchingUtils.listToUpperCase(testList).get(0));
+        assertEquals("NAME 2", NameMatchingUtils.listToUpperCase(testList).get(1));
     }
 
     @Test
     public void testReplaceInitialCharacter() {
 
         String name = "euphorbia";
-        Assert.assertEquals("UPHORBIA", NameMatchingUtils.replaceInitialCharacter(name));
+        assertEquals("UPHORBIA", NameMatchingUtils.replaceInitialCharacter(name));
         name = "Cnemidia";
-        Assert.assertEquals("NEMIDIA", NameMatchingUtils.replaceInitialCharacter(name));
+        assertEquals("NEMIDIA", NameMatchingUtils.replaceInitialCharacter(name));
         name = "Gnaphalium";
-        Assert.assertEquals("NAPHALIUM", NameMatchingUtils.replaceInitialCharacter(name));
+        assertEquals("NAPHALIUM", NameMatchingUtils.replaceInitialCharacter(name));
         name = "Philodendron";
-        Assert.assertEquals("FILODENDRON", NameMatchingUtils.replaceInitialCharacter(name));
+        assertEquals("FILODENDRON", NameMatchingUtils.replaceInitialCharacter(name));
         name = "Tsuga";
-        Assert.assertEquals("SUGA", NameMatchingUtils.replaceInitialCharacter(name));
+        assertEquals("SUGA", NameMatchingUtils.replaceInitialCharacter(name));
         name = "Czerniaevia";
-        Assert.assertEquals("CERNIAEVIA", NameMatchingUtils.replaceInitialCharacter(name));
+        assertEquals("CERNIAEVIA", NameMatchingUtils.replaceInitialCharacter(name));
     }
 
     @Test
     public void testSoundalike() {
         String name = "ae ia oe oi sc";
-        Assert.assertEquals("E A I A S", NameMatchingUtils.soundalike(name));
+        assertEquals("E A I A S", NameMatchingUtils.soundalike(name));
     }
 
     @Test
     public void testRemoveDuplicate() {
         String name = "thiiss iss aa striiiing with duupliccaaaatess";
-        Assert.assertEquals("this is a string with duplicates", NameMatchingUtils.removeDuplicate(name));
+        assertEquals("this is a string with duplicates", NameMatchingUtils.removeDuplicate(name));
     }
 
     @Test
     public void testReplacerGenderEnding() {
     	String name = "Qas";
-    	Assert.assertEquals("QA", NameMatchingUtils.replaceGenderEnding(name));
+    	assertEquals("QA", NameMatchingUtils.replaceGenderEnding(name));
 //        String name="is";
 //        String name="us";
 //        String name="ys";

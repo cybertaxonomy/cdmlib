@@ -8,16 +8,18 @@
 */
 package eu.etaxonomy.cdm.common;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.kohlbecker
  * @since Jul 1, 2016
  */
-public class JvmMonitorTest extends Assert{
+public class JvmMonitorTest{
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -37,7 +39,6 @@ public class JvmMonitorTest extends Assert{
         long gcTimeLast_2 = jvmMonitor.getGCtimeSiceLastCheck();
         assertTrue(gcTimeLast_1 > 0);
         assertTrue(jvmMonitor.gcTime() > gcTimeLast_2);
-
     }
 
     @Test
@@ -62,7 +63,5 @@ public class JvmMonitorTest extends Assert{
 
         assertFalse(jvmMonitor.hasFreeHeap((failWithMB * 2) / (double)maxHeap));
 */
-
     }
-
 }

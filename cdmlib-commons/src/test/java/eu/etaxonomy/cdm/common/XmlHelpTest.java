@@ -8,18 +8,18 @@
  */
 package eu.etaxonomy.cdm.common;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class XmlHelpTest {
 
 	private static final Logger logger = LogManager.getLogger();
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUpBeforeClass() throws Exception {
 		logger.warn("Tests for " + XmlHelpTest.class.getName() + " not yet implemented");
 	}

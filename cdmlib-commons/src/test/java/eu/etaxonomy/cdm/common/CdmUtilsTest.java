@@ -8,7 +8,12 @@
  */
 package eu.etaxonomy.cdm.common;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,8 +23,7 @@ import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.mueller
@@ -39,8 +43,8 @@ public class CdmUtilsTest {
 		String endOfLibrary = "target/classes/eu/etaxonomy/cdm/common/CdmUtils.class";
 		String libraryContains = "/cdmlib-commons/";
 
-		Assert.assertTrue(library.endsWith(endOfLibrary));
-		Assert.assertTrue(library.contains(libraryContains));
+		assertTrue(library.endsWith(endOfLibrary));
+		assertTrue(library.contains(libraryContains));
 	}
 
 	/**
@@ -58,39 +62,39 @@ public class CdmUtilsTest {
     public void testEqualsIgnoreWS(){
         String str1 = null;
         String str2 = null;
-        Assert.assertTrue(CdmUtils.equalsIgnoreWS(str1, str2));
+        assertTrue(CdmUtils.equalsIgnoreWS(str1, str2));
 
         str2 = "Any ";
-        Assert.assertFalse(CdmUtils.equalsIgnoreWS(str1, str2));
+        assertFalse(CdmUtils.equalsIgnoreWS(str1, str2));
 
         str1 = "Any ";
-        Assert.assertTrue(CdmUtils.equalsIgnoreWS(str1, str2));
+        assertTrue(CdmUtils.equalsIgnoreWS(str1, str2));
 
         str1 = "An y eer";
         str2 = "A nye er";
-        Assert.assertTrue(CdmUtils.equalsIgnoreWS(str1, str2));
+        assertTrue(CdmUtils.equalsIgnoreWS(str1, str2));
 
         str1 = "An y eer";
         str2 = "A nyfffe er";
-        Assert.assertFalse(CdmUtils.equalsIgnoreWS(str1, str2));
+        assertFalse(CdmUtils.equalsIgnoreWS(str1, str2));
     }
 
     @Test
     public void testquoteRegExWithWildcard(){
         String regExBase = ".(*$[ms^";
         String regEx = CdmUtils.quoteRegExWithWildcard(regExBase);
-        Assert.assertEquals("\\Q.(\\E.*\\Q$[ms^\\E", regEx);
+        assertEquals("\\Q.(\\E.*\\Q$[ms^\\E", regEx);
         boolean matches = ".(*$[ms^".matches(regEx);
-        Assert.assertTrue(matches);
+        assertTrue(matches);
         matches = ".(aaaaaa$[ms^".matches(regEx);
-        Assert.assertTrue(matches);
+        assertTrue(matches);
         matches = "b(aaaaaa$[ms^".matches(regEx);
-        Assert.assertFalse(matches);
+        assertFalse(matches);
 
         regEx = CdmUtils.quoteRegExWithWildcard("*abc*");
-        Assert.assertEquals(".*\\Qabc\\E.*", regEx);
-        Assert.assertTrue("abc".matches(regEx));
-        Assert.assertTrue("a80/(--e*wabc?äe".matches(regEx));
+        assertEquals(".*\\Qabc\\E.*", regEx);
+        assertTrue("abc".matches(regEx));
+        assertTrue("a80/(--e*wabc?äe".matches(regEx));
     }
 
     /**
@@ -114,7 +118,7 @@ public class CdmUtilsTest {
             InputStream inputStream = CdmUtils.getReadableResourceStream(resourceFileName);
             assertNotNull(inputStream);
         } catch (IOException e) {
-            Assert.fail("IOException");
+            fail("IOException");
         }
     }
 
@@ -123,15 +127,15 @@ public class CdmUtilsTest {
         String str1 = "Str1";
         String str2 = "Str2";
         String str3 = "Str3";
-        Assert.assertEquals("Str1;Str2", CdmUtils.concat(";", str1, str2));
-        Assert.assertEquals("Str2", CdmUtils.concat(";", null, str2));
-        Assert.assertEquals("Str1", CdmUtils.concat(";", str1, null));
-        Assert.assertNull(CdmUtils.concat(";", null, null));
-        Assert.assertEquals("Str1;Str2;Str3", CdmUtils.concat(";", str1, str2, str3));
-        Assert.assertEquals("Str1: Str2", CdmUtils.concat(": ", str1, str2));
-        Assert.assertEquals("Str2;Str3", CdmUtils.concat(";", "", str2, str3));
-        Assert.assertEquals("Str1;Str3", CdmUtils.concat(";", str1, "", str3));
-        Assert.assertEquals("Str1; ;Str3", CdmUtils.concat(";", str1, " ", str3));
+        assertEquals(CdmUtils.concat(";", str1, str2), "Str1;Str2");
+        assertEquals(CdmUtils.concat(";", null, str2), "Str2");
+        assertEquals(CdmUtils.concat(";", str1, null), "Str1");
+        assertNull(CdmUtils.concat(";", null, null));
+        assertEquals(CdmUtils.concat(";", str1, str2, str3), "Str1;Str2;Str3");
+        assertEquals(CdmUtils.concat(": ", str1, str2), "Str1: Str2");
+        assertEquals(CdmUtils.concat(";", "", str2, str3), "Str2;Str3");
+        assertEquals(CdmUtils.concat(";", str1, "", str3), "Str1;Str3");
+        assertEquals(CdmUtils.concat(";", str1, " ", str3), "Str1; ;Str3");
     }
 
     @Test
@@ -140,23 +144,23 @@ public class CdmUtilsTest {
         String str2 = "Str2";
 
         //same as without deduplication
-        Assert.assertEquals("Str1;Str2", CdmUtils.concatWithDedup(";", str1, str2));
-        Assert.assertEquals("Str2", CdmUtils.concatWithDedup(";", null, str2));
-        Assert.assertEquals("Str1", CdmUtils.concatWithDedup(";", str1, null));
-        Assert.assertNull(CdmUtils.concatWithDedup(";", null, null));
-        Assert.assertEquals("Str1;Str2", CdmUtils.concatWithDedup(";", str1, "", str2));
-        Assert.assertEquals("Str1; ;Str2", CdmUtils.concatWithDedup(";", str1, " ", str2));
+        assertEquals(CdmUtils.concatWithDedup(";", str1, str2), "Str1;Str2");
+        assertEquals(CdmUtils.concatWithDedup(";", null, str2), "Str2");
+        assertEquals(CdmUtils.concatWithDedup(";", str1, null), "Str1");
+        assertNull(CdmUtils.concatWithDedup(";", null, null));
+        assertEquals(CdmUtils.concatWithDedup(";", str1, "", str2), "Str1;Str2");
+        assertEquals(CdmUtils.concatWithDedup(";", str1, " ", str2), "Str1; ;Str2");
 
         //with deduplication
         String str3 = "Str1";
-        Assert.assertEquals("Str1;Str2", CdmUtils.concatWithDedup(";", str1, str2, str3));
-        Assert.assertEquals("Str2;Str1", CdmUtils.concatWithDedup(";", "", str2, str3));
+        assertEquals(CdmUtils.concatWithDedup(";", str1, str2, str3), "Str1;Str2");
+        assertEquals(CdmUtils.concatWithDedup(";", "", str2, str3), "Str2;Str1");
 
         str2 = "Str1";
-        Assert.assertEquals("Str1", CdmUtils.concatWithDedup(";", str1, str2, str3));
+        assertEquals(CdmUtils.concatWithDedup(";", str1, str2, str3), "Str1");
 
         str2 = "";
-        Assert.assertEquals("Str1", CdmUtils.concatWithDedup(";", str1, str2, str3));
+        assertEquals(CdmUtils.concatWithDedup(";", str1, str2, str3), "Str1");
     }
 
     @Test
@@ -172,25 +176,25 @@ public class CdmUtilsTest {
 
         Map<Integer, String> mergedMap = CdmUtils.mergeMaps(map1, map2);
 
-        Assert.assertEquals("one", mergedMap.get(1));
-        Assert.assertEquals("zwei", mergedMap.get(2));
-        Assert.assertEquals("drei", mergedMap.get(3));
+        assertEquals("one", mergedMap.get(1));
+        assertEquals("zwei", mergedMap.get(2));
+        assertEquals("drei", mergedMap.get(3));
     }
 
     @Test
     public void testTruncate(){
         String str = "123456";
-        Assert.assertEquals(str, CdmUtils.truncateWithEllipsis(str, 10));
-        Assert.assertEquals(str, CdmUtils.truncateWithEllipsis(str, 6));
-        Assert.assertEquals("1234"+UTF8.ELLIPSIS, CdmUtils.truncateWithEllipsis(str, 5));
-        Assert.assertEquals("1"+UTF8.ELLIPSIS, CdmUtils.truncateWithEllipsis("123", 2));
+        assertEquals(str, CdmUtils.truncateWithEllipsis(str, 10));
+        assertEquals(str, CdmUtils.truncateWithEllipsis(str, 6));
+        assertEquals(CdmUtils.truncateWithEllipsis(str, 5), "1234"+UTF8.ELLIPSIS);
+        assertEquals(CdmUtils.truncateWithEllipsis("123", 2), "1"+UTF8.ELLIPSIS);
         try {
             CdmUtils.truncateWithEllipsis("12", 1);
-            Assert.fail("Minimum length must be 2");
+            fail("Minimum length must be 2");
         } catch (Exception e) {
             //expected
         }
-        Assert.assertNull(CdmUtils.truncateWithEllipsis(null, 10));
+        assertNull(CdmUtils.truncateWithEllipsis(null, 10));
 
     }
 

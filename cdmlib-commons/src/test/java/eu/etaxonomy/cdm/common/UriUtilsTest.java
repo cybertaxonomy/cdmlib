@@ -8,6 +8,10 @@
  */
 package eu.etaxonomy.cdm.common;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -21,8 +25,7 @@ import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class UriUtilsTest {
 
@@ -37,17 +40,17 @@ public class UriUtilsTest {
             String subPath = "fgh";
             String fragment = "frag";
             URI uri = UriUtils.createUri(baseUrl, subPath, null, fragment);
-            Assert.assertEquals("http://www.abc.de/fgh#frag", uri.toString());
+            assertEquals("http://www.abc.de/fgh#frag", uri.toString());
             List<NameValuePair> qparams = new ArrayList<>(0);
             NameValuePair pair1 = new BasicNameValuePair("param1","value1");
             qparams.add(pair1);
             uri = UriUtils.createUri(baseUrl, subPath, qparams, fragment);
-            Assert.assertEquals("http://www.abc.de/fgh?param1=value1#frag", uri.toString());
+            assertEquals("http://www.abc.de/fgh?param1=value1#frag", uri.toString());
 
         } catch (MalformedURLException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         } catch (URISyntaxException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         }
     }
 
@@ -55,7 +58,7 @@ public class UriUtilsTest {
     public void testGetResourceLength() throws ClientProtocolException, IOException, HttpException{
         if(UriUtils.isInternetAvailable(null)){
             URI uri = URI.create("http://dev.e-taxonomy.eu/trac_htdocs/logo_edit.png");
-            Assert.assertEquals(9143, UriUtils.getResourceLength(uri, null));
+            assertEquals(9143, UriUtils.getResourceLength(uri, null));
         } else {
             logger.warn("Test: testGetResourceLength() skipped, since internet is not available");
         }
@@ -67,9 +70,9 @@ public class UriUtilsTest {
 			try {
 				@SuppressWarnings("unused")
                 URI uri = new URI("http:/www.abc.de:8080/xyz");
-//				Assert.assertEquals(9143, UriUtils.getResourceLength(uri, null));
+//				assertEquals(9143, UriUtils.getResourceLength(uri, null));
 			} catch (URISyntaxException e) {
-				Assert.fail();
+				fail();
 			}
         } else {
             logger.warn("Test: testGetResourceLength() skipped, since internet is not available");
@@ -82,10 +85,10 @@ public class UriUtilsTest {
 		try {
 			uri = URI.create("www.abc.de");
 			UriUtils.getResourceLength(uri, null);
-			Assert.fail("getResourceLength works only on absolute URIs providing a protocol/scheme");
+			fail("getResourceLength works only on absolute URIs providing a protocol/scheme");
 		} catch (Exception e) {
-			Assert.assertEquals(IOException.class, e.getClass());
-			Assert.assertNotNull(e.getMessage().equals(UriUtils.URI_IS_NOT_ABSOLUTE));
+			assertEquals(IOException.class, e.getClass());
+			assertNotNull(e.getMessage().equals(UriUtils.URI_IS_NOT_ABSOLUTE));
 		}
     }
 
@@ -95,10 +98,10 @@ public class UriUtilsTest {
 		try {
 			uri = URI.create("xxx://www.abc.de");
 			UriUtils.getResourceLength(uri, null);
-			Assert.fail("getResourceLength works only on absolute URIs with supported protocols 'http(s):' and 'file:'");
+			fail("getResourceLength works only on absolute URIs with supported protocols 'http(s):' and 'file:'");
 		} catch (Exception e) {
-			Assert.assertEquals(RuntimeException.class, e.getClass());
-			Assert.assertNotNull(e.getMessage().startsWith("Protocol not handled yet"));
+			assertEquals(RuntimeException.class, e.getClass());
+			assertNotNull(e.getMessage().startsWith("Protocol not handled yet"));
 		}
     }
 
