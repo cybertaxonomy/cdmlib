@@ -56,7 +56,8 @@
     <dozer.version>7.0.0</dozer.version>                <!-- Jakarta EE; checked 2026-10 -->
     <jakarta.angus.mail.version>2.0.5</jakarta.angus.mail.version>
     <fop.version>2.11</fop.version>
-    <jena.version>4.6.1</jena.version> <!-- 4.7.0 still creates problems with term loading (AnnotationType.UNHANDLED-->
+    <jena.version>5.6.0</jena.version> <!-- Not sure if still open: 4.7.0 still creates problems with term loading (AnnotationType.UNHANDLED
+                                          Jena 6.x: requires Java 21 and uses Lucene 10, and jena-iri removed  -->
     <doclint>none</doclint>
     <!-- DBs -->
     <h2.version>2.3.232</h2.version>
