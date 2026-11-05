@@ -12,7 +12,13 @@
 
     <!-- requires at least spring 2.5.4 <context:property-override location="classpath:eu/etaxonomy/cdm/persistence/override.properties"/>-->
 
-    <bean id="dataSource" class="org.unitils.database.UnitilsDataSourceFactoryBean"/>
+        <!-- Legacy Unitils contexts: Spring-owned H2 (same as applicationContext-springTest.xml) -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:mem:cdmLegacyTest;NON_KEYWORDS=VALUE,TYPE,ROLE,SIZE;DATABASE_TO_UPPER=TRUE;DB_CLOSE_DELAY=-1;REFERENTIAL_INTEGRITY=FALSE"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
 
     <import resource="classpath:/eu/etaxonomy/cdm/persistence_security.xml" />
 

@@ -17,12 +17,9 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.dbunit.annotation.ExpectedDataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -47,35 +44,36 @@ import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmExpectedDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 18.03.2009
  */
-public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest {
+public class CacheStrategyGeneratorTest extends CdmTransactionalSpringIntegrationTest {
 
 	private static final Logger logger = LogManager.getLogger();
 
 	private TaxonBase cdmBase;
 
-	@SpringBeanByType
+	@Autowired
 	private ITaxonNameDao cdmEntityDaoBase;
 
-	@SpringBeanByType
+	@Autowired
 	private IAgentDao agentDao;
 
-	@SpringBeanByType
+	@Autowired
 	private IReferenceDao referenceDao;
 
-	@SpringBeanByType
+	@Autowired
 	private IAmplificationDao amplificationDao;
 
-	@SpringBeanByType
+	@Autowired
 	private IDefinedTermDao termDao;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		cdmBase = Taxon.NewInstance(null, null);
 		cdmBase.setUuid(UUID.fromString("e463b270-c76b-11dd-ad8b-0800200c9a66"));
@@ -88,10 +86,8 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 	}
 
 	@Test
-	@DataSets({
-		@DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "CacheStrategyGeneratorTest.xml")
-	})
-	@ExpectedDataSet
+	@CdmDataSet(cleanSweep = true, value = "CacheStrategyGeneratorTest.xml")
+	@CdmExpectedDataSet
 	public void testOnSaveOrUpdateNames() {
 
 	    //names
@@ -145,10 +141,8 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 	}
 
 	@Test
-	@DataSets({
-		@DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "CacheStrategyGeneratorTest.xml")
-	})
-	@ExpectedDataSet
+	@CdmDataSet(cleanSweep = true, value = "CacheStrategyGeneratorTest.xml")
+	@CdmExpectedDataSet
 	public void testOnSaveOrUpdateAgents() {
 
 		//person
@@ -212,10 +206,8 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 	}
 
 	@Test
-	@DataSets({
-		@DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "CacheStrategyGeneratorTest.xml")
-	})
-	@ExpectedDataSet
+	@CdmDataSet(cleanSweep = true, value = "CacheStrategyGeneratorTest.xml")
+	@CdmExpectedDataSet
 	//TODO correct abbrevTitleCache for article still unclear (open question: with or without article title ?)
 	public void testOnSaveOrUpdateReferences() {
 		//References
@@ -245,8 +237,8 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 	}
 
 	@Test
-//	@DataSet("CacheStrategyGeneratorTest.xml")
-//	@ExpectedDataSet
+//	@CdmDataSet("CacheStrategyGeneratorTest.xml")
+//	@CdmExpectedDataSet
 	public void testOnSaveOrUpdateAmplification() {
 		Amplification amplification = Amplification.NewInstance();
 		UUID amplUuid = UUID.fromString("11e6b2d5-3eb5-4434-9c56-5bb4c1102147");

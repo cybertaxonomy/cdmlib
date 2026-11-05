@@ -30,6 +30,7 @@
     <bean id="firstDataInserter" class="eu.etaxonomy.cdm.api.application.FirstDataInserter" />
     
     <bean id="cdmRepository" class="eu.etaxonomy.cdm.api.application.CdmRepository" />
+    <alias name="cdmRepository" alias="CdmRepository"/>
     
         <context:component-scan base-package="eu/etaxonomy/cdm/api/cache"/>
 

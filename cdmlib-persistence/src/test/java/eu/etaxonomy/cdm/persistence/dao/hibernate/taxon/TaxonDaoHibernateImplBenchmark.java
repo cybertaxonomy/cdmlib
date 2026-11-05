@@ -13,41 +13,36 @@ import static org.junit.Assert.assertNotNull;
 import java.io.FileNotFoundException;
 import java.util.UUID;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @author ben.clark
- *
  */
-public class TaxonDaoHibernateImplBenchmark extends CdmTransactionalIntegrationTest {
+public class TaxonDaoHibernateImplBenchmark extends CdmTransactionalSpringIntegrationTest {
 
 //    @Rule
 //    public MethodRule benchmarkRun = new BenchmarkRule();
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonDao taxonDao;
 
-    @SpringBeanByType
-    private IClassificationDao classificationDao;
-
-    @SpringBeanByType
+    @Autowired
     private IReferenceDao referenceDao;
 
-    @SpringBeanByType
+    @Autowired
     IDefinedTermDao definedTermDao;
 
     private UUID uuid;
@@ -71,7 +66,7 @@ public class TaxonDaoHibernateImplBenchmark extends CdmTransactionalIntegrationT
     private Taxon taxonAcherontia;
 
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         uuid = UUID.fromString("496b1325-be50-4b0a-9aa2-3ecd610215f2");
@@ -102,7 +97,7 @@ public class TaxonDaoHibernateImplBenchmark extends CdmTransactionalIntegrationT
         taxonAcherontia = (Taxon)taxonDao.findByUuid(acherontia);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         AuditEventContextHolder.clearContext();
     }
@@ -111,7 +106,7 @@ public class TaxonDaoHibernateImplBenchmark extends CdmTransactionalIntegrationT
      * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#TaxonDaoHibernateImpl()}.
      */
     @Test
-    @DataSet(value="TaxonDaoHibernateImplTest.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.xml")
     public void testInit() {
         logger.warn("testInit()");
         assertNotNull("Instance of ITaxonDao expected",taxonDao);
@@ -120,7 +115,7 @@ public class TaxonDaoHibernateImplBenchmark extends CdmTransactionalIntegrationT
     }
 
     @Test
-    @DataSet(value="TaxonDaoHibernateImplTest.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.xml")
     public void testDelete() {
         assert taxonAcherontia != null : "taxon must exist";
         taxonDao.delete(taxonAcherontia);
@@ -129,7 +124,7 @@ public class TaxonDaoHibernateImplBenchmark extends CdmTransactionalIntegrationT
     }
 
 //    @Test
-    @DataSet(value="TaxonDaoHibernateImplTest.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.xml")
     public void testAddTaxon() {
         assert taxonAcherontia != null : "taxon must exist";
         taxonDao.delete(taxonAcherontia);
@@ -137,11 +132,6 @@ public class TaxonDaoHibernateImplBenchmark extends CdmTransactionalIntegrationT
         endTransaction();
     }
 
-
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
-
+    public void createTestDataSet() throws FileNotFoundException {}
 }

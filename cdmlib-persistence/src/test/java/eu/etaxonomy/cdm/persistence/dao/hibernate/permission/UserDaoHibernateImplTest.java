@@ -14,23 +14,22 @@ import static org.junit.Assert.assertNotNull;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.dao.permission.IUserDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
-@DataSet
-public class UserDaoHibernateImplTest extends CdmIntegrationTest {
+@CdmDataSet
+public class UserDaoHibernateImplTest extends CdmTransactionalSpringIntegrationTest {
 
-	@SpringBeanByType
+	@Autowired
 	IUserDao userDao;
-
 
 	@Test
 	public void testFindUserByUsername() {

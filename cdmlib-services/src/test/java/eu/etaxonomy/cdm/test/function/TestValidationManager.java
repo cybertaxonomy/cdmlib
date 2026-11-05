@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  */
 public class TestValidationManager {
 
-
     public void testMe(){
         DbSchemaValidation schema = DbSchemaValidation.CREATE;
 

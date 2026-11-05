@@ -28,7 +28,6 @@ public @interface LongRunningCheckCase {
 
 	String message() default "Casing is wrong";
 
-
 	Class<?>[] groups() default {};
 
 

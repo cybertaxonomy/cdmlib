@@ -35,7 +35,7 @@
                           <copy file="${basedir}/src/main/resources/dbscripts/001-cdm.h2.template.sql" tofile="${project.build.outputDirectory}/dbscripts/001-cdm.h2.sql" />
                                 <!-- for directory shortcuts: https://stackoverflow.com/questions/13354531/maven-project-build-directory   but a short cut to /src/main/resources did not work for me -->
                           <!-- run DdlCreator -->
-                          <java classname="eu.etaxonomy.cdm.test.unitils.DdlCreator" fork="false" failonerror="true" classpathref="maven.compile.classpath" /> 
+                          <java classname="eu.etaxonomy.cdm.test.ddl.DdlCreator" fork="false" failonerror="true" classpathref="maven.compile.classpath" /> 
                       </target>
                   </configuration>
               </execution>
@@ -132,75 +132,6 @@
       <artifactId>dbunit</artifactId>
       <scope>compile</scope>
     </dependency>
-    <dependency>
-        <groupId>org.unitils</groupId>
-        <artifactId>unitils-core</artifactId>
-        <scope>compile</scope>
-        <exclusions>
-          <exclusion>
-            <!-- we use jcl-over-slf4j instead-->
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-database</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-dbmaintainer</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-dbunit</artifactId>
-      <scope>compile</scope>
-    </dependency>
-     <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-easymock</artifactId>
-      <scope>compile</scope>
-      <exclusions>
-        <exclusion>
-            <!-- we try to use only cglib-nodep (#9206) -->
-            <groupId>cglib</groupId>
-            <artifactId>cglib</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-mock</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-inject</artifactId>
-      <scope>compile</scope>
-    </dependency>
-     <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-orm</artifactId>
-      <exclusions>
-      	<exclusion>
-      		<groupId>javax.persistence</groupId>
-	      	<artifactId>persistence-api</artifactId>
-      	</exclusion>
-      </exclusions>
-    </dependency>
-<!--     <dependency>
-      <groupId>org.unitils</groupId>
-      <artifactId>unitils-spring</artifactId>
-      <scope>compile</scope>
-    </dependency>  -->
-<!--     <dependency> -->
-<!--       <groupId>org.dbunit</groupId> -->
-<!--       <artifactId>dbunit</artifactId> -->
-<!--       <scope>compile</scope> -->
-<!--     </dependency> -->
     <dependency>
 		<groupId>xmlunit</groupId>
 		<artifactId>xmlunit</artifactId>

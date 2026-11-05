@@ -16,11 +16,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -44,31 +42,31 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeFilterDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 2014/06/13
  */
-public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
+public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalSpringIntegrationTest {
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonNodeDao taxonNodeDao;
 
-    @SpringBeanByType
+    @Autowired
     private IClassificationDao classificationDao;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionDao descriptionDao;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionElementDao descriptionElementDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonNodeFilterDao filterDao;
 
-    @SpringBeanByType
+    @Autowired
     private IDefinedTermDao termDao;
 
     private final UUID europeUuid = UUID.fromString("e860871c-3a14-4ef2-9367-bbd92586c95b");
@@ -100,7 +98,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
     private Taxon taxon5;
     private Taxon taxonUnpublished;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         /*
@@ -339,9 +337,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
-    })
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testListUuidsByRank() {
         String message = "wrong number of nodes filtered";
         TaxonNodeFilter filter = TaxonNodeFilter.NewInstance();

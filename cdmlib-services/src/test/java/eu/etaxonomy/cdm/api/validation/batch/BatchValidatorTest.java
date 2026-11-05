@@ -13,17 +13,12 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
-
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
 import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
-import org.unitils.spring.annotation.SpringApplicationContext;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
@@ -35,22 +30,24 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.validation.EntityValidation;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 
 /**
  * @author admin.ayco.holleman
  * @since 11 feb. 2015
  *
  */
-public class BatchValidatorTest extends CdmTransactionalIntegrationTest {
+public class BatchValidatorTest extends CdmServicesTransactionalSpringIntegrationTest {
 
-//    @SpringBeanByType
+//    @Autowired
 //    private BatchValidator batchValidator;
 
-//    @SpringBeanByName  //does not exist as such
+//    @Autowired  //does not exist as such
     private ICdmRepository app;
 
-    @SpringApplicationContext
     private ApplicationContext applicationContext;
 
     /**
@@ -60,7 +57,7 @@ public class BatchValidatorTest extends CdmTransactionalIntegrationTest {
      * @throws SQLException
      */
     @Test
-    @Ignore
+    @Disabled
     public void testRun() throws SQLException {
 
         ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("PUBLIC", "sa", "");

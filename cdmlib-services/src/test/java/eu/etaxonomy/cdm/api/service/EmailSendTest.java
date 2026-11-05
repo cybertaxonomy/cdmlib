@@ -17,20 +17,24 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.config.SendEmailConfigurer;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesSpringIntegrationTest;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
-public class EmailSendTest extends CdmIntegrationTest {
+/**
+ * @author a.kohlbecker
+ * @since 16.09.2021
+ */
+public class EmailSendTest extends CdmServicesSpringIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -38,10 +42,10 @@ public class EmailSendTest extends CdmIntegrationTest {
 
     private static final String TO = "a.kohlbecker@bgbm.org";
 
-    @SpringBeanByType
+    @Autowired
     private JavaMailSender emailSender;
 
-    @SpringBeanByType
+    @Autowired
     private Environment env;
 
     @Test

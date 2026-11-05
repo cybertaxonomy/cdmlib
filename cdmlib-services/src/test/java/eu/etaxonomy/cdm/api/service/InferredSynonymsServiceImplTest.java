@@ -20,10 +20,9 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
@@ -32,8 +31,8 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * Test for {@link InferredSynonymsServiceImpl}
@@ -41,18 +40,18 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author a.mueller
  * @since 11.09.2025 (copied from {@link TaxonServiceImplTest})
  */
-public class InferredSynonymsServiceImplTest extends CdmTransactionalIntegrationTest {
+public class InferredSynonymsServiceImplTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonService taxonService;
 
-    @SpringBeanByType
+    @Autowired
     private IInferredSynonymsService inferredSynonymService;
 
-    @SpringBeanByType
+    @Autowired
     private IClassificationService classificationService;
 
     @SpringBeanByType
@@ -69,7 +68,7 @@ public class InferredSynonymsServiceImplTest extends CdmTransactionalIntegration
     private static final UUID acherontiaLachesisTaxonUuid = UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783");
     private static final UUID acherontiaLachesisSublachesisTaxonUuid = UUID.fromString("665eb714-736b-4685-b400-2229462d28d7");
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         classification = classificationService.find(classificationUuid);
@@ -78,7 +77,7 @@ public class InferredSynonymsServiceImplTest extends CdmTransactionalIntegration
     /****************** TESTS *****************************/
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testComputeInferredSynonymy(){
 
         //verify expected initial DB state
@@ -194,7 +193,7 @@ public class InferredSynonymsServiceImplTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testComputeInferredSynonymySubspecies(){
 
         //subspecies
@@ -247,7 +246,7 @@ public class InferredSynonymsServiceImplTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testComputeInferredSynonymyInfrageneric(){
 
         //infrageneric taxon
@@ -290,7 +289,7 @@ public class InferredSynonymsServiceImplTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testCreateInferredSynonyms_PersistAndDeduplicate(){
 
         //verify expected DB state
@@ -336,7 +335,7 @@ public class InferredSynonymsServiceImplTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testCreateAllInferredSynonyms_PersistAndDeduplicate(){
 
         //verify expected DB state
@@ -381,7 +380,7 @@ public class InferredSynonymsServiceImplTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testCreateAllInferredSynonymsWithGetDistinctNameCaches(){
 
         //verify expected DB state
@@ -411,7 +410,7 @@ public class InferredSynonymsServiceImplTest extends CdmTransactionalIntegration
     }
 
     @Override
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "ClearDBDataSet.xml")
     public void createTestDataSet() throws FileNotFoundException {
     }
 }

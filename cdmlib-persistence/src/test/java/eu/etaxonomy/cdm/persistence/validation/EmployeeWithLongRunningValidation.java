@@ -25,7 +25,6 @@ public class EmployeeWithLongRunningValidation extends CdmBase {
 		return givenName;
 	}
 
-
 	public void setGivenName(String givenName){
 		this.givenName = givenName;
 	}

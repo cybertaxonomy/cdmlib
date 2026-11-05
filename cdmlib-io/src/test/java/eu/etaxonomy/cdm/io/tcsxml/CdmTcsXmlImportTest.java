@@ -15,32 +15,32 @@ import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.tcsxml.in.CdmTcsXmlImport;
 import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportConfigurator;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 29.01.2009
  */
-public class CdmTcsXmlImportTest extends CdmTransactionalIntegrationTest {
+public class CdmTcsXmlImportTest extends CdmIoTransactionalSpringIntegrationTest {
 
-	@SpringBeanByType
+	@Autowired
 	private CdmTcsXmlImport cdmTcsXmlImport;
 
-	@SpringBeanByType
+	@Autowired
 	private INameService nameService;
 
 	private IImportConfigurator configurator;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws URISyntaxException {
 		String inputFile = "/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportConfiguratorTest-input.xml";
 		URL url = this.getClass().getResource(inputFile);

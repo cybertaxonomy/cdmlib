@@ -23,18 +23,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.ValidatorFactory;
-
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.ExpectedDataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.common.DateTimeUtil;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
@@ -43,16 +36,20 @@ import eu.etaxonomy.cdm.model.validation.EntityValidation;
 import eu.etaxonomy.cdm.model.validation.Severity;
 import eu.etaxonomy.cdm.persistence.validation.Company;
 import eu.etaxonomy.cdm.persistence.validation.Employee;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmExpectedDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmSpringIntegrationTest;
 import eu.etaxonomy.cdm.validation.Level2;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.ValidatorFactory;
 
 /**
  * @author ayco_holleman
  * @since 20 jan. 2015
- *
  */
-@Ignore
-public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
+@Disabled
+public class EntityValidationCrudJdbcImplTest extends CdmSpringIntegrationTest {
 
     private static final String MEDIA = "eu.etaxonomy.cdm.model.media.Media";
     private static final String SYNONYM = "eu.etaxonomy.cdm.model.taxon.Synonym";
@@ -60,45 +57,23 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
 
     private static final ZonedDateTime created = DateTimeUtil.of(2014, 1, 1);
 
-    @SpringBeanByType
+    @Autowired
     private EntityValidationCrudJdbcImpl validationCrudJdbcDao;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    /**
-     * Test method for
-     * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationCrudJdbcImpl#EntityValidationCrudJdbcImpl()}
-     * .
-     */
     @SuppressWarnings("unused")
     @Test
     public void testEntityValidationCrudJdbcImpl() {
         new EntityValidationCrudJdbcImpl();
     }
 
-    /**
-     * Test method for
-     * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationCrudJdbcImpl#EntityValidationCrudJdbcImpl (eu.etaxonomy.cdm.database.ICdmDataSource)}
-     * .
-     */
     @SuppressWarnings("unused")
     @Test
     public void test_EntityValidationCrudJdbcImplI_CdmDataSource() {
         new EntityValidationCrudJdbcImpl(dataSource);
     }
 
-    /**
-     * Test method for
-     * {@link eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationCrudJdbcImpl#saveEntityValidation (eu.etaxonomy.cdm.model.common.CdmBase, java.util.Set, eu.etaxonomy.cdm.model.validation.CRUDEventType, Class)}
-     * .
-     */
     @Test
-    @DataSet
+    @CdmDataSet
     public void test_SaveValidationResult_Set_T_CRUDEventType() {
         HibernateValidatorConfiguration config = Validation.byProvider(HibernateValidator.class).configure();
         ValidatorFactory factory = config.buildValidatorFactory();
@@ -139,19 +114,18 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
         });
         assertEquals("Unexpected propertypath", list.get(0).getPropertyPath().toString(), "company.name");
         assertEquals("Unexpected propertypath", list.get(1).getPropertyPath().toString(), "givenName");
-
     }
 
     @Test
-    @DataSet("EntityValidationCrudJdbcImplTest.testSave.xml")
-    @ExpectedDataSet("EntityValidationCrudJdbcImplTest.testSaveAlreadyExistingError-result.xml")
+    @CdmDataSet("EntityValidationCrudJdbcImplTest.testSave.xml")
+    @CdmExpectedDataSet("EntityValidationCrudJdbcImplTest.testSaveAlreadyExistingError-result.xml")
     // Test proving that if an exactly identical
     // EntityConstraintViolation (as per equals() method)
     // is already in database, the only thing that happens
     // is an increment of the validation counter.
     public void testSaveAlreadyExistingError() {
 
-        // All same as in @DataSet:
+        // All same as in @CdmDataSet:
 
         Employee emp = new Employee();
         emp.setId(100);
@@ -168,7 +142,7 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
 
         EntityConstraintViolation error = EntityConstraintViolation.newInstance();
 
-        // Actually not same as in @DataSet to force
+        // Actually not same as in @CdmDataSet to force
         // EntityConstraintViolation.equals() method to take
         // other properties into account (e.g. propertyPath,
         // invalidValue, etc.)
@@ -192,16 +166,16 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
     }
 
     @Test
-    @DataSet("EntityValidationCrudJdbcImplTest.testSave.xml")
-    @ExpectedDataSet("EntityValidationCrudJdbcImplTest.testReplaceError-result.xml")
+    @CdmDataSet("EntityValidationCrudJdbcImplTest.testSave.xml")
+    @CdmExpectedDataSet("EntityValidationCrudJdbcImplTest.testReplaceError-result.xml")
     // Test proving that if an entity has been validated,
-    // yielding 1 error (as in @DataSet), and a subsequent
+    // yielding 1 error (as in @CdmDataSet), and a subsequent
     // validation also yields 1 error, but a different one,
     // then validation count is increased, the old error is
     // removed and the new error is inserted.
     public void testReplaceError() {
 
-        // All identical to @DataSet:
+        // All identical to @CdmDataSet:
 
         Employee emp = new Employee();
         emp.setId(100);
@@ -238,16 +212,16 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
     }
 
     @Test
-    @DataSet("EntityValidationCrudJdbcImplTest.testSave.xml")
-    @ExpectedDataSet("EntityValidationCrudJdbcImplTest.testSameErrorOtherEntity-result.xml")
+    @CdmDataSet("EntityValidationCrudJdbcImplTest.testSave.xml")
+    @CdmExpectedDataSet("EntityValidationCrudJdbcImplTest.testSameErrorOtherEntity-result.xml")
     // Test proving that if an entity has been validated,
-    // yielding 1 error (as in @DataSet), and _another_
+    // yielding 1 error (as in @CdmDataSet), and _another_
     // entity is now validated yielding an equals() error,
     // things behave as expected (2 entityvalidations, each
     // having 1 entityconstraintviolation)
     public void testSameErrorOtherEntity() {
 
-        // Not in @DataSet
+        // Not in @CdmDataSet
         Employee emp = new Employee();
         emp.setId(200);
         emp.setUuid(UUID.fromString("f8de74c6-aa56-4de3-931e-87b61da0218d"));
@@ -260,7 +234,7 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
         entityValidation.setCrudEventType(CRUDEventType.INSERT);
         entityValidation.setValidationCount(1);
 
-        // equals() error in @DataSet
+        // equals() error in @CdmDataSet
         EntityConstraintViolation error = EntityConstraintViolation.newInstance();
         error.setId(2);
         error.setCreated(created);
@@ -281,16 +255,16 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
         dao.saveEntityValidation(entityValidation, new Class[] { Level2.class });
     }
     @Test
-    @DataSet("EntityValidationCrudJdbcImplTest.testSave.xml")
-    @ExpectedDataSet("EntityValidationCrudJdbcImplTest.testOneOldOneNewError-result.xml")
+    @CdmDataSet("EntityValidationCrudJdbcImplTest.testSave.xml")
+    @CdmExpectedDataSet("EntityValidationCrudJdbcImplTest.testOneOldOneNewError-result.xml")
     // Test proving that if an entity has been validated,
-    // yielding 1 error (as in @DataSet), and _another_
+    // yielding 1 error (as in @CdmDataSet), and _another_
     // entity is now validated yielding an equals() error,
     // things behave as expected (2 entityvalidations, each
     // having 1 entityconstraintviolation)
     public void testOneOldOneNewError() {
 
-        // Same entity as in @DataSet
+        // Same entity as in @CdmDataSet
         Employee emp = new Employee();
         emp.setId(100);
         emp.setUuid(UUID.fromString("f8de74c6-aa56-4de3-931e-87b61da0218c"));
@@ -304,7 +278,7 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
         entityValidation.setCrudEventType(CRUDEventType.INSERT);
 
 
-        // Old error (in @DataSet)
+        // Old error (in @CdmDataSet)
         EntityConstraintViolation error = EntityConstraintViolation.newInstance();
         error.setId(Integer.MIN_VALUE);
         error.setCreated(created);
@@ -317,10 +291,10 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
         error.setValidator("eu.etaxonomy.cdm.persistence.validation.GarbageValidator");
         entityValidation.addEntityConstraintViolation(error);
 
-        // New error (not in @DataSet)
+        // New error (not in @CdmDataSet)
         error = EntityConstraintViolation.newInstance();
         // Don't leave ID generation to chance; we want it to be same as in
-        // @ExpectedDataSet
+        // @CdmExpectedDataSet
         error.setId(2);
         error.setCreated(created);
         error.setUuid(UUID.fromString("358da71f-b646-4b79-b00e-dcb68b6425bb"));
@@ -339,10 +313,10 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
 
 
     @Test
-    @DataSet("EntityValidationCrudJdbcImplTest.testSave.xml")
-    @ExpectedDataSet("EntityValidationCrudJdbcImplTest.testAllErrorsSolved-result.xml")
+    @CdmDataSet("EntityValidationCrudJdbcImplTest.testSave.xml")
+    @CdmExpectedDataSet("EntityValidationCrudJdbcImplTest.testAllErrorsSolved-result.xml")
     // Test proving that if an entity has been validated,
-    // yielding 1 error (as in @DataSet), and a subsequent
+    // yielding 1 error (as in @CdmDataSet), and a subsequent
     // validation yields 0 errors, all that remains is an
     // EntityValidation record with its validation counter
     // increased.
@@ -370,8 +344,8 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
      * .
      */
     @Test
-    @DataSet
-    @ExpectedDataSet
+    @CdmDataSet
+    @CdmExpectedDataSet
     public void test_DeleteValidationResult() {
         EntityValidationCrudJdbcImpl dao = new EntityValidationCrudJdbcImpl(dataSource);
         dao.deleteEntityValidation(SYNONYM, 200);
@@ -380,7 +354,7 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testGetEntityValidation() {
         EntityValidationCrudJdbcImpl dao = new EntityValidationCrudJdbcImpl(dataSource);
         EntityValidation result;

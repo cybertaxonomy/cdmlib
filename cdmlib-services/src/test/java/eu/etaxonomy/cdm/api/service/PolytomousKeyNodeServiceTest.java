@@ -15,30 +15,29 @@ import java.io.FileNotFoundException;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
-public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTest {
+public class PolytomousKeyNodeServiceTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     String[] tableNames = new String[]{"POLYTOMOUSKEY","POLYTOMOUSKEYNODE","POLYTOMOUSKEYNODE_AUD"};
 
-	@SpringBeanByType
+	@Autowired
 	private IPolytomousKeyNodeService service;
 
-	@SpringBeanByType
+	@Autowired
 	private IPolytomousKeyService keyService;
 
 	/****************** TESTS *****************************/
 
 	@Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
 	public final void testSetDao() {
 		Assert.assertNotNull(service);
 		Assert.assertNotNull(keyService);
@@ -92,7 +91,7 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
     }
 
     @Test  //8127  //5536 //10101
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testMergeDetached(){
 
         //create key with 2 child nodes
@@ -161,7 +160,7 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testMergeDetachedWithMove() {
 
         //create key with 2 child nodes
@@ -203,7 +202,7 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
     }
 
     @Test //10101 same as testMerge but with saveOrUpdate
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testSaveDetached(){
 
         //create key with 2 child nodes
@@ -266,9 +265,8 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
         Assert.assertEquals("Should be root + 2 children", 3, service.count(PolytomousKeyNode.class));
     }
 
-
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testSaveDetachedWithMove() {
 
         //create key with 2 child nodes
@@ -307,7 +305,6 @@ public class PolytomousKeyNodeServiceTest extends CdmTransactionalIntegrationTes
         Assert.assertEquals(child1.getUuid(), firstChild.getChildren().get(0).getUuid());
         Assert.assertEquals("Should be root + 2 children + 1 grandchild", 4, service.count(PolytomousKeyNode.class));
     }
-
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}

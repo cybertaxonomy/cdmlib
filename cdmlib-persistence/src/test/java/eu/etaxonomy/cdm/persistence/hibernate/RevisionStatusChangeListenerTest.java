@@ -12,36 +12,34 @@ import java.io.FileNotFoundException;
 import java.time.ZonedDateTime;
 
 import org.junit.Assert;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.common.RevisionStatus;
 import eu.etaxonomy.cdm.model.common.RevisionStatusInfo;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
  * @author muellera
  * @since 09.10.2026
  * @see #11040
  */
-public class RevisionStatusChangeListenerTest extends CdmTransactionalIntegrationTest {
+public class RevisionStatusChangeListenerTest extends CdmTransactionalSpringIntegrationTest {
 
-    @SpringBeanByType
+    @Autowired
     private TaxonDaoHibernateImpl taxonDao;
 
-    @SpringBeanByType
+    @Autowired
     private IDefinedTermDao definedTermDao;
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
     public void testAutoSetChangedOnStatusChangeOnly() {
 

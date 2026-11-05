@@ -16,13 +16,10 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
-import eu.etaxonomy.cdm.api.service.IClassificationService;
-import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
@@ -36,33 +33,27 @@ import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 25.06.2017
  */
-public class OwlExportTest  extends CdmTransactionalIntegrationTest{
+public class OwlExportTest  extends CdmIoTransactionalSpringIntegrationTest{
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-    @SpringBeanByName
+    @Autowired
+    @Qualifier("defaultExport")
     private CdmApplicationAwareDefaultExport<StructureTreeOwlExportConfigurator> defaultExport;
 
-    @SpringBeanByType
-    private IClassificationService classificationService;
-
-    @SpringBeanByType
+    @Autowired
     private ITermTreeService termTreeService;
 
-    @SpringBeanByType
-    private ITaxonNodeService taxonNodeService;
-
-
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testEmptyData(){
         File destinationFolder = null;
         StructureTreeOwlExportConfigurator config = StructureTreeOwlExportConfigurator.NewInstance();
@@ -118,7 +109,6 @@ public class OwlExportTest  extends CdmTransactionalIntegrationTest{
         //      e.printStackTrace();
         //  }
     }
-
 
     private void setUuid(CdmBase cdmBase, String uuidStr) {
         cdmBase.setUuid(UUID.fromString(uuidStr));

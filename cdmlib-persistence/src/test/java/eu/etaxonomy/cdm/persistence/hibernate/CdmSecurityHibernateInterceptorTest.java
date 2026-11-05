@@ -16,10 +16,8 @@ import org.junit.Test;
 /**
  * @author a.kohlbecker
  * @since 18.10.2017
- *
  */
 public class CdmSecurityHibernateInterceptorTest extends Assert {
-
 
     @Test
     public void testUnprotectedCacheFields_unprotected() {

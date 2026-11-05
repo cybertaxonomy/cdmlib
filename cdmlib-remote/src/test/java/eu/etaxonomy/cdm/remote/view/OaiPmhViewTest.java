@@ -21,16 +21,15 @@ import org.apache.logging.log4j.Logger;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.hibernate.envers.RevisionType;
 import org.joda.time.format.ISODateTimeFormat;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.oxm.Marshaller;
-import org.unitils.UnitilsJUnit4;
-import org.unitils.spring.annotation.SpringApplicationContext;
-import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.github.dozermapper.core.Mapper;
 
@@ -58,16 +57,17 @@ import eu.etaxonomy.cdm.remote.view.oaipmh.ListSetsView;
 import eu.etaxonomy.cdm.remote.view.oaipmh.dc.GetRecordView;
 import eu.etaxonomy.cdm.remote.view.oaipmh.dc.ListRecordsView;
 
-@SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
-@Ignore  //ignore temporarily as the service is currently very slow or not available
-public class OaiPmhViewTest extends UnitilsJUnit4 {
+@SpringJUnitConfig(locations = "classpath:/eu/etaxonomy/cdm/applicationContext-test.xml")
+@Disabled  //ignore temporarily as the service is currently very slow or not available
+public class OaiPmhViewTest {
 
     private static final Logger logger = LogManager.getLogger();
 
-    @SpringBeanByName
+    @Autowired
+    @Qualifier("marshaller")
     private Marshaller marshaller;
 
-    @SpringBeanByType
+    @Autowired
     private Mapper mapper;
 
     private Map<String,Object> model;
@@ -85,7 +85,7 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
     private URI oaiServerURI;
     private static URI dozerXsdServerURI = URI.create("https://dozermapper.github.io/");  //for testing https://dozermapper.github.io/schema/bean-mapping.xsd
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         XMLUnit.setIgnoreWhitespace(true);

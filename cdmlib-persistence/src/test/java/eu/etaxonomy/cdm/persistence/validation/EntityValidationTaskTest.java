@@ -11,10 +11,6 @@ package eu.etaxonomy.cdm.persistence.validation;
 import java.util.Arrays;
 import java.util.Set;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.ValidatorFactory;
-
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
 import org.junit.Assert;
@@ -22,6 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.ICdmBase;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.ValidatorFactory;
 
 /**
  * Basically just tests that the JSR-303 validation is working in the first place, and
@@ -33,7 +32,6 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
 public class EntityValidationTaskTest {
 
 	private ValidatorFactory factory;
-
 
 	@Before
 	public void setUp() throws Exception{

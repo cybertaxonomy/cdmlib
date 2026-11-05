@@ -16,18 +16,15 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.oxm.Marshaller;
-import org.unitils.UnitilsJUnit4;
-import org.unitils.spring.annotation.SpringApplicationContext;
-import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
-
-import com.github.dozermapper.core.Mapper;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.csv.redlist.demo.CsvDemoExportConfigurator;
@@ -36,17 +33,15 @@ import eu.etaxonomy.cdm.io.csv.redlist.demo.CsvDemoRecord;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.remote.view.oaipmh.IdentifyView;
 
-@Ignore
-@SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
-public class JsonToCsvViewTest extends UnitilsJUnit4 {
+@Disabled
+@SpringJUnitConfig(locations = "classpath:/eu/etaxonomy/cdm/applicationContext-test.xml")
+public class JsonToCsvViewTest {
 
     private static final Logger logger = LogManager.getLogger();
 
-    @SpringBeanByName
+    @Autowired
+    @Qualifier("marshaller")
     private Marshaller marshaller;
-
-    @SpringBeanByType
-    private Mapper mapper;
 
     private Map<String,Object> model;
     private IdentifyView identifyView;
@@ -60,7 +55,7 @@ public class JsonToCsvViewTest extends UnitilsJUnit4 {
 
 	private CsvDemoExportConfigurator config;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         model = new HashMap<>();

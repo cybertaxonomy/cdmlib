@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.remote.server.ServerRunning;
  *
  * @author a.kohlbecker
  * @since Jan 17, 2017
- *
  */
 public class AuthorizationCodeGrantTests {
 

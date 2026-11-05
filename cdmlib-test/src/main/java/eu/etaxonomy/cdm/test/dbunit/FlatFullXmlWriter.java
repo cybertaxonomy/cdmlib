@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.test.unitils;
+package eu.etaxonomy.cdm.test.dbunit;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -24,18 +24,13 @@ import org.dbunit.dataset.datatype.TypeCastException;
 import org.dbunit.dataset.stream.DataSetProducerAdapter;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.dbunit.util.xml.XmlWriter;
-import org.unitils.dbunit.util.MultiSchemaXmlDataSetReader;
 
 /**
- * This is a variant of the {@link org.dbunit.dataset.xml.FlatXmlWriter}, which in
- * inserts '[null]' place holders for null values but skipping them.
- * This was necessary to make this xml database export compatible to the
- * {@link MultiSchemaXmlDataSetReader} which is used in Unitils since version 3.x
+ * Variant of {@link org.dbunit.dataset.xml.FlatXmlWriter} that writes {@code [null]}
+ * placeholders for null values instead of skipping those attributes.
  *
  * @author Manuel Laflamme
- * @author Last changed by: $Author: gommma $
  * @author modified by Andreas Kohlbecker 2012
- * @version $Revision: 859 $ $Date: 2008-11-02 12:50:23 +0100 (dom, 02 nov 2008) $
  * @since 1.5.5 (Apr 19, 2003)
  */
 public class FlatFullXmlWriter implements IDataSetConsumer{

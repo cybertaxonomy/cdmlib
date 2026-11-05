@@ -16,29 +16,28 @@ import java.net.URL;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.sdd.ikeyplus.IkeyPlusImport;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
-public class IkeyPlusImportTest extends CdmTransactionalIntegrationTest {
+public class IkeyPlusImportTest extends CdmIoTransactionalSpringIntegrationTest {
 
-    @SpringBeanByType
+    @Autowired
     private IkeyPlusImport ikeyPlusImport;
 
-    @SpringBeanByType
+    @Autowired
     private IPolytomousKeyService polytomousKeyService;
 
     private URI sddUri;
 
-    @Before
+    @BeforeEach
     public void setUp() throws URISyntaxException {
 
         String xxx = "/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input.xml";
@@ -57,9 +56,9 @@ public class IkeyPlusImportTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSets({
-        @DataSet(/*loadStrategy=CleanSweepInsertLoadStrategy.class,*/ value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
     public void testDoInvoke() {
 

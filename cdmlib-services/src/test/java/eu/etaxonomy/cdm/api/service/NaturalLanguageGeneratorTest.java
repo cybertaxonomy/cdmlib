@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2010 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertNotNull;
@@ -12,10 +20,10 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -33,22 +41,26 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesSpringIntegrationTest;
 
-@Ignore //FIXME Remove @Ignore once maximes code is completely committed
-public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
+/**
+ * @author m.venin
+ * @since 25.06.2010
+ */
+@Disabled //FIXME Remove @Disabled once maximes code is completely committed
+public class NaturalLanguageGeneratorTest extends CdmServicesSpringIntegrationTest {
 
 	@SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-	@SpringBeanByType
+	@Autowired
 	private INaturalLanguageGenerator generator;
 
     private TermTree featureTree;
     private TaxonDescription description;
     Set<Feature> featureSet  = new HashSet<Feature>();
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
         // set up your test objects here
 

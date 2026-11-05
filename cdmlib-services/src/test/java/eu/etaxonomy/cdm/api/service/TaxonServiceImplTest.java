@@ -22,9 +22,8 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
@@ -85,53 +84,53 @@ import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  */
-public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
+public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonService service;
 
-    @SpringBeanByType
+    @Autowired
     private INameService nameService;
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceDao referenceDao;
 
-    @SpringBeanByType
+    @Autowired
     private IAgentService agentService;
 
-    @SpringBeanByType
+    @Autowired
     private IClassificationService classificationService;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonNodeDao taxonNodeDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonNodeService nodeService;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionService descriptionService;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionDao descriptionDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITypeDesignationDao typeDesignationDao;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionElementDao descriptionElementDao;
 
-    @SpringBeanByType
+    @Autowired
     private IMarkerService markerService;
 
-    @SpringBeanByType
+    @Autowired
     private IOccurrenceService occurenceService;
 
     private Synonym synonym;
@@ -162,7 +161,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public static UUID SPECIES5_NAME_UUID = UUID.fromString("0c6ecaac-804d-49e5-a33f-1b7ee77439e3");
 
 /****************** TESTS *****************************/
-
 
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#getTaxonByUuid(java.util.UUID)}.
@@ -198,7 +196,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         actualTaxa = service.findByTitle(config);
         assertEquals(expectedTaxon, actualTaxa.getRecords().get(0));
     }
-
 
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#saveTaxon(eu.etaxonomy.cdm.model.taxon.TaxonBase)}.
@@ -397,7 +394,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonServiceImplTest.testMoveSynonymToAnotherTaxon.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonServiceImplTest.testMoveSynonymToAnotherTaxon.xml")
     public final void testChangeSynonymToAcceptedTaxonWithSecHandlingWarningSelect(){
         Taxon genus = getTestTaxon();
         TaxonNode node = genus.getTaxonNodes().iterator().next();
@@ -499,7 +496,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonServiceImplTest.testMoveSynonymToAnotherTaxon.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonServiceImplTest.testMoveSynonymToAnotherTaxon.xml")
     public final void testMoveSynonymToAnotherTaxon() throws Exception {
         final String[] tableNames = new String[]{};
 
@@ -515,7 +512,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         UUID uuidSyn6 = UUID.fromString("0ccd4e7c-6fbd-4b7c-bd47-29e45b92f34b");
         UUID uuidRef1 = UUID.fromString("336f9b38-698c-45d7-be7b-993ed3355bdc");
         UUID uuidRef2 = UUID.fromString("c8f49d1a-69e1-48a3-98bb-45d61f3da3e7");
-
 
         boolean moveHomotypicGroup = true;
         SynonymType newSynonymType = null;
@@ -572,7 +568,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertNotNull("Synonym should still exist", heterotypicSynonym);
         Assert.assertNotNull("Synonym should have accepted taxon", heterotypicSynonym.getAcceptedTaxon());
         Assert.assertEquals("Accepted taxon of single relation should still be the old taxon", oldTaxon, heterotypicSynonym.getAcceptedTaxon());
-
 
         //test heterotypic synonym with no other synonym in homotypic group
         //+ keep reference
@@ -744,7 +739,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonServiceImplTest.testDeleteSynonym.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonServiceImplTest.testDeleteSynonym.xml")
     //test delete synonym, but the name will not be deleted
     public final void testDeleteSynonymSynonymTaxonDontDeleteName(){
         final String[]tableNames = {
@@ -778,7 +773,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonServiceImplTest.testDeleteSynonym.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonServiceImplTest.testDeleteSynonym.xml")
     //test delete synonym and his name
     public final void testDeleteSynonymSynonymTaxonDeleteName(){
         final String[]tableNames = {"TaxonBase","TaxonBase_AUD", "TaxonName","TaxonName_AUD",
@@ -806,7 +801,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonServiceImplTest.testDeleteSynonym.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonServiceImplTest.testDeleteSynonym.xml")
     //test remove synonym from taxon -> synonym and name still in the db and the synonymrelationship to the other taxon
     //test delete synonym -> all relationships are deleted, the name is deleted and the synonym itself
     public final void testDeleteSynonymSynonymTaxonBooleanRelToOneTaxon(){
@@ -872,7 +867,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonServiceImplTest.testDeleteSynonym.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonServiceImplTest.testDeleteSynonym.xml")
     //this test is more or less obsolete since we have no synonym relationships anymore
     //test delete synonym, only for a special taxon, but because of other relationships it will not be deleted at all
     public final void testDeleteSynonymSynonymTaxonBooleanDeleteOneTaxon(){
@@ -933,7 +928,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonServiceImplTest.testDeleteSynonym.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonServiceImplTest.testDeleteSynonym.xml")
 
     public final void testDeleteSynonymWithAnnotations(){
         final String[]tableNames = {
@@ -960,7 +955,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("TaxonServiceImplTest.testDeleteSynonym.xml")
+    @CdmDataSet("TaxonServiceImplTest.testDeleteSynonym.xml")
 
     public final void testDeleteSynonymSynonymTaxonBooleanWithRelatedName(){
         final String[]tableNames = {"TaxonBase","TaxonBase_AUD", "TaxonName","TaxonName_AUD",
@@ -1011,7 +1006,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonServiceImplTest.testDeleteSynonym.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonServiceImplTest.testDeleteSynonym.xml")
     public final void testDeleteSynonymSynonymTaxonBooleanWithRelatedNameDeleteAllNameRelations(){
         final String[]tableNames = {"TaxonBase","TaxonBase_AUD", "TaxonName","TaxonName_AUD",
                 "HomotypicalGroup","HomotypicalGroup_AUD"};
@@ -1056,7 +1051,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonServiceImplTest.testDeleteSynonym.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonServiceImplTest.testDeleteSynonym.xml")
     public final void testDeleteSynonymSynonymTaxonBooleanWithRelatedNameIgnoreIsBasionym(){
         final String[]tableNames = {"TaxonBase","TaxonBase_AUD", "TaxonName","TaxonName_AUD",
                 "HomotypicalGroup","HomotypicalGroup_AUD"};
@@ -1105,7 +1100,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("TaxonServiceImplTest.testDeleteSynonym.xml")
+    @CdmDataSet("TaxonServiceImplTest.testDeleteSynonym.xml")
     public final void testDeleteSynonymSynonymTaxonBooleanWithRollback(){
 //        final String[]tableNames = {"TaxonBase","TaxonBase_AUD", "TaxonName","TaxonName_AUD",
 //                "HomotypicalGroup","HomotypicalGroup_AUD"};
@@ -1144,7 +1139,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("TaxonServiceImplTest.testDeleteSynonym.xml")
+    @CdmDataSet("TaxonServiceImplTest.testDeleteSynonym.xml")
     public final void testDeleteSynonymSynonymTaxonBooleanWithoutTransaction(){
         @SuppressWarnings("unused")
         final String[]tableNames = {"TaxonBase","TaxonBase_AUD", "TaxonName","TaxonName_AUD",
@@ -1189,7 +1184,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("../../database/ClearDBDataSet.xml")
+    @CdmDataSet("/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testTaxonDeletionConfig(){
         final String[]tableNames = {}
 //                "Classification", "Classification_AUD",
@@ -1298,13 +1293,12 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="../../database/ClearDBDataSet.xml")
+    @CdmDataSet("/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testDeleteTaxon(){
 
         //create a small classification
         Taxon testTaxon = getTestTaxon();
         service.save(testTaxon).getUuid();
-
 
         //test
         Taxon speciesTaxon = (Taxon)service.find(SPECIES1_UUID);
@@ -1348,7 +1342,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="../../database/ClearDBDataSet.xml")
+    @CdmDataSet("/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testDeleteTaxonWithAnnotations(){
 
         //create a small classification
@@ -1371,7 +1365,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         config.setDeleteNameIfPossible(false);
         Annotation annotation = Annotation.NewDefaultLanguageInstance("test");
         speciesTaxon.addAnnotation(annotation);
-
 
         DeleteResult result = service.deleteTaxon(speciesTaxon.getUuid(), config, speciesTaxon.getTaxonNodes().iterator().next().getClassification().getUuid());
         if (!result.isOk()){
@@ -1399,7 +1392,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="../../database/ClearDBDataSet.xml")
+    @CdmDataSet("/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testDeleteTaxonUsedInTaxonRelation(){
 
         //create a small classification
@@ -1417,7 +1410,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         config.setDeleteNameIfPossible(false);
         config.setDeleteTaxonRelationships(false);
 
-
         DeleteResult result = service.deleteTaxon(speciesTaxon.getUuid(), config, speciesTaxon.getTaxonNodes().iterator().next().getClassification().getUuid());
         if (result.isOk()){
             Assert.fail();
@@ -1432,7 +1424,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         config.setDeleteNameIfPossible(false);
         config.setDeleteTaxonRelationships(true);
-
 
         result = service.deleteTaxon(speciesTaxon.getUuid(), config, speciesTaxon.getTaxonNodes().iterator().next().getClassification().getUuid());
         if (!result.isOk()){
@@ -1451,7 +1442,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../database/ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testDeleteTaxonDeleteSynonymRelations(){
 
     	final String[]tableNames = {
@@ -1473,7 +1464,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
         config.setDeleteSynonymsIfPossible(false);
 
-
         DeleteResult result = service.deleteTaxon(speciesTaxon.getUuid(), config, speciesTaxon.getTaxonNodes().iterator().next().getClassification().getUuid());
         if (!result.isOk()){
         	Assert.fail("deleteTaxon not ok: status=" + result.getStatus()
@@ -1491,7 +1481,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="../../database/ClearDBDataSet.xml")
+    @CdmDataSet("/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testDeleteTaxonNameUsedInOtherContext(){
 
         //create a small classification
@@ -1521,7 +1511,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="../../database/ClearDBDataSet.xml")
+    @CdmDataSet("/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testDeleteTaxonNameUsedInTwoClassificationsDeleteAllNodes(){
         commitAndStartNewTransaction(null);
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
@@ -1555,7 +1545,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="../../database/ClearDBDataSet.xml")
+    @CdmDataSet("/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testDeleteTaxonNameUsedInTwoClassificationsDoNotDeleteAllNodes(){
 
         // delete the taxon only in second classification, this should delete only the nodes, not the taxa
@@ -1595,7 +1585,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="../../database/ClearDBDataSet.xml")
+    @CdmDataSet("/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testTaxonNodeDeletionConfiguratorMoveToParent(){
         //test childHandling MOVE_TO_PARENT:
         Taxon testTaxon = getTestTaxon();
@@ -1611,7 +1601,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
         config.getTaxonNodeConfig().setChildHandling(ChildHandling.MOVE_TO_PARENT);
-
 
         DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, classification.getUuid());
         if(!result.isOk()){
@@ -1633,7 +1622,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="../../database/ClearDBDataSet.xml")
+    @CdmDataSet("/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testTaxonNodeDeletionConfiguratorDeleteChildren(){
         //test childHandling DELETE:
         Taxon testTaxon = getTestTaxon();
@@ -1671,9 +1660,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         assertEquals(0, size);
     }
 
-
     @Test
-    @DataSet(value="../../database/ClearDBDataSet.xml")
+    @CdmDataSet("/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testTaxonDeletionConfiguratorDeleteMarker(){
 
         //test childHandling DELETE:
@@ -1711,9 +1699,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         assertEquals(0, size);
     }
 
-
     @Test
-    @DataSet(value="../../database/ClearDBDataSet.xml")
+    @CdmDataSet("/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testTaxonDeletionConfiguratorTaxonWithMisappliedName(){
 
         Taxon testTaxon = getTestTaxon();
@@ -1742,7 +1729,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     }
     @Test
-    @DataSet(value="../../database/ClearDBDataSet.xml")
+    @CdmDataSet("/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testTaxonDeletionConfiguratorTaxonWithMisappliedNameDoNotDelete(){
 
         Taxon testTaxon = getTestTaxon();
@@ -1771,7 +1758,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="../../database/ClearDBDataSet.xml")
+    @CdmDataSet("/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testTaxonDeletionConfiguratorTaxonMisappliedName(){
 
         Taxon testTaxon = getTestTaxon();
@@ -1798,7 +1785,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="../../database/ClearDBDataSet.xml")
+    @CdmDataSet("/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testListIncludedTaxa(){
 
     	Reference citation = null;
@@ -1900,7 +1887,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     	DescriptionElementBase element = IndividualsAssociation.NewInstance(specimen);
     	description.addElement(element);
     	service.saveOrUpdate(taxWithoutSyn);
-
 
     	Taxon tax = (Taxon)service.find(uuidTaxWithoutSyn);
     	Set<TaxonDescription> descr =  tax.getDescriptions();
@@ -2082,7 +2068,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Override
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "ClearDBDataSet.xml")
     public void createTestDataSet() {
 
         Rank rank = Rank.SPECIES();

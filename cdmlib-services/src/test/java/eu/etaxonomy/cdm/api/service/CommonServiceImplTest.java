@@ -17,9 +17,8 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -35,31 +34,32 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dto.ReferencingObjectDto;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  */
-public class CommonServiceImplTest extends CdmIntegrationTest {
+public class CommonServiceImplTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
-	@SpringBeanByType
+	@Autowired
 	private ICommonService service;
 
-	@SpringBeanByType
+	@Autowired
 	private ITaxonService taxonService;
 
-	@SpringBeanByType
+	@Autowired
 	private IReferenceDao referenceDao;
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceService referenceService;
 
-    @SpringBeanByType
+    @Autowired
     private IAgentService agentService;
 
-	@SpringBeanByType
+	@Autowired
 	private IOccurrenceService occurrenceService;
 
 /****************** TESTS *****************************/
@@ -70,7 +70,7 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 	}
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testGetReferencingObjectsDto() {
 
         IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
@@ -110,7 +110,7 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
     }
 
 	@Test
-	@DataSet
+	@CdmDataSet
 	public final void testGetReferencingObjects() {
 
 		IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
@@ -149,7 +149,7 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
     }
 
     @Test
-	@DataSet
+	@CdmDataSet
 	public final void testGetReferencingObjects2() {
 //		SpecimenDescription desc1 = SpecimenDescription.NewInstance();
 //		desc1.setTitleCache("desc1");
@@ -177,7 +177,7 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 	}
 
 	@Test
-	@DataSet
+	@CdmDataSet
 	public final void testLoadCacheStrategyForReference(){
 		Reference ref = referenceDao.load(UUID.fromString("613980ac-9bd5-43b9-a374-d71e1794688f"));
 		ref.setType(ReferenceType.Article);

@@ -17,34 +17,33 @@ import java.net.URL;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.database.annotations.Transactional;
-import org.unitils.database.util.TransactionMode;
-import org.unitils.spring.annotation.SpringBeanByName;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.events.LoggingIoObserver;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 23.11.2011
  */
-@Transactional(TransactionMode.ROLLBACK)
-public class DwcaImportIntegrationTest extends CdmTransactionalIntegrationTest{
+public class DwcaImportIntegrationTest extends CdmIoTransactionalSpringIntegrationTest{
 
 	@SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-	@SpringBeanByName
-	private CdmApplicationAwareDefaultImport<?> defaultImport;
+	@Autowired
+    @Qualifier("defaultImport")
+    private CdmApplicationAwareDefaultImport<?> defaultImport;
 
 	private URI uri;
 	private DwcaImportConfigurator configurator;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		String inputFile = "/eu/etaxonomy/cdm/io/dwca/in/DwcaZipToStreamConverterTest-input.zip";
 		URL url = this.getClass().getResource(inputFile);
@@ -76,7 +75,6 @@ public class DwcaImportIntegrationTest extends CdmTransactionalIntegrationTest{
 //                "TaxonNode","HomotypicalGroup"};
 //		commitAndStartNewTransaction(tableNames);
 	}
-
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}

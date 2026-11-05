@@ -13,16 +13,14 @@ import java.io.FileNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.ExportType;
 import eu.etaxonomy.cdm.io.out.TaxonTreeExportTestBase;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
 
 /**
  * @author k.luther
@@ -37,15 +35,15 @@ public class PrintPubExportTest
     //requires log level info for DefaultProgressMonitor and other monitors
     private static final boolean useCommandLineMonitor = false;
 
-    @Before
+    @BeforeEach
     public void setUp()  {
         createFullTestDataSet();
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
     public void testGeneralExport(){
 

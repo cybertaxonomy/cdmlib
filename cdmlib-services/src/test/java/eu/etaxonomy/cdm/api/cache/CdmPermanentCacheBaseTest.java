@@ -13,9 +13,9 @@ import java.io.FileNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -26,20 +26,20 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesSpringIntegrationTest;
 
-@Ignore
-public class CdmPermanentCacheBaseTest extends CdmIntegrationTest {
+@Disabled
+public class CdmPermanentCacheBaseTest extends CdmServicesSpringIntegrationTest {
 
 	private static final Logger logger = LogManager.getLogger();
 
-	@SpringBeanByType
+	@Autowired
 	private CdmPermanentCacheBase cdmCacherBase;
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceService referenceService;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonService taxonService;
 
 	@Test

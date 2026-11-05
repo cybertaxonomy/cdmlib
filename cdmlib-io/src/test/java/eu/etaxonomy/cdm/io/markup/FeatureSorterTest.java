@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2013 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.io.markup;
 
 import java.util.ArrayList;
@@ -9,10 +17,13 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * @author a.mueller
+ * @since 17.05.2013
+ */
 public class FeatureSorterTest {
 
 	static UUID uuid1a = UUID.randomUUID();
@@ -32,12 +43,12 @@ public class FeatureSorterTest {
 	static UUID uuid4b = UUID.randomUUID();
 	static UUID uuid4c = UUID.randomUUID();
 	static UUID uuid4d = UUID.randomUUID();
-	
+
 	static UUID[] uuidList1;
 	static UUID[]  uuidList2;
 	static UUID[]  uuidList3;
 	static UUID[]  uuidList4;
-	
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		uuidList1 = new UUID[]{uuid1a, uuid1b, uuid1c, uuid1d, uuid4c};
@@ -48,11 +59,6 @@ public class FeatureSorterTest {
 //		printArray(uuidList2);
 //		printArray(uuidList3);
 //		printArray(uuidList4);
-	}
-
-	@Before
-	public void setUp() throws Exception {		
-
 	}
 
 	@Test
@@ -66,9 +72,6 @@ public class FeatureSorterTest {
 		Assert.assertEquals("uuid1b should be next", uuid1b, result.get(i++));
 		Assert.assertEquals("uuid2b should be next", uuid2b, result.get(i++));
 //		Assert.assertEquals("uuid1c should be next", uuid1c, result.get(i++));
-		
-
-		
 	}
 
 	@Test
@@ -87,7 +90,7 @@ public class FeatureSorterTest {
 		Assert.assertEquals(2 + getAllUuids().size(), result.size());
 	}
 
-	
+
 	private Set<UUID> getAllUuids() {
 		Set<UUID> all = new HashSet<UUID>();
 		List<UUID[]> arrayList = new ArrayList<UUID[]>();
@@ -114,7 +117,7 @@ public class FeatureSorterTest {
 	private void addChildren(Map<String, List<FeatureSorterInfo>> orderLists) {
 		orderLists.get("2").get(1).addSubFeature(new FeatureSorterInfo(uuid2c_c1));
 		orderLists.get("2").get(1).addSubFeature(new FeatureSorterInfo(uuid2c_c2));
-		
+
 	}
 
 	private Map<String, List<FeatureSorterInfo>> getOrderLists() {

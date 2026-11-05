@@ -15,12 +15,11 @@ import java.net.URL;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -31,28 +30,29 @@ import eu.etaxonomy.cdm.io.tropicos.in.TropicosNameImportConfigurator;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 15.11.2017
  */
-public class TropicosNameImportTest extends CdmTransactionalIntegrationTest{
+public class TropicosNameImportTest extends CdmIoTransactionalSpringIntegrationTest{
 
-    @SpringBeanByName
+    @Autowired
+    @Qualifier("defaultImport")
     private CdmApplicationAwareDefaultImport<?> defaultImport;
 
-    @SpringBeanByType
+    @Autowired
     private INameService nameService;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonService taxonService;
 
     private TropicosNameImportConfigurator configShort;
     private TropicosNameImportConfigurator configLong;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         String inputFile = "/eu/etaxonomy/cdm/io/tropicos/TropicosNameImportTest-input.txt";
 
@@ -67,7 +67,6 @@ public class TropicosNameImportTest extends CdmTransactionalIntegrationTest{
             configShort = TropicosNameImportConfigurator.NewInstance(URI.fromUrl(url), null);
             configLong = TropicosNameImportConfigurator.NewInstance(URI.fromUrl(urlLong), null);
 
-
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
@@ -80,7 +79,7 @@ public class TropicosNameImportTest extends CdmTransactionalIntegrationTest{
 //***************************** TESTS *************************************//
 
     @Test
-    @DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testShort() {
         configShort.setCreateTaxa(true);
         ImportResult result = defaultImport.invoke(configShort);
@@ -106,8 +105,8 @@ public class TropicosNameImportTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
-    //@Ignore
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    //@Disabled
     public void testShortCreateTaxa() {
         configShort.setCreateTaxa(true);
         ImportResult result = defaultImport.invoke(configShort);
@@ -123,7 +122,7 @@ public class TropicosNameImportTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testLongFile() {
         ImportResult result = defaultImport.invoke(configLong);
         String report = result.createReport().toString();

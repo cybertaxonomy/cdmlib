@@ -8,8 +8,7 @@
 */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
@@ -18,11 +17,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
  * @author a.mueller
  * @since 04.10.2016
  */
-public class CdmPreDataChangeListenerTest /*extends CdmIntegrationTest*/ {
-
-    @Before
-    public void setUp() throws Exception {
-    }
+public class CdmPreDataChangeListenerTest /*extends CdmSpringIntegrationTest*/ {
 
     @Test
     public void testGenerateCaches() {

@@ -16,15 +16,16 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesSpringIntegrationTest;
 
 /**
  * @author a.mueller
  */
-public class TermLoaderIntegrationTest extends CdmIntegrationTest {
+public class TermLoaderIntegrationTest extends CdmServicesSpringIntegrationTest {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();

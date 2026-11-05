@@ -13,20 +13,19 @@ import java.io.FileNotFoundException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.queryparser.complexPhrase.ComplexPhraseQueryParser;
 import org.junit.Assert;
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesSpringIntegrationTest;
 
 /**
  * @author a.kohlbecker
  * @since Jan 13, 2017
- *
  */
-public class LuceneIndexToolProviderTest extends CdmIntegrationTest {
+public class LuceneIndexToolProviderTest extends CdmServicesSpringIntegrationTest {
 
-    @SpringBeanByType
+    @Autowired
     private ILuceneIndexToolProvider luceneIndexToolProvider;
 
     @Test

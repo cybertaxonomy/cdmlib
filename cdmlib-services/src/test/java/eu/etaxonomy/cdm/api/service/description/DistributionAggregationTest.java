@@ -28,11 +28,9 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.api.service.DeleteResult;
@@ -68,15 +66,15 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author a.kohlbecker
  * @author a.mueller
  * @since Feb 26, 2013
  */
-public class DistributionAggregationTest extends CdmTransactionalIntegrationTest {
+public class DistributionAggregationTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -92,25 +90,25 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
 
     private static final UUID CLASSIFICATION_UUID = UUID.fromString("4b266053-a841-4980-b548-3f21d8d7d712");
 
-    @SpringBeanByType
+    @Autowired
     private ICdmApplication repository;
 
-    @SpringBeanByType
+    @Autowired
     private ITermService termService;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionElementService descriptionElementService;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionDao descriptionDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonService taxonService;
 
-    @SpringBeanByType
+    @Autowired
     private IClassificationService classificationService;
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceDao referenceDao;
 
     private DistributionAggregation engine;
@@ -141,7 +139,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
 
     private IProgressMonitor monitor;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         superAreas = Arrays.asList(new UUID[]{
@@ -183,10 +181,10 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="DistributionAggregationTest.xml"),
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "DistributionAggregationTest.xml"
     })
     public void test_ignore(){
         PresenceAbsenceTerm endemic = PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA();
@@ -240,10 +238,10 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="DistributionAggregationTest.xml"),
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "DistributionAggregationTest.xml"
     })
     public void testArea_area() {
 
@@ -290,10 +288,10 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="DistributionAggregationTest.xml"),
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "DistributionAggregationTest.xml"
     })
     public void testArea_rank_and_area_1() {
 
@@ -463,10 +461,10 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
      * @throws JvmLimitsException
      */
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="DistributionAggregationTest.xml"),
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "DistributionAggregationTest.xml"
     })
     public void testArea_rank_and_area_2() throws JvmLimitsException {
 
@@ -505,7 +503,6 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         assertEquals(1, computedDescriptionsCnt);
     }
 
-
     /**
      * Variant of {@link #testArea_rank_and_area_1()} with alternate source references to check the
      * suppression of duplicates.
@@ -514,10 +511,10 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
      * an makes assertions only on the alternative source references
      */
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="DistributionAggregationTest.xml"),
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "DistributionAggregationTest.xml"
     })
     public void testArea_rank_and_area_3() {
 
@@ -571,10 +568,10 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
      * and makes assertions only on the alternative source references
      */
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="DistributionAggregationTest.xml"),
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "DistributionAggregationTest.xml"
     })
     public void testArea_rank_and_area_4() {
 
@@ -620,10 +617,10 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
      * Test to check if {@link AggregationSourceMode#DESCRIPTION} works for toParentAggregation.
      */
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="DistributionAggregationTest.xml"),
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "DistributionAggregationTest.xml"
     })
     public void test_rank_descriptionMode() throws JvmLimitsException {
 
@@ -661,10 +658,10 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
      * Test to check if {@link AggregationSourceMode#DESCRIPTION} works for toParentAggregation.
      */
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="DistributionAggregationTest.xml"),
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "DistributionAggregationTest.xml"
     })
     public void test_areaRank_sourceType() throws JvmLimitsException {
 

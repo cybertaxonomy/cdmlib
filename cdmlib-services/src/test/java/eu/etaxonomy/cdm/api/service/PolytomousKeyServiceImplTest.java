@@ -13,44 +13,44 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 23.08.2011
  */
-@Ignore
-public class PolytomousKeyServiceImplTest extends CdmTransactionalIntegrationTest {
+@Disabled
+public class PolytomousKeyServiceImplTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
-	@SpringBeanByType
+	@Autowired
 	private IPolytomousKeyService service;
 
-	@SpringBeanByType
+	@Autowired
 	private IPolytomousKeyNodeService nodeService;
 
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@BeforeClass
+	@BeforeAll
 	public static void setUpBeforeClass() throws Exception {
 	}
 
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 	}
 
@@ -64,7 +64,6 @@ public class PolytomousKeyServiceImplTest extends CdmTransactionalIntegrationTes
 		PolytomousKey key = PolytomousKey.NewTitledInstance("My test key");
 		service.save(key);
 		Taxon taxon = Taxon.NewInstance(null, null);
-
 
 		key.addTaxonomicScope(taxon);
 
@@ -95,7 +94,7 @@ public class PolytomousKeyServiceImplTest extends CdmTransactionalIntegrationTes
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.ServiceBase#delete(eu.etaxonomy.cdm.model.common.CdmBase)}.
 	 */
 	@Test
-	@DataSet
+	@CdmDataSet
 	public void testDelete() {
 		System.out.println("Delete start");
 		printDataSet(System.out, new String[]{"PolytomousKey", "POLYTOMOUSKEYNODE", "POLYTOMOUSKEYNODE_LANGUAGESTRING",
@@ -111,7 +110,6 @@ public class PolytomousKeyServiceImplTest extends CdmTransactionalIntegrationTes
 //		service.delete(key);
 		key.getRoot().removeChild(someChild);
 		nodeService.delete(someChild);
-
 
 		setComplete();
 		endTransaction();

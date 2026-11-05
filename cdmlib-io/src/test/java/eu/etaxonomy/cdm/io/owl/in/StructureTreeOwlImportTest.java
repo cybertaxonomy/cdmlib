@@ -21,11 +21,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -50,27 +49,29 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
 /**
  * @author pplitzner
  * @since Apr 24, 2019
  */
-public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest {
+public class StructureTreeOwlImportTest extends CdmIoTransactionalSpringIntegrationTest {
 
-    @SpringBeanByName
+    @Autowired
+    @Qualifier("defaultImport")
     private CdmApplicationAwareDefaultImport<?> defaultImport;
 
-    @SpringBeanByType
+    @Autowired
     private ITermService termService;
 
-    @SpringBeanByType
+    @Autowired
     private ITermTreeService termTreeServcie;
 
-    @SpringBeanByType
+    @Autowired
     private IVocabularyService vocabularyService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
     }
 
@@ -80,7 +81,7 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
     }
 
     @Test
-    @DataSet(value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
+    @CdmDataSet("/eu/etaxonomy/cdm/database/BlankDataSet.xml")
     public void testImportStructureTree() throws URISyntaxException {
         URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/owl/in/test_structures.owl");
         URI uri = URI.fromUrl(url);
@@ -164,9 +165,8 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
 
     }
 
-
     @Test
-    @DataSet(value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
+    @CdmDataSet("/eu/etaxonomy/cdm/database/BlankDataSet.xml")
     public void testImportPropertyTreeAndVocabulary() throws URISyntaxException {
         URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/owl/in/properties.owl");
         URI uri = URI.fromUrl(url);

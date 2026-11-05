@@ -1,14 +1,21 @@
+/**
+* Copyright (C) 2013 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.dao.hibernate.molecular;
 
 import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.PhylogeneticTree;
@@ -16,27 +23,32 @@ import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
-public class MolecularHibernateImplTest  extends CdmTransactionalIntegrationTest {
+/**
+ * @author muellera
+ * @since 07.03.2013
+ */
+public class MolecularHibernateImplTest  extends CdmTransactionalSpringIntegrationTest {
 
 	private static final String MARKER_LABEL = "ITS1";
 
-	@SpringBeanByType
+	@Autowired
     private IOccurrenceDao occurrenceDao;
 
-	@SpringBeanByType
+	@Autowired
     private IMediaDao mediaDao;
 
 	private UUID phyloTreeUuid;
 	private UUID sequenceUuid;
 	private UUID uuidSample1;// = UUID.fromString("4b451275-655f-40d6-8d4b-0203574bef15");
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUpBeforeClass() throws Exception {
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 	}
 
@@ -46,7 +58,7 @@ public class MolecularHibernateImplTest  extends CdmTransactionalIntegrationTest
 	//be lazy loaded from database
 	//#3340
 	@Test
-	@DataSet
+	@CdmDataSet
 	public void testLazyLoadSequenceMarker() {
 		createTestDataSet();
 		DnaSample sample1 = (DnaSample)occurrenceDao.findByUuid(uuidSample1);
@@ -61,7 +73,7 @@ public class MolecularHibernateImplTest  extends CdmTransactionalIntegrationTest
 	}
 
 	@Test
-	@DataSet
+	@CdmDataSet
 	public void testLoadUsedSequences() {
 		createTestDataSet();
 		PhylogeneticTree phyloTree = (PhylogeneticTree)mediaDao.findByUuid(phyloTreeUuid);

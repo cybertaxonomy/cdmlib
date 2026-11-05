@@ -26,35 +26,35 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 
 public class TaxonNameTest {
 
-	    private String resource = "/eu/etaxonomy/cdm/io/jaxb/TaxonNameTest.xml";
+    private String resource = "/eu/etaxonomy/cdm/io/jaxb/TaxonNameTest.xml";
 
-	    @Test
-	    public void testUnmarshalName() throws Exception {
-	        CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
-	        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
-	        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
+    @Test
+    public void testUnmarshalName() throws Exception {
+        CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
+        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
+        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
-			IBotanicalName botanicalName = dataSet.getTaxonomicNames().get(0);
-			assertNotNull("BotanicalName must not be null",botanicalName);
-			DerivedUnit specimen = (DerivedUnit)dataSet.getOccurrences().get(0);
+		IBotanicalName botanicalName = dataSet.getTaxonomicNames().get(0);
+		assertNotNull("BotanicalName must not be null",botanicalName);
+		DerivedUnit specimen = (DerivedUnit)dataSet.getOccurrences().get(0);
 
-			assertNotNull("BotanicalName.typeDesignations must not be null",botanicalName.getTypeDesignations());
-			assertFalse("BotanicalName.typeDesignations must contain TypeDesignation entities", botanicalName.getTypeDesignations().isEmpty());
+		assertNotNull("BotanicalName.typeDesignations must not be null",botanicalName.getTypeDesignations());
+		assertFalse("BotanicalName.typeDesignations must contain TypeDesignation entities", botanicalName.getTypeDesignations().isEmpty());
 
-			SpecimenTypeDesignation specimenTypeDesignation = (SpecimenTypeDesignation)botanicalName.getTypeDesignations().iterator().next();
-			assertNotNull("SpecimenTypeDesignation.typifiedNames must not be null",specimenTypeDesignation.getTypifiedNames());
-			assertFalse("SpecimenTypeDesignation.typifiedNames must not be empty",specimenTypeDesignation.getTypifiedNames().isEmpty());
-			assertTrue("SpecimenTypeDesignation.typifiedNames must contain BotanicalName",specimenTypeDesignation.getTypifiedNames().contains(botanicalName));
+		SpecimenTypeDesignation specimenTypeDesignation = (SpecimenTypeDesignation)botanicalName.getTypeDesignations().iterator().next();
+		assertNotNull("SpecimenTypeDesignation.typifiedNames must not be null",specimenTypeDesignation.getTypifiedNames());
+		assertFalse("SpecimenTypeDesignation.typifiedNames must not be empty",specimenTypeDesignation.getTypifiedNames().isEmpty());
+		assertTrue("SpecimenTypeDesignation.typifiedNames must contain BotanicalName",specimenTypeDesignation.getTypifiedNames().contains(botanicalName));
 
-			assertNotNull("SpecimenTypeDesignation.typeSpecimen must not be null",specimenTypeDesignation.getTypeSpecimen());
-			assertEquals("SpecimenTypeDesignation.typeSpecimen must equal Specimen",specimen,specimenTypeDesignation.getTypeSpecimen());
+		assertNotNull("SpecimenTypeDesignation.typeSpecimen must not be null",specimenTypeDesignation.getTypeSpecimen());
+		assertEquals("SpecimenTypeDesignation.typeSpecimen must equal Specimen",specimen,specimenTypeDesignation.getTypeSpecimen());
 
-			IZoologicalName zoologicalName = dataSet.getTaxonomicNames().get(5);
-			assertNotNull("ZoologicalName must not be null",zoologicalName);
+		IZoologicalName zoologicalName = dataSet.getTaxonomicNames().get(5);
+		assertNotNull("ZoologicalName must not be null",zoologicalName);
 
-			NameTypeDesignation nameTypeDesignation = (NameTypeDesignation)zoologicalName.getTypeDesignations().iterator().next();
-			assertNotNull("NameTypeDesignation.typeName must not be null",nameTypeDesignation.getTypeName());
-			assertEquals("NameTypeDesignation.typeName must equal ZoologicalName",dataSet.getTaxonomicNames().get(6),nameTypeDesignation.getTypeName());
+		NameTypeDesignation nameTypeDesignation = (NameTypeDesignation)zoologicalName.getTypeDesignations().iterator().next();
+		assertNotNull("NameTypeDesignation.typeName must not be null",nameTypeDesignation.getTypeName());
+		assertEquals("NameTypeDesignation.typeName must equal ZoologicalName",dataSet.getTaxonomicNames().get(6),nameTypeDesignation.getTypeName());
 
-	    }
+    }
 }

@@ -14,12 +14,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.ExpectedDataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import eu.etaxonomy.cdm.api.service.ITermNodeService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.api.service.config.SortIndexUpdaterConfigurator;
@@ -27,34 +24,33 @@ import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmExpectedDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 18.12.2019
  */
-public class SortIndexUpdaterWrapperTest extends CdmTransactionalIntegrationTest {
+public class SortIndexUpdaterWrapperTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     private static final UUID uuidTermTree = UUID.fromString("dd24b972-3364-4902-a345-310b8c771e00");
 
-    @SpringBeanByType
+    @Autowired
     private ITermTreeService termTreeService;
 
-    @SpringBeanByType
-    private ITermNodeService termNodeService;
-
-    @SpringBeanByType
+    @Autowired
     private SortIndexUpdaterWrapper sortIndexUpdater;
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void test_TaxonNode() {
         //for now only to avoid first dataset loading bug when test is running standalone
     }
 
     @Test
-    @DataSet
-    @ExpectedDataSet
+    @CdmDataSet
+    @CdmExpectedDataSet
     public void testTermNode() {
         try {
 //            Field sortIndexField = TermNode.class.getDeclaredField("sortIndex");
@@ -73,13 +69,13 @@ public class SortIndexUpdaterWrapperTest extends CdmTransactionalIntegrationTest
     }
 
 //    @Test
-////    @DataSet
+////    @CdmDataSet
 //    public void testPolytomousKeyNode() {
 //        //TODO
 //    }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testMonitor() {
         SortIndexUpdaterConfigurator config = SortIndexUpdaterConfigurator
                 .NewInstance(false, true, false);

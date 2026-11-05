@@ -17,21 +17,20 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 13.02.2019
  */
-public class ReferenceServiceImplTest extends CdmTransactionalIntegrationTest {
+public class ReferenceServiceImplTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
@@ -41,13 +40,13 @@ public class ReferenceServiceImplTest extends CdmTransactionalIntegrationTest {
     private static final UUID REFERENCE3_UUID = UUID.fromString("2821f503-5dd1-49b1-8a1c-8ed623e89e10");
     private static final UUID REFERENCE4_UUID = UUID.fromString("f2d2614c-f652-437b-8b4f-f5f7242df5af");
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceService service;
 
 /* ******************** TESTS ********************************************/
 
     @Test  //7874 //8030
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="ReferenceServiceImplTest.testUpdateCaches.xml")
+    @CdmDataSet(cleanSweep = true, value = "ReferenceServiceImplTest.testUpdateCaches.xml")
     public void testUpdateCaches() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
 
         Field titleCacheField = IdentifiableEntity.class.getDeclaredField("titleCache");
@@ -86,7 +85,7 @@ public class ReferenceServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test  //7874 //8030
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="ReferenceServiceImplTest.testUpdateCaches.xml")
+    @CdmDataSet(cleanSweep = true, value = "ReferenceServiceImplTest.testUpdateCaches.xml")
     public void testGetUuidAndAbbrevTitleCacheForAuthorID() {
     	List<UuidAndTitleCache<Reference>> result = service.getUuidAndAbbrevTitleCacheForAuthorID(null, 1, null);
     	assertEquals(1, result.size());

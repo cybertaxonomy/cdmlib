@@ -26,9 +26,8 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
@@ -69,46 +68,46 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.query.AssignmentStatus;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author pplitzner
  * @since 31.03.2014
  */
-public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
+public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
-    @SpringBeanByType
+    @Autowired
     private IAgentService agentService;
 
-    @SpringBeanByType
+    @Autowired
     private IOccurrenceService occurrenceService;
 
-    @SpringBeanByType
+    @Autowired
     private ISequenceService sequenceService;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonService taxonService;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonNodeService taxonNodeService;
 
-    @SpringBeanByType
+    @Autowired
     private IClassificationService classificationService;
 
-    @SpringBeanByType
+    @Autowired
     private INameService nameService;
 
-    @SpringBeanByType
+    @Autowired
     private ITermService termService;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionService descriptionService;
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurenceServiceTest.move.xml")
+    @CdmDataSet(cleanSweep = true, value = "OccurenceServiceTest.move.xml")
     public void testMoveDerivate() {
 
         //create data
@@ -168,7 +167,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testMoveDerivateNoParent() {
         DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
         FieldUnit fieldUnit = FieldUnit.NewInstance();
@@ -190,7 +189,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurenceServiceTest.move.xml")
+    @CdmDataSet(cleanSweep = true, value = "OccurenceServiceTest.move.xml")
     public void testMoveSequence() {
         DnaSample dnaSampleA = (DnaSample) occurrenceService.load(UUID
                 .fromString("5995f852-0e78-405c-b849-d923bd6781d9"));
@@ -214,7 +213,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceServiceTest.testDeleteIndividualAssociatedAndTypeSpecimen.xml")
+    @CdmDataSet(cleanSweep = true, value = "OccurrenceServiceTest.testDeleteIndividualAssociatedAndTypeSpecimen.xml")
     public void testDeleteIndividualAssociatedAndTypeSpecimen() {
         final UUID taxonDEscriptionUuid = UUID.fromString("a87a893e-2ea8-427d-a26b-dbd2515d6b8a");
         final UUID botanicalNameUuid = UUID.fromString("a604774e-d66a-4d47-b9d1-d0e38a8c787a");
@@ -320,7 +319,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceService.loadData.xml")
+    @CdmDataSet(cleanSweep = true, value = "OccurrenceService.loadData.xml")
     public void testLoadData() {
         String fieldUnitUuid = "5a31df5a-2e4d-40b1-8d4e-5754736ae7ef";
         String derivedUnitUuid = "18f70977-5d9c-400a-96c4-0cb7a2cd287e";
@@ -333,7 +332,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceServiceTest.testListAssociatedAndTypedTaxa.xml")
+    @CdmDataSet(cleanSweep = true, value = "OccurrenceServiceTest.testListAssociatedAndTypedTaxa.xml")
     public void testListIndividualsAssociatensAndSpecimenTypeDesignations(){
         UUID fieldUnitUuid = UUID.fromString("b359ff20-98de-46bf-aa43-3e10bb072cd4");
         UUID typeSpecimenUuid = UUID.fromString("0f8608c7-ffe7-40e6-828c-cb3382580878");
@@ -440,7 +439,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceServiceTest.testIsDeletableWithSpecimenDescription.xml")
+    @CdmDataSet(cleanSweep = true, value = "OccurrenceServiceTest.testIsDeletableWithSpecimenDescription.xml")
     public void testIsDeletableWithSpecimenDescription() {
         UUID derivedUnitUuid = UUID.fromString("68095c8e-025d-49f0-8bb2-ed36378b75c3");
         UUID specimenDescriptionUuid = UUID.fromString("4094f947-ce84-47b1-bad5-e57e33239d3c");
@@ -498,7 +497,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceServiceTest.testIsDeletableWithDescribedSpecimenInTaxonDescription.xml")
+    @CdmDataSet(cleanSweep = true, value = "OccurrenceServiceTest.testIsDeletableWithDescribedSpecimenInTaxonDescription.xml")
     public void testIsDeletableWithDescribedSpecimenInTaxonDescription() {
         UUID fieldUnitUuid = UUID.fromString("d656a004-38ee-404c-810a-87ffb0ab16c2");
         // //how the XML was generated
@@ -572,7 +571,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceServiceTest.testIsDeletableWithIndividualsAssociationTaxonDescription.xml")
+    @CdmDataSet(cleanSweep = true, value = "OccurrenceServiceTest.testIsDeletableWithIndividualsAssociationTaxonDescription.xml")
     public void testIsDeletableWithIndividualsAssociationTaxonDescription() {
         UUID fieldUnitUuid = UUID.fromString("7978b978-5100-4c7a-82ef-3a23e0f3c723");
         UUID taxonDescriptionUuid = UUID.fromString("d4b0d561-6e7e-4fd8-bf3c-925530f949eb");
@@ -647,7 +646,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceServiceTest.testIsDeletableWithTypeDesignation.xml")
+    @CdmDataSet(cleanSweep = true, value = "OccurrenceServiceTest.testIsDeletableWithTypeDesignation.xml")
     public void testIsDeletableWithTypeDesignation() {
         UUID derivedUnitUuid = UUID.fromString("f7fd1dc1-3c93-42a7-8279-cde5bfe37ea0");
         UUID botanicalNameUuid = UUID.fromString("7396430c-c932-4dd3-a45a-40c2808b132e");
@@ -722,7 +721,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceServiceTest.testIsDeletableWithChildren.xml")
+    @CdmDataSet(cleanSweep = true, value = "OccurrenceServiceTest.testIsDeletableWithChildren.xml")
     public void testIsDeletableWithChildren() {
         UUID fieldUnitUuid = UUID.fromString("92ada058-4c14-4131-8ecd-b82dc1dd2882");
         UUID derivedUnitUuid = UUID.fromString("896dffdc-6809-4914-8950-5501fee1c0fd");
@@ -816,7 +815,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testListAssociatedTaxaAndListByAssociatedTaxon.xml")
+    @CdmDataSet(cleanSweep = true, value = "OccurrenceServiceTest.testListAssociatedTaxaAndListByAssociatedTaxon.xml")
     public void testListAssociatedTaxaAndListByAssociatedTaxon(){
 
         boolean includeUnpublished = false;
@@ -937,7 +936,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
      *
      */
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceServiceTest.testFindOcurrences.xml")
+    @CdmDataSet(cleanSweep = true, value = "OccurrenceServiceTest.testFindOcurrences.xml")
     public void testFindOccurrences() {
         UUID derivedUnit1Uuid = UUID.fromString("843bc8c9-c0fe-4735-bf40-82f1996dcefb");
         UUID derivedUnit2Uuid = UUID.fromString("40cd9cb1-7c74-4e7d-a1f8-8a1e0314e940");
@@ -1018,7 +1017,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         SpecimenOrObservationBase<?> dnaSample = occurrenceService.load(dnaSampleUuid);
         DerivedUnit dnaSampleWithSequence = (DerivedUnit) occurrenceService.load(dnaSampleWithSequenceUuid);
         Taxon taxon = (Taxon) taxonService.load(taxonUuid);
-
 
         assertNotNull(derivedUnit1);
         assertNotNull(derivedUnit2);
@@ -1203,9 +1201,8 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
        // assertTrue(findByAccessionNumber.get(0).get.equals(dnaSampleWithSequence));
     }
 
-
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceServiceTest-testAllKindsOfSpecimenAssociations.xml")
+    @CdmDataSet(cleanSweep = true, value = "OccurrenceServiceTest-testAllKindsOfSpecimenAssociations.xml")
     public void testListUuidAndTitleCacheByAssociatedTaxon() {
 
         UUID taxonNodeUuid = UUID.fromString("6b8b6ff9-66e4-4496-8e5a-7d03bdf9a076");
@@ -1269,7 +1266,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
      * or individuals associations. It will also consider synonym relationships.
      */
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceServiceTest-testAllKindsOfSpecimenAssociations.xml")
+    @CdmDataSet(cleanSweep = true, value = "OccurrenceServiceTest-testAllKindsOfSpecimenAssociations.xml")
     public void testAllKindsOfSpecimenAssociations() {
 
         /**
@@ -1533,7 +1530,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceServiceTest.testDnaSampleDesignation.xml")
+    @CdmDataSet(cleanSweep = true, value = "OccurrenceServiceTest.testDnaSampleDesignation.xml")
     public void testDnaSampleDesignation(){
         IdentifierType sampleDesignationTermType = (IdentifierType) termService.load(IdentifierType.uuidSampleDesignation);
 

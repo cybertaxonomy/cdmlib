@@ -26,8 +26,9 @@ import javax.sql.DataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,10 +37,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.unitils.database.annotations.TestDataSource;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBean;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -66,44 +63,44 @@ import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.permission.CdmAuthorityParsingException;
 import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.permission.PermissionDeniedException;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
 
-@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+@CdmDataSet(cleanSweep = true)
 public class SecurityTest extends AbstractSecurityTestBase{
 
     private static final Logger logger = LogManager.getLogger();
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonService taxonService;
 
-    @SpringBeanByType
+    @Autowired
     private INameService nameService;
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceService referenceService;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonNodeService taxonNodeService;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionService descriptionService;
 
-    @SpringBeanByType
+    @Autowired
     private IUserService userService;
 
-    @SpringBeanByType
+    @Autowired
     private IClassificationService classificationService;
 
-    @SpringBeanByType
+    @Autowired
     private AuthenticationManager authenticationManager;
 
-    @SpringBeanByType
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @SpringBean("cdmPermissionEvaluator")
+    @Autowired
     private ICdmPermissionEvaluator permissionEvaluator;
 
-    @TestDataSource
+    @Autowired
     protected DataSource dataSource;
 
     private Authentication authentication;
@@ -120,7 +117,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testHasPermission(){
 
         Taxon taxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()),null);
@@ -135,7 +132,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testListByUsernameAllow(){
 
         authentication = authenticationManager.authenticate(tokenForTaxonomist);
@@ -147,7 +144,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testLoadUserByUsernameAllow(){
 
         authentication = authenticationManager.authenticate(tokenForTaxonomist);
@@ -159,7 +156,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testUserService_CreateDeny(){
 
         authentication = authenticationManager.authenticate(tokenForTaxonomist);
@@ -187,7 +184,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testUserService_CreateAllow(){
 
         authentication = authenticationManager.authenticate(tokenForUserManager);
@@ -214,10 +211,9 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
     }
 
-
     @Test
-    @DataSet
-    @Ignore // FIXME https://dev.e-taxonomy.eu/redmine/issues/3098
+    @CdmDataSet
+    @Disabled // FIXME https://dev.e-taxonomy.eu/redmine/issues/3098
     public void testHasPermissions(){
 
         Taxon taxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()),null);
@@ -226,7 +222,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         boolean hasPermission = permissionEvaluator.hasPermission(authentication, taxon, Operation.ALL);
         assertTrue(hasPermission);
     }
-
 
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#saveTaxon(eu.etaxonomy.cdm.model.taxon.TaxonBase)}.
@@ -272,9 +267,8 @@ public class SecurityTest extends AbstractSecurityTestBase{
         assertEquals(newName, savedName);
     }
 
-
     @Test
-    @Ignore  //#5829  should be fixed as soon as possible
+    @Disabled  //#5829  should be fixed as soon as possible
     public final void testReuseNameAllow() {
 
         authentication = authenticationManager.authenticate(tokenForTaxonEditor);
@@ -473,7 +467,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         authentication = authenticationManager.authenticate(tokenForAdmin);
         context.setAuthentication(authentication);
 
-
         try{
             userService.changePasswordForUser("taxonomist", "zuaisd");
             commitAndStartNewTransaction(null);
@@ -591,7 +584,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
     @Test
     public final void testTaxonSaveOrUpdateAllow_2() {
 
-
         RuntimeException securityException= null;
         SecurityContext context = SecurityContextHolder.getContext();
 
@@ -686,7 +678,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         taxon = (Taxon) taxonService.find(UUID_ACHERONTIA_STYX);
         Assert.assertTrue("The change must be persisted", taxon.isPublish() != lastIsPublish);
     }
-
 
     /**
      * test with Taxonomist account which has the ROLE_PUBLISH
@@ -819,7 +810,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         Assert.assertNull("The taxon must be deleted", taxon);
     }
 
-
     /**
      * test with tokenForDescriptionEditor account - should fail
      */
@@ -844,7 +834,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
        endTransaction();
        startNewTransaction();
 
-
         //Assert.assertNotNull("evaluation must fail since the user is not permitted", securityException);
         // reload taxon
         taxon = (Taxon)taxonService.load(UUID_LACTUCA);
@@ -853,9 +842,8 @@ public class SecurityTest extends AbstractSecurityTestBase{
         Assert.assertNotNull("The name must still exist",taxon.getName());
     }
 
-
     @Test
-    @Ignore //FIXME: adding taxa to a description must be protected at the side of the Description itself!!
+    @Disabled //FIXME: adding taxa to a description must be protected at the side of the Description itself!!
             //        => protecting method TaxonDescription.setTaxon() ?
     public void testAddDescriptionToTaxon(){
 
@@ -931,7 +919,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         return factSet.stream().map(f->f.getUuid()).collect(Collectors.toSet());
     }
 
-//    @Ignore // FIXME https://dev.e-taxonomy.eu/redmine/issues/4081 : #4081 (TaxonNodeServiceImpl.makeTaxonNodeASynonymOfAnotherTaxonNode() requires TAXONNAME.[UPDATE])
+//    @Disabled // FIXME https://dev.e-taxonomy.eu/redmine/issues/4081 : #4081 (TaxonNodeServiceImpl.makeTaxonNodeASynonymOfAnotherTaxonNode() requires TAXONNAME.[UPDATE])
     @Test
     public void testAcceptedTaxonToSynomym(){
 
@@ -951,7 +939,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         int numOfSynonymsBefore_styx = t_acherontia_styx.getSynonyms().size();
         int numOfSynonymsBefore_lachesis = t_acherontia_lachesis.getSynonyms().size();
-
 
         try {
             taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachesis, n_acherontia_styx, SynonymType.SYNONYM_OF, null, null, null, true);
@@ -992,7 +979,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         RuntimeException securityException = null;
         Taxon taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
         Assert.assertTrue("taxon must not yet have descriptions", taxon.getDescriptions().size() == 0);
-
 
         // 1) test for failure - description element but no feature
         description = TaxonDescription.NewInstance(taxon);
@@ -1220,7 +1206,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testUpgradeMd5Password(){
 
         int partEditorId = 5;

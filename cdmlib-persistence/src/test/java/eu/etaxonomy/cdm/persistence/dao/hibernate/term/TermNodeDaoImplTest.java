@@ -14,10 +14,9 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureState;
@@ -28,31 +27,32 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 2019-08-16
  */
-public class TermNodeDaoImplTest extends CdmTransactionalIntegrationTest {
+public class TermNodeDaoImplTest extends CdmTransactionalSpringIntegrationTest {
 
     @SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger();
 
-	@SpringBeanByType
+	@Autowired
 	private ITermTreeDao treeDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITermNodeDao nodeDao;
 
-    @SpringBeanByType
+    @Autowired
     private IDefinedTermDao termDao;
 
-	@Before
+	@BeforeEach
 	public void setUp() {}
 
     @Test
-    @DataSet(value="TermNodeDaoImplTest.xml")
+    @CdmDataSet("TermNodeDaoImplTest.xml")
     public void testLoadInapplicable() {
 //        List<TermNode> list = nodeDao.list();
         @SuppressWarnings({"unchecked" })

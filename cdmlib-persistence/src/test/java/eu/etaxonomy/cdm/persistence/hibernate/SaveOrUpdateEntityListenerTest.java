@@ -13,11 +13,9 @@ import java.io.FileNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -29,27 +27,27 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.name.TaxonNameDaoHibernateImpl;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.occurrence.OccurrenceDaoHibernateImpl;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  */
-public class SaveOrUpdateEntityListenerTest extends CdmTransactionalIntegrationTest {
+public class SaveOrUpdateEntityListenerTest extends CdmTransactionalSpringIntegrationTest {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-	@SpringBeanByType
+	@Autowired
 	private OccurrenceDaoHibernateImpl occurrenceDao;
 
-	@SpringBeanByType
+	@Autowired
     private TaxonDaoHibernateImpl taxonDao;
 
-    @SpringBeanByType
+    @Autowired
     private TaxonNameDaoHibernateImpl nameDao;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 	}
 
@@ -57,10 +55,9 @@ public class SaveOrUpdateEntityListenerTest extends CdmTransactionalIntegrationT
 	 * Test if save or update event correctly handled
 	 */
 	@Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
 	public void testOnSaveOrUpdateDeterminationTaxonName() {
 

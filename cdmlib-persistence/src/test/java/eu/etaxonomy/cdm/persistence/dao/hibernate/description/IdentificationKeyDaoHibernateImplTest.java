@@ -13,26 +13,26 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.description.IIdentificationKey;
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.persistence.dao.description.IIdentificationKeyDao;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmSpringIntegrationTest;
 
-@DataSet
-public class IdentificationKeyDaoHibernateImplTest extends CdmIntegrationTest {
+@CdmDataSet
+public class IdentificationKeyDaoHibernateImplTest extends CdmSpringIntegrationTest {
 
-	@SpringBeanByType
+	@Autowired
 	IIdentificationKeyDao identificationKeyDao;
 
 	UUID taxonUuid = UUID.fromString("54e767ee-894e-4540-a758-f906ecb4e2d9");
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 	}
 

@@ -16,10 +16,9 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.common.Credit;
@@ -28,20 +27,21 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmSpringIntegrationTest;
 
 /**
  * @author a.mueller
  */
-@DataSet
-public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
+@CdmDataSet
+public class IdentifiableDaoBaseTest extends CdmSpringIntegrationTest {
 
-    @SpringBeanByType
+    @Autowired
     private  TaxonDaoHibernateImpl identifiableDao;
 
     private UUID uuid;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         uuid = UUID.fromString("496b1325-be50-4b0a-9aa2-3ecd610215f2");
     }

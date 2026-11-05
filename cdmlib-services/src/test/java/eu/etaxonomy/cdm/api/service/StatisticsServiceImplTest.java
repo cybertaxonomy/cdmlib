@@ -21,9 +21,9 @@ import java.util.Map;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.statistics.Statistics;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsConfigurator;
@@ -48,12 +48,12 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author s.buers
  */
-public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
+public class StatisticsServiceImplTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -184,17 +184,17 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	private List<Classification> classifications;
 
 	// ****************** services: ************************
-	@SpringBeanByType
+	@Autowired
 	private IStatisticsService service;
-	@SpringBeanByType
+	@Autowired
 	private IClassificationService classificationService;
-	@SpringBeanByType
+	@Autowired
 	private ITaxonService taxonService;
-	@SpringBeanByType
+	@Autowired
 	private IReferenceService referenceService;
-	@SpringBeanByType
+	@Autowired
 	private IDescriptionService descriptionService;
-    @SpringBeanByType
+    @Autowired
     private IDescriptionElementService descriptionElementService;
 
 	// *************** more members: *****************+
@@ -209,8 +209,8 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	 *
 	 * @throws java.lang.Exception
 	 */
-	@Before
-	// @DataSet
+	@BeforeEach
+	// @CdmDataSet
 	public void setUp() throws Exception {
 
 		// missing in this example data:
@@ -453,7 +453,6 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 					(classificationCounters.get(classiCounter + 1))
 					.addAll(taxonContextCounter);
 				}
-
 
 				taxonService.save(taxon);
 				(classificationCounters.get(classiCounter))

@@ -17,10 +17,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.dto.portal.CommonNameDto;
 import eu.etaxonomy.cdm.api.dto.portal.ContainerDto;
@@ -107,14 +105,14 @@ import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author muellera
  * @since 26.02.2024
  */
-public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
+public class TaxonPageDtoLoaderTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     private UUID taxonUuid = UUID.fromString("075d1b8c-91d3-4b10-93b7-08ac872d09e8");
     private UUID taxonUuid1 = UUID.fromString("792fcc6a-4854-46bd-a6c5-20b578170d8d");
@@ -131,40 +129,40 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 //    453923bb-b2a9-4843-a97f-9f02e6e13fbb
 //    28df5e01-0248-40d4-bff0-618a5aae3a30
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonService taxonService;
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceDao referenceDao;
 
-    @SpringBeanByType
+    @Autowired
     private INameService nameService;
 
-    @SpringBeanByType
+    @Autowired
     private IAgentService agentService;
 
-    @SpringBeanByType
+    @Autowired
     private IOccurrenceService occurrenceService;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionDao descriptionDao;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionElementDao descriptionElementDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITermService termService;
 
-    @SpringBeanByType
+    @Autowired
     private ITermTreeService termTreeService;
 
-    @SpringBeanByType
+    @Autowired
     private IPortalService portalService;
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
     public void testSynonymy() {
 
@@ -243,9 +241,9 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
     public void testEmptyFeatureTree() {
 
@@ -271,7 +269,6 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 9 features, distribution and description and common names",
                 9, features.getCount());
 
-
         //test with feature tree, that has only features that do not exist in taxon
         TermTree<Feature> termTree = this.termTreeService.load(uuidTermTree);
         if (termTree == null) {
@@ -287,9 +284,9 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
     public void testFacts() {
 

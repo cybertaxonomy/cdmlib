@@ -20,11 +20,9 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.api.service.DeleteResult;
@@ -75,14 +73,14 @@ import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 21.11.2019
  */
-public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegrationTest {
+public class StructuredDescriptionAggregationTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
@@ -105,7 +103,6 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     private static final UUID T_LAPSANA_COMMUNIS_ALPINA_SPEC3_UUID = UUID.fromString("3cdaa12f-7508-4073-b8d7-afca77a6be34");
     private static final UUID T_LAPSANA_COMMUNIS_ADENOPHORA_SPEC1_UUID = UUID.fromString("83788037-7a03-4e46-98ca-e8801096b216");
 
-
     private static final UUID uuidFeatureLeafPA = UUID.fromString("c4dfd16f-f2ed-45e0-8f4d-7fe1ae880510");
     private static UUID uuidFeatureLeafLength = UUID.fromString("3c19b50b-4a8e-467e-b7d4-89ebc05a33e1");
     private static UUID uuidFeatureLeafColor = UUID.fromString("1e8f503c-5aeb-4788-b4f9-84128f7141c7");
@@ -116,51 +113,50 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
     private static UUID uuidFeatureTree = UUID.fromString("c8a29a94-2754-4d78-9faa-dff3e1387b2d");
 
-
-    @SpringBeanByType
+    @Autowired
     private ICdmApplication repository;
 
-    @SpringBeanByType
+    @Autowired
     private ITermService termService;
 
-    @SpringBeanByType
+    @Autowired
     private ITermTreeService termTreeService;
 
-    @SpringBeanByType
+    @Autowired
     private IVocabularyService vocabularyService;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionService descriptionService;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionDao descriptionDao;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionElementDao descriptionElementDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonService taxonService;
 
-    @SpringBeanByType
+    @Autowired
     private IOccurrenceService occurrenceService;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonNodeService taxonNodeService;
 
-    @SpringBeanByType
+    @Autowired
     private IClassificationService classificationService;
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceService referenceService;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptiveDataSetService datasetService;
 
     private StructuredDescriptionAggregation engine;
 
     private IProgressMonitor monitor;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         engine = new StructuredDescriptionAggregation();
         engine.setBatchMinFreeHeap(35 * 1024 * 1024);
@@ -168,10 +164,10 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="StructuredDescriptionAggregationTest.xml"),
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "StructuredDescriptionAggregationTest.xml"
     })
     public void testReaggregation(){
 
@@ -231,10 +227,10 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="StructuredDescriptionAggregationTest.xml"),
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "StructuredDescriptionAggregationTest.xml"
     })
     public void testDeleteTest() {
 
@@ -279,10 +275,10 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="StructuredDescriptionAggregationTest.xml"),
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "StructuredDescriptionAggregationTest.xml"
     })
     public void testIncompleteQuantitativeData() {
 
@@ -319,10 +315,10 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="StructuredDescriptionAggregationTest.xml"),
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "StructuredDescriptionAggregationTest.xml"
     })
     public void testIncompleteCategoricalData() {
 
@@ -383,10 +379,10 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="StructuredDescriptionAggregationTest.xml"),
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "StructuredDescriptionAggregationTest.xml"
     })
     public void testSourceModes() {
 
@@ -469,10 +465,10 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="StructuredDescriptionAggregationTest.xml"),
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "StructuredDescriptionAggregationTest.xml"
     })
     public void testAggregation() {
 
@@ -544,7 +540,6 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         final boolean cloneAggSourceDesc;
         final AggregationSourceMode withinTaxonSourceMode;
         final AggregationSourceMode toParentSourceMode;
-
 
         private TestConfig(StructuredDescriptionAggregationConfiguration config) {
             withinTaxonSourceMode = config.getWithinTaxonSourceMode();
@@ -699,7 +694,6 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
             .collect(Collectors.groupingBy(t->t.getUuid()));
     }
 
-
     private DescriptionBase<?> getSingleSpecimenDescriptionSource(
             TaxonDescription aggrDescLapsanaCommunisAlpina, UUID specimenUuid) {
 
@@ -808,7 +802,6 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         Assert.assertEquals(MeasurementUnit.METER(), leafLength.getUnit());
         Assert.assertNotNull(leafLength.getUnit());
     }
-
 
     private List<StateData> verifyCategoricalData(UUID featureUuid, int stateDataCount, TaxonDescription taxonDescription, boolean withAddedData) {
         List<CategoricalData> categoricalDatas = taxonDescription.getElements().stream()
@@ -984,7 +977,6 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         referenceService.save(sec);
         referenceService.save(nomRef);
 
-
         // --- Taxa --- //
         //  Lapsana
         //        L. communis
@@ -1046,6 +1038,5 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
                 "HIBERNATE_SEQUENCES"
          });
     }
-
 
 }

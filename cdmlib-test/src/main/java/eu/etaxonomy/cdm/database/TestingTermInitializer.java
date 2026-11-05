@@ -208,7 +208,7 @@ public class TestingTermInitializer extends DefaultTermInitializer {
             connection = new DatabaseConnection(dataSource.getConnection());
 
             DatabaseConfig config = connection.getConfig();
-            //FIXME must use unitils.properties: org.unitils.core.dbsupport.DbSupport.implClassName & database.dialect to find configured DataTypeFactory
+            // H2 test DataSource → H2DataTypeFactory (see applicationContext-springTest.xml)
             config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new H2DataTypeFactory());
             // Term fixtures contain empty attribute values (e.g. DEFINEDTERMBASE.URI="")
             config.setProperty(DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS, true);

@@ -21,9 +21,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.h2.util.StringUtils;
 import org.junit.Assert;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.common.URI;
@@ -59,29 +58,30 @@ import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 import jakarta.validation.ConstraintViolationException;
 
-public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
+public class OccurrenceDaoHibernateImplTest extends CdmTransactionalSpringIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
-    @SpringBeanByType
+    @Autowired
 	private IOccurrenceDao dao;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonDao taxonDao;
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceDao referenceDao;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionDao descriptionDao;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionElementDao descriptionElementDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITypeDesignationDao typeDesignationDao;
 
 //**************** TESTS ************************************************
@@ -159,7 +159,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
-	@DataSet
+	@CdmDataSet
 	public void testStatusWithoutTypeCanBeLoaded() {
 
 	    //This is for testing if an occurrence status can be loaded if it has

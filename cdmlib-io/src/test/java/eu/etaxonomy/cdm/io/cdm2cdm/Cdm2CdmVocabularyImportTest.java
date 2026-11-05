@@ -23,12 +23,12 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.TransactionStatus;
-import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ITermNodeService;
@@ -46,7 +46,8 @@ import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
 /**
  * Test class for Cdm2CdmVocabularyImport.
@@ -54,19 +55,20 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author a.mueller
  * @since 18.09.2021
  */
-public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest {
+public class Cdm2CdmVocabularyImportTest extends CdmIoTransactionalSpringIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
     private static CdmApplicationController otherRepository;
 
-    @SpringBeanByName
+    @Autowired
+    @Qualifier("defaultImport")
     private CdmApplicationAwareDefaultImport<?> defaultImport;
-    @SpringBeanByType
+    @Autowired
     private IVocabularyService vocService;
-    @SpringBeanByType
+    @Autowired
     private ITermTreeService treeService;
-    @SpringBeanByType
+    @Autowired
     private ITermNodeService termNodeService;
 
     private Cdm2CdmImportConfigurator configurator;
@@ -76,8 +78,8 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
 
     private static UUID uuidStructGraph = UUID.fromString("1fdf67c7-e267-44ca-8d35-be66e3746847");
 
-    @BeforeClass
-//    @Ignore
+    @BeforeAll
+//    @Disabled
     public static void setUpClass() throws Exception {
     //      this.startH2Server();
           boolean omitTermLoading = true;
@@ -117,14 +119,18 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
         app.getTermTreeService().saveOrUpdate(graph);
     }
 
-    //    @AfterClass
+    //    @AfterAll
     public static void tearDownClass() throws Exception {
         otherRepository.close();
         otherRepository = null;
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
+        // Both invoke tests mutate otherRepository; JUnit 5 runs methods alphabetically
+        // (Graph before Vocabulary), so reset source data before each test.
+        resetOtherRepository();
+
         configurator = Cdm2CdmImportConfigurator.NewInstace(otherRepository, null);
         configurator.setDoVocabularies(true);
         configurator.setDoTaxa(false);
@@ -138,6 +144,31 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
         assertNotNull("Configurator could not be created", configurator);
     }
 
+    @SuppressWarnings("unchecked")
+    private static void resetOtherRepository() {
+        TransactionStatus tx = otherRepository.startTransaction();
+        TermTree<DefinedTerm> graph = otherRepository.getTermTreeService().find(uuidStructGraph);
+        TermNode<DefinedTerm> root = graph.getRoot();
+        while (root.getChildCount() > 1) {
+            root.removeChild(root.getChildCount() - 1);
+        }
+        TermNode<DefinedTerm> firstChild = root.getChildAt(0);
+        while (firstChild.getChildCount() > 0) {
+            firstChild.removeChild(0);
+        }
+        otherRepository.getTermTreeService().saveOrUpdate(graph);
+
+        TermVocabulary<DefinedTerm> voc = otherRepository.getVocabularyService().find(uuidStructVoc);
+        for (DefinedTerm term : new HashSet<>(voc.getTerms())) {
+            if (!uuidStructFirst.equals(term.getUuid())) {
+                voc.removeTerm(term);
+                otherRepository.getTermService().delete(term.getUuid());
+            }
+        }
+        otherRepository.getVocabularyService().saveOrUpdate(voc);
+        otherRepository.commitTransaction(tx);
+    }
+
     @Test
     public void testInit() {
         assertNotNull("import instance should not be null", defaultImport);
@@ -145,9 +176,13 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
     }
 
     @Test
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
+    })
     public void testInvokeVocabulary() {
 
-        //test emptiness
+        //test emptiness (ClearDB alone keeps TERMCOLLECTION/DEFINEDTERMBASE; with_Terms wipes them)
         @SuppressWarnings("unchecked")
         TermVocabulary<DefinedTerm> voc = vocService.find(uuidStructVoc);
         Assert.assertNull("Vocabulary must not exist before invoke", voc);
@@ -193,6 +228,10 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
     }
 
     @Test
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
+    })
     public void testInvokeGraph() {
 
         //test invoke for graph (not vocabulary)

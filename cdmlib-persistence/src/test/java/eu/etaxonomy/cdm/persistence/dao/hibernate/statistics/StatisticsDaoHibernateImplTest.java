@@ -24,11 +24,10 @@ import java.util.UUID;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -56,15 +55,15 @@ import eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 public class StatisticsDaoHibernateImplTest
-        extends CdmTransactionalIntegrationTest {
+        extends CdmTransactionalSpringIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
-	@SpringBeanByType
+	@Autowired
 	private IStatisticsDao statisticsDao;
 
 	@SuppressWarnings("unused")
@@ -147,23 +146,23 @@ public class StatisticsDaoHibernateImplTest
 
 	// ****************** services: ************************
 
-	@SpringBeanByType
+	@Autowired
 	private IStatisticsDao service;
-	@SpringBeanByType
+	@Autowired
 	private IClassificationDao classificationDao;
-	@SpringBeanByType
+	@Autowired
 	private ITaxonDao taxonDao;
-	@SpringBeanByType
+	@Autowired
 	private IReferenceDao referenceDao;
-	@SpringBeanByType
+	@Autowired
 	private IDescriptionDao descriptionDao;
-	@SpringBeanByType
+	@Autowired
 	private IDescriptionElementDao descriptionElementDao;
-	@SpringBeanByType
+	@Autowired
 	private ITaxonNodeDao taxonNodeDao;
 
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		// nodeUuid =UUID.fromString("46cd7e78-f7d5-4c31-937b-2bc5074618c4");
 		nodeUuid = UUID.fromString("0b5846e5-b8d2-4ca9-ac51-099286ea4adc");
@@ -171,13 +170,13 @@ public class StatisticsDaoHibernateImplTest
 		AuditEventContextHolder.clearContext();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		AuditEventContextHolder.clearContext();
 	}
 
 	@Test
-	@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+	@CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
 	public void testGetAllChildNodes() {
 		List<UUID> result;
 		createDataSet();

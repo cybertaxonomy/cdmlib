@@ -17,10 +17,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.junit.Assert;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
@@ -35,18 +33,17 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.ITaxonGraphDao;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
 import eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
  * @author a.kohlbecker
  * @since Sep 27, 2018
  */
-public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
+public class TaxonGraphTest extends CdmTransactionalSpringIntegrationTest {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
@@ -55,19 +52,16 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
         INSERT, UPDATE;
     }
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonGraphDao taxonGraphDao;
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceDao referenceDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonNameDao nameDao;
 
-    @SpringBeanByType
-    private ITaxonDao taxonDao;
-
-    @SpringBeanByType
+    @Autowired
     private IPreferenceDao prefDao;
 
     protected static UUID uuid_secRef = UUID.fromString("34e1ff99-63c4-4296-81b6-b20afb98902e");
@@ -109,10 +103,7 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
-        @DataSet
-    })
+    @CdmDataSet(cleanSweep = true) // ClearDB + TaxonGraphTest.xml (Unitils @DataSets)
     public void testNewTaxonName() throws TaxonGraphException{
 
         setUuidPref();
@@ -137,10 +128,7 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
-        @DataSet
-    })
+    @CdmDataSet(cleanSweep = true)
     public void testChangeNomRef() throws TaxonGraphException{
 
         setUuidPref();
@@ -167,10 +155,7 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
-        @DataSet
-    })
+    @CdmDataSet(cleanSweep = true)
     public void testChangeRank() throws TaxonGraphException{
 
         setUuidPref();
@@ -195,10 +180,7 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
-        @DataSet
-    })
+    @CdmDataSet(cleanSweep = true)
     public void testChangeGenus() throws TaxonGraphException{
 
         setUuidPref();
@@ -229,10 +211,7 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
-        @DataSet
-    })
+    @CdmDataSet(cleanSweep = true)
     public void testChangeSpecificEpithet_of_InfraSpecific() throws TaxonGraphException{
 
         setUuidPref();

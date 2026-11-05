@@ -21,9 +21,9 @@ import java.util.UUID;
 
 import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -32,19 +32,19 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since Aug 07, 2014
  */
 //@SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
-public class VocabularyServiceImplTest extends CdmTransactionalIntegrationTest{
+public class VocabularyServiceImplTest extends CdmServicesTransactionalSpringIntegrationTest{
 
-	@SpringBeanByType
+	@Autowired
 	private IVocabularyService vocabularyService;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {}
 
     @Test

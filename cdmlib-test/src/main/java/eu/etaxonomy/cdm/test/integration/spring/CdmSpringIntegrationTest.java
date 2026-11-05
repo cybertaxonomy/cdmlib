@@ -17,7 +17,14 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.sql.DataSource;
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
 
+import org.dbunit.database.DatabaseConfig;
+import org.dbunit.database.DatabaseConnection;
+import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.dataset.filter.ITableFilterSimple;
+import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.h2.tools.Server;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -72,6 +79,18 @@ public abstract class CdmSpringIntegrationTest {
         }
     }
 
+    protected IDatabaseConnection getConnection() {
+        try {
+            IDatabaseConnection connection = new DatabaseConnection(dataSource.getConnection(), "PUBLIC");
+            DatabaseConfig config = connection.getConfig();
+            config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new H2DataTypeFactory());
+            config.setProperty(DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS, true);
+            return connection;
+        } catch (Exception e) {
+            throw new IllegalStateException("Could not create DBUnit connection", e);
+        }
+    }
+
     public void printDataSet(OutputStream out) {
         dbTablePrinter.printDataSet(out);
     }
@@ -80,8 +99,43 @@ public abstract class CdmSpringIntegrationTest {
         dbTablePrinter.printDataSet(out, includeTableNames);
     }
 
+    public void printDataSet(OutputStream out, ITableFilterSimple filter) {
+        dbTablePrinter.printDataSet(out, filter);
+    }
+
+    public void printDataSet(OutputStream out, Boolean excludeTermLoadingTables,
+            ITableFilterSimple excludeFilter, String[] includeTableNames) {
+        dbTablePrinter.printDataSet(out, excludeTermLoadingTables, excludeFilter, includeTableNames, false);
+    }
+
+    public void printDataSetWithNull(OutputStream out) {
+        dbTablePrinter.printDataSetWithNull(out);
+    }
+
+    public void printDataSetWithNull(OutputStream out, String[] includeTableNames) {
+        dbTablePrinter.printDataSetWithNull(out, includeTableNames);
+    }
+
+    public void printDataSetWithNull(OutputStream out, Boolean excludeTermLoadingTables,
+            ITableFilterSimple excludeFilter, String[] includeTableNames) {
+        dbTablePrinter.printDataSetWithNull(out, excludeTermLoadingTables, excludeFilter, includeTableNames);
+    }
+
+    public void printDtd(OutputStream out) {
+        dbTablePrinter.printDtd(out);
+    }
+
     public void writeDbUnitDataSetFile(String[] includeTableNames) throws FileNotFoundException {
         dbTablePrinter.writeDbUnitDataSetFile(includeTableNames, this.getClass());
+    }
+
+    public void writeDbUnitDataSetFile(String[] includeTableNames, String fileAppendix, boolean withNullValues)
+            throws FileNotFoundException {
+        dbTablePrinter.writeDbUnitDataSetFile(includeTableNames, this.getClass(), fileAppendix, withNullValues);
+    }
+
+    protected String transformSourceToString(Source source) throws TransformerException {
+        return dbTablePrinter.transformSourceToString(source);
     }
 
     protected <T extends CdmBase> T getEntityFromCollection(Collection<T> cdmBases, UUID uuid) {

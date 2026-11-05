@@ -15,8 +15,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 
-import jakarta.xml.bind.JAXBException;
-
 import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.stream.StreamSource;
@@ -26,6 +24,8 @@ import org.custommonkey.xmlunit.jaxp13.Validator;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
+
+import jakarta.xml.bind.JAXBException;
 
 public class SimpleMarshalTest {
 	private String documentText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +

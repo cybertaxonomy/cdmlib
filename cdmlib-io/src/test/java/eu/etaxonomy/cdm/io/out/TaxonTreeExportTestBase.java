@@ -24,11 +24,9 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
@@ -85,8 +83,8 @@ import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.strategy.parser.NameParserResult;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
 /**
  * Base class for taxon tree table based exports such as CDM light or COL-DP.
@@ -96,7 +94,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public abstract class TaxonTreeExportTestBase
             <CONFIG extends TaxonTreeExportConfiguratorBase<STATE,CONFIG>,STATE extends TaxonTreeExportStateBase<CONFIG,STATE>>
-        extends CdmTransactionalIntegrationTest{
+        extends CdmIoTransactionalSpringIntegrationTest{
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
@@ -179,45 +177,46 @@ public abstract class TaxonTreeExportTestBase
     //specimen uuid
     protected static final UUID specimenUuid = UUID.fromString("cafca31a-e0ab-489c-8add-602fd26a408f");
 
-    @SpringBeanByName
+    @Autowired
+    @Qualifier("defaultExport")
     protected CdmApplicationAwareDefaultExport<CONFIG> defaultExport;
 
-    @SpringBeanByType
+    @Autowired
     protected IClassificationService classificationService;
 
-    @SpringBeanByType
+    @Autowired
     protected ITaxonNodeService taxonNodeService;
 
-    @SpringBeanByType
+    @Autowired
     protected ITaxonService taxonService;
 
-    @SpringBeanByType
+    @Autowired
     protected INameService nameService;
 
-    @SpringBeanByType
+    @Autowired
     protected ICollectionService collectionService;
 
-    @SpringBeanByType
+    @Autowired
     protected IDescriptionService descriptionService;
 
-    @SpringBeanByType
+    @Autowired
     protected IAgentService agentService;
 
-    @SpringBeanByType
+    @Autowired
     protected IReferenceService referenceService;
 
-    @SpringBeanByType
+    @Autowired
     protected ICommonService commonService;
 
-    @SpringBeanByType
+    @Autowired
     protected IOccurrenceService occurrenceService;
 
     //this test only tests the COL-DB export runs without throwing exception
     //on the full sample data
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
     public void testFullSampleData(){
         testFullSampleData(0, 0, 0);
@@ -237,7 +236,6 @@ public abstract class TaxonTreeExportTestBase
         //test exceptions
         testExceptionsErrorsWarnings(result, countException, countError, countWarning);
     }
-
 
     protected abstract CONFIG newConfigurator();
 
@@ -333,8 +331,6 @@ public abstract class TaxonTreeExportTestBase
 
         return data;
     }
-
-
 
     protected void print(List<String> resultsToPrint) {
         System.out.println(resultsToPrint);

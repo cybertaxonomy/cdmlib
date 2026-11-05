@@ -15,29 +15,29 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.TestRule;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
 import com.carrotsearch.junitbenchmarks.BenchmarkRule;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
 /**
  * @author b.clark
  * @since 20.01.2009
  */
-public class SDDImportBenchmark extends CdmTransactionalIntegrationTest {
+public class SDDImportBenchmark extends CdmIoTransactionalSpringIntegrationTest {
 
-    @SpringBeanByType
+    @Autowired
     private SDDImport sddImport;
 
-    @SpringBeanByType
+    @Autowired
     private INameService nameService;
 
     @Rule
@@ -46,7 +46,7 @@ public class SDDImportBenchmark extends CdmTransactionalIntegrationTest {
 
     private SDDImportConfigurator configurator;
 
-    @Before
+    @BeforeEach
     public void setUp() throws URISyntaxException {
         URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/Cichorieae-DA.sdd.xml");
         Assert.assertNotNull(url);

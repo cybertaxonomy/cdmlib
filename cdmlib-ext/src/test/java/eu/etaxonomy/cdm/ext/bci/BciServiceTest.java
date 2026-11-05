@@ -21,17 +21,11 @@ import eu.etaxonomy.cdm.model.occurrence.Collection;
 
 /**
  * @author a.mueller
- *
  */
 public class BciServiceTest {
 
-	static String strUrl1;
-
 	private IBciServiceWrapper service1;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		service1 = new BciServiceWrapper();
@@ -39,9 +33,6 @@ public class BciServiceTest {
 
 // ******************************* TESTS ******************************************************/
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.ext.bci.BciServiceWrapper#BciService(java.net.URL)}.
-	 */
 	@Test
 	public void testBciService() {
 		Assert.assertNotNull("Service should not be null", service1);
@@ -63,19 +54,11 @@ public class BciServiceTest {
 
 		collectionList = service1.getCollectionsByCode("CM", repository);
 		Assert.assertEquals("There should be exactly 3 result for 'CM'. If not try http://www.biocol.org/rest/lookup/code/CM", 3, collectionList.size());
-
 	}
 
-
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.ext.ipni.IpniService#getServiceUrl()}.
-	 */
 	@Test
 	public void testGetServiceUrl() {
 		Assert.assertNotNull("Service should not be null", service1);
 		Assert.assertNotNull("URL1 should not be null", service1.getServiceUrl(IBciServiceWrapper.LOOKUP_CODE_REST));
 	}
-
-
 }

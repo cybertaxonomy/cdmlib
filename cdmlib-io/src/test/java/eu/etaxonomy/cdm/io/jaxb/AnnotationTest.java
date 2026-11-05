@@ -20,18 +20,18 @@ import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 
 public class AnnotationTest {
 
-	    private String resource = "/eu/etaxonomy/cdm/io/jaxb/AnnotationTest.xml";
+    private String resource = "/eu/etaxonomy/cdm/io/jaxb/AnnotationTest.xml";
 
-	    @Test
-	    public void testUnmarshalAnnotations() throws Exception {
-	        CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
-	        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
-	        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
+    @Test
+    public void testUnmarshalAnnotations() throws Exception {
+        CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
+        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
+        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
-			AnnotatableEntity annotatableEntity = dataSet.getTaxonBases().get(0);
-			assertNotNull("annotatableEntity must exist",annotatableEntity);
+		AnnotatableEntity annotatableEntity = dataSet.getTaxonBases().get(0);
+		assertNotNull("annotatableEntity must exist",annotatableEntity);
 
-			assertNotNull("annotatableEntity must have annotations",annotatableEntity.getAnnotations());
-			assertEquals("There should be one annotation",1,annotatableEntity.getAnnotations().size());
-	    }
+		assertNotNull("annotatableEntity must have annotations",annotatableEntity.getAnnotations());
+		assertEquals("There should be one annotation",1,annotatableEntity.getAnnotations().size());
+    }
 }

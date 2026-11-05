@@ -15,10 +15,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -34,22 +33,22 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
  * @author a.kohlbecker
  * @since Jun 15, 2015
  */
-public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
+public class ClassificationDaoHibernateImplTest extends CdmTransactionalSpringIntegrationTest {
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonDao taxonDao;
-    @SpringBeanByType
+    @Autowired
     private IClassificationDao classificationDao;
-    @SpringBeanByType
+    @Autowired
     private IReferenceDao referenceDao;
-    @SpringBeanByType
+    @Autowired
     private ITaxonNodeDao taxonNodeDao;
 
     private boolean includeUnpublished;
@@ -61,7 +60,7 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
     private static final UUID UUID_ABIES_NODE = UUID.fromString("56b10cf0-9522-407e-9f90-0c2dba263c94");
     private static final UUID UUID_FLAT_ROOT = UUID.fromString("75202d4e-b2aa-4343-8b78-340a52d15c40");
 
-    @Before
+    @BeforeEach
     public void setUp() {
         includeUnpublished = true;
     }
@@ -71,7 +70,7 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
      * Classification/{uuid}/childNodesAt/{rank-uuid} fails if only species in database
      */
     @Test
-    @DataSet(value="ClassificationDaoHibernateImplTest.listRankSpecificRootNodes.xml")
+    @CdmDataSet("ClassificationDaoHibernateImplTest.listRankSpecificRootNodes.xml")
     public void testListRankSpecificRootNodesFlatHierarchie() {
 
         checkPreconditions();
@@ -116,7 +115,7 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
      * Test listRankSpecificRootNode with an existing classification
      */
     @Test
-    @DataSet(value="ClassificationDaoHibernateImplTest.listRankSpecificRootNodes.xml")
+    @CdmDataSet("ClassificationDaoHibernateImplTest.listRankSpecificRootNodes.xml")
     public void testListRankSpecificRootNodesWithHierarchie() {
 
         // check preconditions
@@ -179,7 +178,7 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
      * Test listRankSpecificRootNode with an existing classification
      */
     @Test
-    @DataSet(value="ClassificationDaoHibernateImplTest.listRankSpecificRootNodes.xml")
+    @CdmDataSet("ClassificationDaoHibernateImplTest.listRankSpecificRootNodes.xml")
     public void testListRankSpecificRootNodesWithHierarchie_withSubtree() {
 
         // check preconditions
@@ -304,7 +303,7 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
      * Test listRankSpecificRootNode with all classifications
      */
     @Test
-    @DataSet(value="ClassificationDaoHibernateImplTest.listRankSpecificRootNodes.xml")
+    @CdmDataSet("ClassificationDaoHibernateImplTest.listRankSpecificRootNodes.xml")
     public void testListRankSpecificRootNodesWithNoClassification() {
     	Classification classification = null;
 
@@ -331,7 +330,7 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
 	}
 
     @Test
-    @DataSet(value="ClassificationDaoHibernateImplTest.listRankSpecificRootNodes.xml")
+    @CdmDataSet("ClassificationDaoHibernateImplTest.listRankSpecificRootNodes.xml")
     public void testClassificationLookup() {
 
         Classification classification = classificationDao.load(CLASSIFICATION_FULL_UUID);
@@ -340,7 +339,7 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
     }
 
     @Test
-    @DataSet(value="ClassificationDaoHibernateImplTest.listRankSpecificRootNodes.xml")
+    @CdmDataSet("ClassificationDaoHibernateImplTest.listRankSpecificRootNodes.xml")
     public void testExistsInClassification() {
 
         UUID uuidClassification = FLAT_CLASSIFICATION_UUID;
@@ -369,7 +368,7 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
      */
     @Override
 //    @Test // uncomment to write out the test data xml file for this test class
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void createTestDataSet() throws FileNotFoundException {
 
 	    // 1. create the entities   and save them

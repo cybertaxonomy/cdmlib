@@ -17,13 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.ExpectedDataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.filter.Restriction;
@@ -33,26 +31,24 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
-import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmExpectedDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
-public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
+public class AgentDaoImplTest extends CdmTransactionalSpringIntegrationTest {
 
 //    private static final String[] TABLE_NAMES = new String[] {"AGENTBASE", "AGENTBASE_AUD", "AGENTBASE_AGENTBASE", "AGENTBASE_AGENTBASE_AUD", "INSTITUTIONALMEMBERSHIP", "INSTITUTIONALMEMBERSHIP_AUD"};
 
-    @SpringBeanByType
+    @Autowired
     private IAgentDao agentDao;
-
-    @SpringBeanByType
-	private IReferenceDao referenceDao;
 
     private UUID uuid;
     private UUID personUuid;
     private AuditEvent previousAuditEvent;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         uuid = UUID.fromString("924fa059-1b83-45f8-bc3a-e754d2757364");
         personUuid = UUID.fromString("ed6ac546-8c6c-48c4-9b91-40b1157c05c6");
@@ -62,13 +58,13 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
         AuditEventContextHolder.clearContext(); // By default we're in the current view (i.e. view == null)
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         AuditEventContextHolder.clearContext();
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testCountMembers() {
         Team team = (Team)agentDao.findByUuid(uuid);
         assert team != null : "team must exist";
@@ -78,7 +74,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testGetMembers() {
         Team team = (Team)agentDao.findByUuid(uuid);
         assert team != null : "team must exist";
@@ -97,8 +93,8 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("AgentDaoImplTest.testSave.xml")
-    @ExpectedDataSet
+    @CdmDataSet("AgentDaoImplTest.testSave.xml")
+    @CdmExpectedDataSet
     public void testSave() {
         Person person = Person.NewInstance();
         person.setGivenName("ben");
@@ -107,8 +103,8 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
-    @ExpectedDataSet
+    @CdmDataSet
+    @CdmExpectedDataSet
     public void testUpdate() {
         Person person = (Person)agentDao.findByUuid(personUuid);
         assert person != null : "person must exist";
@@ -119,14 +115,14 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("AgentDaoImplTest.testFind.xml")
+    @CdmDataSet("AgentDaoImplTest.testFind.xml")
     public void testFindInCurrentView() {
         Person person = (Person)agentDao.findByUuid(personUuid);
         Assert.assertEquals("The person's givenname should be \'Benjamin\' in the current view", "Benjamin", person.getGivenName());
     }
 
     @Test
-    @DataSet("AgentDaoImplTest.testFind.xml")
+    @CdmDataSet("AgentDaoImplTest.testFind.xml")
     public void testFindInPreviousView() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
         Person person = (Person)agentDao.findByUuid(personUuid);
@@ -134,8 +130,8 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("AgentDaoImplTest.testFind.xml")
-    @ExpectedDataSet
+    @CdmDataSet("AgentDaoImplTest.testFind.xml")
+    @CdmExpectedDataSet
     public void testDelete() throws Exception {
         Person person = (Person)agentDao.findByUuid(personUuid);
         agentDao.delete(person);
@@ -146,39 +142,39 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("AgentDaoImplTest.testExists.xml")
+    @CdmDataSet("AgentDaoImplTest.testExists.xml")
     public void testExists() {
         Assert.assertFalse("Person with the uuid " + personUuid.toString() +  "should not exist in the current view",agentDao.exists(personUuid));
     }
 
     @Test
-    @DataSet("AgentDaoImplTest.testExists.xml")
+    @CdmDataSet("AgentDaoImplTest.testExists.xml")
     public void testExistsInPreviousView() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
         Assert.assertTrue("Person with the uuid " + personUuid.toString() +  "should exist in the previous view",agentDao.exists(uuid));
     }
 
     @Test
-    @DataSet("AgentDaoImplTest.testExists.xml")
+    @CdmDataSet("AgentDaoImplTest.testExists.xml")
     public void testCount() {
         Assert.assertEquals("There should be eight agents in the current view",8, agentDao.count());
     }
 
     @Test
-    @DataSet("AgentDaoImplTest.testExists.xml")
+    @CdmDataSet("AgentDaoImplTest.testExists.xml")
     public void testCountInPreviousView() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
         Assert.assertEquals("There should be nine agents in the previous view",9, agentDao.count());
     }
 
     @Test
-    @DataSet("AgentDaoImplTest.testExists.xml")
+    @CdmDataSet("AgentDaoImplTest.testExists.xml")
     public void testCountAuditEvents() {
         Assert.assertEquals("There should be eleven AuditEvents",11, agentDao.countAuditEvents(null, null, null, null));
     }
 
     @Test
-    @DataSet("AgentDaoImplTest.testExists.xml")
+    @CdmDataSet("AgentDaoImplTest.testExists.xml")
     public void testList() {
         List<AgentBase> result = agentDao.list(null,null);
         Assert.assertNotNull("list() should return a list",result);
@@ -186,7 +182,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("AgentDaoImplTest.testExists.xml")
+    @CdmDataSet("AgentDaoImplTest.testExists.xml")
     public void testListInPreviousView() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
         List<AgentBase> result = agentDao.list(null, null);
@@ -195,7 +191,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("AgentDaoImplTest.testExists.xml")
+    @CdmDataSet("AgentDaoImplTest.testExists.xml")
     public void testSortingListInPreviousView() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
         List<OrderHint> orderHints = new ArrayList<>();
@@ -208,20 +204,20 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("AgentDaoImplTest.testExists.xml")
+    @CdmDataSet("AgentDaoImplTest.testExists.xml")
     public void testCountPeople() {
         Assert.assertEquals("There should be four agents in the current view", 4, agentDao.count(Person.class));
     }
 
     @Test
-    @DataSet("AgentDaoImplTest.testExists.xml")
+    @CdmDataSet("AgentDaoImplTest.testExists.xml")
     public void testCountPeopleInPreviousView() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
         Assert.assertEquals("There should be five agents in the previous view", 5, agentDao.count(Person.class));
     }
 
     @Test
-    @DataSet("AgentDaoImplTest.testExists.xml")
+    @CdmDataSet("AgentDaoImplTest.testExists.xml")
     public void testListPeople() {
         List<Person> result = agentDao.list(Person.class, null, null);
         Assert.assertNotNull("list() should return a list",result);
@@ -229,7 +225,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("AgentDaoImplTest.xml")
+    @CdmDataSet("AgentDaoImplTest.xml")
     public void testListPeopleFiltered() {
 
         List<Restriction<?>> restrictions = new ArrayList<>();
@@ -254,7 +250,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("AgentDaoImplTest.xml")
+    @CdmDataSet("AgentDaoImplTest.xml")
     public void testCountPeopleFiltered() {
 
         List<Restriction<?>> restrictions = new ArrayList<>();
@@ -274,7 +270,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("AgentDaoImplTest.testExists.xml")
+    @CdmDataSet("AgentDaoImplTest.testExists.xml")
     public void testListPeopleInPreviousView() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
         List<Person> result = agentDao.list(Person.class, null, null);
@@ -283,7 +279,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @ExpectedDataSet
+    @CdmExpectedDataSet
     public void testPersonTitleCache(){
         Person person = Person.NewTitledInstance("");
         person.setNomenclaturalTitle("Abbrev. tit.");

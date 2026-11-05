@@ -28,14 +28,12 @@ import org.hibernate.Hibernate;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.criteria.AuditCriterion;
 import org.hibernate.proxy.HibernateProxy;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.ExpectedDataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.filter.Restriction;
@@ -70,28 +68,29 @@ import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.NativeSqlOrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmExpectedDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @author ben.clark
  */
-public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
+public class TaxonDaoHibernateImplTest extends CdmTransactionalSpringIntegrationTest {
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonDao taxonDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonNodeDao taxonNodeDao;
 
-    @SpringBeanByType
+    @Autowired
     private IClassificationDao classificationDao;
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceDao referenceDao;
 
-    @SpringBeanByType
+    @Autowired
     private IDefinedTermDao definedTermDao;
 
     private UUID uuid = UUID.fromString("496b1325-be50-4b0a-9aa2-3ecd610215f2");
@@ -135,7 +134,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 //        "HOMOTYPICALGROUP", "HOMOTYPICALGROUP_AUD", "REFERENCE", "REFERENCE_AUD", "TAXONBASE", "TAXONBASE_AUD"
 //        , "TAXONNAME", "TAXONNAME_AUD", "TAXONRELATIONSHIP", "TAXONRELATIONSHIP_AUD" };
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         previousAuditEvent = new AuditEvent();
@@ -153,13 +152,13 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         includeUnpublished = true;
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         AuditEventContextHolder.clearContext();
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testInit() {
         logger.warn("testInit()");
         assertNotNull("Instance of ITaxonDao expected", taxonDao);
@@ -167,16 +166,14 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testGetTaxaByName() {
 
         includeUnpublished= true;
-        boolean accepted = true;
 
         Reference sec = referenceDao.findById(1);
         assert sec != null : "sec must exist";
 
-        @SuppressWarnings("rawtypes")
         List<? extends TaxonBase> results = taxonDao.getTaxaByName("Aus", includeUnpublished, sec);
         assertNotNull("getTaxaByName should return a List", results);
         //assertFalse("The list should not be empty", results.isEmpty());
@@ -237,7 +234,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet (loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public void testGetTaxaByNameWithMisappliedNames(){
 
         Classification classification = classificationDao.load(classificationUuid);
@@ -249,7 +246,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
          * Misapplied names should be found regardless of whether they are contained in a classification or not.
          */
         //two accepted taxa starting with R in classification "TestBaum"
-        @SuppressWarnings("rawtypes")
         List<TaxonBase> results = taxonDao.getTaxaByName(doTaxa, noSynonyms, noMisapplied, noCommonNames, false, "R*", classification, subtree, MatchMode.BEGINNING,
                 null, includeUnpublished, null, null, null, null);
         Assert.assertEquals("There should be 2 Taxa", 2, results.size());
@@ -301,10 +297,9 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
      * Test for all not covered possibilities of searches
      */
     @Test
-    @DataSet (loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public void testGetTaxaByNameVariants(){
         TaxonNode subtree = null;
-        @SuppressWarnings("rawtypes")
         List<TaxonBase> results = taxonDao.getTaxaByName(noTaxa, noSynonyms, noMisapplied, doCommonNames, false, "c*", null, subtree, MatchMode.BEGINNING,
                 null, includeUnpublished, null, null, null, null);
         Assert.assertEquals("There should be 2 Taxa",2, results.size());
@@ -338,7 +333,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testGetTaxaByNameForEditor() {
         TaxonNode subtree = null;
         Reference sec = referenceDao.findById(1);
@@ -395,7 +390,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
      * restricting the search by a set of Areas.
      */
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public void testGetTaxaByNameAndArea() {
         TaxonNode subtree = null;
         Set<NamedArea> namedAreas = new HashSet<>();
@@ -464,7 +459,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
      * restricting the search by a set of Areas.
      */
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public void testFindByNameTitleCache() {
         TaxonNode subtree = null;
 
@@ -487,7 +482,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         // 1. searching for a taxon (Rethera)
         //long numberOfTaxa = taxonDao.countTaxaByName(Taxon.class, "Rethera", null, MatchMode.BEGINNING, namedAreas);
 
-        @SuppressWarnings("rawtypes")
         List<TaxonBase> results = taxonDao.findByNameTitleCache(doTaxa, noSynonyms, includeUnpublished, "Rethera Rothschild & Jordan, 1903", null, subtree, MatchMode.EXACT, namedAreas,
                 null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
@@ -525,12 +519,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public void testTaxonNameInTwoClassifications(){
         TaxonNode subtree = null;
         List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("taxonNodes");
-        @SuppressWarnings("rawtypes")
         List<TaxonBase> taxa = taxonDao.getTaxaByName(doTaxa, doSynonyms, noMisapplied, noCommonNames, false,"P", null, subtree, MatchMode.BEGINNING,
                 null, includeUnpublished, null, null, null, null);
         Taxon taxon = (Taxon)taxa.get(0);
@@ -541,12 +534,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonDaoHibernateImplTest.publishFlag.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonDaoHibernateImplTest.publishFlag.xml")
     public void testGetTaxaByProtectedTitleCacheName(){
         boolean includeAuthors = false;
 
         //MODE BEGINNING
-        @SuppressWarnings("rawtypes")
         List<TaxonBase> taxa = taxonDao.getTaxaByName(doTaxa, doSynonyms, noMisapplied, noCommonNames,
                 includeAuthors,"Acheronti", null, null, MatchMode.BEGINNING, null, includeUnpublished,
                 null, null, null, null);
@@ -580,10 +572,9 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public void testGetTaxaByNameProParteSynonym(){
         TaxonNode subtree = null;
-        @SuppressWarnings("rawtypes")
         List<TaxonBase> taxa = taxonDao.getTaxaByName(noTaxa, doSynonyms, noMisapplied, noCommonNames, false, "A", null, subtree,
                 MatchMode.BEGINNING, null, includeUnpublished, null, null, null, null);
         Assert.assertEquals("3 synonyms (1 orphaned) and 1 pro parte synonym should be returned.", 4, taxa.size());
@@ -604,7 +595,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonDaoHibernateImplTest.publishFlag.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonDaoHibernateImplTest.publishFlag.xml")
     public void testListByRestritionsPublishFlag(){
         boolean onlyPublished = false;
         boolean includeUnpublished = true;
@@ -618,7 +609,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testFindByUuid() {
         Taxon taxon = (Taxon)taxonDao.findByUuid(uuid);
         assertNotNull("findByUuid should return a taxon", taxon);
@@ -626,7 +617,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testLoad() {
         List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("name");
@@ -638,7 +629,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testCountTaxonRelationshipsByTaxon()	{
         Taxon taxon = (Taxon)taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon must exist";
@@ -649,7 +640,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testCountTaxaByName() {
         TaxonNode subtree = null;
         Classification classification= null;
@@ -697,7 +688,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testRelatedTaxa() {
         Taxon taxon = (Taxon)taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon must exist";
@@ -726,7 +717,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testGetRelatedTaxaPaged()	{
         Taxon taxon = (Taxon)taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon must exist";
@@ -755,7 +746,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testCountSynonyms() {
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
         assert taxon != null : "taxon must exist";
@@ -765,7 +756,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testGetSynonyms()	{
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
         assert taxon != null : "taxon must exist";
@@ -784,7 +775,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testCountSynonymsByType()	{
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
         assert taxon != null : "taxon must exist";
@@ -794,7 +785,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testSynonymsByType() {
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
         assert taxon != null : "taxon must exist";
@@ -806,7 +797,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testPageSynonyms(){
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
         assert taxon != null : "taxon must exist";
@@ -822,7 +813,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testCountTaxonRelationships() {
         long count = taxonDao.countTaxonRelationships(null);
         assertEquals("There should be 11 relationships", 11, count);
@@ -841,7 +832,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testlistTaxonRelationships() {
         List<TaxonRelationship> rels = taxonDao.getTaxonRelationships(null, null, null, null, null);
         assertEquals("There should be 11 relationships", 11, rels.size());
@@ -863,7 +854,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("TaxonNodeDaoHibernateImplTest.xml")
+    @CdmDataSet("TaxonNodeDaoHibernateImplTest.xml")
     public void testListAcceptedTaxaFor()  {
         UUID acheontitia_ciprosus = UUID.fromString("3ef145f7-bd92-4a64-8afd-2b8203e00e02");
 
@@ -882,7 +873,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testFindTaxaByName_Uninomial() {
 
         EnumSet<NomenclaturalCode> nameTypes = EnumSet.allOf(NomenclaturalCode.class);
@@ -895,7 +886,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testFindTaxaByName_SpeciesBinomial_And_authorship() {
         EnumSet<NomenclaturalCode> nameTypes = null;
         List<Taxon> result = taxonDao.findTaxaByName(Taxon.class, "Smerinthus", null, "kindermannii",
@@ -931,7 +922,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testFindTaxaByName_Trinomial_And_NomCode() {
         EnumSet<NomenclaturalCode> nameTypes = EnumSet.allOf(NomenclaturalCode.class);
         List<Taxon> result = taxonDao.findTaxaByName(Taxon.class, "Cryptocoryne", null, "purpurea", "borneoensis", "*",
@@ -969,7 +960,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testFindTaxaByName_NegativeMatch() {
         EnumSet<NomenclaturalCode> nameTypes = EnumSet.allOf(NomenclaturalCode.class);
         List<Taxon> result = taxonDao.findTaxaByName(Taxon.class, "Acherontia", null, "atropos", "dehli", null,
@@ -980,14 +971,14 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testCountAllTaxa() {
         long numberOfTaxa = taxonDao.count(Taxon.class);
         assertEquals("count should return 14 taxa", 14, numberOfTaxa);
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testListAllTaxa() {
         List<Taxon> taxa = taxonDao.list(Taxon.class,100, 0);
         assertNotNull("list should return a List", taxa);
@@ -995,8 +986,8 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
-   // @ExpectedDataSet
+    @CdmDataSet
+   // @CdmExpectedDataSet
     public void testDelete() {
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
         assert taxon != null : "taxon must exist";
@@ -1013,8 +1004,8 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
-    @ExpectedDataSet("TaxonDaoHibernateImplTest.testDelete-result.xml")
+    @CdmDataSet
+    @CdmExpectedDataSet("TaxonDaoHibernateImplTest.testDelete-result.xml")
     public void testDeleteWithMarker() {
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
         taxon.addMarker(Marker.NewInstance(MarkerType.IS_DOUBTFUL(), true));
@@ -1035,7 +1026,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
     public void testFindDeleted() {
         TaxonBase taxon = taxonDao.findByUuid(acherontia);
         assertNull("findByUuid should return null in this view", taxon);
@@ -1043,7 +1034,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
     public void testFindDeletedInPreviousView() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
@@ -1058,7 +1049,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
     public void testGetAuditEvents() {
         TaxonBase taxon = taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon cannot be null";
@@ -1068,7 +1059,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         propertyPaths.add("createdBy");
         propertyPaths.add("updatedBy");
 
-        @SuppressWarnings("rawtypes")
         List<AuditEventRecord<TaxonBase>> auditEvents = taxonDao.getAuditEvents(taxon, null,null,null,propertyPaths);
         assertNotNull("getAuditEvents should return a list",auditEvents);
         assertFalse("the list should not be empty",auditEvents.isEmpty());
@@ -1076,13 +1066,12 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
     public void testGetAuditEventsFromNow() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
         TaxonBase taxon =  taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon cannot be null";
 
-        @SuppressWarnings("rawtypes")
         List<AuditEventRecord<TaxonBase>> auditEvents = taxonDao.getAuditEvents(taxon, null,null,AuditEventSort.FORWARDS,null);
         assertNotNull("getAuditEvents should return a list",auditEvents);
         assertFalse("the list should not be empty",auditEvents.isEmpty());
@@ -1090,7 +1079,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
     public void testCountAuditEvents() {
         TaxonBase taxon = taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon cannot be null";
@@ -1100,7 +1089,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
     public void getPreviousAuditEvent() {
         TaxonBase taxon = taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon cannot be null";
@@ -1110,43 +1099,40 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
     public void getPreviousAuditEventAtBeginning() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
         TaxonBase taxon = taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon cannot be null";
 
-        @SuppressWarnings("rawtypes")
         AuditEventRecord<TaxonBase> auditEvent = taxonDao.getPreviousAuditEvent(taxon);
         assertNull("getPreviousAuditEvent should return null if we're at the first audit event anyway",auditEvent);
     }
 
     @Test
-    @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
     public void getNextAuditEvent() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
         TaxonBase taxon = taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon cannot be null";
 
-        @SuppressWarnings("rawtypes")
         AuditEventRecord<TaxonBase> auditEvent = taxonDao.getNextAuditEvent(taxon);
         assertNotNull("getNextAuditEvent should not return null as there is at least one audit event after the current one",auditEvent);
     }
 
     @Test
-    @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
     public void getNextAuditEventAtEnd() {
         AuditEventContextHolder.getContext().setAuditEvent(mostRecentAuditEvent);
         TaxonBase taxon = taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon cannot be null";
 
-        @SuppressWarnings("rawtypes")
         AuditEventRecord<TaxonBase> auditEvent = taxonDao.getNextAuditEvent(taxon);
         assertNull("getNextAuditEvent should return null as there no more audit events after the current one",auditEvent);
     }
 
     @Test
-    @DataSet("TaxonDaoHibernateImplTest.testFind.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.testFind.xml")
     public void testFind() {
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontiaLachesis);
         assert taxon != null : "taxon cannot be null";
@@ -1155,7 +1141,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("TaxonDaoHibernateImplTest.testFind.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.testFind.xml")
     public void testFindInPreviousView() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontiaLachesis);
@@ -1165,7 +1151,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("TaxonDaoHibernateImplTest.testFind.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.testFind.xml")
     public void testGetRelations() {
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontiaLachesis);
         assert taxon != null : "taxon cannot be null";
@@ -1186,7 +1172,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("TaxonDaoHibernateImplTest.testFind.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.testFind.xml")
     public void testCountRelations() {
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontiaLachesis);
         assert taxon != null : "taxon cannot be null";
@@ -1196,7 +1182,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("TaxonDaoHibernateImplTest.testFind.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.testFind.xml")
     public void testGetRelationsInPreviousView() {
        AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
        Taxon taxon = (Taxon)taxonDao.findByUuid(acherontiaLachesis);
@@ -1216,7 +1202,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("TaxonDaoHibernateImplTest.testFind.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.testFind.xml")
     public void testCountRelationsInPreviousView() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
         Taxon taxon = (Taxon)taxonDao.findByUuid(acherontiaLachesis);
@@ -1227,7 +1213,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testGroupTaxa() {
         List<Grouping> groups = new ArrayList<>();
         groups.add(new GroupByCount("count", SortOrder.DESCENDING));
@@ -1242,7 +1228,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testGroupTaxaByClass() {
         List<Grouping> groups = new ArrayList<>();
         groups.add(new GroupByCount("count",SortOrder.DESCENDING));
@@ -1257,8 +1243,8 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
-    @Ignore //ignored since upgrading to hibernate 6 / using new criteria API
+    @CdmDataSet
+    @Disabled //ignored since upgrading to hibernate 6 / using new criteria API
     public void testNativeSQLOrder() {
         List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new NativeSqlOrderHint("case when {alias}.titleCache like 'C%' then 0 else 1 end", SortOrder.ASCENDING));
@@ -1273,7 +1259,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testGroupByDateTaxa() {
         List<Grouping> groups = new ArrayList<>();
         groups.add(new GroupByCount("count",null));
@@ -1288,10 +1274,10 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
     //NOTE: There is a problem with loading AuditEvents if this test runs
     //stand alone or as first (one of the first) in the test suite. For some reason
-    //the AuditEvent records from the @DataSet are not inserted into the database then,
+    //the AuditEvent records from the @CdmDataSet are not inserted into the database then,
     //while those inserted by the terms dataset are inserted as well as a completely new one.
     //This problem for some reason does not happen if not running at first place
     public void testGetAuditEventsByTypeWithRestrictions() {
@@ -1318,14 +1304,13 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
 
     @Test
-    @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
-//    @DataSets({  //for testing only
-//        @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml"),
-//        @DataSet("TaxonDaoHibernateImplTest.testFindDeletedAuditEvents.xml")
-//    })
+    @CdmDataSet(value = {
+            "TaxonDaoHibernateImplTest.testFindDeleted.xml",
+            "TaxonDaoHibernateImplTest.testFindDeletedAuditEvents.xml"
+    })
     //NOTE: There is a problem with loading AuditEvents if this test runs
     //stand alone or as first (one of the first) in the test suite. For some reason
-    //the AuditEvent records from the @DataSet are not inserted into the database then,
+    //the AuditEvent records from the @CdmDataSet are not inserted into the database then,
     //while those inserted by the terms dataset are inserted as well as a completely new one.
     //This problem for some reason does not happen if not running at first place
     public void testGetAuditEventsByTypeWithNoRestrictions() {
@@ -1337,7 +1322,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         propertyPaths.add("createdBy");
         propertyPaths.add("updatedBy");
         long count = taxonDao.countAuditEvents(TaxonBase.class, null, null, null);
-        @SuppressWarnings("rawtypes")
         List<AuditEventRecord<TaxonBase>> auditEvents = taxonDao.getAuditEvents(TaxonBase.class, previousAuditEvent, mostRecentAuditEvent, null,null, null, AuditEventSort.FORWARDS, propertyPaths);
         assertNotNull("getAuditEvents should return a list", auditEvents);
         assertFalse("the list should not be empty", auditEvents.isEmpty());
@@ -1346,7 +1330,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
 
     @Test
-    @DataSet("TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public void testGetCommonName(){
        List<Taxon> commonNameResults = taxonDao.getTaxaByCommonName("common%", null,
                 MatchMode.BEGINNING, null, null, null, null);
@@ -1365,7 +1349,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testGetTitleCache(){
         UUID uuid = UUID.fromString("7b8b5cb3-37ba-4dba-91ac-4c6ffd6ac331");
         String titleCache = taxonDao.getTitleCache(uuid, false);
@@ -1376,7 +1360,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
 
     @Test
-    @DataSet("TaxonDaoHibernateImplTest.testPropertyPath.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.testPropertyPath.xml")
     public void testPropertyPath(){
         //Test that BeanInitializer also works on HiberanteProxys
         Classification c = classificationDao.load(UUID.fromString("4bceea53-893f-4685-8c63-6dcec6e85ab1"));

@@ -15,10 +15,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.proxy.HibernateProxy;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
@@ -47,7 +46,8 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * NOTE: The only reason for having this test is to test if injection of the cache strategy into a
@@ -58,16 +58,16 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @since 2010 Jun 3
  */
 public class DerivedUnitFacadeCacheStrategyInjectionTest
-        extends CdmTransactionalIntegrationTest {
+        extends CdmServicesTransactionalSpringIntegrationTest {
 
     @SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger();
 
-    @SpringBeanByType
+    @Autowired
     private IOccurrenceService occService;
-    @SpringBeanByType
+    @Autowired
     private ITaxonService taxonService;
-    @SpringBeanByType
+    @Autowired
     private IDescriptionService descService;
 
     private static final UUID taxonUuid = UUID.fromString("10cfb372-0b1a-4d82-9707-c5ffd2b93a55");
@@ -115,7 +115,7 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest
 
 //****************************** SET UP *****************************************/
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		specimen = DerivedUnit.NewPreservedSpecimenInstance();
 
@@ -212,7 +212,7 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest
 
     //Test if even a hibernate proxy class correctly loads the DerivedUnitCacheStrategy.
     @Test
-    @DataSet
+    @CdmDataSet
     public void testPersistedDerivedUnit(){
         Taxon taxon = (Taxon)this.taxonService.find(taxonUuid);
 
@@ -226,7 +226,7 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testPersistedFieldUnit(){
         Taxon taxon = (Taxon)this.taxonService.find(taxonUuid);
         IndividualsAssociation indivAssoc = getDescriptionElement(taxon, 5001);

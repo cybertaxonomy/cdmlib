@@ -32,9 +32,8 @@ public class ApplicationConfiguration {
      * {@code @TestPropertySource(properties = {"testmode = true"})} to
      * load the configuration files from the test resources.
      * <p>
-     * <b>NOTE:</b> This will not work with current implementation of the
-     * {@link eu.etaxonomy.cdm.test.integration.CdmIntegrationTest CdmIntegrationTests}.
-     * For these tests please use the {@link unitils.AlternativeUnitilsJUnit4TestClassRunner}.
+     * <b>NOTE:</b> Prefer {@code @TestPropertySource} on Spring / JUnit 5 integration tests
+     * (e.g. subclasses of {@code CdmSpringIntegrationTest}).
      */
     public static final String TEST_MODE = "testmode";
 

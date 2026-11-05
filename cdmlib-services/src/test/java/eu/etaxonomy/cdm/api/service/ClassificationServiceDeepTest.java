@@ -19,9 +19,8 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -29,20 +28,21 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author n.hoffmann
  * @since Sep 22, 2009
  */
-public class ClassificationServiceDeepTest extends CdmTransactionalIntegrationTest{
+public class ClassificationServiceDeepTest extends CdmServicesTransactionalSpringIntegrationTest{
 
     private static final Logger logger = LogManager.getLogger();
 
-    @SpringBeanByType
+    @Autowired
     private IClassificationService service;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonNodeService taxonNodeService;
 
     private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
@@ -54,7 +54,7 @@ public class ClassificationServiceDeepTest extends CdmTransactionalIntegrationTe
     });
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testFixHierarchy(){
         Classification classification = service.find(UUID.fromString("52b41b07-5500-43ae-82e6-ea2fd328c3d5"));
 

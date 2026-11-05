@@ -13,9 +13,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
@@ -26,29 +25,30 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  */
-public class PreferenceDaoImplTest  extends CdmTransactionalIntegrationTest {
+public class PreferenceDaoImplTest  extends CdmTransactionalSpringIntegrationTest {
 
-	@SpringBeanByType
+	@Autowired
 	private IPreferenceDao dao;
 
-	@SpringBeanByType
+	@Autowired
 	private IClassificationDao classificationDao;
 
 /************ TESTS ********************************/
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testDao() {
     	Assert.assertNotNull(dao);
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testGet() {
         PrefKey key = CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.NomenclaturalCode);
 //        PrefKey key = CdmPreference.NewKey(PreferenceSubjectEnum.Database, PreferencePredicate.NomenclaturalCode);
@@ -63,14 +63,14 @@ public class PreferenceDaoImplTest  extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testCount() {
     	 long countStart = dao.count();
          Assert.assertEquals("There should be 1 preference in the CDM store", 1, countStart);
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testList() {
          List<CdmPreference> list = dao.list();
          Assert.assertEquals("There should be 1 preference in the CDM store", 1, list.size());
@@ -81,7 +81,7 @@ public class PreferenceDaoImplTest  extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testSet() {
     	//test existing pref
         long countStart = dao.count();
@@ -119,7 +119,7 @@ public class PreferenceDaoImplTest  extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="PreferenceDaoImplTest.testFindTaxonNodeString.xml")
+    @CdmDataSet("PreferenceDaoImplTest.testFindTaxonNodeString.xml")
     public void testFindTaxonNodeString() {
         Classification classification = classificationDao.findByUuid(uuidClassification);
         TaxonNode genusNode = classification.getRootNode().getChildNodes().get(0);

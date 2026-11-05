@@ -14,10 +14,8 @@ import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.UUID;
 
-import org.hibernate.SessionFactory;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -25,21 +23,18 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author a.kohlbecker
  * @since Jun 23, 2017
  */
-@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class) // the dataset cleans up the DerivedUnits created in the tests
-public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegrationTest {
+@CdmDataSet(cleanSweep = true) // the dataset cleans up the DerivedUnits created in the tests
+public class DerivedUnitConverterIntegrationTest extends CdmServicesTransactionalSpringIntegrationTest {
 
-    @SpringBeanByType
+    @Autowired
     private IOccurrenceService service;
-
-    @SpringBeanByType
-    private SessionFactory sessionFactory;
 
     @Test
     public void toMediaSpecimen_issue7114() throws DerivedUnitConversionException {
@@ -96,8 +91,7 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
      * org.hibernate.ObjectDeletedException: deleted object would be re-saved by cascade ...
      */
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class,
-            value="DerivedUnitConverterIntegrationTest.cascadeDelete.xml")
+    @CdmDataSet(cleanSweep = true, value = "DerivedUnitConverterIntegrationTest.cascadeDelete.xml")
     public void cascadeDelete() throws DerivedUnitConversionException{
 
         // NOTE:

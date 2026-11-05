@@ -8,6 +8,10 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
+import eu.etaxonomy.cdm.test.integration.spring.CdmExpectedDataSet;
+
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -24,11 +28,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.ExpectedDataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -54,24 +56,24 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
-@DataSet
-public class TaxonNameDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
+@CdmDataSet
+public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegrationTest {
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonNameDao taxonNameDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonDao taxonDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITypeDesignationDao typeDesignationDao;
 
-    @SpringBeanByType
+    @Autowired
     private ICdmGenericDao genericDao;
 
-    @SpringBeanByType
+    @Autowired
     private IHomotypicalGroupDao homotypicalGroupDao;
 
     private UUID cryptoCoryneGriffithiIiUuid;
@@ -79,7 +81,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     private UUID acherontiaLachesisUuid;
     private UUID atroposUuid;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         cryptoCoryneGriffithiIiUuid = UUID.fromString("497a9955-5c5a-4f2b-b08c-2135d336d633");
         acherontiaUuid = UUID.fromString("c2cab2ad-3e3a-47b8-8aa8-d9e1c0857647");
@@ -390,7 +392,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 // *************** copied from removed TypeDesignationDaoHibernateImplTest ***************/
 
     @Test
-    @DataSet(value="TypeDesignationDaoHibernateImplTest.xml")
+    @CdmDataSet("TypeDesignationDaoHibernateImplTest.xml")
     public void testGetAllTypeDesignations() {
         List<TypeDesignationBase<?>> typeDesignations = taxonNameDao.getAllTypeDesignations(100, 0);
         assertEquals(2, typeDesignations.size());
@@ -416,7 +418,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     }
 
     @Test
-    @ExpectedDataSet("TypeDesignationDaoHibernateImplTest.testSaveTypeDesignationsWithAuditing-result.xml")
+    @CdmExpectedDataSet("TypeDesignationDaoHibernateImplTest.testSaveTypeDesignationsWithAuditing-result.xml")
     //Auditing didn't work for SpecimenTypeDesignations. See #2396
     public void testSaveTypeDesignationsWithAuditing() {
 
@@ -445,7 +447,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     }
 
     @Test
-    @DataSet(value="TypeDesignationDaoHibernateImplTest.xml")
+    @CdmDataSet("TypeDesignationDaoHibernateImplTest.xml")
     public void testGetTypeDesignationStatusInUse() {
         @SuppressWarnings("rawtypes")
         List<TypeDesignationStatusBase> statusTerms = taxonNameDao.getTypeDesignationStatusInUse();
@@ -454,7 +456,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
 
     @Test
-//  @ExpectedDataSet
+//  @CdmExpectedDataSet
     public void testRemoveTypeDesignationsFromName() {
 
         //create data
@@ -556,8 +558,8 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
 
     @Test
-    @DataSet(value="TypeDesignationDaoHibernateImplTest.xml")
-    @ExpectedDataSet("TypeDesignationDaoHibernateImplTest.testSaveTypeDesignations-result.xml")  //not yet necessary with current test
+    @CdmDataSet("TypeDesignationDaoHibernateImplTest.xml")
+    @CdmExpectedDataSet("TypeDesignationDaoHibernateImplTest.testSaveTypeDesignations-result.xml")  //not yet necessary with current test
     public void testSaveTypeDesignations() {
 
         List<TypeDesignationBase<?>> typeDesignations = taxonNameDao.getAllTypeDesignations(100, 0);

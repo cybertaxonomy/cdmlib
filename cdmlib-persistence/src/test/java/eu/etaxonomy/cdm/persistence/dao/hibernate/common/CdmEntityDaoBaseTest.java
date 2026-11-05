@@ -22,16 +22,14 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.ExpectedDataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -40,32 +38,34 @@ import eu.etaxonomy.cdm.persistence.dao.permission.IUserDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.RandomOrder;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecurity;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmExpectedDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTestWithSecurity;
 
 /**
  * @author a.mueller
  */
-public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSecurity {
+public class CdmEntityDaoBaseTest extends CdmTransactionalSpringIntegrationTestWithSecurity {
 
     private static final Logger logger = LogManager.getLogger();
 
     private UUID uuid;
     private TaxonBase cdmBase;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonDao cdmEntityDaoBase;
 
-    @SpringBeanByType
+    @Autowired
     private AuthenticationManager authenticationManager;
 
-    @SpringBeanByType
+    @Autowired
     private IUserDao userDao;
 
     private TestingAuthenticationToken taxonEditorToken;
     private TestingAuthenticationToken adminToken;
     private TestingAuthenticationToken testerToken;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         uuid = UUID.fromString("8d77c380-c76a-11dd-ad8b-0800200c9a66");
         cdmBase = Taxon.NewInstance(null, null);
@@ -95,8 +95,8 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     }
 
     @Test
-    @DataSet("CdmEntityDaoBaseTest.xml")
-    @ExpectedDataSet
+    @CdmDataSet("CdmEntityDaoBaseTest.xml")
+    @CdmExpectedDataSet
     public void testSaveOrUpdate() {
         TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
         cdmBase.setDoubtful(true);
@@ -105,8 +105,8 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     }
 
     @Test
-    @DataSet("CdmEntityDaoBaseTest.xml")
-    @ExpectedDataSet
+    @CdmDataSet("CdmEntityDaoBaseTest.xml")
+    @CdmExpectedDataSet
     public void testSaveOrUpdateWithAuthentication() {
 
         setAuthentication(taxonEditorToken);
@@ -117,8 +117,8 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     }
 
     @Test
-    @DataSet("CdmEntityDaoBaseTest.xml")
-    @ExpectedDataSet
+    @CdmDataSet("CdmEntityDaoBaseTest.xml")
+    @CdmExpectedDataSet
     public void testSaveOrUpdateNewObjectWithAuthentication() {
 //		printDataSet(System.err, new String[]{"TAXONBASE", "HIBERNATE_SEQUENCES"});
         setAuthentication(taxonEditorToken);
@@ -158,15 +158,15 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     }
 
     @Test
-    @DataSet("CdmEntityDaoBaseTest.xml")
-    @ExpectedDataSet
+    @CdmDataSet("CdmEntityDaoBaseTest.xml")
+    @CdmExpectedDataSet
     public void testSave() throws Exception {
         cdmEntityDaoBase.save(cdmBase);
         commit();
     }
 
     @Test
-    @DataSet("CdmEntityDaoBaseTest.xml")
+    @CdmDataSet("CdmEntityDaoBaseTest.xml")
     public void testSaveWithAuthenticationFailedPermissionEvaluation() throws Exception {
         setAuthentication(testerToken);
         RuntimeException securityException = null;
@@ -186,8 +186,8 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     }
 
     @Test
-    @DataSet("CdmEntityDaoBaseTest.xml")
-    @ExpectedDataSet
+    @CdmDataSet("CdmEntityDaoBaseTest.xml")
+    @CdmExpectedDataSet
     public void testSaveWithAuthentication() throws Exception {
         setAuthentication(taxonEditorToken);
         RuntimeException securityException = null;
@@ -207,8 +207,8 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     }
 
     @Test
-    @DataSet("CdmEntityDaoBaseTest.xml")
-    @ExpectedDataSet
+    @CdmDataSet("CdmEntityDaoBaseTest.xml")
+    @CdmExpectedDataSet
     public void testUpdate() {
         TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
         cdmBase.setDoubtful(true);
@@ -217,8 +217,8 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     }
 
     @Test
-    @DataSet("CdmEntityDaoBaseTest.xml")
-    @ExpectedDataSet
+    @CdmDataSet("CdmEntityDaoBaseTest.xml")
+    @CdmExpectedDataSet
     public void testUpdateWithAuthentication() {
 
         setAuthentication(taxonEditorToken);
@@ -241,21 +241,21 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     }
 
     @Test
-    @DataSet("CdmEntityDaoBaseTest.xml")
+    @CdmDataSet("CdmEntityDaoBaseTest.xml")
     public void testFindById() {
         CdmBase cdmBase = cdmEntityDaoBase.findById(1);
         assertNotNull("There should be an entity with an id of 1",cdmBase);
     }
 
     @Test
-    @DataSet("CdmEntityDaoBaseTest.xml")
+    @CdmDataSet("CdmEntityDaoBaseTest.xml")
     public void testFindByUuid() {
         CdmBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
         assertNotNull("testFindByUuid() an entity with a uuid of " + uuid.toString(),cdmBase);
     }
 
     @Test
-    @DataSet("CdmEntityDaoBaseTest.xml")
+    @CdmDataSet("CdmEntityDaoBaseTest.xml")
     public void testExists() {
         boolean exists = cdmEntityDaoBase.exists(uuid);
         assertTrue("exists() should return true for uuid " + uuid.toString(), exists);
@@ -264,7 +264,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     }
 
     @Test
-    @DataSet("CdmEntityDaoBaseTest.xml")
+    @CdmDataSet("CdmEntityDaoBaseTest.xml")
     public void testList() {
         List<TaxonBase> list = cdmEntityDaoBase.list(1000, 0);
         assertNotNull("list() should not return null",list);
@@ -272,7 +272,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     }
 
     @Test
-    @DataSet("CdmEntityDaoBaseTest.xml")
+    @CdmDataSet("CdmEntityDaoBaseTest.xml")
     public void testRandomOrder() {
         List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new RandomOrder());
@@ -282,7 +282,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     }
 
     @Test
-    @DataSet("CdmEntityDaoBaseTest.xml")
+    @CdmDataSet("CdmEntityDaoBaseTest.xml")
     public void testListByUuids() {
         List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new RandomOrder());
@@ -293,7 +293,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     }
 
     @Test
-    @DataSet("CdmEntityDaoBaseTest.xml")
+    @CdmDataSet("CdmEntityDaoBaseTest.xml")
     public void testListByIds() {
         List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new RandomOrder());
@@ -304,8 +304,8 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     }
 
     @Test
-    @DataSet("CdmEntityDaoBaseTest.xml")
-    @ExpectedDataSet
+    @CdmDataSet("CdmEntityDaoBaseTest.xml")
+    @CdmExpectedDataSet
     public void testDelete() {
         TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
         assertNotNull(cdmBase);

@@ -17,14 +17,11 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.dbunit.annotation.ExpectedDataSet;
-import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
@@ -34,29 +31,30 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmExpectedDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 10.05.2011
  */
-public class ExcelSpecimenImportExampleTest extends
-		CdmTransactionalIntegrationTest {
+public class ExcelSpecimenImportExampleTest extends CdmIoTransactionalSpringIntegrationTest {
 
-	@SpringBeanByName
-	private CdmApplicationAwareDefaultImport<?> defaultImport;
+	@Autowired
+    @Qualifier("defaultImport")
+    private CdmApplicationAwareDefaultImport<?> defaultImport;
 
-	@SpringBeanByType
+	@Autowired
 	private INameService nameService;
 
-	@SpringBeanByType
+	@Autowired
 	private IOccurrenceService occurrenceService;
 
 	private IImportConfigurator configurator;
 	private IImportConfigurator configuratorXslx;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		//xsl
 		try {
@@ -93,11 +91,11 @@ public class ExcelSpecimenImportExampleTest extends
 	}
 
 	 @Test
-//	 @Ignore  //does not run together with testResultSet or others
-	 @DataSets({
-	     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-	     @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
-	 })
+//	 @Disabled  //does not run together with testResultSet or others
+	 @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
+    })
 	 public void testDoInvoke() {
 		 boolean result = defaultImport.invoke(configurator).isSuccess();
 		 assertTrue("Return value for import.invoke should be true", result);
@@ -110,11 +108,11 @@ public class ExcelSpecimenImportExampleTest extends
 	 }
 
 	 @Test
-//	 @Ignore //does not run together with testResultSet or others
-	 @DataSets({
-	     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-	     @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
-	 })
+//	 @Disabled //does not run together with testResultSet or others
+	 @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
+    })
 	 public void testDoInvokeXslx() {
 		 boolean result = defaultImport.invoke(configurator).isSuccess();
 		 assertTrue("Return value for import.invoke should be true", result);
@@ -128,9 +126,9 @@ public class ExcelSpecimenImportExampleTest extends
 	 }
 
 	@Test
-	@DataSet
-	@ExpectedDataSet
-	@Ignore
+	@CdmDataSet
+	@CdmExpectedDataSet
+	@Disabled
 	public void testResultSet() {
 		boolean result = defaultImport.invoke(configurator).isSuccess();
 		assertTrue("Return value for import.invoke should be true", result);

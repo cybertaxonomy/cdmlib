@@ -12,17 +12,11 @@ import java.io.FileNotFoundException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.ExpectedDataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
 
-import eu.etaxonomy.cdm.api.service.IClassificationService;
-import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.INameService;
-import eu.etaxonomy.cdm.api.service.IReferenceService;
-import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmExpectedDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * test for the {@link FirstDataInserter}
@@ -30,36 +24,21 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author a.kohlbecker
  * @since Oct 12, 2012
  */
-@DataSet
-public class FirstDataInserterTest extends CdmTransactionalIntegrationTest {
+@CdmDataSet
+public class FirstDataInserterTest extends CdmServicesTransactionalSpringIntegrationTest {
 
 //    private final String[] tableNames = new String[]{"USERACCOUNT", "USERACCOUNT_GRANTEDAUTHORITYIMPL", "GRANTEDAUTHORITYIMPL", "CDMMETADATA", "PERMISSIONGROUP"};
 
     @SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger();
 
-    @SpringBeanByType
-    private ITaxonService taxonService;
-
-    @SpringBeanByType
-    private INameService nameService;
-
-    @SpringBeanByType
-    private IReferenceService referenceService;
-
-    @SpringBeanByType
-    private IClassificationService classificationService;
-
-    @SpringBeanByType
-    private IDescriptionService descriptionService;
-
     /**
      * Runs the FirstDataInserter on a blank database and
      * asserts that all groups and users have been created.
      */
     @Test
-    @DataSet(value="FirstDataInserterTest.testBlankDB.xml")
-    @ExpectedDataSet(value="FirstDataInserterTest.testBlankDB-result.xml")
+    @CdmDataSet("FirstDataInserterTest.testBlankDB.xml")
+    @CdmExpectedDataSet(value="FirstDataInserterTest.testBlankDB-result.xml")
     public void testOnBlankDatabase(){
 
         commitAndStartNewTransaction(null);

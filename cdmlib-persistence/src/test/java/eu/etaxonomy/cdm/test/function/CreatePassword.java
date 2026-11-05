@@ -39,5 +39,4 @@ public class CreatePassword {
 //        cp.createBCryptPassword();
         cp.createMd5Password();
     }
-
 }

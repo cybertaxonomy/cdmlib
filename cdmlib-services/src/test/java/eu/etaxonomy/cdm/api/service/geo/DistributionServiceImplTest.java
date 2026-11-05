@@ -31,12 +31,10 @@ import org.apache.hc.client5.http.ClientProtocolException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opencsv.exceptions.CsvException;
 
@@ -62,44 +60,42 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 08.10.2008
  */
-public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest {
+public class DistributionServiceImplTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
     private static final String EDIT_MAPSERVICE_URI_STRING = "https://edit.africamuseum.be/edit_wp5/v1.2/rest_gen.php";
     private static URI editMapServiceUri;
 
-    @SpringBeanByType
+    @Autowired
     private ITermService termService;
 
-    @SpringBeanByType
+    @Autowired
     private IVocabularyService vocabService;
 
-    @SpringBeanByType
+    @Autowired
     private GeoServiceAreaAnnotatedMapping mapping;
 
-    @SpringBeanByType
+    @Autowired
     private IDistributionService distributionService;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonService taxonService ;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         System.setProperty("ONLY-A-TEST", "TRUE"); // allows EditGeoServiceUtilities to skip some line of code
         editMapServiceUri = new URI(EDIT_MAPSERVICE_URI_STRING);
     }
 
 //******************************************** TESTS************************************
-
-
 
     private void subTestWithEditMapService(String queryString)throws MalformedURLException, IOException {
         if(UriUtils.isServiceAvailable(editMapServiceUri)){
@@ -125,11 +121,10 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
     public static final UUID uuidCyprusDivisionsVocabulary = UUID.fromString("2119f610-1f93-4d87-af28-40aeefaca100");
     private final Map<String, NamedArea> divisions = new HashMap<>();
 
-
     //TODO move to AreaMapServiceParameterBuilder and simplify dependencies
 
     @Test
-    @Ignore
+    @Disabled
     public void testGetWebServiceUrlCyprus() throws ClientProtocolException, IOException, CsvException {
         makeCyprusAreas();
         Set<Distribution> distributions = new HashSet<>();
@@ -251,12 +246,11 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
 
     //TODO move to AreaMapServiceParameterBuilder and simplify dependencies
     @Test
-    @Ignore
-    @DataSet( value="EditGeoServiceTest.getDistributionServiceRequestParameterString.xml")
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet( value="EditGeoServiceTest.getDistributionServiceRequestParameterString.xml")
+    @Disabled
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "EditGeoServiceTest.getDistributionServiceRequestParameterString.xml"
     })
     public void getDistributionServiceRequestParameterString(){
 

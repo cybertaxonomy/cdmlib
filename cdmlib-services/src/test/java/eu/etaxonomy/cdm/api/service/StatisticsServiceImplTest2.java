@@ -16,10 +16,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.statistics.Statistics;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsConfigurator;
@@ -42,9 +41,10 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
-public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest {
+public class StatisticsServiceImplTest2 extends CdmServicesTransactionalSpringIntegrationTest {
 
 	// ************constants to set up the expected results for all:
 	// ********************
@@ -80,23 +80,23 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 	private ArrayList<Classification> classifications;
 
 	// ****************** services: ************************
-	@SpringBeanByType
+	@Autowired
 	private IStatisticsService service;
-	@SpringBeanByType
+	@Autowired
 	private IClassificationService classificationService;
-	@SpringBeanByType
+	@Autowired
 	private ITaxonService taxonService;
-	@SpringBeanByType
+	@Autowired
 	private IReferenceService referenceService;
-	@SpringBeanByType
+	@Autowired
 	private IDescriptionService descriptionService;
-    @SpringBeanByType
+    @Autowired
     private IDescriptionElementService descriptionElementService;
 
 	// ............................................
 
-	@Before
-	// @DataSet
+	@BeforeEach
+	// @CdmDataSet
 	public void setUp() throws Exception {
 //		 createTestData(3, 10, 7, 16, 4);
 		// OutputStream out= new ByteArrayOutputStream();
@@ -105,7 +105,7 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 	}
 
 	@Test
-	@DataSet
+	@CdmDataSet
 	public void testGetCountStatistics() {
 
 		// create configurator needed to call

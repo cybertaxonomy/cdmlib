@@ -11,19 +11,10 @@
     https://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <context:property-override location="classpath:eu/etaxonomy/cdm/override.properties"/>
-   
-    <!--
-        This applicationContext is not a full cdm application context. It only covers the remote components
-        without service and persistence. The cacheManager is usually provided via EhCacheConfiguration
-        which cannot be used here. Spring 6 removed EhCacheManagerFactoryBean (EhCache 2 support);
-        create the shared net.sf.ehcache.CacheManager directly from the test ehcache.xml.
-     -->
-    <bean id="ehcacheConfigUrl" class="org.springframework.util.ResourceUtils" factory-method="getURL">
-      <constructor-arg value="classpath:eu/etaxonomy/cdm/remote/ehcache.xml"/>
-    </bean>
-    <bean id="cacheManager" class="net.sf.ehcache.CacheManager" factory-method="create">
-      <constructor-arg ref="ehcacheConfigUrl"/>
-    </bean> 
 
-    <import resource="classpath:/eu/etaxonomy/cdm/remote.xml"/>    
+    <!--
+        DTO / marshaller tests only (no controllers — those need service-layer beans).
+        Production remote.xml imports remote-dto.xml plus OAI-PMH/cache beans.
+     -->
+    <import resource="classpath:/eu/etaxonomy/cdm/remote-dto.xml"/>
 </beans>

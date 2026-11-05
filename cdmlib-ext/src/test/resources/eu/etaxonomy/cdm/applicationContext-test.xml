@@ -4,22 +4,35 @@
   xmlns:context="http://www.springframework.org/schema/context"
   xmlns:tx="http://www.springframework.org/schema/tx"
     xsi:schemaLocation="http://www.springframework.org/schema/beans
-    https://www.springframework.org/schema/beans/spring-beans-4.3.xsd
-    http://www.springframework.org/schema/tx https://www.springframework.org/schema/tx/spring-tx-4.3.xsd
-    http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context-4.3.xsd
+    https://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx https://www.springframework.org/schema/tx/spring-tx.xsd
+    http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
     ">
-    
+
 	<context:component-scan base-package="eu/etaxonomy/cdm/ext"/>
-  
+
     <!--  ====== should go into common app context configuration ===== -->
-    
-    <context:component-scan base-package="eu/etaxonomy/cdm/api/service"/>  
+
+    <context:component-scan base-package="eu/etaxonomy/cdm/api/service"/>
     <!-- in this context the CdmRepository can not be used since it autowires the authenticationManager which is not ready in time -->
-    
-    <bean id="dataSource" class="org.unitils.database.UnitilsDataSourceFactoryBean"/>
-    
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:mem:cdmExtSpringTest;NON_KEYWORDS=VALUE,TYPE,ROLE,SIZE;DATABASE_TO_UPPER=TRUE;DB_CLOSE_DELAY=-1;REFERENTIAL_INTEGRITY=FALSE"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+
+    <bean id="cdmTestSchemaInitializer"
+          class="eu.etaxonomy.cdm.test.integration.spring.CdmTestSchemaInitializer">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="script" value="classpath:dbscripts/001-cdm.h2.sql"/>
+    </bean>
+
+    <bean class="eu.etaxonomy.cdm.test.integration.spring.CdmTestSchemaDependsOnPostProcessor"/>
+
     <import resource="classpath:/eu/etaxonomy/cdm/applicationContext-test.common.xml" />
-    
+
     <import resource="classpath:/eu/etaxonomy/cdm/persistence.xml" />
     <import resource="classpath:/eu/etaxonomy/cdm/services_base_test.xml"/>
 
@@ -40,5 +53,5 @@
         </constructor-arg>
     </bean>
     <!--  ================================================================== -->
-    
+
 </beans>

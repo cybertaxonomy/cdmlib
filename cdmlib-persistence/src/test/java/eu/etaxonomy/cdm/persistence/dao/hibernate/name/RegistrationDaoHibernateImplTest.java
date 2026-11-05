@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.Assert;
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
@@ -31,24 +31,24 @@ import eu.etaxonomy.cdm.persistence.dao.name.IRegistrationDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 05.05.2017
  */
-public class RegistrationDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
+public class RegistrationDaoHibernateImplTest extends CdmTransactionalSpringIntegrationTest {
 
-    @SpringBeanByType
+    @Autowired
     private IRegistrationDao registrationDao;
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceDao referenceDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonNameDao nameDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITypeDesignationDao typeDesignationDao;
 
     @Test

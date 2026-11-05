@@ -18,16 +18,16 @@ import eu.etaxonomy.cdm.model.agent.Person;
 
 public class CdmDocumentBuilderTest {
 
-	    private final String resource = "/eu/etaxonomy/cdm/io/jaxb/CdmDocumentBuilderTest.xml";
+    private final String resource = "/eu/etaxonomy/cdm/io/jaxb/CdmDocumentBuilderTest.xml";
 
-	    @Test
-	    public void testXInclude() throws Exception {
-	        CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
-	        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
-	        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
+    @Test
+    public void testXInclude() throws Exception {
+        CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
+        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
+        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
-	        Assert.assertFalse("agents should exist", dataSet.getAgents().isEmpty());
-			Person person = (Person)dataSet.getAgents().get(0);
-			Assert.assertNotNull(person);
-	    }
+        Assert.assertFalse("agents should exist", dataSet.getAgents().isEmpty());
+		Person person = (Person)dataSet.getAgents().get(0);
+		Assert.assertNotNull(person);
+    }
 }

@@ -32,9 +32,6 @@ public class CdmAuthorityTest {
 	private GrantedAuthorityImpl grantedAuthority;
 	private String authority;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		grantedAuthority = GrantedAuthorityImpl.NewInstance(null);
@@ -127,7 +124,6 @@ public class CdmAuthorityTest {
         assertEquals("e0358c98-4222-4d17-811c-7ce18bd565ee", auth.getTargetUUID().toString());
     }
 
-
 	@SuppressWarnings("serial")
     class TestCdmAuthority extends CdmAuthority {
 
@@ -143,10 +139,5 @@ public class CdmAuthorityTest {
 	    public String[] parseForTest(String authority) throws CdmAuthorityParsingException {
 	        return super.parse(authority);
 	    }
-
 	}
-
-
-
 }
-

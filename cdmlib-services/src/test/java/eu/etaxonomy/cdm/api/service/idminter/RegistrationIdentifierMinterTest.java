@@ -12,24 +12,24 @@ import java.io.FileNotFoundException;
 
 import org.hibernate.SessionFactory;
 import org.junit.Assert;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.idminter.IdentifierMinter.Identifier;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author a.kohlbecker
  * @since Dec 13, 2017
  */
-public class RegistrationIdentifierMinterTest extends CdmTransactionalIntegrationTest {
+public class RegistrationIdentifierMinterTest extends CdmServicesTransactionalSpringIntegrationTest {
 
-    @SpringBeanByType
+    @Autowired
     private SessionFactory factory;
 
     @Test
-    @DataSet("RegistrationIdentifierMinterTest.xml")
+    @CdmDataSet("RegistrationIdentifierMinterTest.xml")
     public void testNextValueNoDomain(){
 
         RegistrationIdentifierMinter minter = new RegistrationIdentifierMinter();
@@ -41,7 +41,7 @@ public class RegistrationIdentifierMinterTest extends CdmTransactionalIntegratio
     }
 
     @Test
-    @DataSet("RegistrationIdentifierMinterTest.xml")
+    @CdmDataSet("RegistrationIdentifierMinterTest.xml")
     public void testNextValueAndString(){
         RegistrationIdentifierMinter minter = new RegistrationIdentifierMinter();
         minter.setSessionFactory(factory);
@@ -54,7 +54,7 @@ public class RegistrationIdentifierMinterTest extends CdmTransactionalIntegratio
     }
 
     @Test
-    @DataSet("RegistrationIdentifierMinterTest.xml")
+    @CdmDataSet("RegistrationIdentifierMinterTest.xml")
     public void testNextValueNewRange(){
         RegistrationIdentifierMinter minter = new RegistrationIdentifierMinter();
         minter.setSessionFactory(factory);
@@ -66,7 +66,7 @@ public class RegistrationIdentifierMinterTest extends CdmTransactionalIntegratio
     }
 
     @Test
-    @DataSet("RegistrationIdentifierMinterTest.xml")
+    @CdmDataSet("RegistrationIdentifierMinterTest.xml")
     public void testNextValueOutOfRange(){
         RegistrationIdentifierMinter minter = new RegistrationIdentifierMinter();
         minter.setSessionFactory(factory);
@@ -105,6 +105,5 @@ public class RegistrationIdentifierMinterTest extends CdmTransactionalIntegratio
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
 
 }

@@ -26,11 +26,9 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.TermServiceImpl.TermMovePosition;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -57,34 +55,34 @@ import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 27.05.2008
  */
-public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
+public class TermServiceImplTest extends CdmServicesTransactionalSpringIntegrationTest{
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-    @SpringBeanByType
+    @Autowired
     private ITermService termService;
 
-    @SpringBeanByType
+    @Autowired
     private IVocabularyService vocabularyService;
 
-    @SpringBeanByType
+    @Autowired
     private ITermTreeService termTreeService;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonService taxonService;
 
 /* ************************* TESTS *************************************************/
 
     @Test
-    /* @DataSet
+    /* @CdmDataSet
      * WARNING:
      *    the dataset contains records for DEFINEDTERMBASE,DEFINEDTERMBASE_REPRESENTATION and REPRESENTAION
      *    and thus will cause unitils empty the according tables
@@ -104,7 +102,7 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    /* @DataSet
+    /* @CdmDataSet
      * WARNING:
      *    the dataset contains records for DEFINEDTERMBASE,DEFINEDTERMBASE_REPRESENTATION and REPRESENTAION
      *    and thus will cause unitils empty the according tables
@@ -124,7 +122,7 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    /* @DataSet
+    /* @CdmDataSet
      * WARNING:
      *    the dataset contains records for DEFINEDTERMBASE,DEFINEDTERMBASE_REPRESENTATION and REPRESENTAION
      *    and thus will cause unitils empty the according tables
@@ -136,7 +134,7 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    /* @DataSet
+    /* @CdmDataSet
      * WARNING:
      *    the dataset contains records for DEFINEDTERMBASE,DEFINEDTERMBASE_REPRESENTATION and REPRESENTAION
      *    and thus will cause unitils empty the according tables
@@ -146,7 +144,7 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
         assertNotNull("Results should not be null",results);
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void testTitleCacheUpdate(){
     	String uuid = "ae787603-3070-4298-9ca6-4cbe73378122";
@@ -171,7 +169,6 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     	//this will create another termBase in the DB which has the same UUID -> test failure
 //    	termBase.addRepresentation(Representation.NewInstance(expecteTitleCacheAfterRepresentationChange, "", "", Language.DEFAULT()));////new Representation(expecteTitleCacheAfterRepresentationChange, "", "", Language.DEFAULT()));
 
-
     	commitAndStartNewTransaction(null);
 
     	termBase = termService.find(fromString);
@@ -179,9 +176,9 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
     public void testDeleteTerms(){
     	final String[] tableNames = new String[]{
@@ -235,9 +232,9 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
     public void testMoveTerm(){
     //	final String[] tableNames = new String[]{
@@ -374,8 +371,6 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
         List<Language> languages = termService.getLanguagesByLocale(Collections.enumeration(locales));
         assertNotNull(textData.getPreferredLanguageString(languages));
     }
-
-
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}

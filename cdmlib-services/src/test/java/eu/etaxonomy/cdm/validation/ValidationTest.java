@@ -15,22 +15,21 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileNotFoundException;
 import java.util.Set;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
-import jakarta.validation.groups.Default;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
+import jakarta.validation.groups.Default;
 
 /**
  * NOTE: In this test, the words "valid" and "invalid", loaded though
@@ -41,19 +40,19 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author ben.clark
  */
 @SuppressWarnings("unused")
-public class ValidationTest extends CdmTransactionalIntegrationTest {
+public class ValidationTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
-	@SpringBeanByType
+	@Autowired
 	private Validator validator;
 
-	@SpringBeanByType
+	@Autowired
 	private ITermService termService;
 
 	private IBotanicalName name;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 
 		//Rank speciesRank = (Rank)termService.find(Rank.uuidSpecies);
@@ -67,7 +66,7 @@ public class ValidationTest extends CdmTransactionalIntegrationTest {
 	 * into an instance of javax.valdation.Validator
 	 */
 	@Test
-	@DataSet
+	@CdmDataSet
 	public final void testValidatorAutowire() {
         assertNotNull("the validator should not be null", validator);
 	}
@@ -76,7 +75,7 @@ public class ValidationTest extends CdmTransactionalIntegrationTest {
 	 * Test validation at the "default" level with a valid name
 	 */
 	@Test
-	@DataSet
+	@CdmDataSet
 	public final void testDefaultValidationWithValidName() {
         Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name);
         assertTrue("There should be no constraint violations as this name is valid at the default level",constraintViolations.isEmpty());
@@ -86,7 +85,7 @@ public class ValidationTest extends CdmTransactionalIntegrationTest {
 	 * Test validation at the "default" level with an invalid name
 	 */
 	@Test
-	@DataSet
+	@CdmDataSet
 	public final void testDefaultValidationWithInValidName() {
 		name.setGenusOrUninomial("");
         Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name);
@@ -97,7 +96,7 @@ public class ValidationTest extends CdmTransactionalIntegrationTest {
 	 * Test validation at level2 with a valid name
 	 */
 	@Test
-	@DataSet
+	@CdmDataSet
 	public final void testLevel2ValidationWithValidName() {
 		name.setGenusOrUninomial("Abies");
 		name.setSpecificEpithet("balsamea");
@@ -114,11 +113,10 @@ public class ValidationTest extends CdmTransactionalIntegrationTest {
 	 * Test validation at level2 with an invalid name
 	 */
 	@Test
-	@DataSet
+	@CdmDataSet
 	public final void testLevel2ValidationWithInValidName() {
 		name.setGenusOrUninomial("Abies");
 		name.setSpecificEpithet("balsamea");
-
 
         Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Default.class);
         assertTrue("There should not be a constraint violation as this name is valid at the default level",constraintViolations.isEmpty());
@@ -131,7 +129,7 @@ public class ValidationTest extends CdmTransactionalIntegrationTest {
 	 * Test validation at level3 with a valid name
 	 */
 	@Test
-	@DataSet
+	@CdmDataSet
 	public final void testLevel3ValidationWithValidName() {
 		name.setGenusOrUninomial("Abies");
 		name.setSpecificEpithet("balsamea");
@@ -148,7 +146,7 @@ public class ValidationTest extends CdmTransactionalIntegrationTest {
 	 * Test validation at the level3 with an invalid name
 	 */
 	@Test
-	@DataSet
+	@CdmDataSet
 	public final void testLevel3ValidationWithInValidName() {
 		name.setGenusOrUninomial("Abies");
 		name.setSpecificEpithet("alba");

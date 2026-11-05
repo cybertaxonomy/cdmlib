@@ -14,19 +14,21 @@ import jakarta.validation.ConstraintValidatorContext;
 /**
  * A ConstraintValidator that deliberately takes some time to test task queue overruns.
  * It calls Thread.sleep() to force a long execution time.
- * 
+ *
  * @author ayco_holleman
  *
  */
 public class LongRunningCheckCaseValidator implements ConstraintValidator<LongRunningCheckCase, String> {
-	
+
 	private CaseMode caseMode;
 
-	public void initialize(LongRunningCheckCase constraintAnnotation){
+	@Override
+    public void initialize(LongRunningCheckCase constraintAnnotation){
 		this.caseMode = constraintAnnotation.value();
 	}
 
-	public boolean isValid(String object, ConstraintValidatorContext constraintContext){
+	@Override
+    public boolean isValid(String object, ConstraintValidatorContext constraintContext){
 		try {
 			Thread.sleep(1000);
 		}

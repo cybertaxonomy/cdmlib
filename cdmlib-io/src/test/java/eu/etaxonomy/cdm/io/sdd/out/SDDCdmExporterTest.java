@@ -12,30 +12,30 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 02.02.2009
  */
-public class SDDCdmExporterTest extends CdmTransactionalIntegrationTest {
+public class SDDCdmExporterTest extends CdmIoTransactionalSpringIntegrationTest {
 
-	@SpringBeanByType
+	@Autowired
 	SDDCdmExporter sddCdmExporter;
 
-	@SpringBeanByType
+	@Autowired
 	INameService nameService;
 
 	private IExportConfigurator exportConfigurator;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		String url = "";
 		//FIXME

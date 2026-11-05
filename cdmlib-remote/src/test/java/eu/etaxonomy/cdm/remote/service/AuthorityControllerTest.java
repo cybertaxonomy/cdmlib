@@ -8,15 +8,13 @@
 */
 package eu.etaxonomy.cdm.remote.service;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.easymock.EasyMock;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.test.web.ModelAndViewAssert;
 import org.springframework.web.servlet.ModelAndView;
-import org.unitils.UnitilsJUnit4;
-import org.unitils.easymock.annotation.Mock;
-import org.unitils.inject.annotation.InjectInto;
-import org.unitils.inject.annotation.TestedObject;
 
 import com.ibm.lsid.ExpiringResponse;
 import com.ibm.lsid.LSIDException;
@@ -32,13 +30,10 @@ import eu.etaxonomy.cdm.test.util.LSIDMatchers;
  * @author b.clark
  * @date 2009
  */
-public class AuthorityControllerTest extends UnitilsJUnit4 {
+public class AuthorityControllerTest {
 
-	@Mock
-	@InjectInto(property = "lsidAuthorityService")
 	private LSIDAuthorityService authorityService;
 
-	@TestedObject
 	private AuthorityController authorityController;
 
 	private LSID lsid;
@@ -46,7 +41,7 @@ public class AuthorityControllerTest extends UnitilsJUnit4 {
 	private Object source;
 	private ExpiringResponse expiringResponse;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		try {
 			lsid = new LSID("urn:lsid:example.org:taxonconcept:1");
@@ -56,8 +51,9 @@ public class AuthorityControllerTest extends UnitilsJUnit4 {
 			lsidAuthority = new LSIDAuthority("fred.org");
 		} catch (MalformedLSIDException e) { }
 
-		authorityService = org.easymock.EasyMock.createMock(LSIDAuthorityService.class);
+		authorityService = EasyMock.createMock(LSIDAuthorityService.class);
 		authorityController = new AuthorityController();
+		authorityController.setLsidAuthorityService(authorityService);
 		source = new Object();
 		expiringResponse = new ExpiringResponse(source, null);
    }
@@ -86,16 +82,17 @@ public class AuthorityControllerTest extends UnitilsJUnit4 {
 		ModelAndViewAssert.assertModelAttributeValue(modelAndView, "source",source);
 	}
 
-	@Test(expected = LSIDServerException.class)
+	@Test
     public void testGetServicesWithUnknownLSID() throws Exception {
     	LSIDServerException lse = new LSIDServerException(LSIDException.UNKNOWN_LSID, "Unknown LSID");
 		EasyMock.expect(authorityService.getAvailableServices(LSIDMatchers.eqLSID(lsid))).andThrow(lse);
 		EasyMock.replay(authorityService);
 
-		authorityController.getAvailableServices(lsid);
+		assertThrows(LSIDServerException.class,
+				() -> authorityController.getAvailableServices(lsid));
 	}
 
-	@Test(expected = LSIDServerException.class)
+	@Test
     public void testNotifyForeignAuthority() throws Exception {
     	LSIDServerException lse = new LSIDServerException(LSIDException.METHOD_NOT_IMPLEMENTED, "FAN service not available");
 
@@ -104,10 +101,11 @@ public class AuthorityControllerTest extends UnitilsJUnit4 {
 
     	EasyMock.replay(authorityService);
 
-		authorityController.notifyForeignAuthority(lsid, lsidAuthority);
+		assertThrows(LSIDServerException.class,
+				() -> authorityController.notifyForeignAuthority(lsid, lsidAuthority));
     }
 
-	@Test(expected = LSIDServerException.class)
+	@Test
     public void testRevokeForeignAuthority() throws Exception {
     	LSIDServerException lse = new LSIDServerException(LSIDException.METHOD_NOT_IMPLEMENTED, "FAN service not available");
 
@@ -115,6 +113,7 @@ public class AuthorityControllerTest extends UnitilsJUnit4 {
     	EasyMock.expectLastCall().andThrow(lse);
 
     	EasyMock.replay(authorityService);
-		authorityController.revokeNotificationForeignAuthority(lsid, lsidAuthority);
+		assertThrows(LSIDServerException.class,
+				() -> authorityController.revokeNotificationForeignAuthority(lsid, lsidAuthority));
     }
 }

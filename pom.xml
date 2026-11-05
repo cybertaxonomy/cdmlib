@@ -36,7 +36,6 @@
     <hibernate-validator.version>8.0.2.Final</hibernate-validator.version>
     <hibernate-search.version>7.2.6.Final</hibernate-search.version>
     <lucene.version>9.11.1</lucene.version>
-	<unitils.version>3.4.6</unitils.version>
     <junit-jupiter.version>5.12.2</junit-jupiter.version>
     <dbunit.version>2.7.3</dbunit.version>
     <httpcomponents.version>4.5.14</httpcomponents.version>
@@ -223,7 +222,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.6.0</version>  <!-- updated 2022-06 -->
         <configuration>
-          <argLine>-Xmx512M -Dfile.encoding=${project.build.sourceEncoding}</argLine>
+          <argLine>-Xmx1024M -Dfile.encoding=${project.build.sourceEncoding}</argLine>
           <runOrder>alphabetical</runOrder>
           <includes>
             <include>**/*Test.java</include>
@@ -718,7 +717,7 @@
       
 	  <dependency>
 	    <!-- only for version management org.apache.ant:ant depends in different versions from 
-             org.unitils:unitils-easymock:3.4.2 and org.glassfish.jaxb:jaxb-jxc:2.2.11 -->
+             org.glassfish.jaxb:jaxb-jxc:2.2.11 -->
 	    <groupId>org.apache.ant</groupId>
 	    <artifactId>ant</artifactId>
 	    <version>1.10.18</version>
@@ -773,99 +772,9 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.unitils</groupId>
-        <artifactId>unitils-core</artifactId>
-        <version>${unitils.version}</version>
-        <!-- <scope>test</scope> unscoped since we need this dependency at 
-          compile time in persistence for H2DbSupport.java -->
-        <exclusions>
-          <exclusion>
-            <!-- we use jcl-over-slf4j instead -->
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.unitils</groupId>
-        <artifactId>unitils-database</artifactId>
-        <version>${unitils.version}</version>
-        <scope>test</scope>
-        <exclusions>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.unitils</groupId>
-        <artifactId>unitils-dbmaintainer</artifactId>
-        <version>${unitils.version}</version>
-     <!--    <scope>test</scope>  -->
-        <exclusions>
-          <exclusion>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate</artifactId>
-          </exclusion>
-          <exclusion>
-            <!-- conflicts with org.hibernate.orm:hibernate-core 6.x -->
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-          </exclusion>
-          <exclusion>
-            <!-- we use log4j-slf4j2-impl -->
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-nop</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
         <groupId>org.objenesis</groupId>
         <artifactId>objenesis</artifactId>
         <version>3.6</version>
-      </dependency>
-      <dependency>
-        <groupId>org.unitils</groupId>
-        <artifactId>unitils-dbunit</artifactId>
-        <version>${unitils.version}</version>
-     <!--    <scope>test</scope>  -->
-      </dependency>
-      <dependency>
-        <groupId>org.unitils</groupId>
-        <artifactId>unitils-easymock</artifactId>
-        <version>${unitils.version}</version>
-     <!--    <scope>test</scope>  -->
-      </dependency>
-      <dependency>
-        <groupId>org.unitils</groupId>
-        <artifactId>unitils-mock</artifactId>
-        <version>${unitils.version}</version>
-     <!--    <scope>test</scope>  -->
-      </dependency>
-      <dependency>
-        <groupId>org.unitils</groupId>
-        <artifactId>unitils-inject</artifactId>
-        <version>${unitils.version}</version>
-     <!--    <scope>test</scope>  -->
-      </dependency>
-      <dependency>
-        <groupId>org.unitils</groupId>
-        <artifactId>unitils-orm</artifactId>
-        <version>${unitils.version}</version>
-     <!--    <scope>test</scope>  -->
-        <exclusions>
-          <exclusion>
-            <groupId>javax.persistence</groupId>
-            <artifactId>persistence-api</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.unitils</groupId>
-        <artifactId>unitils-spring</artifactId>
-        <version>${unitils.version}</version>
-     <!--    <scope>test</scope>  -->
       </dependency>
       <dependency>
         <groupId>xmlunit</groupId>
@@ -885,9 +794,6 @@
         <version>2.4.9</version>  -->
      <!--    <scope>test</scope>  -->
   <!--    </dependency>   -->
-      <!-- dependency of unitils-database, but with lower number there , 
-        higher number needed for compatibility with current hibernate and Java 1.6 
-        PreparedStatement -->
       <dependency>
         <!-- currently still needed by cdmlib-persistence, once removed, scope should be set to test -->
         <groupId>commons-dbcp</groupId>

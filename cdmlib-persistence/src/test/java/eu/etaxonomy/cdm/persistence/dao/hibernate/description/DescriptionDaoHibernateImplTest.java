@@ -25,11 +25,9 @@ import java.util.UUID;
 
 import org.hibernate.Hibernate;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -64,28 +62,28 @@ import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
-@DataSet
-public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
+@CdmDataSet
+public class DescriptionDaoHibernateImplTest extends CdmTransactionalSpringIntegrationTest {
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionDao descriptionDao;
 
-    @SpringBeanByType
+    @Autowired
     private IDefinedTermDao definedTermDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonDao taxonDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonNodeDao taxonNodeDao;
 
-    @SpringBeanByType
+    @Autowired
     private IClassificationDao classificationDao;
 
-    @SpringBeanByType
+    @Autowired
     private IOccurrenceDao occurrenceDao;
 
     private Set<Feature> features;
@@ -96,7 +94,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
 
     private UUID taxonSphingidaeUuid;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         uuidTaxonDescription1 = UUID.fromString("5f3265ed-68ad-4ec3-826f-0d29d25986b9");
 
@@ -381,10 +379,10 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="DescriptionDaoHibernateImplTest.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "DescriptionDaoHibernateImplTest.xml"
     })
     public void testListNamedAreasInUse(){
 
@@ -398,7 +396,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testListNamedAreasInUseWithParents(){
 
         Collection<TermDto> list = descriptionDao.listNamedAreasInUse(true, null, null);
@@ -407,7 +405,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
 
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testGetNodeOfIndividualAssociationForSpecimen() {
     	List<SortableTaxonNodeQueryResult> list = descriptionDao.getNodeOfIndividualAssociationForSpecimen(UUID.fromString("4c3231a9-336e-4b21-acf2-129683627de4"), null);
     	Assert.assertEquals(1, list.size());
@@ -415,7 +413,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     }
     //#11040
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testGetNodeOfIndividualAssociationForSpecimenRevisionStatus() {
 
         //create test data

@@ -27,13 +27,12 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.oxm.Marshaller;
-import org.unitils.UnitilsJUnit4;
-import org.unitils.spring.annotation.SpringApplicationContext;
-import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.github.dozermapper.core.Mapper;
 
@@ -50,23 +49,25 @@ import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonRelationshipTerm;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.Team;
 import eu.etaxonomy.remote.dto.rdf.Rdf;
 
-@SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
-public class RdfViewTest extends UnitilsJUnit4 {
+@SpringJUnitConfig(locations = "classpath:/eu/etaxonomy/cdm/applicationContext-test.xml")
+public class RdfViewTest {
 
-	@SpringBeanByName
+	@Autowired
+	@Qualifier("marshaller")
 	private Marshaller marshaller;
 
-	@SpringBeanByName
+	@Autowired
+	@Qualifier("rdfMarshaller")
 	private Marshaller rdfMarshaller;
 
-    @SpringBeanByType
+    @Autowired
     private Mapper mapper;
 
 	private Rdf rdf;
 	private TaxonConcept taxonConcept;
 	private SpeciesProfileModel speciesProfileModel;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 
 	    XMLUnit.setIgnoreWhitespace(true);

@@ -15,10 +15,9 @@ import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.dto.RegistrationWrapperDTO;
@@ -29,24 +28,25 @@ import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecurity;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTestWithSecurity;
 
 /**
  * @author a.kohlbecker
  * @since Jun 28, 2019
  *
  */
-public class RegistrationWorkingSetServiceTest extends CdmTransactionalIntegrationTestWithSecurity {
+public class RegistrationWorkingSetServiceTest extends CdmServicesTransactionalSpringIntegrationTestWithSecurity {
 
-    @SpringBeanByType
+    @Autowired
     @Qualifier("CdmRepository")
     protected ICdmRepository repo;
 
-    @SpringBeanByType
+    @Autowired
     private IRegistrationWorkingSetService service;
 
     @Test
-    @DataSet("RegistrationServiceTest.xml")
+    @CdmDataSet("RegistrationServiceTest.xml")
     public void testPageDTOs(){
 
         OrderHint orderBySpecificIdentifier = new OrderHint("specificIdentifier", SortOrder.ASCENDING);
@@ -111,7 +111,6 @@ public class RegistrationWorkingSetServiceTest extends CdmTransactionalIntegrati
         pager = service.pageDTOs((UUID)null, null, null, "Digitalus", null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals(4l, pager.getCount().longValue());
-
 
         pager = service.pageDTOs((UUID)null, null, null, "Digitalus prim", null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
@@ -179,7 +178,7 @@ public class RegistrationWorkingSetServiceTest extends CdmTransactionalIntegrati
     }
 
     @Test
-    @DataSet("RegistrationServiceTest.xml")
+    @CdmDataSet("RegistrationServiceTest.xml")
     public void testPageDTOs_unautheticated(){
         Pager<RegistrationWrapperDTO> pager = service.pageDTOs((UUID)null, null, null, null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());

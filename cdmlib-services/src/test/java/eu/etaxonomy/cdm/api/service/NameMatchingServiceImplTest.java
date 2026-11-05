@@ -17,16 +17,15 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl.NameMatchingResult;
 import eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl.SingleNameMatchingResult;
 import eu.etaxonomy.cdm.api.service.exception.NameMatchingParserException;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * Testclass for {@link NameMatchingServiceImpl}
@@ -35,7 +34,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author andreabee90
  * @since 11.07.2023
  */
-public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest {
+public class NameMatchingServiceImplTest extends CdmServicesTransactionalSpringIntegrationTest {
 
 	private static final UUID UUID_NAME_NECTONDRA = UUID.fromString("6c4464cc-fc2c-4907-9125-97715a798e0d");
 	private static final UUID UUID_NAME_NECTANDRA = UUID.fromString("0e16e411-e472-48ab-8b32-da9d3968092c");
@@ -60,7 +59,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
     private static DecimalFormat decimalFormat;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws Exception {
         String pattern = "#.###";
         DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
@@ -68,7 +67,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         decimalFormat = new DecimalFormat (pattern, otherSymbols);
     }
 
-    @SpringBeanByType
+    @Autowired
 	private INameMatchingService nameMatchingService;
 
     @Test
@@ -84,7 +83,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
     }
 
 	@Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
+    @CdmDataSet(cleanSweep = true, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
     public void testFindingMatchingNamesGenus() throws NameMatchingParserException {
 
 		String inputName;
@@ -139,7 +138,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
+    @CdmDataSet(cleanSweep = true, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
     public void testFindingMatchingNamesSpecies() throws NameMatchingParserException {
 
         String inputName;
@@ -223,7 +222,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
+    @CdmDataSet(cleanSweep = true, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
     public void testFindingMatchingNamesSubgenus() throws NameMatchingParserException {
 
     	String inputName;
@@ -267,7 +266,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
+    @CdmDataSet(cleanSweep = true, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
     public void testFindingMatchingNamesSubspecies() throws NameMatchingParserException {
 
         String inputName;
@@ -313,7 +312,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
+    @CdmDataSet(cleanSweep = true, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
     public void testFindingMatchingGenusWithAuthors() throws NameMatchingParserException {
 
         String inputName;
@@ -352,7 +351,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
+    @CdmDataSet(cleanSweep = true, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
     public void testFindingMatchingSpeciesWithAuthors() throws NameMatchingParserException {
 
         String inputName;
@@ -414,7 +413,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
+    @CdmDataSet(cleanSweep = true, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
     public void testFindingMatchingGenusWithExAuthors() throws NameMatchingParserException {
 
         String inputName;
@@ -446,7 +445,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
+    @CdmDataSet(cleanSweep = true, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
     public void testFindingMatchingSpeciesWithExAuthors() throws NameMatchingParserException {
 
         String inputName;
@@ -509,7 +508,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
+    @CdmDataSet(cleanSweep = true, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
     public void testFindingMatchingSubspeciesWithExAuthors() throws NameMatchingParserException {
 
         String inputName;
@@ -564,7 +563,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
+    @CdmDataSet(cleanSweep = true, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
     public void testListShapingWithoutAuthorComparison() throws NameMatchingParserException {
 
         String nameCache;
@@ -629,7 +628,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
+    @CdmDataSet(cleanSweep = true, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
     public void testListShapingWithAuthorComparison() throws NameMatchingParserException {
 
         String nameCache;
@@ -680,7 +679,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
+    @CdmDataSet(cleanSweep = true, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
     public void testListShapingDistance() throws NameMatchingParserException {
 
         String nameCache;
@@ -701,7 +700,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
+    @CdmDataSet(cleanSweep = true, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
     public void testIncludeAllAuthors() throws NameMatchingParserException {
 
         String nameCache;
@@ -716,7 +715,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
+    @CdmDataSet(cleanSweep = true, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
     public void testExcludeBasionymAuthors() throws NameMatchingParserException {
 
         String nameCache;
@@ -740,7 +739,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("basionym authors are excluded", "Asterella lindenbergiana (Corda ex Nees) Lindb. ex Arnell", exactResults.get(0).getTitleCache());
     }
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
+    @CdmDataSet(cleanSweep = true, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
     public void testExcludeExAuthors() throws NameMatchingParserException {
 
         String nameCache;

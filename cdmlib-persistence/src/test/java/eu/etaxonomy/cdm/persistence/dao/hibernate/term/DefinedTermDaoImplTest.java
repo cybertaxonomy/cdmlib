@@ -23,13 +23,11 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.Hibernate;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -47,15 +45,15 @@ import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
-public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
+public class DefinedTermDaoImplTest extends CdmTransactionalSpringIntegrationTest {
 
-	@SpringBeanByType
+	@Autowired
 	private IDefinedTermDao dao;
 
-	@SpringBeanByType
+	@Autowired
     private ITermVocabularyDao vocabularyDao;
 
 	private UUID uuid;
@@ -66,7 +64,7 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
 	private Set<NamedArea> namedAreas;
 	private AuditEvent auditEvent;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		uuid = UUID.fromString("910307f1-dc3c-452c-a6dd-af5ac7cd365c");
 		armUuid = UUID.fromString("7a0fde13-26e9-4382-a5c9-5640fc2b3334");
@@ -80,7 +78,7 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
 		AuditEventContextHolder.clearContext();
 	}
 
-	@After
+	@AfterEach
 	public void cleantUp() {
 		AuditEventContextHolder.clearContext();
 	}
@@ -272,10 +270,10 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
     }
 
 	@Test
-	@DataSets({
-	        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-	        @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")}
-	)
+	@CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
+    })
 	public void testListByTermType(){
 
 	    TermType termType = TermType.Modifier;
@@ -320,10 +318,10 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
 	}
 
     @Test
-    @DataSets({
-            @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-            @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")}
-    )
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
+    })
 	public void testListByVoc(){
         TermVocabulary<?> voc = this.vocabularyDao.findByUuid(NamedArea.uuidTdwgAreaVocabulary);
         List<NamedArea> namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING, null);

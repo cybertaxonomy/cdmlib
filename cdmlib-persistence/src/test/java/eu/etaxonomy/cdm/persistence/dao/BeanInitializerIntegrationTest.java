@@ -18,12 +18,11 @@ import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.Hibernate;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -32,22 +31,23 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
-@DataSet
-public class BeanInitializerIntegrationTest extends CdmTransactionalIntegrationTest {
+@CdmDataSet
+public class BeanInitializerIntegrationTest extends CdmTransactionalSpringIntegrationTest {
 
-	@SpringBeanByType
+	@Autowired
 	private ITaxonNameDao taxonNameDao;
 
-	@SpringBeanByType
+	@Autowired
 	private IDescriptionElementDao descriptionElementDao;
 
 	private UUID sphingidaeUuid;
 	private UUID textDataUuid;
 	private AuditEvent previousAuditEvent;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		sphingidaeUuid = UUID.fromString("9640a158-2bdb-4cbc-bff6-8f77e781f86b");
 		textDataUuid = UUID.fromString("31a0160a-51b2-4565-85cf-2be58cb561d6");
@@ -57,7 +57,7 @@ public class BeanInitializerIntegrationTest extends CdmTransactionalIntegrationT
 		AuditEventContextHolder.clearContext(); // By default we're in the current view (i.e. view == null)
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		AuditEventContextHolder.clearContext();
 	}
@@ -67,7 +67,7 @@ public class BeanInitializerIntegrationTest extends CdmTransactionalIntegrationT
 	 * entity
 	 */
 	@Test
-	@Ignore //FIXME homotypicalGroup is initialized even though it shouldn't
+	@Disabled //FIXME homotypicalGroup is initialized even though it shouldn't
 	//this seems to be a general feature when using hibernate criteria which is the case here.
 	public void testInitializeManyToOneProperty() {
 		List<String> propertyPaths = new ArrayList<>();
@@ -115,7 +115,7 @@ public class BeanInitializerIntegrationTest extends CdmTransactionalIntegrationT
 	 * add an extra clause to DefaultBeanInitializer to catch Map properties
 	 */
 	@Test
-	@Ignore //FIXME disabled since getMultilanguageText() fails when session is closed !!!!
+	@Disabled //FIXME disabled since getMultilanguageText() fails when session is closed !!!!
 	public void testInitializeMapProperty() {
 		List<String> propertyPaths = new ArrayList<>();
 		propertyPaths.add("multilanguageText");
@@ -139,7 +139,7 @@ public class BeanInitializerIntegrationTest extends CdmTransactionalIntegrationT
 	 * HibernateProxy etc.
 	 */
 	@Test
-	@Ignore //FIXME disabled since getMultilanguageText() fails when session is closed !!!!
+	@Disabled //FIXME disabled since getMultilanguageText() fails when session is closed !!!!
 	public void testInitializeMapInPriorView() {
 		AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
 		List<String> propertyPaths = new ArrayList<>();

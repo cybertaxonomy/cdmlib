@@ -17,9 +17,8 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
@@ -40,14 +39,14 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.persistence.dao.molecular.ISingleReadDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author pplitzner
  * @since 31.03.2014
  */
-public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegrationTest {
+public class OccurrenceServiceDeepDeleteTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
@@ -55,29 +54,28 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
     private final UUID FIELD_UNIT_UUID = UUID.fromString("b5f58da5-4442-4001-9d13-33f41518b72a");
     private final UUID DERIVED_UNIT_UUID = UUID.fromString("448be6e7-f19c-4a10-9a0a-97aa005f817d");
     private final UUID DNA_SAMPLE_UUID = UUID.fromString("bee4212b-aff1-484e-845f-065c7d6216af");
-    private final UUID SEQUENCE_UUID = UUID.fromString("0b867369-de8c-4837-a708-5b7d9f6091be");
     private final UUID FIELD_UNIT2_UUID = UUID.fromString("ae798108-6483-4d09-900f-7f849c43bcc9");
 
-    @SpringBeanByType
+    @Autowired
     private IOccurrenceService occurrenceService;
 
-    @SpringBeanByType
+    @Autowired
     private ITypeDesignationDao typeDesignationDao;
 
-    @SpringBeanByType
+    @Autowired
     private ICommonService commonService;
 
-    @SpringBeanByType
+    @Autowired
     private ISingleReadDao singleReadDao;
 
-    @SpringBeanByType
+    @Autowired
     private ISequenceService sequenceService;
 
-    @SpringBeanByType
+    @Autowired
     private INameService nameService;
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testDeleteDerivateHierarchyStepByStep.xml")
+    @CdmDataSet(cleanSweep = true, value = "OccurrenceServiceTest.testDeleteDerivateHierarchyStepByStep.xml")
     public void testDeepDelete_FieldUnit(){
 
         String assertMessage = "Incorrect number of specimens after deletion.";
@@ -118,7 +116,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testDeleteDerivateHierarchyStepByStep.xml")
+    @CdmDataSet(cleanSweep = true, value = "OccurrenceServiceTest.testDeleteDerivateHierarchyStepByStep.xml")
     public void testDeepDelete_FieldUnitWithTypeDesignation(){
 
         String assertMessage = "Incorrect number of specimens after deletion.";
@@ -162,7 +160,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true)
     public void testDeepDelete_DerivedUnit(){
         String assertMessage = "Incorrect number of specimens after deletion.";
         DeleteResult deleteResult = null;
@@ -192,7 +190,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true)
     public void testDeepDelete_DnaSample(){
         String assertMessage = "Incorrect number of specimens after deletion.";
         DeleteResult deleteResult = null;
@@ -221,7 +219,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceDeepDeleteTest.testDeepDelete_SingleRead.xml")
+    @CdmDataSet(cleanSweep = true, value = "OccurrenceServiceDeepDeleteTest.testDeepDelete_SingleRead.xml")
     public void testDeepDelete_SingleRead(){
         UUID sequenceA1Uuid = UUID.fromString("3db46d26-94ef-4759-aad8-42d0b9aea9b6");
         UUID sequenceA2Uuid = UUID.fromString("afa3771c-2b9d-46d7-82e0-8b9c050706e3");
@@ -335,7 +333,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceDeepDeleteTest.testDeepDelete_FieldUnitWithSiblingDerivatives.xml")
+    @CdmDataSet(cleanSweep = true, value = "OccurrenceServiceDeepDeleteTest.testDeepDelete_FieldUnitWithSiblingDerivatives.xml")
     public void testDeepDelete_FieldUnitWithSiblingDerivatives(){
         String assertMessage = "Incorrect number of specimens after deletion.";
         DeleteResult deleteResult = null;
@@ -359,9 +357,8 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
     }
 
-
     @Test
-    @DataSet(value="OccurrenceServiceDeepDeleteTest.testDeleteStepByStep.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true, value = "OccurrenceServiceDeepDeleteTest.testDeleteStepByStep.xml")
     public void testDeleteDerivateHierarchyStepByStep(){
         UUID fieldUnitUuid = UUID.fromString("4d91a9bc-2af7-40f8-b6e6-545305301807");
         UUID derivedUnitUuid = UUID.fromString("f9c57904-e512-4927-90ad-f3833cdef967");
@@ -410,7 +407,6 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         deleteResult = sequenceService.delete(consensusSequence);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
         assertEquals("number of sequences incorrect", 0, dnaSample.getSequences().size());
-
 
         //delete dna sample
         deleteResult = occurrenceService.delete(dnaSample, config);

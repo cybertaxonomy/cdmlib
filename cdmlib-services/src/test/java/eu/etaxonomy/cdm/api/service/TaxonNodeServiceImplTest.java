@@ -26,10 +26,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.RevisionStatusForSubtreeConfigurator;
@@ -63,48 +62,48 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author n.hoffmann
  * @since Dec 16, 2010
  */
-public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
+public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringIntegrationTest{
 
     private static String[] tableNames = new String[]{"CLASSIFICATION","TAXONNODE"};
 
-    @SpringBeanByType
+    @Autowired
 	private ITaxonNodeService taxonNodeService;
 
-	@SpringBeanByType
+	@Autowired
 	private IClassificationService classificationService;
 
-	@SpringBeanByType
+	@Autowired
 	private IReferenceService referenceService;
 
-	@SpringBeanByType
+	@Autowired
 	private IAgentService agentService;
 
-	@SpringBeanByType
+	@Autowired
 	private ITermService termService;
 
-	@SpringBeanByType
+	@Autowired
     private INameService nameService;
 
-	@SpringBeanByType
+	@Autowired
 	private ITaxonService taxonService;
 
-    @SpringBeanByType
+    @Autowired
     private IClassificationDao classificationDao;
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceDao referenceDao;
 
-	@SpringBeanByType
+	@Autowired
 	private IPolytomousKeyService polKeyService;
 
-	@SpringBeanByType
+	@Autowired
 	private IPolytomousKeyNodeService polKeyNodeService;
 
     private static final UUID uuidRefNewSec = UUID.fromString("1d3fb074-d7ba-47e4-be94-b4cb1a99afa7");
@@ -136,7 +135,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     private TaxonNode node4;
 
 	@Test
-	@DataSet
+	@CdmDataSet
 	public final void testMakeTaxonNodeASynonymOfAnotherTaxonNode() {
 		classification = classificationService.load(classificationUuid);
 		node1 = taxonNodeService.load(node1Uuid);
@@ -230,7 +229,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonNodeServiceImpl#makeTaxonNodeASynonymOfAnotherTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.SynonymType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
 	 */
 	@Test
-	@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@CdmDataSet(cleanSweep = true)
 	public final void testMakeTaxonNodeAHeterotypicSynonymOfAnotherTaxonNode() {
 
 	    //create data
@@ -321,9 +320,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		assertEquals("The new synonyms name must be the same as the old accepted taxon's name", newSynonym.getName(), nameT1);
 	}
 
-
 	@Test
-	@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonNodeServiceImplTest-indexing.xml")
+	@CdmDataSet(cleanSweep = true, value = "TaxonNodeServiceImplTest-indexing.xml")
 	public final void testIndexCreateNode() {
 		Taxon taxon = Taxon.NewInstance(null, null);
 		classification = classificationService.load(classificationUuid);
@@ -337,9 +335,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		Assert.assertEquals("", oldTreeIndex + newNode.getId() + "#", newNode.treeIndex());
 	}
 
-
 	@Test
-	@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonNodeServiceImplTest-indexing.xml")
+	@CdmDataSet(cleanSweep = true, value = "TaxonNodeServiceImplTest-indexing.xml")
 	public final void testIndexMoveNode() {
 		//in classification
 		classification = classificationService.load(classificationUuid);
@@ -375,7 +372,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 }
 
 	@Test
-	@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonNodeServiceImplTest-indexing.xml")
+	@CdmDataSet(cleanSweep = true, value = "TaxonNodeServiceImplTest-indexing.xml")
 	public final void testIndexDeleteNode() {
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		node1 = taxonNodeService.load(node1Uuid);
@@ -408,9 +405,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		Assert.assertEquals("new node treeindex is not correct", node5TreeIndex + id +"#", node.treeIndex());
 	}
 
-
 	@Test
-	@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@CdmDataSet(cleanSweep = true)
 	public final void testDeleteNode(){
 		classification = classificationService.load(classificationUuid);
 		node1 = taxonNodeService.load(node1Uuid);
@@ -439,18 +435,16 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		IBotanicalName name = nameService.load(nameUUID);
 		assertNull(name);
 
-
 	}
 
 	@Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true)
 
     public final void testDeleteNodeWithReusedTaxon(){
         classification = classificationService.load(classificationUuid);
         node1 = taxonNodeService.load(node1Uuid);
         node2 = taxonNodeService.load(rootNodeUuid);
         node1 = HibernateProxyHelper.deproxy(node1);
-
 
         Classification classification2 = Classification.NewInstance("Classification2");
         TaxonNode nodeClassification2 =classification2.addChildTaxon(node1.getTaxon(), null, null);
@@ -492,7 +486,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
 	@Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true)
 	public final void testDeleteNodes(){
 		classification = classificationService.load(classificationUuid);
 		node1 = taxonNodeService.load(node1Uuid);
@@ -519,7 +513,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	}
 
 	@Test
-	@DataSet
+	@CdmDataSet
 	public void testMoveTaxonNode(){
 	    classification = classificationService.load(classificationUuid);
 	  //  Set<TaxonNode>  nodes = classification.getAllNodes();
@@ -595,7 +589,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "TaxonNodeServiceImplTest.testGetUuidAndTitleCacheHierarchy.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonNodeServiceImplTest.testGetUuidAndTitleCacheHierarchy.xml")
     public void testGetUuidAndTitleCacheHierarchy(){
         UUID classificationUuid = UUID.fromString("029b4c07-5903-4dcf-87e8-406ed0e0285f");
         UUID abiesUuid = UUID.fromString("f8306fd3-9825-41bf-94aa-a7b5790b553e");
@@ -722,7 +716,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 //    }
 
     @Test
-    @DataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
+    @CdmDataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
     public void testSetSecundumForSubtree(){
         Reference newSec = referenceService.find(uuidRefNewSec);
         Reference refSpPl = referenceService.find(referenceUuid);
@@ -773,7 +767,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
+    @CdmDataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
     public void testSetSecundumForSubtreeNoOverwrite(){
         Reference newSec = referenceService.find(uuidRefNewSec);
         Reference refSpPl = referenceService.find(referenceUuid);
@@ -819,7 +813,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
+    @CdmDataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
     public void testSetSecundumForSubtreeOnlyAccepted(){
         Reference newSec = referenceService.find(uuidRefNewSec);
 
@@ -850,7 +844,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
+    @CdmDataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
     public void testSetSecundumForSubtreeOnlySynonyms(){
         Reference newSec = referenceService.find(uuidRefNewSec);
 
@@ -883,7 +877,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
+    @CdmDataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
     public void testSetSecundumForSubtreeNoShared(){
         Reference newSec = referenceService.find(uuidRefNewSec);
 
@@ -924,7 +918,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
+    @CdmDataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
     public void testSetPublishForSubtree(){
 
         assertStartingStateForSetPublish();
@@ -959,7 +953,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
+    @CdmDataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
     public void testSetPublishForSubtreeOnlyAccepted(){
 
         assertStartingStateForSetPublish();
@@ -972,7 +966,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         config.setIncludeProParteSynonyms(false);
         config.setIncludeSharedTaxa(true);
         taxonNodeService.setPublishForSubtree(config);
-
 
         commitAndStartNewTransaction();
         Assert.assertEquals(publish, taxonService.find(1).isPublish());
@@ -1003,7 +996,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
+    @CdmDataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
     public void testSetPublishForSubtreeOnlySynonyms(){
 
         //assert current state
@@ -1054,7 +1047,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
+    @CdmDataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
     public void testSetRevisionStatusForSubtree(){
 
         RevisionStatus completed = (RevisionStatus)termService.find(RevisionStatus.uuidCompleted);
@@ -1080,7 +1073,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Taxon taxon5 = (Taxon)taxonService.find(5);
         Taxon taxon6 = (Taxon)taxonService.find(6);
         Assert.assertEquals(completed, taxon1.getRevisionStatus().getStatus());
-        Assert.assertEquals(changed, taxon1.getRevisionStatus().getChanged());
+        Assert.assertEquals(changed.toInstant(), taxon1.getRevisionStatus().getChanged().toInstant());
         Assert.assertNull("Taxon2 is not in subtree", taxon2.getRevisionStatus());
         Assert.assertEquals(completed, taxon5.getRevisionStatus().getStatus());
         Assert.assertNull("Related taxon should not be updated by default", taxon6.getRevisionStatus());
@@ -1105,7 +1098,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
+    @CdmDataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
     public void testSetPublishForSubtreeNoShared(){
 
         assertStartingStateForSetPublish();
@@ -1138,9 +1131,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
                 publish, taxonService.find(7).isPublish());
     }
 
-
     @Test
-    @DataSet("TaxonNodeServiceImplTest.xml")
+    @CdmDataSet("TaxonNodeServiceImplTest.xml")
     public void testGetTaxonDistributionDTO(){
         List<UUID> uuidList = Arrays.asList(node1Uuid, node2Uuid, node4Uuid);
         List<TaxonDistributionDTO> dtos = this.taxonNodeService.getTaxonDistributionDTO(uuidList, null, true, DistributionDescription.UseAlreadyExisting);
@@ -1154,7 +1146,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet("TaxonNodeServiceImplTest-testFindCommonParentNode.xml")
+    @CdmDataSet("TaxonNodeServiceImplTest-testFindCommonParentNode.xml")
     public void testFindCommonParentNode(){
         UUID checklist2Uuid = UUID.fromString("c6e3a598-3b6c-4ef5-8b01-5bdb3de5a9fd");
         UUID campanulaNodeUuid = UUID.fromString("62fa918d-a1d8-4284-ae4b-93478bde8656");
@@ -1317,8 +1309,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test  //8127  //5536 //10101
-    @Ignore // see #10101
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @Disabled // see #10101
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testMergeDetached(){
 
         //create classifications with 2 child nodes
@@ -1386,8 +1378,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test   //#10101
-    @Ignore //see #10101
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @Disabled //see #10101
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testMergeDetachedWithMove() {
 
         //create classification with 2 child nodes
@@ -1431,8 +1423,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test //#10101
-    @Ignore  //see #10101
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @Disabled  //see #10101
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testSaveDetached(){
 
         //create classifications with 2 child nodes
@@ -1497,7 +1489,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet("ClassificationServiceImplTest.xml")
+    @CdmDataSet("ClassificationServiceImplTest.xml")
     public final void testCloneClassification(){
 
         Classification originalClassification = classificationDao.load(ClassificationServiceImplTest.CLASSIFICATION_UUID);

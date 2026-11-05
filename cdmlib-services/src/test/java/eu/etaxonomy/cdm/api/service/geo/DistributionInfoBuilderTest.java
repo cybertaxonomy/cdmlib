@@ -20,9 +20,9 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.dto.portal.DistributionDto;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionTreeDto;
@@ -56,13 +56,13 @@ import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author a.kohlbecker
  * @since Jan 27, 2014
  */
-public class DistributionInfoBuilderTest extends CdmTransactionalIntegrationTest {
+public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     private static final boolean NO_PREFER_AGGREGATED = false;
 
@@ -70,13 +70,13 @@ public class DistributionInfoBuilderTest extends CdmTransactionalIntegrationTest
     private static final UUID uuidFrance = UUID.fromString("4c49d9d3-6bc3-481a-93c6-c8156cba25fe");
     private static final UUID uuidEurope = UUID.fromString("3b69f979-408c-4080-b573-0ad78a315610");
 
-    @SpringBeanByType
+    @Autowired
     private ICommonService commonService;
 
-    @SpringBeanByType
+    @Autowired
     private IVocabularyService vocabularyService;
 
-    @SpringBeanByType
+    @Autowired
     private ITermService termService;
 
     private Collection<Distribution> distributions = null;
@@ -126,7 +126,7 @@ public class DistributionInfoBuilderTest extends CdmTransactionalIntegrationTest
 
     private TermTree<NamedArea> areaTree;
 
-    @Before
+    @BeforeEach
     public void setup(){  //for testFilterXXX
         distributions = new ArrayList<>();
     }
@@ -577,7 +577,6 @@ public class DistributionInfoBuilderTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(serbia.getUuid(), filteredDistributions.iterator().next().getArea().getUuid());
 
-
         //filter
         keepFallBackOnlyIfNoSubareaDataExists = false;
         filteredDistributions = filterDistributions(
@@ -701,7 +700,6 @@ public class DistributionInfoBuilderTest extends CdmTransactionalIntegrationTest
         Assert.assertTrue(filteredDistributions.stream().map(d->d.getArea().getUuid()).collect(toList).contains(serbia.getUuid()));
         Assert.assertTrue(filteredDistributions.stream().map(d->d.getArea().getUuid()).collect(toList).contains(partOfSerbia.getUuid()));
     }
-
 
     @Test
     public void testFilterDistributions_fallbackArea_shown_1(){

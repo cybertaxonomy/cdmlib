@@ -20,10 +20,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -42,13 +41,14 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.persistence.permission.Role;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecurity;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTestWithSecurity;
 
 /**
  * @author a.kohlbecker
  * @since Jun 28, 2019
  */
-public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWithSecurity {
+public class RegistrationServiceTest extends CdmServicesTransactionalSpringIntegrationTestWithSecurity {
 
     public static final UUID USER2_UUID = UUID.fromString("669f582c-e97f-425b-97f6-bc3b0c08f2a5");
 
@@ -66,12 +66,12 @@ public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWith
 
     public static final UUID NAME3_UUID = UUID.fromString("fdcaf5a8-aa6d-4f5c-86e5-6e3d93dc0c72");
 
-    @SpringBeanByType
+    @Autowired
     @Qualifier("CdmRepository")
     private ICdmRepository repo;
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testPageWithPatternFilters(){
 
         OrderHint orderBySpecificIdentifier = new OrderHint("specificIdentifier", SortOrder.ASCENDING);
@@ -210,7 +210,7 @@ public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWith
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testPageByNameUUID(){
 
         OrderHint orderBySpecificIdentifier = new OrderHint("specificIdentifier", SortOrder.ASCENDING);
@@ -235,7 +235,6 @@ public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWith
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals("expecting no Registration, since the user is not authenticated", 0l, pager.getCount().longValue());
     }
-
 
     @Test
     public void testPageWithPatternFilters_unautheticated(){

@@ -17,12 +17,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.URI;
@@ -30,24 +28,25 @@ import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportConfigurator;
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 29.01.2009
  */
-public class TcsXmlImportConfiguratorTest extends CdmTransactionalIntegrationTest {
+public class TcsXmlImportConfiguratorTest extends CdmIoTransactionalSpringIntegrationTest {
 
-	@SpringBeanByName
-	private CdmApplicationAwareDefaultImport<?> defaultImport;
+	@Autowired
+    @Qualifier("defaultImport")
+    private CdmApplicationAwareDefaultImport<?> defaultImport;
 
-	@SpringBeanByType
+	@Autowired
 	private INameService nameService;
 
 	private IImportConfigurator configurator;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws URISyntaxException {
 
 		String inputFile = "/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportConfiguratorTest-input.xml";
@@ -64,10 +63,10 @@ public class TcsXmlImportConfiguratorTest extends CdmTransactionalIntegrationTes
 	}
 
 	@Test
-	@DataSets({
-	    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-	    @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
-	})
+	@CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
+    })
 	public void testDoInvoke() {
 		boolean result = defaultImport.invoke(configurator).isSuccess();
 		assertTrue("Return value for import.invoke should be true", result);

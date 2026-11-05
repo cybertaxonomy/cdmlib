@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.filter.Restriction;
@@ -25,16 +25,15 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
  * @author muellera
  * @since 18.05.2026
  */
-public class RestrictionTest extends CdmTransactionalIntegrationTest {
+public class RestrictionTest extends CdmTransactionalSpringIntegrationTest {
 
-
-    @SpringBeanByType
+    @Autowired
     private IReferenceDao referenceDao;
 
     @Test
@@ -64,11 +63,8 @@ public class RestrictionTest extends CdmTransactionalIntegrationTest {
                 null, null,
                 null, null);
         assertEquals("Filtered references size should be 1", 1, references.size());
-
     }
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
-
 }

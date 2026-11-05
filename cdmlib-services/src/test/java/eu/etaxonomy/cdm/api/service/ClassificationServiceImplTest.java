@@ -20,10 +20,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeByNameComparator;
@@ -37,32 +36,27 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author n.hoffmann
  * @since Sep 22, 2009
  */
-public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTest{
+public class ClassificationServiceImplTest extends CdmServicesTransactionalSpringIntegrationTest{
 
     private static final Logger logger = LogManager.getLogger();
 
-    @SpringBeanByType
+    @Autowired
     private IClassificationService service;
 
-    @SpringBeanByType
-    private ITaxonService taxonService;
-
-    @SpringBeanByType
+    @Autowired
     private ITaxonNodeService taxonNodeService;
 
-    @SpringBeanByType
-    private IClassificationService classificationService;
-
-    @SpringBeanByType
+    @Autowired
     private IClassificationDao classificationDao;
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceDao referenceDao;
 
     private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
@@ -79,7 +73,7 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
 
     private boolean includeUnpublished;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         includeUnpublished = true;
     }
@@ -95,7 +89,7 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testTaxonNodeByNameComparator() {
         taxonNodeComparator = new TaxonNodeByNameComparator();
 
@@ -137,7 +131,7 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testListRankSpecificRootNodes(){
         Classification classification = service.find(UUID.fromString("6c2bc8d9-ee62-4222-be89-4a8e31770878"));
 
@@ -185,7 +179,7 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testListRankSpecificRootNodes_withSubtree(){
         Classification classification = service.find(UUID.fromString("6c2bc8d9-ee62-4222-be89-4a8e31770878"));
 
@@ -204,7 +198,6 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
         // for more historic Acacia taxonomy see http://lexikon.freenet.de/Akazien
 
         TaxonNode subtree = taxonNodeService.find(UUID.fromString("bcdf945f-1f02-423e-883d-fe89e0af93e4"));
-
 
         List<TaxonNode> taxonNodes = service.listRankSpecificRootNodes(null, subtree, null, includeUnpublished, null, null, NODE_INIT_STRATEGY);
         Assert.assertEquals(2, taxonNodes.size());
@@ -241,7 +234,7 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testGroupTaxaByHigherTaxon(){
 
         Rank minRank = Rank.GENUS();

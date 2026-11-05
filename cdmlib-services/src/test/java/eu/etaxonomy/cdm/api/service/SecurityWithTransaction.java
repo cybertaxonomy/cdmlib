@@ -1,4 +1,11 @@
-
+/**
+ * Copyright (C) 2012 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
@@ -15,17 +22,15 @@ import javax.sql.DataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.unitils.database.annotations.TestDataSource;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByName;
 
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -34,47 +39,50 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecurity;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTestWithSecurity;
 
 /**
  * Test class only for development purposes, must be run in suite.
+ * @author k.luther
+ * @since 15.06.2012
  */
 //@RunWith(UnitilsJUnit4TestClassRunner.class)
 //@SpringApplicationContext({"/eu/etaxonomy/cdm/applicationContextSecurity.xml"})
 //@Transactional
-@Ignore // should be ignored
-@DataSet("SecurityTest.xml")
-public class SecurityWithTransaction extends CdmTransactionalIntegrationTestWithSecurity {
+@Disabled // should be ignored
+@CdmDataSet("SecurityTest.xml")
+public class SecurityWithTransaction extends CdmServicesTransactionalSpringIntegrationTestWithSecurity {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-    @SpringBeanByName
+    @Autowired
     private ITaxonService taxonService;
 
-    @SpringBeanByName
+    @Autowired
     private IDescriptionService descriptionService;
 
-    @SpringBeanByName
+    @Autowired
     private ITaxonNodeService taxonNodeService;
 
-    @SpringBeanByName
+    @Autowired
     private IUserService userService;
 
-    @TestDataSource
+    @Autowired
     protected DataSource dataSource;
 
     private Authentication authentication;
 
-    @SpringBeanByName
+    @Autowired
     private AuthenticationManager authenticationManager;
 
-    @SpringBeanByName
+    @Autowired
     private ICdmPermissionEvaluator permissionEvaluator;
 
     private UsernamePasswordAuthenticationToken token;
 
-    @Before
+    @BeforeEach
     public void setUp(){
         token = new UsernamePasswordAuthenticationToken("admin", "sPePhAz6");
     }

@@ -14,21 +14,21 @@ import static org.junit.Assert.assertNotNull;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.permission.Group;
 import eu.etaxonomy.cdm.persistence.dao.permission.IGroupDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
-@DataSet
-public class GroupDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
+@CdmDataSet
+public class GroupDaoHibernateImplTest extends CdmTransactionalSpringIntegrationTest {
 
-	@SpringBeanByType
+	@Autowired
 	IGroupDao groupDao;
 
 	@Test
@@ -52,7 +52,6 @@ public class GroupDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
 		assertNotNull("A list should be returned", list);
 		assertEquals("2 groups should be returned", 2, list.size());
-
 	}
 
     @Override

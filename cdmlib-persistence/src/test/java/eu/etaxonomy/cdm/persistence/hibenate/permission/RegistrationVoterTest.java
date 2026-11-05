@@ -62,7 +62,6 @@ public class RegistrationVoterTest extends AbstractCdmPermissionVoterTest {
                 new CdmAuthority(regREADY, prep_ready, EnumSet.of(CRUD.UPDATE)),
                 new CdmAuthority(regREJECTED, prep_ready, EnumSet.of(CRUD.UPDATE))
                 );
-
     }
 
     @Test
@@ -73,7 +72,6 @@ public class RegistrationVoterTest extends AbstractCdmPermissionVoterTest {
         assertEquals(CdmVote.GRANTED, vote);
     }
 
-
     @Test
     public void test2() {
         CdmVote vote = voter.vote(auth,
@@ -81,7 +79,6 @@ public class RegistrationVoterTest extends AbstractCdmPermissionVoterTest {
                 new CdmAuthority(PermissionClass.REGISTRATION, null, EnumSet.of(CRUD.UPDATE), null));
         assertEquals(CdmVote.GRANTED, vote);
     }
-
 
     @Test
     public void test3() {
@@ -119,5 +116,4 @@ public class RegistrationVoterTest extends AbstractCdmPermissionVoterTest {
                 new CdmAuthority(PermissionClass.REGISTRATION, null, EnumSet.of(CRUD.UPDATE), regGranted.getUuid()));
         assertEquals(CdmVote.GRANTED, vote);
     }
-
 }

@@ -27,11 +27,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
@@ -76,14 +75,14 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author a.babadshanjan, a.kohlbecker
  * @since 04.02.2009
  */
-public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
+public class TaxonServiceSearchTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -106,24 +105,24 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     private boolean includeUnpublished = true;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonService taxonService;
-    @SpringBeanByType
+    @Autowired
     private ITermService termService;
-    @SpringBeanByType
+    @Autowired
     private IClassificationService classificationService;
-    @SpringBeanByType
+    @Autowired
     private IReferenceService referenceService;
-    @SpringBeanByType
+    @Autowired
     private IDescriptionService descriptionService;
-    @SpringBeanByType
+    @Autowired
     private IDescriptionElementService descriptionElementService;
-    @SpringBeanByType
+    @Autowired
     private INameService nameService;
-    @SpringBeanByType
+    @Autowired
     private ITaxonNodeService nodeService;
 
-    @SpringBeanByType
+    @Autowired
     private ICdmMassIndexer indexer;
 
     private Set<Class<? extends CdmBase>> typesToIndex = null;
@@ -132,7 +131,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     private NamedArea russia;
     private NamedArea canada;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         typesToIndex = new HashSet<>();
         typesToIndex.add(DescriptionElementBase.class);
@@ -153,7 +152,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testFindByDescriptionElementFullText_CommonName() throws IOException,
             LuceneParseException {
 
@@ -182,7 +181,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testFindByDescriptionElementFullText_Distribution() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
@@ -197,7 +196,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testFindByDescriptionElementFullText_wildcard() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
@@ -214,7 +213,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
      * @throws LuceneParseException
      */
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testFindByDescriptionElementFullText_TooManyClauses() throws IOException, LuceneParseException {
 
         TaxonNode subtree = null;
@@ -244,7 +243,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
      * @throws LuceneParseException
      */
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true)
     public final void testFullText_Paging() throws IOException, LuceneParseException {
 
         TaxonNode subtree = null;
@@ -292,8 +291,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
      * @throws LuceneParseException
      */
     @Test
-    @DataSet
-    @Ignore // test fails, maybe the assumptions made here are not compatible with the lucene scoring mechanism see http://lucene.apache.org/core/3_6_1/scoring.html
+    @CdmDataSet
+    @Disabled // test fails, maybe the assumptions made here are not compatible with the lucene scoring mechanism see http://lucene.apache.org/core/3_6_1/scoring.html
     public final void testFullText_ScoreAndOrder_1() throws IOException, LuceneParseException {
 
         TaxonNode subtree = null;
@@ -335,8 +334,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
      * @throws LuceneParseException
      */
     @Test
-    @DataSet
-    @Ignore // test fails, maybe the assumptions made here are not compatible with the lucene scoring mechanism see http://lucene.apache.org/core/3_6_1/scoring.html
+    @CdmDataSet
+    @Disabled // test fails, maybe the assumptions made here are not compatible with the lucene scoring mechanism see http://lucene.apache.org/core/3_6_1/scoring.html
     public final void testFullText_ScoreAndOrder_2() throws IOException, LuceneParseException {
 
         TaxonNode subtree = null;
@@ -368,14 +367,13 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("max score should be equal to the score of the first element", pager.getRecords().get(0).getMaxScore(), pager.getRecords().get(0).getScore(), 0);
     }
 
-
     /**
      * @throws IOException
      * @throws LuceneParseException
      * @throws LuceneMultiSearchException
      */
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testFullText_Grouping() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         TaxonNode subtree = null;
@@ -420,7 +418,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testFindByDescriptionElementFullText_TextData() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
@@ -432,7 +430,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standard views, 2013", pager.getRecords().get(0).getEntity().getTitleCache());
         Assert.assertTrue("Expecting two docs, one for RUSSIAN and one for GERMAN", pager.getRecords().get(0).getDocs().size() == 2);
         Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standard views, 2013", pager.getRecords().get(0).getDocs().iterator().next().get("inDescription.taxon.titleCache"));
-
 
         pager = taxonService.findByDescriptionElementFullText(null, "Abies", null, subtree, null, null, false, null, null, null, null);
         Assert.assertEquals("Expecting one entity when searching for any type", 1, pager.getCount().intValue());
@@ -466,7 +463,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testFindByDescriptionElementFullText_MultipleWords() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
@@ -497,7 +494,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true)
     public final void testFindByDescriptionElementFullText_modify_DescriptionElement() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
@@ -550,7 +547,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true)
     public final void testFindByDescriptionElementFullText_modify_Taxon() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
@@ -597,7 +594,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testFindByDescriptionElementFullText_modify_Classification() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
@@ -649,7 +646,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("rawtypes")
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testFindByDescriptionElementFullText_CategoricalData() throws IOException, LuceneParseException {
 
         TaxonNode subtree = null;
@@ -681,7 +678,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertTrue("Expecting only one doc", pager.getRecords().get(0).getDocs().size() == 1);
         Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standard views, 2013", pager.getRecords().get(0).getDocs().iterator().next().get("inDescription.taxon.titleCache"));
 
-
         //TODO modify the StateData
         TaxonBase taxon = pager.getRecords().get(0).getEntity();
 
@@ -699,7 +695,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testFindByDescriptionElementFullText_Highlighting() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
@@ -737,9 +733,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertTrue("first fragments should contains serch term", fragments[0].contains("<B>Gatt"));
     }
 
-
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true)
     public final void testFindByFullText() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
@@ -802,12 +797,11 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         pager = taxonService.findByFullText(Taxon.class, "subalpina", null, subtree, includeUnpublished, null, true, null, null, null, null); // --> 0
         Assert.assertEquals("Expecting 0 entities", 0, pager.getCount().intValue());
 
-
         // synonym in classification ???
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testPrepareByAreaSearch() throws IOException, LuceneParseException {
 
         List<PresenceAbsenceTerm> statusFilter = new ArrayList<>();
@@ -822,7 +816,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testFindTaxaAndNamesByFullText_synonymClassificationSubtree() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
@@ -876,7 +870,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testFindTaxaAndNamesByFullText() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
@@ -948,7 +942,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                 "Abies", null, subtree, null, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 0 entities", 0, pager.getCount().intValue());
 
-
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxaByCommonNames, TaxaAndNamesSearchMode.includeUnpublished),
                 "Abies", null, subtree, null, null, null, true, null, null, null, null);
@@ -995,7 +988,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testFindTaxaAndNamesByFullText_wildcard() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
@@ -1020,8 +1013,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
-    // @Ignore // FIXME: fails due  org.apache.lucene.queryparser.classic.ParseException: Cannot parse 'relatedFrom.titleCache:()': Encountered " ")" ") "" at line 1, column 24.
+    @CdmDataSet
+    // @Disabled // FIXME: fails due  org.apache.lucene.queryparser.classic.ParseException: Cannot parse 'relatedFrom.titleCache:()': Encountered " ")" ") "" at line 1, column 24.
     public final void testFindTaxaAndNamesByFullText_empty_querString() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
@@ -1047,7 +1040,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     //test for https://dev.e-taxonomy.eu/redmine/issues/7486
     public final void testFindTaxaAndNamesByFullText_synonymsAndMisapplied_7486() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
@@ -1102,7 +1095,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testFindTaxaAndNamesByFullText_PhraseQuery() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
@@ -1135,7 +1128,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testFindTaxaAndNamesByFullText_Sort() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
@@ -1184,7 +1177,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testFindTaxaAndNamesByFullText_AreaFilter_7487() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         //refresh index
@@ -1284,7 +1277,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testFindTaxaAndNamesByFullText_AreaFilter() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
@@ -1376,7 +1369,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         uuids = this.getTaxonUuidSet(pager);
         Assert.assertTrue("Misapplied name should  be in", uuids.contains(ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
 
-
         // 1. remove existing taxon relation
         Taxon t_abies_balsamea = (Taxon)taxonService.find(ABIES_BALSAMEA_UUID);
         Set<TaxonRelationship> relsTo = t_abies_balsamea.getMisappliedNameRelations();
@@ -1408,7 +1400,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     //https://dev.e-taxonomy.eu/redmine/issues/5477
     // for general testing of misapplied names see also #testFindTaxaAndNamesByFullText_synonymsAndMisapplied_7486
     public final void testFindTaxaAndNamesByFullText_AreaFilter_issue5477() throws IOException, LuceneParseException, LuceneMultiSearchException {
@@ -1471,7 +1463,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
      * @throws LuceneMultiSearchException
      */
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testFindByEverythingFullText() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
@@ -1498,7 +1490,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void findByEveryThingFullText() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
@@ -1532,7 +1524,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
 //    @SuppressWarnings("rawtypes")
 //    @Test
-//    @DataSet
+//    @CdmDataSet
 //    public final void benchmarkFindTaxaAndNamesHql() throws IOException, LuceneParseException {
 //
 //        createRandomTaxonWithCommonName(NUM_OF_NEW_RADOM_ENTITIES);
@@ -1560,7 +1552,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("rawtypes")
     @Test
-    @DataSet
+    @CdmDataSet
     public final void benchmarkFindByCommonNameHql() {
 
 //        printDataSet(System.err, new String[] { "TaxonBase" });
@@ -1589,7 +1581,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void benchmarkFindByCommonNameLucene() throws IOException, LuceneParseException {
         TaxonNode subtree = null;
         createRandomTaxonWithCommonName(NUM_OF_NEW_RADOM_ENTITIES);
@@ -1608,7 +1600,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         double duration = ((double) (System.currentTimeMillis() - startMillis)) / BENCHMARK_ROUNDS;
         logger.info("Benchmark result - [find taxon by CommonName via lucene] : " + duration + "ms (" + BENCHMARK_ROUNDS + " benchmark rounds )");
     }
-
 
     private void refreshLuceneIndex() {
 
@@ -1699,13 +1690,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         return result;
     }
 
-
     /**
      * uncomment @Test annotation to create the dataset for this test
      */
     @Override
 //    @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../database/ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void createTestDataSet() throws FileNotFoundException {
 
         Classification europeanAbiesClassification = Classification.NewInstance("European Abies");
@@ -1783,7 +1773,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         d_abies_alba.setUuid(DESC_ABIES_ALBA_UUID);
         d_abies_balsamea.setUuid(DESC_ABIES_BALSAMEA_UUID);
 
-
         // CommonTaxonName
         d_abies_alba.addElement(CommonTaxonName.NewInstance("Wei"+UTF8.SHARP_S+"tanne", Language.GERMAN()));
         d_abies_alba.addElement(CommonTaxonName.NewInstance("silver fir", Language.ENGLISH()));
@@ -1834,7 +1823,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         setComplete();
         endTransaction();
-
 
         writeDbUnitDataSetFile(new String[] {
             "TAXONBASE", "TAXONNAME",

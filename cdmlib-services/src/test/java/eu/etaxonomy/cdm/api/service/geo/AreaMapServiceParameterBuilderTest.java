@@ -31,10 +31,10 @@ import org.apache.hc.client5.http.ClientProtocolException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto.InfoPart;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
@@ -52,34 +52,34 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * TODO can't we make this service (termservice and mapping) independent and
- * not require {@link CdmTransactionalIntegrationTest}?
+ * not require {@link CdmServicesTransactionalSpringIntegrationTest}?
  *
  * @author muellera
  * @since 03.03.2024
  */
-public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrationTest {
+public class AreaMapServiceParameterBuilderTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
     private static final String EDIT_MAPSERVICE_URI_STRING = "https://edit.africamuseum.be/edit_wp5/v1.2/rest_gen.php";
     private static URI editMapServiceUri;
 
-    @SpringBeanByType
+    @Autowired
     private ITermService termService;
 
-    @SpringBeanByType
+    @Autowired
     private ICommonService commonService;
 
-    @SpringBeanByType
+    @Autowired
     private GeoServiceAreaAnnotatedMapping mapping;
 
     private AreaMapServiceParameterBuilder builder;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         builder = new AreaMapServiceParameterBuilder();
         System.setProperty("ONLY-A-TEST", "TRUE"); // allows EditGeoServiceUtilities to skip some line of code
@@ -87,7 +87,7 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testGetWebServiceUrlCountry() {
 
         Set<Distribution> distributions = new HashSet<>();
@@ -116,7 +116,7 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
     
 
     @Test
-    @Ignore
+    @Disabled
     public void testGetWebServiceUrlTdwg() throws MalformedURLException, IOException {
         //String webServiceUrl = "http://www.test.de/webservice";
         Set<Distribution> distributions = new HashSet<>();
@@ -192,7 +192,7 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testGetWebServiceUrlBangka() throws ClientProtocolException, IOException {
 
         NamedArea areaBangka = NamedArea.NewInstance("Bangka", "Bangka", null);

@@ -17,10 +17,8 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.IoResultBase.IoInfo;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
@@ -33,7 +31,7 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
 
 /**
  * @author k.luther
@@ -45,15 +43,15 @@ public class CdmLightExportTest
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-    @Before
+    @BeforeEach
     public void setUp()  {
         createFullTestDataSet();
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
     public void testSubTree() {
 
@@ -133,9 +131,9 @@ public class CdmLightExportTest
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
     public void testFullTreeWithUnpublished(){
 
@@ -219,9 +217,9 @@ public class CdmLightExportTest
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
     public void testFullDataPublished(){
 
@@ -248,16 +246,15 @@ public class CdmLightExportTest
         expected = "Author (1980a)";
         Assert.assertTrue(line.contains(expected));
 
-
         //synonyms
         List<String> synonymResult = getStringList(data, CdmLightExportTable.SYNONYM);
         Assert.assertEquals("There should be 4 synonyms (three synonyms, 1 MAN)", 4, synonymResult.size() - COUNT_HEADER);
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
     public void testUniqueCitation(){
 
@@ -288,7 +285,6 @@ public class CdmLightExportTest
         expected = "Author (1980a)";
         Assert.assertTrue(line.contains(expected));
 
-
         //synonyms
         List<String> synonymResult = getStringList(data, CdmLightExportTable.SYNONYM);
         Assert.assertEquals("There should be 4 synonyms (3 synonyms, 1 MAN)", 4, synonymResult.size() - COUNT_HEADER);
@@ -312,14 +308,12 @@ public class CdmLightExportTest
         Assert.assertTrue(line.contains("Testauthor (1981a)"));
     }
 
-
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
     public void testTypeDesignationOutput(){
-
 
       //config + invoke
         CdmLightExportConfigurator config = newConfigurator();
@@ -340,13 +334,12 @@ public class CdmLightExportTest
         Assert.assertTrue(line.lastIndexOf(expectedText)== line.indexOf(expectedText));
         //TODO: NameTypedesignation
 
-
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
     public void testSynSecOutput(){
 
@@ -383,9 +376,9 @@ public class CdmLightExportTest
 
     @SuppressWarnings("deprecation")
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
     public void testWithErrors() {
 
@@ -434,7 +427,6 @@ public class CdmLightExportTest
             System.out.println(report);
         }
     }
-
 
     @Override
     protected CdmLightExportConfigurator newConfigurator() {

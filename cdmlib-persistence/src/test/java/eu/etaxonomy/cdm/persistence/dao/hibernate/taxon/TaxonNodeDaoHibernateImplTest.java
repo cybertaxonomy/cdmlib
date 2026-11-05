@@ -24,13 +24,11 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.proxy.HibernateProxy;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.ExpectedDataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeComparatorFactory;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeSortMode;
@@ -59,25 +57,27 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmExpectedDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
-public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
+public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalSpringIntegrationTest {
 
     private static final UUID ClassificationUuid = UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9");
 
-	@SpringBeanByType
+	@Autowired
     private ITaxonNodeDao taxonNodeDao;
 
-    @SpringBeanByType
+    @Autowired
     private IClassificationDao classificationDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonDao taxonDao;
 
-    @SpringBeanByType
+    @Autowired
     private IAgentDao agentDao;
 
-    @SpringBeanByType
+    @Autowired
     private IDefinedTermDao termDao;
 
     private final UUID uuid1 = UUID.fromString("0b5846e5-b8d2-4ca9-ac51-099286ea4adc");
@@ -99,26 +99,26 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
             "childNodes"
     });
 
-    @Before
+    @BeforeEach
     public void setUp(){
         AuditEventContextHolder.clearContext();
         includeUnpublished = true;
     }
 
-    @After
+    @AfterEach
     public void tearDown(){
         AuditEventContextHolder.clearContext();
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testInit() {
         assertNotNull("Instance of ITaxonDao expected",taxonNodeDao);
         assertNotNull("Instance of IReferenceDao expected",classificationDao);
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testFindByUuid() {
         TaxonNode taxonNode = taxonNodeDao.findByUuid(uuid1);
         Classification.class.getDeclaredConstructors();
@@ -126,7 +126,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testClassification() {
 
         Classification classification =  classificationDao.load(ClassificationUuid, CLASSIFICATION_INIT_STRATEGY);
@@ -166,7 +166,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testListChildren(){
         boolean includeUnpublished;
         Taxon t_acherontia = (Taxon) taxonDao.load(ACHERONTIA_UUID);
@@ -208,7 +208,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testListChildrenDTO(){
         boolean includeUnpublished;
         Taxon t_acherontia = (Taxon) taxonDao.load(ACHERONTIA_UUID);
@@ -247,7 +247,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testListSiblings(){
         Taxon t_acherontia_lachesis = (Taxon) taxonDao.load(ACHERONTIA_LACHESIS);
 
@@ -261,7 +261,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testGetAllTaxaByClassification(){
         Classification classification =  classificationDao.load(ClassificationUuid, CLASSIFICATION_INIT_STRATEGY);
 
@@ -298,8 +298,8 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     }
 
     @Test
-    @DataSet(value="TaxonNodeDaoHibernateImplTest.testSortindexForHibernateProxy.xml")
-    @ExpectedDataSet("TaxonNodeDaoHibernateImplTest.testSortindexForHibernateProxy-result.xml")
+    @CdmDataSet("TaxonNodeDaoHibernateImplTest.testSortindexForHibernateProxy.xml")
+    @CdmExpectedDataSet("TaxonNodeDaoHibernateImplTest.testSortindexForHibernateProxy-result.xml")
     //test if TaxonNode.remove(index) works correctly with proxies
     public void testSortindexForHibernateProxy(){
     	Taxon taxonWithLazyLoadedParentNodeOnTopLevel = (Taxon)taxonDao.findByUuid(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
@@ -313,8 +313,8 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     }
 
     @Test
-    @DataSet(value="TaxonNodeDaoHibernateImplTest.testSortindexForHibernateProxy.xml")
-    @ExpectedDataSet("TaxonNodeDaoHibernateImplTest.testSortindexForHibernateProxy2-result.xml")
+    @CdmDataSet("TaxonNodeDaoHibernateImplTest.testSortindexForHibernateProxy.xml")
+    @CdmExpectedDataSet("TaxonNodeDaoHibernateImplTest.testSortindexForHibernateProxy2-result.xml")
     //test if TaxonNode.addNode(node) works correctly with proxies
     public void testSortindexForHibernateProxy2(){
     	Taxon taxonWithLazyLoadedParentNodeOnTopLevel = (Taxon)taxonDao.findByUuid(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
@@ -355,7 +355,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
     //see comment 7 in #6199
     @Test
-    @DataSet
+    @CdmDataSet
     public void testPersistExcludedInfos(){
         //test read
         TaxonNode excludedNode = taxonNodeDao.load(UUID.fromString("4f73adcc-a535-4fbe-a97a-c05ee8b12191"));
@@ -377,7 +377,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     }
 
     @Test
-    @DataSet ("TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public final void testGetTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(){
         Classification classification = classificationDao.findByUuid(classificationUuid);
         List<UuidAndTitleCache<TaxonNode>> result = taxonNodeDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification,  null, null, true);
@@ -412,7 +412,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     }
 
     @Test
-    @DataSet ("TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
+    @CdmDataSet("TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public final void testGetTaxonNodeUuidAndTitleCache(){
         String pattern = "";
         List<TaxonNodeDto> result = taxonNodeDao.getUuidAndTitleCache(100, pattern, classificationUuid, true);
@@ -446,7 +446,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     }
 
     @Test
-    @DataSet ("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
+    @CdmDataSet("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
     public final void testGetTaxonNodeUuidAndTitleCacheOfacceptedTaxaByClassificationForNameWithoutRank(){
         //test name without rank
         Classification classification = classificationDao.findByUuid(ClassificationUuid);
@@ -458,7 +458,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     }
 
     @Test
-    @DataSet ("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
+    @CdmDataSet("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
     public final void testGetTaxonNodeDtoWithoutRank(){
 
         List<TaxonNodeDto> result = taxonNodeDao.listTaxonNodeDto(null, "", null); // can't use "*" here since this is not supported by the method under test
@@ -472,7 +472,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     }
 
     @Test
-    @DataSet ("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
+    @CdmDataSet("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
     public final void testGetTaxonNodeDtoCheckSortIndex(){
 
         List<TaxonNodeDto> result = taxonNodeDao.listTaxonNodeDto(null, "", null);
@@ -485,7 +485,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     }
 
     @Test
-    @DataSet ("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
+    @CdmDataSet("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
     public final void testGetTaxonNodeDtoCheckStatus(){
 
         List<TaxonNodeDto> result = taxonNodeDao.listTaxonNodeDto(null, "", null);
@@ -500,7 +500,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     }
 
     @Test
-    @DataSet ("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
+    @CdmDataSet("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
     public final void testGetTaxonNodeDtoCheckNote(){
 
         List<TaxonNodeDto> result = taxonNodeDao.listTaxonNodeDto(null, "", null);

@@ -25,13 +25,11 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.INameService;
@@ -56,31 +54,32 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 26.08.2009
  */
-public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
+public class NormalExplicitImportTest extends CdmIoTransactionalSpringIntegrationTest{
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-	@SpringBeanByName
-	private CdmApplicationAwareDefaultImport<?> defaultImport;
+	@Autowired
+    @Qualifier("defaultImport")
+    private CdmApplicationAwareDefaultImport<?> defaultImport;
 
-	@SpringBeanByType
+	@Autowired
 	private INameService nameService;
 
-	@SpringBeanByType
+	@Autowired
 	private ITaxonService taxonService;
 
-	@SpringBeanByType
+	@Autowired
 	private ITermService termService;
 
-	@SpringBeanByType
+	@Autowired
 	private IClassificationService classificationService;
 
 	private IImportConfigurator configurator;
@@ -88,7 +87,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	private IImportConfigurator configuratorXslx;
 	private IImportConfigurator configuratorTropicos;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws URISyntaxException {
 
 	    String inputFile = "/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest-input.xls";
@@ -123,10 +122,10 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	}
 
 	@Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="NormalExplicitImportTest.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "NormalExplicitImportTest.xml"
     })
 	public void testDoInvoke() {
 
@@ -185,10 +184,10 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	}
 
 	@Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="NormalExplicitImportTest.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "NormalExplicitImportTest.xml"
     })
 	public void testDoInvokeXslx() {
 
@@ -247,12 +246,12 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	}
 
 	@Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="NormalExplicitImportTest.testUuid.xml"),
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "NormalExplicitImportTest.testUuid.xml"
     })
-	@Ignore //temporarily ignore as it fails in jenkins (but not local) #10524, #10680
+	@Disabled //temporarily ignore as it fails in jenkins (but not local) #10524, #10680
 	public void testUUID(){
 		UUID taxonUuid = UUID.fromString("aafce7fe-0c5f-42ed-814b-4c7c2c715660");
 		UUID synonymUuid = UUID.fromString("fc4a995b-37a9-4984-afe6-e352c6c04d92");
@@ -299,7 +298,6 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		assertNotNull("Name used in source should not be null", nameUsedInSource);
 		assertEquals("Name used in source title should be ", "Abies", nameUsedInSource.getTitleCache());
 
-
 		//synonym
 		expectedText = "A synonym description";
 		textData = getTextElement(description, expectedText);
@@ -343,10 +341,10 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	}
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="NormalExplicitImportTest.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "NormalExplicitImportTest.xml"
     })
     public void testDoInvokeTropicos() {
         //printDataSet(System.out);

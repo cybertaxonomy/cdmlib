@@ -15,34 +15,26 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.permission.IUserDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
-public class Level2ValidationEventListenerTest extends CdmTransactionalIntegrationTest {
+public class Level2ValidationEventListenerTest extends CdmTransactionalSpringIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
 	private UUID uuid;
 	private TaxonBase cdmBase;
 
-	@SpringBeanByType
+	@Autowired
 	private ITaxonDao cdmEntityDaoBase;
 
-	@SpringBeanByType
-	private AuthenticationManager authenticationManager;
-
-	@SpringBeanByType
-	private IUserDao userDao;
-
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		logger.info("begin setUp()");
 		uuid = UUID.fromString("8d77c380-c76a-11dd-ad8b-0800200c9a66");
@@ -59,8 +51,8 @@ public class Level2ValidationEventListenerTest extends CdmTransactionalIntegrati
 	}
 
 	//@Test
-	//@DataSet
-	//@ExpectedDataSet
+	//@CdmDataSet
+	//@CdmExpectedDataSet
 	public void testSaveOrUpdate(){
 		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
 		cdmBase.setDoubtful(true);
@@ -69,16 +61,16 @@ public class Level2ValidationEventListenerTest extends CdmTransactionalIntegrati
 	}
 
 	//@Test
-	//@DataSet
-	//@ExpectedDataSet
+	//@CdmDataSet
+	//@CdmExpectedDataSet
 	public void testSave() throws Exception{
 		cdmEntityDaoBase.save(cdmBase);
 		commit();
 	}
 
 	//@Test
-	//@DataSet
-	//@ExpectedDataSet
+	//@CdmDataSet
+	//@CdmExpectedDataSet
 	public void testUpdate(){
 		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
 		cdmBase.setDoubtful(true);
@@ -87,8 +79,8 @@ public class Level2ValidationEventListenerTest extends CdmTransactionalIntegrati
 	}
 
 	//@Test
-	//@DataSet("CdmEntityDaoBaseTest.xml")
-	//@ExpectedDataSet
+	//@CdmDataSet("CdmEntityDaoBaseTest.xml")
+	//@CdmExpectedDataSet
 	public void testDelete(){
 		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
 		assertNotNull(cdmBase);

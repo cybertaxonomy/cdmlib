@@ -16,15 +16,15 @@ import java.util.List;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 import org.junit.Assert;
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.common.DateTimeUtil;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
  * Test for class ReferenceFilters from cdmlib-cache. Can't be tested in cdmlib-cache
@@ -33,9 +33,9 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author muellera
  * @since 17.08.2026
  */
-public class ReferenceFiltersTest extends CdmTransactionalIntegrationTest {
+public class ReferenceFiltersTest extends CdmTransactionalSpringIntegrationTest {
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceDao refDao;
 
     /**

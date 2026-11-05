@@ -24,39 +24,37 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 public class ReferenceTest {
 
-        private String resource = "/eu/etaxonomy/cdm/io/jaxb/ReferenceTest.xml";
+    private String resource = "/eu/etaxonomy/cdm/io/jaxb/ReferenceTest.xml";
 
-        @Test
-        public void testUnmarshalReference() throws Exception {
-            CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
-            URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
-            DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
+    @Test
+    public void testUnmarshalReference() throws Exception {
+        CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
+        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
+        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
-            assertNotSame("Reference list should not be empty", 0, dataSet.getReferences().size());
+        assertNotSame("Reference list should not be empty", 0, dataSet.getReferences().size());
 
-            IArticle article = dataSet.getReferences().get(0);
-            assertNotNull("Article must not be null",article);
+        IArticle article = dataSet.getReferences().get(0);
+        assertNotNull("Article must not be null",article);
 
-            IJournal journal = dataSet.getReferences().get(1);
-            assertNotNull("Journal must not be null", journal);
-            assertEquals("Journal must equal Article.inJournal",journal,article.getInJournal());
-        }
+        IJournal journal = dataSet.getReferences().get(1);
+        assertNotNull("Journal must not be null", journal);
+        assertEquals("Journal must equal Article.inJournal",journal,article.getInJournal());
+    }
 
-        @Test
-        public void testCastReferences() throws Exception{
-            CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
-            URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
-            DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
+    @Test
+    public void testCastReferences() throws Exception{
+        CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
+        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
+        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
-            IArticle article = dataSet.getReferences().get(0);
-            assertNotNull("Article must not be null",article);
+        IArticle article = dataSet.getReferences().get(0);
+        assertNotNull("Article must not be null",article);
 
-            IJournal journal = ((Reference)article).castReferenceToJournal();
-            assertEquals("Journal", journal.getType().name());
+        IJournal journal = ((Reference)article).castReferenceToJournal();
+        assertEquals("Journal", journal.getType().name());
 
-            IGeneric generic = ((Reference)journal).castReferenceToGeneric();
-            assertEquals("Generic", generic.getType().name());
-
-
-        }
+        IGeneric generic = ((Reference)journal).castReferenceToGeneric();
+        assertEquals("Generic", generic.getType().name());
+    }
 }

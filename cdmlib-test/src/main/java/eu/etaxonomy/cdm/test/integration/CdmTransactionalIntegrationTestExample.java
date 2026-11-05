@@ -11,12 +11,11 @@ package eu.etaxonomy.cdm.test.integration;
 import java.io.FileNotFoundException;
 import java.util.UUID;
 
-import org.unitils.dbunit.annotation.DataSet;
-
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
  * This is only an example for am implementation of the {@link CdmTransactionalIntegrationTest}
@@ -25,7 +24,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author a.kohlbecker
  * @since Jun 15, 2015
  */
-public class CdmTransactionalIntegrationTestExample extends CdmTransactionalIntegrationTest {
+public class CdmTransactionalIntegrationTestExample extends CdmTransactionalSpringIntegrationTest {
 
 //    @SpringBeanByType
 //    private ITaxonDao taxonDao;
@@ -43,7 +42,7 @@ public class CdmTransactionalIntegrationTestExample extends CdmTransactionalInte
      */
     @Override
     // @Test // uncomment to write out the test data xml file for this test class
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void createTestDataSet() throws FileNotFoundException {
 
         // 1. create the entities   and save them

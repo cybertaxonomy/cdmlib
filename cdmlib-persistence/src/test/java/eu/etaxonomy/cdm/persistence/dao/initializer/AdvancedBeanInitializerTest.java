@@ -26,12 +26,11 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -50,14 +49,15 @@ import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.hibernate.CdmSessionUtils;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 16.11.2015
  */
 public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the test in exclipse remove generics as with generics it is not recognized as UnitTest by eclipse
-        extends CdmTransactionalIntegrationTest {
+        extends CdmTransactionalSpringIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -71,28 +71,28 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
 
     private static final UUID taxonUuid = UUID.fromString("07171a4c-f9f0-4459-a7e4-9f75981f7027");
 
-    @SpringBeanByType
+    @Autowired
     private IAgentDao agentDao;
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceDao referenceDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonNameDao nameDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonDao taxonDao;
 
     @SpringBeanByType
     private ITermVocabularyDao vocabularyDao;
 
-    @SpringBeanByType
+    @Autowired
     private AdvancedBeanInitializer<CDM> initializer;
 
-    @SpringBeanByType
+    @Autowired
     private AdvancedBeanInitializer<CDM> defaultBeanInitializer;
 
-    @SpringBeanByType
+    @Autowired
     private SessionFactory factory;
 
     private Map<Class<CDM>, AutoPropertyInitializer<CDM>> deacivatedAutoIntitializers;
@@ -101,7 +101,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
      * Checks that the AdvancedBeanInitializer is available and that the expected set of beanAutoInitializers is configured
      * in the persitence.xml.
      */
-    @Before
+    @BeforeEach
     public void assertAutoinitializers(){
 
         assert defaultBeanInitializer != null;
@@ -126,7 +126,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
         assert checkSet.size() == 0;
     }
 
-    @After
+    @AfterEach
     public void restoreAutoinitializers() {
         if(deacivatedAutoIntitializers != null){
             defaultBeanInitializer.getBeanAutoInitializers().putAll(deacivatedAutoIntitializers);
@@ -134,7 +134,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
         }
     }
 
-    @DataSet
+    @CdmDataSet
     @Test
     public void testContact() {
         Person person = (Person)agentDao.findByUuid(personUuid);
@@ -151,7 +151,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
     /**
      * Attempt to reproduce #7331 without success (DO NOT REMOVE THIS COMMENT!)
      */
-    @DataSet
+    @CdmDataSet
     @Test
     public void testFullNameGraphWithPreloadedReference() {
 
@@ -163,7 +163,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference().getAuthorship()));
     }
 
-    @DataSet
+    @CdmDataSet
     @Test
     public void testToOneWildcard() {
 
@@ -180,9 +180,9 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
         assertFalse(Hibernate.isInitialized(name.getNomenclaturalReference().getAnnotations()));
     }
 
-    @DataSet
+    @CdmDataSet
     @Test
-    @Ignore // TODO fix #7375
+    @Disabled // TODO fix #7375
     public void testComplexPath() {
 
         deacivatedAutoIntitializers = clearAutoinitializers();
@@ -199,7 +199,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
         assertFalse("must not be initialized by 'nomenclaturalSource.citation.$.*.contact'", Hibernate.isInitialized(person1.getAnnotations()));
     }
 
-    @DataSet
+    @CdmDataSet
     @Test
     public void testToOneWildcardDepth1() {
 
@@ -212,7 +212,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
         assertFalse(Hibernate.isInitialized(name.getNomenclaturalReference().getAnnotations()));
     }
 
-    @DataSet
+    @CdmDataSet
     @Test
     public void testToManyWildcard() {
 
@@ -224,7 +224,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
         assertTrue(Hibernate.isInitialized(name.getAnnotations()));
     }
 
-    @DataSet
+    @CdmDataSet
     @Test
     public void testToManyWildcardDepth1() {
 
@@ -241,7 +241,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
      * Test for the {@link TitleAndNameCacheAutoInitializer}
      * <p>
      */
-    @DataSet
+    @CdmDataSet
     @Test
     public void testTitleAndNameCacheAutoInitializer() {
 
@@ -262,7 +262,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
         assertFalse(Hibernate.isInitialized(name.getNomenclaturalReference()));
     }
 
-    @DataSet
+    @CdmDataSet
     @Test
     public void testTeamAutoInitializer() {
 

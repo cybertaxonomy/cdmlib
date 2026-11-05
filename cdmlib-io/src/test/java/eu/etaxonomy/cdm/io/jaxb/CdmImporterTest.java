@@ -25,24 +25,24 @@ import org.dbunit.dataset.FilteredDataSet;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ReplacementDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.ExpectedDataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmExpectedDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
-public class CdmImporterTest extends CdmTransactionalIntegrationTest{
+public class CdmImporterTest extends CdmIoTransactionalSpringIntegrationTest{
 
-	@SpringBeanByType
+	@Autowired
 	JaxbImport jaxbImport;
 
 	private JaxbImportConfigurator configurator;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws URISyntaxException {
 		URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/jaxb/CdmImporterTest-input.xml");
 		configurator = JaxbImportConfigurator.NewInstance(URI.fromUrl(url),null);
@@ -59,9 +59,9 @@ public class CdmImporterTest extends CdmTransactionalIntegrationTest{
 	}
 
 	@Test
-	@DataSet
-	@ExpectedDataSet("CdmImporterTest.testImport-result.xml")
-	@Ignore
+	@CdmDataSet
+	@CdmExpectedDataSet("CdmImporterTest.testImport-result.xml")
+	@Disabled
 	// 	     => create new dataset with void eu.etaxonomy.cdm.database.TestingTermInitializerTest.testPrintDataSet()
 	//		 this method has some problem though
 	/**

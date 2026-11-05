@@ -16,7 +16,7 @@ import java.io.FileOutputStream;
 import java.util.UUID;
 
 import org.dbunit.dataset.filter.ExcludeTableFilter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -24,9 +24,9 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmSpringIntegrationTest;
 
-public class TestingTermInitializerTest extends CdmIntegrationTest {
+public class TestingTermInitializerTest extends CdmSpringIntegrationTest {
 
     private final UUID misappliedNameForUuid = UUID.fromString("1ed87175-59dd-437e-959e-0d71583d8417");
 

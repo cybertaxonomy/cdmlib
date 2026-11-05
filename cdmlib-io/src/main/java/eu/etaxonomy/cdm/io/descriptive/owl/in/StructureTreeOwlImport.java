@@ -40,13 +40,8 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
 
     private static final long serialVersionUID = -3659780404413458511L;
 
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
-
-    @Override
-    protected boolean doCheck(StructureTreeOwlImportState state) {
-        logger.warn("Checking not yet implemented for " + this.getClass().getSimpleName());
-        return true;
-    }
 
     @Override
     public void doInvoke(StructureTreeOwlImportState state) {
@@ -82,12 +77,13 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
         UUID nodeUuid = UUID.fromString(nodeResource.getProperty(OwlUtil.propUuid).getString());
 
         Resource termResource = nodeResource.getPropertyResourceValue(OwlUtil.propHasTerm);
-        TermNode<?> termNode = getTermNodeService().load(nodeUuid);
+        // findWithoutFlush: load()/find() auto-flush + Bean Validation on all dirty entities (very slow for large OWL)
+        TermNode<?> termNode = getTermNodeService().findWithoutFlush(nodeUuid);
         if(termNode==null){
             //import term vocabulary
             Resource vocabularyResource = termResource.getPropertyResourceValue(OwlUtil.propHasVocabulary);
             UUID vocUuid = UUID.fromString(vocabularyResource.getProperty(OwlUtil.propUuid).getString());
-            TermVocabulary vocabulary = getVocabularyService().load(vocUuid);
+            TermVocabulary vocabulary = getVocabularyService().findWithoutFlush(vocUuid);
             if(vocabulary==null){
                 vocabulary = OwlImportUtil.createVocabulary(vocabularyResource, this, model, state);
                 vocabulary = getVocabularyService().save(vocabulary);
@@ -95,12 +91,16 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
 
             // import term
             UUID termUuid = UUID.fromString(termResource.getProperty(OwlUtil.propUuid).getString());
-            T term = (T)getTermService().find(termUuid);
+            T term = (T) state.getTermCache().get(termUuid);
+            if (term == null) {
+                term = (T) getTermService().findWithoutFlush(termUuid);
+            }
             if(term == null){
                 term = (T)OwlImportUtil.createTerm(termResource, this, model, state);
                 term = getTermService().save(term);
                 vocabulary.addTerm(term); // only add term if it does not already exist
             }
+            state.getTermCache().put(termUuid, term);
 
             getVocabularyService().saveOrUpdate(vocabulary);
 
@@ -137,19 +137,32 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
         Resource stateResouce = featureStateResource.getPropertyResourceValue(OwlUtil.propFeatureStateHasState);
 
         UUID featureUuid = UUID.fromString(featureResouce.getProperty(OwlUtil.propUuid).getString());
-        Feature feature = (Feature)getTermService().find(featureUuid);
+        Feature feature = (Feature) state.getTermCache().get(featureUuid);
+        if (feature == null) {
+            feature = (Feature) getTermService().findWithoutFlush(featureUuid);
+        }
         if(feature==null){
             feature = (Feature) OwlImportUtil.createTerm(featureResouce, this, model, state);
             getTermService().saveOrUpdate(feature);
         }
+        state.getTermCache().put(featureUuid, feature);
         UUID stateUuid = UUID.fromString(stateResouce.getProperty(OwlUtil.propUuid).getString());
-        State stateTerm = (State)getTermService().find(stateUuid);
+        State stateTerm = (State) state.getTermCache().get(stateUuid);
+        if (stateTerm == null) {
+            stateTerm = (State) getTermService().findWithoutFlush(stateUuid);
+        }
         if(stateTerm==null){
             stateTerm = (State) OwlImportUtil.createTerm(stateResouce, this, model, state);
             getTermService().saveOrUpdate(stateTerm);
         }
+        state.getTermCache().put(stateUuid, stateTerm);
         FeatureState featureState = FeatureState.NewInstance(feature, stateTerm);
         return featureState;
+    }
+
+    @Override
+    protected boolean doCheck(StructureTreeOwlImportState state) {
+        return true;
     }
 
     @Override

@@ -14,37 +14,38 @@ import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 29.01.2009
  */
-//@Ignore("Test class is just a copy of the ABCD import test. It still needs to be adapted")
-public class ExcelImportConfiguratorTest extends CdmTransactionalIntegrationTest {
+//@Disabled("Test class is just a copy of the ABCD import test. It still needs to be adapted")
+public class ExcelImportConfiguratorTest extends CdmIoTransactionalSpringIntegrationTest {
 
-	@SpringBeanByName
-	private CdmApplicationAwareDefaultImport<?> defaultImport;
+	@Autowired
+    @Qualifier("defaultImport")
+    private CdmApplicationAwareDefaultImport<?> defaultImport;
 
-	@SpringBeanByType
+	@Autowired
 	private INameService nameService;
 
-	@SpringBeanByType
+	@Autowired
 	private IOccurrenceService occurrenceService;
 
 	private IImportConfigurator configurator;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws URISyntaxException {
 		String inputFile = "/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelImportConfiguratorTest-input.xls";
 		URL url = this.getClass().getResource(inputFile);
@@ -61,9 +62,9 @@ public class ExcelImportConfiguratorTest extends CdmTransactionalIntegrationTest
 	}
 /*
 	@Test
-    @DataSets({
-            @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-            @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
 	public void testDoInvoke() {
 		boolean result = defaultImport.invoke(configurator);

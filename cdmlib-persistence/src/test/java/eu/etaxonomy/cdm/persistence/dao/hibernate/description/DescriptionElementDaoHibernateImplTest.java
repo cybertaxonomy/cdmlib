@@ -15,11 +15,8 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.ExpectedDataSet;
-import org.unitils.dbunit.datasetfactory.impl.MultiSchemaXmlDataSetFactory;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -33,15 +30,16 @@ import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmExpectedDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 25.11.2010
  */
 public class DescriptionElementDaoHibernateImplTest
-        extends CdmTransactionalIntegrationTest {
+        extends CdmTransactionalSpringIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -50,16 +48,16 @@ public class DescriptionElementDaoHibernateImplTest
 
     private final boolean printDatasets = false;
 
-    @SpringBeanByType
+    @Autowired
 	private IDescriptionElementDao descriptionElementDao;
 
-	@SpringBeanByType
+	@Autowired
     private IDescriptionDao descriptionDao;
 
-	@SpringBeanByType
+	@Autowired
 	private IDefinedTermDao termDao;
 
-	@SpringBeanByType
+	@Autowired
 	private ITaxonDao taxonDao;
 
 // ***************************** TESTS ************************************/
@@ -76,7 +74,7 @@ public class DescriptionElementDaoHibernateImplTest
 	 * See #2114
 	 */
 	@Test
-	@DataSet // (value="DescriptionElementDaoHibernateImplTest.xml")
+	@CdmDataSet // (value="DescriptionElementDaoHibernateImplTest.xml")
 	public void testRetrieveMultiLanguageString(){
 //		int count = descriptionElementDao.count(TextData.class);
 //		Assert.assertTrue("There must exist TextData", count > 0);
@@ -107,8 +105,8 @@ public class DescriptionElementDaoHibernateImplTest
 	 * See #2114
 	 */
 	@Test
-	@DataSet //(value="DescriptionElementDaoHibernateImplTest.xml")
-	@ExpectedDataSet
+	@CdmDataSet //(value="DescriptionElementDaoHibernateImplTest.xml")
+	@CdmExpectedDataSet
 	public void testPersistMultiLanguageString(){
 
 		//test write
@@ -136,8 +134,8 @@ public class DescriptionElementDaoHibernateImplTest
 	 * See #2114
 	 */
 	@Test
-	@DataSet //(value="DescriptionElementDaoHibernateImplTest.xml")
-	@ExpectedDataSet
+	@CdmDataSet //(value="DescriptionElementDaoHibernateImplTest.xml")
+	@CdmExpectedDataSet
 	public void testChangeLanguageString(){
 
 		//test write
@@ -158,8 +156,8 @@ public class DescriptionElementDaoHibernateImplTest
 	 * See #2114
 	 */
 	@Test
-	@DataSet //(value="DescriptionElementDaoHibernateImplTest.xml")
-	@ExpectedDataSet
+	@CdmDataSet //(value="DescriptionElementDaoHibernateImplTest.xml")
+	@CdmExpectedDataSet
 	public void testRemoveLanguageString(){
 
 		//test write
@@ -234,8 +232,8 @@ public class DescriptionElementDaoHibernateImplTest
 	}
 
 	@Test  //test cascading for modifying text (and others)
-	@DataSet( loadStrategy=CleanSweepInsertLoadStrategy.class)
-	@ExpectedDataSet(factory=MultiSchemaXmlDataSetFactory.class)
+	@CdmDataSet(cleanSweep = true)
+	@CdmExpectedDataSet
 	public void testSaveCategoricalData(){
 		UUID uuidDummyState = UUID.fromString("881b9c80-626d-47a6-b308-a63ee5f4178f");
 		State state = (State)termDao.findByUuid(uuidDummyState);

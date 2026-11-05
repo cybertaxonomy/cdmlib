@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.api.service.lsid;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
@@ -18,32 +19,32 @@ import java.io.StringReader;
 import javax.xml.transform.Source;
 
 import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ibm.lsid.ExpiringResponse;
 import com.ibm.lsid.server.LSIDServerException;
 
 import eu.etaxonomy.cdm.api.service.lsid.impl.LsidRegistryImpl;
 import eu.etaxonomy.cdm.model.common.LSID;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesSpringIntegrationTest;
 
-@DataSet("LSIDAuthorityServiceTest.testGetAvailableServices.xml")
-public class LSIDAuthorityServiceTest extends CdmIntegrationTest {
+@CdmDataSet("LSIDAuthorityServiceTest.testGetAvailableServices.xml")
+public class LSIDAuthorityServiceTest extends CdmServicesSpringIntegrationTest {
 
-	@SpringBeanByType
+	@Autowired
 	private LSIDAuthorityService lsidAuthorityService;
 
-	@SpringBeanByType
+	@Autowired
 	private LSIDRegistry lsidRegistry;
 
 	private LSID knownLsid;
 	private LSID unknownLsid;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		unknownLsid = new LSID("fred.org", "dagg", "1", null);
 		knownLsid = new LSID("example.org", "taxonconcepts", "1", null);
@@ -74,7 +75,7 @@ public class LSIDAuthorityServiceTest extends CdmIntegrationTest {
 	 * @throws Exception
 	 */
 	@Test
-	@Ignore
+	@Disabled
 	public void testGetAvailableServicesWithKnownLSID() throws Exception {
 		ExpiringResponse expiringResponse = lsidAuthorityService.getAvailableServices(knownLsid);
 
@@ -83,9 +84,9 @@ public class LSIDAuthorityServiceTest extends CdmIntegrationTest {
 		assertXMLEqual("getAvailableServices should return an xml source equal to the test resource",new InputStreamReader(this.getClass().getResourceAsStream(resource)),new StringReader(result));
 	}
 
-	@Test(expected= LSIDServerException.class)
+	@Test
 	public void testGetAvailableServicesWithUnknownLSID() throws Exception {
-		lsidAuthorityService.getAvailableServices(unknownLsid);
+		assertThrows(LSIDServerException.class, () -> lsidAuthorityService.getAvailableServices(unknownLsid));
 	}
 
     @Override

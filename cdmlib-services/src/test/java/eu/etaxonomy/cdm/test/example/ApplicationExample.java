@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * copy&paste it to use it for your own purposes.
  *
  * @author a.mueller
- *
  */
 public class ApplicationExample {
 	//change to VALIDATE to connect to an existing CDM database

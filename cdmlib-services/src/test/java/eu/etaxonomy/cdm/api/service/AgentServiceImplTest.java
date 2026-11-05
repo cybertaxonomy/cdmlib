@@ -20,10 +20,8 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -35,83 +33,83 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 2015-04-01
  */
-public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
+public class AgentServiceImplTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
     private static final UUID UUID_EHRENBERG = UUID.fromString("6363ae88-ec57-4b23-8235-6c86fbe59446");
 
-    @SpringBeanByType
+    @Autowired
     private IAgentService service;
 
-    @SpringBeanByType
+    @Autowired
     private INameService nameSerivce;
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
-    public void testConvertPerson2Team(){
+    public void testConvertPerson2Team() {
 
         //create data
         String fullAuthor = "Original author";
-    	String nomTitle = "Abrev. aut.";
-    	Person person = Person.NewTitledInstance(fullAuthor);
-    	person.setNomenclaturalTitle(nomTitle);
-    	Annotation annotation = Annotation.NewDefaultLanguageInstance("Meine annotation");
-    	TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-    	person.addAnnotation(annotation);
-    	service.save(person);
-    	name.setCombinationAuthorship(person);
+        String nomTitle = "Abrev. aut.";
+        Person person = Person.NewTitledInstance(fullAuthor);
+        person.setNomenclaturalTitle(nomTitle);
+        Annotation annotation = Annotation.NewDefaultLanguageInstance("Meine annotation");
+        TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        person.addAnnotation(annotation);
+        service.save(person);
+        name.setCombinationAuthorship(person);
 
-    	nameSerivce.save(name);
+        nameSerivce.save(name);
 
-    	Team team = null;
-	    try {
-	        UpdateResult result = service.convertPerson2Team(person.getUuid());
-	        team = (Team) result.getCdmEntity();
-	    } catch (MergeException e) {
-	        Assert.fail("No Merge exception should be thrown");
-	    }
-	    Assert.assertNotNull(team);
-	    Assert.assertEquals("Title cache must be equal", fullAuthor, team.getTitleCache());
-	    Assert.assertEquals("Nom. title must be equal", nomTitle, team.getNomenclaturalTitleCache());
-	    Assert.assertTrue("Members must be empty", team.getTeamMembers().isEmpty());
-	    Assert.assertEquals("Annotations should be moved", 1, team.getAnnotations().size());
-	    Assert.assertEquals("Team must be combination author now", team, name.getCombinationAuthorship());
+        Team team = null;
+        try {
+            UpdateResult result = service.convertPerson2Team(person.getUuid());
+            team = (Team) result.getCdmEntity();
+        } catch (MergeException e) {
+            Assert.fail("No Merge exception should be thrown");
+        }
+        Assert.assertNotNull(team);
+        Assert.assertEquals("Title cache must be equal", fullAuthor, team.getTitleCache());
+        Assert.assertEquals("Nom. title must be equal", nomTitle, team.getNomenclaturalTitleCache());
+        Assert.assertTrue("Members must be empty", team.getTeamMembers().isEmpty());
+        Assert.assertEquals("Annotations should be moved", 1, team.getAnnotations().size());
+        Assert.assertEquals("Team must be combination author now", team, name.getCombinationAuthorship());
 
-	    //test un-protected titleCache
-	    Person person2 = person.clone();
-	    person2.setProtectedTitleCache(false);
-	    Assert.assertEquals("Title cache must be equal", nomTitle, person2.getTitleCache());
-	    service.save(person2);
+        //test un-protected titleCache
+        Person person2 = person.clone();
+        person2.setProtectedTitleCache(false);
+        Assert.assertEquals("Title cache must be equal", nomTitle, person2.getTitleCache());
+        service.save(person2);
 
-	    try{
-	        UpdateResult result = service.convertPerson2Team(person2.getUuid());
-	        team = (Team) result.getCdmEntity();
+        try {
+            UpdateResult result = service.convertPerson2Team(person2.getUuid());
+            team = (Team) result.getCdmEntity();
         } catch (MergeException e) {
             Assert.fail("No Merge exception should be thrown, but was: " + e.getMessage());
         }
-	    Assert.assertEquals("Title cache must be equal", person2.getTitleCache(), team.getTitleCache());
+        Assert.assertEquals("Title cache must be equal", person2.getTitleCache(), team.getTitleCache());
         Assert.assertEquals("Nom. title must be equal", nomTitle, team.getNomenclaturalTitleCache());
         Assert.assertTrue("Nom. title must be protected", team.isProtectedNomenclaturalTitleCache());
 
         //test fully empty
         person2 = person2.clone();
         person2.setNomenclaturalTitle(null);  //now it is fully empty
-        Assert.assertEquals("Title cache must be equal", "Person#0<"+person2.getUuid()+">", person2.getTitleCache());  //expected value may change when toString() implementation changes for Person class
+        Assert.assertEquals("Title cache must be equal", "Person#0<" + person2.getUuid() + ">", person2.getTitleCache());
 
         service.save(person2);
-        try{
+        try {
             UpdateResult result = service.convertPerson2Team(person2.getUuid());
             team = (Team) result.getCdmEntity();
         } catch (MergeException e) {
@@ -122,123 +120,121 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertEquals("If person was completely empty we expect nom. title to be the empty team constant", TeamDefaultCacheStrategy.EMPTY_TEAM, team.getNomenclaturalTitleCache());
         Assert.assertEquals("If person was completely empty we expect collector title to be the empty team constant", TeamDefaultCacheStrategy.EMPTY_TEAM, team.getCollectorTitleCache());
 
-        try{
+        try {
             service.convertPerson2Team(person2.getUuid());
             Assert.fail("Non-existing person should throw an exception");
         } catch (MergeException e) {
             Assert.fail("No Merge exception should be thrown, but was: " + e.getMessage());
-        }catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             //nothing to do
         }
     }
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
-    public void testConvertTeam2Person(){
+    public void testConvertTeam2Person() {
 
         String fullAuthor = "Original author";
-    	String nomTitle = "Abrev. aut.";
-    	String collectorTitle = "Coll. author";
+        String nomTitle = "Abrev. aut.";
+        String collectorTitle = "Coll. author";
 
-    	Team team = Team.NewTitledInstance(fullAuthor, nomTitle, collectorTitle);
-    	Annotation annotation = Annotation.NewDefaultLanguageInstance("Meine annotation");
-    	team.addAnnotation(annotation);
-    	TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-    	name.setCombinationAuthorship(team);
+        Team team = Team.NewTitledInstance(fullAuthor, nomTitle, collectorTitle);
+        Annotation annotation = Annotation.NewDefaultLanguageInstance("Meine annotation");
+        team.addAnnotation(annotation);
+        TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        name.setCombinationAuthorship(team);
 
-    	service.save(team);
-    	nameSerivce.save(name);
+        service.save(team);
+        nameSerivce.save(name);
 
-    	UpdateResult result = null;
-    	Person person = null;
-		try {
-			result = service.convertTeam2Person(team);
-			person = (Person)result.getCdmEntity();
-		} catch (IllegalArgumentException e) {
-			Assert.fail("No IllegalArgumentException should be thrown");
-		} catch (MergeException e) {
-			Assert.fail("No Merge exception should be thrown");
-		}
-    	Assert.assertNotNull(person);
-    	Assert.assertEquals("Title cache must be equal", fullAuthor, person.getTitleCache());
-    	Assert.assertEquals("Nom. title must be equal to protected team nom. title cache", nomTitle, person.getNomenclaturalTitle());
-    	Assert.assertEquals("Collector title must be equal to protected team collector title cache", collectorTitle, person.getCollectorTitle());
-
-    	Assert.assertEquals("Annotations should be moved", 1, person.getAnnotations().size());
-    	Assert.assertEquals("person must be combination author now", person, name.getCombinationAuthorship());
-
-    	//no protected nom. and collector cache
-    	team = Team.NewTitledInstance(fullAuthor, nomTitle, collectorTitle);
-        team.setProtectedNomenclaturalTitleCache(false);
-    	team.setProtectedCollectorTitleCache(false);
-    	try {
+        UpdateResult result = null;
+        Person person = null;
+        try {
             result = service.convertTeam2Person(team);
-            person = (Person)result.getCdmEntity();
+            person = (Person) result.getCdmEntity();
+        } catch (IllegalArgumentException e) {
+            Assert.fail("No IllegalArgumentException should be thrown");
+        } catch (MergeException e) {
+            Assert.fail("No Merge exception should be thrown");
+        }
+        Assert.assertNotNull(person);
+        Assert.assertEquals("Title cache must be equal", fullAuthor, person.getTitleCache());
+        Assert.assertEquals("Nom. title must be equal to protected team nom. title cache", nomTitle, person.getNomenclaturalTitle());
+        Assert.assertEquals("Collector title must be equal to protected team collector title cache", collectorTitle, person.getCollectorTitle());
+
+        Assert.assertEquals("Annotations should be moved", 1, person.getAnnotations().size());
+        Assert.assertEquals("person must be combination author now", person, name.getCombinationAuthorship());
+
+        //no protected nom. and collector cache
+        team = Team.NewTitledInstance(fullAuthor, nomTitle, collectorTitle);
+        team.setProtectedNomenclaturalTitleCache(false);
+        team.setProtectedCollectorTitleCache(false);
+        try {
+            result = service.convertTeam2Person(team);
+            person = (Person) result.getCdmEntity();
         } catch (Exception e) {
             Assert.fail("No Exception should be thrown");
         }
-    	Assert.assertNotNull(person);
+        Assert.assertNotNull(person);
         Assert.assertEquals("Title cache must be equal", fullAuthor, person.getTitleCache());
         Assert.assertNull("Nom. title must be empty as team nom. title cache is not protected", person.getNomenclaturalTitle());
         Assert.assertNull("Collector title must be empty as team collector title cache is not protected", person.getCollectorTitle());
 
     }
 
-
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
-    public void testConvertTeam2PersonWithMember(){
+    public void testConvertTeam2PersonWithMember() {
 
-    	String fullAuthor = "Original author";
-    	String nomTitle = "Abrev. aut.";
-    	Team team = Team.NewTitledInstance(fullAuthor, nomTitle);
-    	Annotation annotation = Annotation.NewDefaultLanguageInstance("Meine annotation");
-    	team.addAnnotation(annotation);
-    	Annotation annotation2 = Annotation.NewDefaultLanguageInstance("Meine annotation2");
-    	team.addAnnotation(annotation2);
-    	TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-    	name.setCombinationAuthorship(team);
-    	Person member = Person.NewTitledInstance("Member person");
-    	member.setNomenclaturalTitle("Memb. pers.");
-    	Annotation annotation3 = Annotation.NewDefaultLanguageInstance("Meine annotation3");
-    	member.addAnnotation(annotation3);
-    	team.addTeamMember(member);
-    	service.save(team, member);
+        String fullAuthor = "Original author";
+        String nomTitle = "Abrev. aut.";
+        Team team = Team.NewTitledInstance(fullAuthor, nomTitle);
+        Annotation annotation = Annotation.NewDefaultLanguageInstance("Meine annotation");
+        team.addAnnotation(annotation);
+        Annotation annotation2 = Annotation.NewDefaultLanguageInstance("Meine annotation2");
+        team.addAnnotation(annotation2);
+        TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        name.setCombinationAuthorship(team);
+        Person member = Person.NewTitledInstance("Member person");
+        member.setNomenclaturalTitle("Memb. pers.");
+        Annotation annotation3 = Annotation.NewDefaultLanguageInstance("Meine annotation3");
+        member.addAnnotation(annotation3);
+        team.addTeamMember(member);
+        service.save(team, member);
 
-    	nameSerivce.save(name);
+        nameSerivce.save(name);
 
-    	Person person = null;
-    	UpdateResult result = null;
-		try {
-		    result = service.convertTeam2Person(team);
-		    person = (Person) result.getCdmEntity();
-		} catch (IllegalArgumentException e) {
-			Assert.fail("No IllegalArgumentException should be thrown");
-		} catch (MergeException e) {
-			Assert.fail("No Merge exception should be thrown");
-		}
-    	Assert.assertNotNull(person);
-    	Assert.assertEquals("Convert result and 'member' must be equal'", member, person);
-    	Assert.assertEquals("Title cache must be equal", "Member person", person.getTitleCache());
-    	Assert.assertEquals("Nom. title must be equal", "Memb. pers.", person.getNomenclaturalTitleCache());
-    	//FIXME should annotations be taken only from member ??
-//    	Assert.assertEquals("Annotations should be moved", 1, person.getAnnotations().size());
-    	String annotationText = person.getAnnotations().iterator().next().getText();
-//    	Assert.assertEquals("The only annotation should be annotation 3", annotation3.getText(), annotationText);
-    	//FIXME currently merge mode is still MERGE for user defined fields
-//    	Assert.assertNull("Contact must not be copied", person.getContact());
-    	Assert.assertEquals("person must be combination author now", person, name.getCombinationAuthorship());
+        Person person = null;
+        UpdateResult result = null;
+        try {
+            result = service.convertTeam2Person(team);
+            person = (Person) result.getCdmEntity();
+        } catch (IllegalArgumentException e) {
+            Assert.fail("No IllegalArgumentException should be thrown");
+        } catch (MergeException e) {
+            Assert.fail("No Merge exception should be thrown");
+        }
+        Assert.assertNotNull(person);
+        Assert.assertEquals("Convert result and 'member' must be equal'", member, person);
+        Assert.assertEquals("Title cache must be equal", "Member person", person.getTitleCache());
+        Assert.assertEquals("Nom. title must be equal", "Memb. pers.", person.getNomenclaturalTitleCache());
+        //FIXME should annotations be taken only from member ??
+//      Assert.assertEquals("Annotations should be moved", 1, person.getAnnotations().size());
+        String annotationText = person.getAnnotations().iterator().next().getText();
+//      Assert.assertEquals("The only annotation should be annotation 3", annotation3.getText(), annotationText);
+        //FIXME currently merge mode is still MERGE for user defined fields
+//      Assert.assertNull("Contact must not be copied", person.getContact());
+        Assert.assertEquals("person must be combination author now", person, name.getCombinationAuthorship());
     }
 
-
     @Test  //7874 //8030
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="AgentServiceImplTest.testUpdateTitleCache.xml")
+    @CdmDataSet(cleanSweep = true, value = "AgentServiceImplTest.testUpdateTitleCache.xml")
     public final void testUpdateNomTitle() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 
         Field nomenclaturalTitleField = Person.class.getDeclaredField("nomenclaturalTitle");
@@ -273,7 +269,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 
         turland_monro_protected = CdmBase.deproxy(service.load(UUID.fromString("5bff55de-f7cc-44d9-baac-908f52ad0cb8")), Team.class);
         turland_monro = CdmBase.deproxy(service.load(UUID.fromString("30ca93d6-b543-4bb9-b6ff-e9ededa65af7")), Team.class);
-        ehrenberg = (Person)service.load(UUID_EHRENBERG);
+        ehrenberg = (Person) service.load(UUID_EHRENBERG);
 
         assertNull("Expecting nomenclaturalTitle to be still NULL", nomenclaturalTitleField.get(turland));
         assertEquals("Expecting nomenclaturalTitleCache to be set since it was NULL", "Turland, N.J.", nomenclaturalTitleCacheField.get(turland));

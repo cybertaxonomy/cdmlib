@@ -16,11 +16,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.junit.Assert;
-import org.junit.Test;
-import org.unitils.database.annotations.Transactional;
-import org.unitils.database.util.TransactionMode;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -38,7 +35,8 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * This test class tries to describe how hibernate works with objects (save, update, merge).
@@ -50,7 +48,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  * @author cmathew
  * @since 17 Sep 2014
  */
-public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
+public class HandlingCdmEntitiesTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
@@ -61,19 +59,19 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
     private static final UUID taxonUuid = UUID.fromString("23c35977-01b5-452c-9225-ecce440034e0");
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceService referenceService;
 
-    @SpringBeanByType
+    @Autowired
     private IAnnotationService annotationService;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonService taxonService;
 
-    @SpringBeanByType
+    @Autowired
     private IAgentService agentService;
 
-    @SpringBeanByType
+    @Autowired
     private ICommonService commonService;
 
     public static final String[] includeTables = new String[]{
@@ -85,7 +83,6 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
     };
 
     @Override
-    @Transactional(TransactionMode.DISABLED)
     public final void createTestDataSet() {
 
         Team combAuthor = Team.NewTitledInstance("Avengers", "Avengers");
@@ -98,17 +95,16 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
     }
 
     @Test
-    @DataSet
-    @Transactional(TransactionMode.DISABLED)
+    @CdmDataSet
     public void testNonTransactionalUpdateForExistingTaxon() {
 
         // this method tests the updating of a 'truely' detached object which
         // attempts to initialize a lazy loaded proxy object while trying to
         // update the same.
 
-        // setting the TransactionMode for this method to DISABLED is important
-        // to ensure that transaction boundaries remain at the service layer calls
-        // to simulate detachment and update of the persisted object
+        // End the test-class transaction so service calls use their own short-lived
+        // sessions (Unitils TransactionMode.DISABLED equivalent).
+        endTransaction();
 
         // ---- loading taxon with find (uuid) ----
 
@@ -207,7 +203,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testTransactionalUpdateAfterFindTaxonByUuidForExistingTaxon() {
 
         // this method tests the updating of a detached object inside a single
@@ -267,11 +263,11 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
     }
 
     @Test
-    @Transactional(TransactionMode.DISABLED)
     public void testNonTransactionalUpdateForNewTaxon() {
 
         // this test is only to prove that the update problem (see #testNonTransactionalUpdateForExistingTaxon)
         // occurs also for newly created objects (as expected)
+        endTransaction();
 
         // create / save new taxon with name and author team with team member
 
@@ -311,15 +307,11 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
     }
 
     @Test
-    @DataSet
-    @Transactional(TransactionMode.DISABLED)
+    @CdmDataSet
     public void testNonTransactionalMergeForExistingTaxon() {
         // this method tests the updating of a 'truely' detached object
         // using merge
-
-        // setting the TransactionMode for this method to DISABLED is important
-        // to ensure that transaction boundaries remain at the service layer calls
-        // to simulate detachment and update of the persisted object
+        endTransaction();
 
         // ---- loading taxon with find (uuid) ----
 

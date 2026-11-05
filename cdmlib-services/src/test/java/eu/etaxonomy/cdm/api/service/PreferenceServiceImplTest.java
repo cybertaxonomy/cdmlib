@@ -12,35 +12,35 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 import eu.etaxonomy.cdm.model.metadata.PreferencePredicate;
 import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
 import eu.etaxonomy.cdm.model.metadata.PreferenceSubjectEnum;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesSpringIntegrationTest;
 
 /**
  * @author a.mueller
  */
-public class PreferenceServiceImplTest  extends CdmIntegrationTest {
+public class PreferenceServiceImplTest  extends CdmServicesSpringIntegrationTest {
 
-	@SpringBeanByType
+	@Autowired
 	private IPreferenceService service;
 
 /************ TESTS ********************************/
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testService() {
     	Assert.assertNotNull(service);
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testGet() {
         PrefKey key = CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.NomenclaturalCode);
         CdmPreference pref = service.find(key);
@@ -52,16 +52,15 @@ public class PreferenceServiceImplTest  extends CdmIntegrationTest {
         Assert.assertNull("CdmPreference for given key must not exist", pref);
     }
 
-
     @Test
-    @DataSet
+    @CdmDataSet
     public void testCount() {
     	 long countStart = service.count();
          Assert.assertEquals("There should be 3 preference in the CDM store", 3, countStart);
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testPedicate() {
         List<CdmPreference> list = service.list(PreferencePredicate.Test);
         long n = list.size();
@@ -75,7 +74,7 @@ public class PreferenceServiceImplTest  extends CdmIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testSet() {
     	long countStart = service.count();
         Assert.assertEquals(3, countStart);
@@ -84,7 +83,6 @@ public class PreferenceServiceImplTest  extends CdmIntegrationTest {
     	service.set(pref);
 	   	long count = service.count();
 	    Assert.assertEquals("There should be 1 new preference", countStart + 1, count);
-
 
         pref = CdmPreference.NewDatabaseInstance( PreferencePredicate.NomenclaturalCode, "ICZN");
         service.set(pref);

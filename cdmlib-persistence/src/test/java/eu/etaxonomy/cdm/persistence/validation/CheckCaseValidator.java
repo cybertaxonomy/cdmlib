@@ -16,17 +16,15 @@ import jakarta.validation.ConstraintValidatorContext;
  * ALSO MODIFY THE UNIT TESTS MAKING USE OF THIS CLASS!
  *
  * @author ayco_holleman
- *
  */
 public class CheckCaseValidator implements ConstraintValidator<CheckCase, String> {
-	private CaseMode caseMode;
 
+    private CaseMode caseMode;
 
 	@Override
     public void initialize(CheckCase constraintAnnotation){
 		this.caseMode = constraintAnnotation.value();
 	}
-
 
 	@Override
     public boolean isValid(String object, ConstraintValidatorContext constraintContext){

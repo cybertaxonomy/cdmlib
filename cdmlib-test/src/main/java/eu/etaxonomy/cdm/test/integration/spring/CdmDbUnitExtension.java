@@ -14,7 +14,7 @@ import java.util.Optional;
 
 import javax.sql.DataSource;
 
-import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -24,8 +24,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * Applies {@link CdmDataSet} / {@link CdmExpectedDataSet} around each test method.
+ * <p>
+ * Expected datasets are checked in {@link AfterTestExecutionCallback} (before {@code @AfterEach}),
+ * so transactional tests still see uncommitted changes / committed state before rollback.
  */
-public class CdmDbUnitExtension implements BeforeEachCallback, AfterEachCallback {
+public class CdmDbUnitExtension implements BeforeEachCallback, AfterTestExecutionCallback {
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
@@ -36,26 +39,42 @@ public class CdmDbUnitExtension implements BeforeEachCallback, AfterEachCallback
         DataSource dataSource = dataSource(context);
         List<Resource> resources = resolveResources(context, annotation.get().value(),
                 annotation.get().fileAppendix(), false);
-        if (annotation.get().cleanSweep()) {
-            for (Resource resource : resources) {
-                CdmDbUnitSupport.cleanSweepInsert(dataSource, resource);
-            }
+        Resource[] resourceArray = resources.toArray(Resource[]::new);
+        if (annotation.get().refresh()) {
+            CdmDbUnitSupport.refresh(dataSource, resourceArray);
+        } else if (annotation.get().cleanSweep()) {
+            CdmDbUnitSupport.cleanSweepInsert(dataSource, resourceArray);
         } else {
-            CdmDbUnitSupport.cleanInsert(dataSource, resources.toArray(Resource[]::new));
+            CdmDbUnitSupport.cleanInsert(dataSource, resourceArray);
         }
     }
 
     @Override
-    public void afterEach(ExtensionContext context) throws Exception {
+    public void afterTestExecution(ExtensionContext context) throws Exception {
         Optional<CdmExpectedDataSet> annotation = findExpectedDataSet(context);
         if (annotation.isEmpty()) {
             return;
         }
+        // Unitils flushed the ORM session before ExpectedDataSet so JDBC sees writes
+        flushHibernateSession(context);
         DataSource dataSource = dataSource(context);
         List<Resource> resources = resolveResources(context, annotation.get().value(),
                 annotation.get().fileAppendix(), true);
         for (Resource resource : resources) {
             CdmDbUnitSupport.assertEquals(dataSource, resource);
+        }
+    }
+
+    private static void flushHibernateSession(ExtensionContext context) {
+        try {
+            org.hibernate.SessionFactory sessionFactory = SpringExtension.getApplicationContext(context)
+                    .getBean(org.hibernate.SessionFactory.class);
+            org.hibernate.Session session = sessionFactory.getCurrentSession();
+            if (session != null && session.isOpen()) {
+                session.flush();
+            }
+        } catch (Exception ignored) {
+            // no open session / no SessionFactory — ExpectedDataSet still runs on JDBC
         }
     }
 
@@ -85,19 +104,42 @@ public class CdmDbUnitExtension implements BeforeEachCallback, AfterEachCallback
 
     private static List<Resource> resolveResources(ExtensionContext context, String[] explicit,
             String fileAppendix, boolean expected) {
+        Class<?> testClass = context.getRequiredTestClass();
+        String packagePath = testClass.getPackageName().replace('.', '/');
         List<Resource> resources = new ArrayList<>();
         if (explicit != null && explicit.length > 0) {
             for (String location : explicit) {
-                resources.add(new ClassPathResource(location));
+                resources.add(toResource(packagePath, location));
             }
             return resources;
         }
-        Class<?> testClass = context.getRequiredTestClass();
-        String packagePath = testClass.getPackageName().replace('.', '/');
+        // Unitils defaults:
+        //   @DataSet → ClassName.xml (method-specific ClassName.method.xml first, then class)
+        //   @ExpectedDataSet → ClassName.methodName-result.xml
         String appendix = fileAppendix == null || fileAppendix.isEmpty() ? "" : "-" + fileAppendix;
-        String suffix = expected ? "-result.xml" : ".xml";
-        String path = packagePath + "/" + testClass.getSimpleName() + appendix + suffix;
-        resources.add(new ClassPathResource(path));
+        if (expected) {
+            String method = context.getRequiredTestMethod().getName();
+            resources.add(new ClassPathResource(
+                    packagePath + "/" + testClass.getSimpleName() + "." + method + appendix + "-result.xml"));
+            return resources;
+        }
+        String methodSpecific = packagePath + "/" + testClass.getSimpleName() + "."
+                + context.getRequiredTestMethod().getName() + appendix + ".xml";
+        ClassPathResource methodResource = new ClassPathResource(methodSpecific);
+        if (methodResource.exists()) {
+            resources.add(methodResource);
+            return resources;
+        }
+        resources.add(new ClassPathResource(packagePath + "/" + testClass.getSimpleName() + appendix + ".xml"));
         return resources;
+    }
+
+    private static Resource toResource(String packagePath, String location) {
+        String normalized = location.startsWith("/") ? location.substring(1) : location;
+        // Unitils: bare filenames are relative to the test class package
+        if (!normalized.contains("/")) {
+            normalized = packagePath + "/" + normalized;
+        }
+        return new ClassPathResource(normalized);
     }
 }

@@ -12,20 +12,18 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
 
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmSpringIntegrationTest;
 
 /**
  * @author a.mueller
- *
  */
-public class DaoBaseTest  extends CdmIntegrationTest{
+public class DaoBaseTest  extends CdmSpringIntegrationTest{
 
-
-    @SpringBeanByType
+    @Autowired
     private  TaxonDaoHibernateImpl daoBaseTester;
 
 /************ TESTS ********************************/

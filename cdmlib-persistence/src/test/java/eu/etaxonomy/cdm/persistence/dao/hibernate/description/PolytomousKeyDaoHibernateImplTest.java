@@ -12,33 +12,33 @@ import java.io.FileNotFoundException;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
-@DataSet
-public class PolytomousKeyDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
+@CdmDataSet
+public class PolytomousKeyDaoHibernateImplTest extends CdmTransactionalSpringIntegrationTest {
 
-	@SpringBeanByType
+	@Autowired
 	PolytomousKeyDaoImpl polytomousKeyDao;
 
-	@SpringBeanByType
+	@Autowired
     PolytomousKeyNodeDaoImpl polytomousKeyNodeDao;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 
 	}
 
 	@Test
-	@DataSet("PolytomousKeyDaoHibernateImplTest.xml")
-//	@ExpectedDataSet  //for some reason this result in an infinite waiting of the connection pool
+	@CdmDataSet("PolytomousKeyDaoHibernateImplTest.xml")
+//	@CdmExpectedDataSet  //for some reason this result in an infinite waiting of the connection pool
 	public void testSavePolytomousKey() {
 		PolytomousKey existingKey = polytomousKeyDao.findByUuid(UUID.fromString("bab66772-2c83-428a-bb6d-655d12ac6097"));
 		Assert.assertNotNull("",existingKey);

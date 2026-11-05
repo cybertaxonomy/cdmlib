@@ -19,10 +19,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
@@ -39,8 +38,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * This test checks of all the business logic methods do what they are expected to do.
@@ -48,15 +47,15 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author n.hoffmann
  * @since Dec 16, 2010
  */
-public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTest {
+public class TaxonServiceImplBusinessTest extends CdmServicesTransactionalSpringIntegrationTest {
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonService service;
 
-    @SpringBeanByType
+    @Autowired
     private INameService nameService;
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceDao referenceDao;
 
 	private Synonym s1;
@@ -72,7 +71,7 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 	private INonViralName t1n;
 	private TaxonName s2n;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		//service = new TaxonServiceImpl();
 		//nameService = new NameServiceImpl();
@@ -133,7 +132,6 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-
 
 		t1.addSynonym(s2, heteroTypicSynonymType);
 		Assert.assertEquals("Homotypical group of old accepted taxon should still contain exactly 2 names", 2, oldGroup.getTypifiedNames().size());
@@ -214,7 +212,7 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 	}
 
 	@Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../database/ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
 	public final void testChangeSynonymToRelatedTaxon() {
 
 	    t1.addSynonym(s1, homoTypicSynonymType);
@@ -291,7 +289,6 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 		Assert.assertNotNull("s2 must have exactly 1 synonym relationship/accepted taxon", s2.getAcceptedTaxon());
 		Assert.assertEquals("s2 must have heterotypic relationship", heteroTypicSynonymType, s2.getType());
 		Assert.assertEquals("s2 must have exactly 0 basionym relationships", 0, s2.getName().getBasionyms().size());
-
 
 		//Preconditions test
 		Assert.assertEquals("'homotypicSynonym' must have exactly 1 basionym relationships", 1, homotypicSynonym.getName().getNameRelations().size());

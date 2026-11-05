@@ -23,10 +23,9 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -37,28 +36,29 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author a.babadshanjan
  * @since 09.02.2009
  */
-public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest {
+public class DescriptionServiceImplTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionService service;
 
-    @SpringBeanByType
+    @Autowired
     private ITermService termService;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonService taxonService;
 
     @Test
-    @DataSet("CommonServiceImplTest.xml")
+    @CdmDataSet("CommonServiceImplTest.xml")
     public void testChangeDescriptionElement(){
         DescriptionBase<?> descBase = service.find(UUID.fromString("eb17b80a-9be6-4642-a6a8-b19a318925e6"));
         Set<DescriptionElementBase> elements = descBase.getElements();
@@ -94,7 +94,7 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
     }
 
     @Test
-    @DataSet("../../database/ClearDBDataSet.xml")
+    @CdmDataSet("/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testMoveDescriptionElement(){
 
         //Create data
@@ -134,7 +134,7 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testMoveDescriptionElementsToTaxon(){
         //Create data
         UUID commonNameFeatureUuid = Feature.COMMON_NAME().getUuid();
@@ -163,7 +163,6 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
         Assert.assertEquals(3, sourceDescription.getElements().size());
 
         TaxonDescription targetDescription = (TaxonDescription)this.service.find(targetDescriptionData.getId());
-
 
         Collection<DescriptionElementBase> sourceCollection = new HashSet<DescriptionElementBase>();
         sourceCollection.addAll(sourceDescription.getElements());
@@ -199,13 +198,10 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
         assertNotNull(sourceDescription);
         assertNull(targetDescription);
 
-
-
-
     }
 
     @Test
-   // @Ignore
+   // @Disabled
     public void testMoveDescriptionElementsToTaxonAndResaveDeletedDescription(){
 
       //Create data

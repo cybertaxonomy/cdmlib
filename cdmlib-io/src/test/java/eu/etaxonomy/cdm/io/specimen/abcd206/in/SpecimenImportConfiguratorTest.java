@@ -21,13 +21,11 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.IAgentService;
@@ -56,50 +54,51 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 29.01.2009
  */
-@Ignore  //as long as biocase service does not work
-public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationTest {
+@Disabled  //as long as biocase service does not work
+public class SpecimenImportConfiguratorTest extends CdmIoTransactionalSpringIntegrationTest {
 
-	@SpringBeanByName
-	private CdmApplicationAwareDefaultImport<?> defaultImport;
+	@Autowired
+    @Qualifier("defaultImport")
+    private CdmApplicationAwareDefaultImport<?> defaultImport;
 
-	@SpringBeanByType
+	@Autowired
 	private INameService nameService;
 
-	@SpringBeanByType
+	@Autowired
 	private ITaxonService taxonService;
 
-	@SpringBeanByType
+	@Autowired
 	private IOccurrenceService occurrenceService;
 
-	@SpringBeanByType
+	@Autowired
 	private ITermService termService;
 
-	@SpringBeanByType
+	@Autowired
 	private ICommonService commonService;
 
-	@SpringBeanByType
+	@Autowired
 	private ITaxonNodeService taxonNodeService;
 
-	@SpringBeanByType
+	@Autowired
 	private IAgentService agentService;
 
-	@SpringBeanByType
+	@Autowired
 	private IReferenceService referenceService;
 
-	@SpringBeanByType
+	@Autowired
 	private IClassificationService classificationService;
 
 	private IImportConfigurator configurator;
 	private IImportConfigurator configurator2;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/AbcdImportTestCalvumPart1.xml";
         URL url = this.getClass().getResource(inputFile);
@@ -134,7 +133,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
-	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
 	public void testDoInvoke() {
         boolean result = defaultImport.invoke(configurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
@@ -153,7 +152,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
     }
 
 	@Test
-	@DataSet(value="SpecimenImportConfiguratorTest.doInvoke2.xml",  loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@CdmDataSet(cleanSweep = true, value = "SpecimenImportConfiguratorTest.doInvoke2.xml")
 	public void testDoInvoke2() {
 		boolean result = defaultImport.invoke(configurator2).isSuccess();
 		assertTrue("Return value for import.invoke should be true", result);
@@ -183,7 +182,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
-    @DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testImportSubspecies() {
 
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/camapanula_abietina_subspecies.xml";
@@ -206,7 +205,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
-	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
 	public void testImportVariety() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_variety.xml";
 	    URL url = this.getClass().getResource(inputFile);
@@ -235,7 +234,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
-	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
 	public void testMultipleIdentificationsPreferredFlag() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/MultipleIdentificationsPreferredFlag.xml";
 	    URL url = this.getClass().getResource(inputFile);
@@ -270,7 +269,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
-    @DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testImportForm() {
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/C_drabifolia_major.xml";
         URL url = this.getClass().getResource(inputFile);
@@ -282,7 +281,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
     }
 
 	@Test
-	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
 	public void testMapUnitIDAsBarcode() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml";
 	    URL url = this.getClass().getResource(inputFile);
@@ -300,7 +299,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
-	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
 	public void testMapUnitIDAsAccessionNumber() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml";
 	    URL url = this.getClass().getResource(inputFile);
@@ -317,7 +316,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
-	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
 	public void testMapUnitIDAsCatalogNumber() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml";
 	    URL url = this.getClass().getResource(inputFile);
@@ -334,7 +333,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
-    @DataSet( value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true, value = "AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml")
     public void testIgnoreExistingSpecimens(){
         UUID derivedUnit1Uuid = UUID.fromString("eb40cb0f-efb2-4985-819e-a9168f6d61fe");
 
@@ -378,7 +377,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
     }
 
 	@Test
-    @DataSet( value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true, value = "AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml")
 	public void testIgnoreExistingSpecimensWithDna(){
         UUID derivedUnit1Uuid = UUID.fromString("eb40cb0f-efb2-4985-819e-a9168f6d61fe");
 
@@ -404,10 +403,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	 * The new taxon should be added to a newly created default classification.
 	 */
 	@Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
-        @DataSet( value="SpecimenImportConfiguratorTest.testIgnoreAuthorship.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
-    })
+    @CdmDataSet(cleanSweep = true, value = "SpecimenImportConfiguratorTest.testIgnoreAuthorship.xml")
 	public void testImportNewTaxaToDefaultClassification(){
 	    UUID taxonUUID = UUID.fromString("26f98a58-09ab-49a0-ab9f-7490757c86d2");
 	    UUID classificationUUID = UUID.fromString("eee32748-5b89-4266-a99a-1edb3781d0eb");
@@ -458,10 +454,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
      * Test should NOT create new taxa of the same name but have different authors.
      */
 	@Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
-        @DataSet( value="SpecimenImportConfiguratorTest.testIgnoreAuthorship.xml")
-    })
+    @CdmDataSet(cleanSweep = true, value = "SpecimenImportConfiguratorTest.testIgnoreAuthorship.xml")
 	public void testIgnoreAuthorship(){
         UUID taxonUUID = UUID.fromString("26f98a58-09ab-49a0-ab9f-7490757c86d2");
         UUID classificationUUID = UUID.fromString("eee32748-5b89-4266-a99a-1edb3781d0eb");
@@ -547,10 +540,10 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
      * existing classification (0 taxa), default classification (2 taxa [genus+species])
      */
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet( value="SpecimenImportConfiguratorTest.testImportTwoUnitsOfSameTaxonIntoExistingClassification.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "SpecimenImportConfiguratorTest.testImportTwoUnitsOfSameTaxonIntoExistingClassification.xml"
     })
 	public void testImportTwoUnitsOfSameTaxonIntoExistingClassification(){
 
@@ -598,7 +591,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
      * @throws ParseException
      */
     @Test
-    @DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testImportNonParsableName() {
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_americana.xml";
         URL url = this.getClass().getResource(inputFile);
@@ -622,8 +615,8 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
     }
 
 	@Test
-	@Ignore
-	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@Disabled
+	@CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
 	public void testSetUnitIDAsBarcode() {
 
 	}

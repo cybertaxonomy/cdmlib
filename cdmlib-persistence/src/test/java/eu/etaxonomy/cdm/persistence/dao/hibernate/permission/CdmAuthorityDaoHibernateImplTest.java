@@ -12,10 +12,8 @@ import java.io.FileNotFoundException;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.permission.CRUD;
 import eu.etaxonomy.cdm.model.permission.CdmAuthority;
@@ -24,24 +22,18 @@ import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.dao.permission.ICdmAuthorityDao;
 import eu.etaxonomy.cdm.persistence.dao.permission.IUserDao;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
-public class CdmAuthorityDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
+public class CdmAuthorityDaoHibernateImplTest extends CdmTransactionalSpringIntegrationTest {
 
-	@SpringBeanByType
+	@Autowired
 	private ICdmAuthorityDao authorityDao;
-    @SpringBeanByType
+    @Autowired
     private IUserDao userDao;
 
 	private UUID uuidAuthority1 = UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2");
 	private UUID uuidTarget = UUID.fromString("037a06cd-a17c-43f8-8bfb-b7ed87e266dd");
-
-
-
-	@Before
-	public void setUp() {
-
-	}
 
 	@Test
 	public void testSave() {
@@ -51,7 +43,7 @@ public class CdmAuthorityDaoHibernateImplTest extends CdmTransactionalIntegratio
 	}
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testLoad() {
         CdmAuthority authority = authorityDao.load(uuidAuthority1);
         Assert.assertNotNull(authority);
@@ -83,6 +75,4 @@ public class CdmAuthorityDaoHibernateImplTest extends CdmTransactionalIntegratio
 //            },
 //            fileNameAppendix, true );
     }
-
-
 }

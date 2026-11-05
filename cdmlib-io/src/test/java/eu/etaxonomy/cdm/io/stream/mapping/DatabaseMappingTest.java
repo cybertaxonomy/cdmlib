@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 /**
  * @author a.mueller
  * @since 26.03.2012
- *
  */
 public class DatabaseMappingTest {
 

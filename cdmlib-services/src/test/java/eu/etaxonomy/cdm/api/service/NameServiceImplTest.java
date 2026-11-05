@@ -22,17 +22,15 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.filter.Restriction;
@@ -76,13 +74,13 @@ import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  */
-public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
+public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -90,39 +88,38 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     private static final int NAME2_ID = 11;
     private static final int NAME3_ID = 12;
 
-    @SpringBeanByType
+    @Autowired
     private INameService nameService;
 
-    @SpringBeanByType
+    @Autowired
     private IOccurrenceDao occurrenceDao;
 
-    @SpringBeanByType
+    @Autowired
     private IRegistrationService registrationService;
 
-    @SpringBeanByType
+    @Autowired
     private IAgentService agentService;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonService taxonService;
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceDao referenceDao;
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceService referenceService;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionDao descriptionDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITypeDesignationDao typeDesignationDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITermService termService;
 
-    @SpringBeanByName
+    @Autowired
     private AuthenticationManager authenticationManager;
-
 
     private void setAuthentication(AbstractAuthenticationToken token) {
        Authentication authentication = authenticationManager.authenticate(token);
@@ -165,9 +162,8 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         logger.warn("Not yet implemented");
     }
 
-
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true)
     public void testDeleteTaxonNameWithNameRelations() {
 
         final String[] tableNames = new String[]{"USERACCOUNT", "TaxonName","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase"};
@@ -184,7 +180,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         nameService.save(name1);
         nameService.save(nameWithBasionym);
         commitAndStartNewTransaction(tableNames);
-
 
         name1 = nameService.find(name1.getUuid());
         DeleteResult result = nameService.delete(name1);
@@ -207,7 +202,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true)
     public void testDeleteTaxonNameConfiguratorWithNameRelations() {
         final String[] tableNames = new String[]{"TaxonName","NameRelationship","HybridRelationship"};
 
@@ -232,7 +227,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         if (result.isOk()){
         	Assert.fail("This should throw an error as long as name relationships exist.");
         }
-
 
         name1 = nameService.find(name1.getUuid());
         Assert.assertNotNull("Name should still be in database",name1);
@@ -371,7 +365,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         nameService.save(child);
         commitAndStartNewTransaction(tableNames);
 
-
         result = nameService.delete(name1);
         if (result.isOk()){
             Assert.fail("Delete should throw an error as long as hybrid child exist.");
@@ -391,7 +384,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true)
     public void testDeleteTaxonNameInConcept() {
         final String[] tableNames = new String[]{"TaxonName","TaxonBase"};
 
@@ -419,7 +412,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         taxonService.save(taxon);
         nameBase =nameService.find(name1.getUuid());
 
-
         result = nameService.delete(nameBase); //should throw no exception
         if (result.isError()){
         	Assert.fail("Delete should throw NO error ");
@@ -432,7 +424,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @Ignore //currently does not run in suite
+    @Disabled //currently does not run in suite
     public void testDeleteTaxonNameInSource() {
         final String[] tableNames = new String[]{"TaxonName","DescriptionBase","TaxonBase","OriginalSourceBase","DescriptionElementBase"};
 
@@ -484,7 +476,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         source = taxon.getDescriptions().iterator().next().getElements().iterator().next().getSources().iterator().next();
         Assert.assertNull("Source should not have a nameUsedInSource anymore",source.getNameUsedInSource());
     }
-
 
     @Test
     public void testDeleteTaxonNameAsType() {
@@ -628,7 +619,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true)
     public void testDeleteTypeDesignation() {
 
 //        final String[] tableNames = new String[]{
@@ -750,7 +741,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true)
     public void testDeleteTypeDesignationWithRegistration() {
 
 //        final String[] tableNames = new String[]{
@@ -809,7 +800,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testDeleteTypeDesignationAllNames() {
 //        final String[] tableNames = new String[]{
 //                "TaxonName","TypeDesignationBase",
@@ -858,7 +849,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void findByTitleWithRestrictions(){
 
         // The following typeDesignations per name are assumed:
@@ -867,7 +858,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         // Name2 -> SpecimenTypeDesignation -> Specimen2
 
 //      LogUtils.setLevel("org.hibernate.SQL", Level.TRACE);
-
 
         List<Restriction<?>> restrictions = null;
         Pager<TaxonName> result;
@@ -922,7 +912,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testFindByTitleTitleWithRestrictionsMultiValue(){
 
         // The following typedesigbnations per name are assumed:
@@ -946,7 +936,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testFindByTitleTitleWithRestrictionsLogicalOperators(){
 
         // The following type designations per name are assumed:
@@ -959,7 +949,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Pager<TaxonName> result;
 
 //      LogUtils.setLevel("org.hibernate.SQL", Level.TRACE);
-
 
         restrictions = Arrays.asList(new Restriction<>("typeDesignations.typeName.titleCache", Operator.AND, null, "Name1"));
         result = nameService.findByTitleWithRestrictions(null, "Name3", MatchMode.EXACT, restrictions, null, null, null, null);
@@ -984,7 +973,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public void testFindByTitleTitle_using_Configurator(){
 
         String searchString = "*";
@@ -1061,7 +1050,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test  //7874 //8030
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="NameServiceImplTest.testUpdateCaches.xml")
+    @CdmDataSet(cleanSweep = true, value = "NameServiceImplTest.testUpdateCaches.xml")
     public void testUpdateCaches() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
 
         Field titleCacheField = IdentifiableEntity.class.getDeclaredField("titleCache");
@@ -1114,7 +1103,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test  //#3666 and others
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="NameServiceImplTest.xml")
+    @CdmDataSet(cleanSweep = true, value = "NameServiceImplTest.xml")
     public void testParseName() {
 
         boolean doDeduplicate = true;

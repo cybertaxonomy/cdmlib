@@ -10,24 +10,19 @@ package eu.etaxonomy.cdm.database;
 
 import java.io.FileNotFoundException;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 05.05.2015
  */
-public class WrappedCdmDataSourceTest extends CdmIntegrationTest {
-
-    @SpringBeanByType
-    private IAgentDao agentDao;
+public class WrappedCdmDataSourceTest extends CdmSpringIntegrationTest {
 
     @Test
-    @Ignore
+    @Disabled
     public void testByDatabaseMetaData() {
 //        still needs to be implemented
     }

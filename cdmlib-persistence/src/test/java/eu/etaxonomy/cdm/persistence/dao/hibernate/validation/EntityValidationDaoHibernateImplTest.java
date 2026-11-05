@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2014 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.dao.hibernate.validation;
 
 import static org.junit.Assert.assertEquals;
@@ -12,16 +20,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.ValidatorFactory;
-
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.ExpectedDataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
@@ -30,17 +32,26 @@ import eu.etaxonomy.cdm.model.validation.Severity;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationDao;
 import eu.etaxonomy.cdm.persistence.validation.Company;
 import eu.etaxonomy.cdm.persistence.validation.Employee;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmExpectedDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 import eu.etaxonomy.cdm.validation.Level2;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.ValidatorFactory;
 
-@DataSet
-public class EntityValidationDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
+/**
+ * @author a.holleman
+ * @since 09.04.2014
+ */
+@CdmDataSet
+public class EntityValidationDaoHibernateImplTest extends CdmTransactionalSpringIntegrationTest {
 
     private static final String MEDIA = "eu.etaxonomy.cdm.model.media.Media";
     private static final String SYNONYM = "eu.etaxonomy.cdm.model.taxon.Synonym";
     private static final String GATHERING_EVENT = "eu.etaxonomy.cdm.model.occurrence.GatheringEvent";
 
-    @SpringBeanByType
+    @Autowired
     private IEntityValidationDao dao;
 
     @Test
@@ -92,7 +103,7 @@ public class EntityValidationDaoHibernateImplTest extends CdmTransactionalIntegr
     }
 
     @Test
-    @ExpectedDataSet
+    @CdmExpectedDataSet
     public void testDeleteValidationResult() {
         dao.deleteEntityValidation(SYNONYM, 200);
 

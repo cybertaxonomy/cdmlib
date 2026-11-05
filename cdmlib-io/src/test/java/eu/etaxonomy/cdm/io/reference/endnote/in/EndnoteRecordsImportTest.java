@@ -15,32 +15,33 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
 /**
  * @author andy
  */
-public class EndnoteRecordsImportTest extends CdmTransactionalIntegrationTest {
+public class EndnoteRecordsImportTest extends CdmIoTransactionalSpringIntegrationTest {
 
-	@SpringBeanByName
-	private CdmApplicationAwareDefaultImport<?> defaultImport;
+	@Autowired
+    @Qualifier("defaultImport")
+    private CdmApplicationAwareDefaultImport<?> defaultImport;
 
-	@SpringBeanByType
+	@Autowired
 	private INameService nameService;
 
 	private IImportConfigurator configurator;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		String inputFile = "/eu/etaxonomy/cdm/io/reference/endnote/in/EndnoteRecordImportTest-input.xml";
 		URL url = this.getClass().getResource(inputFile);
@@ -69,7 +70,7 @@ public class EndnoteRecordsImportTest extends CdmTransactionalIntegrationTest {
 	}
 
 	@Test
-	@Ignore("Import does not fully work yet")
+	@Disabled("Import does not fully work yet")
 	public void testDoInvoke() {
 		boolean result = defaultImport.invoke(configurator).isSuccess();
 		//TODO result is still false

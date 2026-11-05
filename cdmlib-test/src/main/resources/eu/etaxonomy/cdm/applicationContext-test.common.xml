@@ -49,7 +49,7 @@
         class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <!--
             NOTE:
-            the database connection is configured in /cdmlib-persistence/src/test/resources/unitils.properties
+            the database connection is configured in applicationContext-springTest.xml (DataSource bean)
         -->
         <property name="properties">
             <props>
@@ -58,7 +58,7 @@
                 <prop key="hibernate.format_sql">false</prop>
                 <prop key="hibernate.search.backend.directory.type">local-heap</prop>
                 <prop key="hibernate.search.mapping.configurer">eu.etaxonomy.cdm.persistence.hibernate.search.CdmHibernateSearchMappingConfigurer</prop>
-                <!-- local-heap: avoid Lucene write.lock clashes with the Unitils SessionFactory -->
+                <!-- local-heap: avoid Lucene write.lock clashes across SessionFactory instances -->
                 <!-- exclusive_index_use has no HS6 equivalent -->
                 <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
                 <prop key="hibernate.implicit_naming_strategy">org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl</prop>

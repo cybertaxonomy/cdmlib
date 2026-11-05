@@ -19,16 +19,14 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -52,14 +50,14 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author a.kohlbecker
  * @since 04.02.2009
  */
-public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrationTest {
+public class TaxonServiceSearchTaxaAndNamesTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -77,29 +75,22 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
 
 //    private static final String D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID = "e9d8c2fd-6409-46d5-9c2e-14a2bbb1b2b1";
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonService taxonService;
-    @SpringBeanByType
-    private ITermService termService;
-    @SpringBeanByType
+    @Autowired
     private IClassificationService classificationService;
-    @SpringBeanByType
+    @Autowired
     private IReferenceService referenceService;
-    @SpringBeanByType
+    @Autowired
     private IDescriptionService descriptionService;
-    @SpringBeanByType
+    @Autowired
     private INameService nameService;
-    @SpringBeanByType
-    private ICdmMassIndexer indexer;
-
-    @SpringBeanByType
-    private ITaxonNodeService nodeService;
 
     private NamedArea germany;
     private NamedArea russia ;
     private NamedArea canada ;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         germany =  Country.GERMANY();
@@ -124,7 +115,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
      *
      */
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testFindTaxaAndNames() {
 
         IFindTaxaAndNamesConfigurator conf = FindTaxaAndNamesConfiguratorImpl.NewInstance();
@@ -271,7 +262,6 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         logSearchResults(pager, Level.DEBUG);
         assertEquals(8, pager.getRecords().size());
 
-
         setTaxaAndNamesModes(conf, false, true, true, false, false);
         pager = taxonService.findTaxaAndNames(conf);
         logSearchResults(pager, Level.DEBUG);
@@ -320,7 +310,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
      *
      */
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testFindTaxaAndNames_with_classification() {
 
         IFindTaxaAndNamesConfigurator conf = FindTaxaAndNamesConfiguratorImpl.NewInstance();
@@ -335,7 +325,6 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         Pager<IdentifiableEntity> pager = taxonService.findTaxaAndNames(conf);
         logSearchResults(pager, Level.DEBUG);
         assertEquals(5, pager.getRecords().size());
-
 
         setTaxaAndNamesModes(conf, false, true, true, true, true);
         pager = taxonService.findTaxaAndNames(conf);
@@ -375,7 +364,6 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         pager = taxonService.findTaxaAndNames(conf);
         // logSearchResults(pager, Level.DEBUG);
         assertEquals(4, pager.getRecords().size());
-
 
         setTaxaAndNamesModes(conf, false, true, true, false, true);
         pager = taxonService.findTaxaAndNames(conf);
@@ -424,7 +412,6 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         logSearchResults(pager, Level.DEBUG);
         assertEquals(3, pager.getRecords().size());
 
-
         setTaxaAndNamesModes(conf, false, true, true, true, false);
         pager = taxonService.findTaxaAndNames(conf);
         logSearchResults(pager, Level.DEBUG);
@@ -471,7 +458,6 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         logSearchResults(pager, Level.DEBUG);
         assertEquals(2, pager.getRecords().size());
 
-
         setTaxaAndNamesModes(conf, false, true, true, false, false);
         pager = taxonService.findTaxaAndNames(conf);
         logSearchResults(pager, Level.DEBUG);
@@ -511,7 +497,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
     }
 
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testFindTaxaAndNames_CommonName() {
      // pass 1
         IFindTaxaAndNamesConfigurator configurator = FindTaxaAndNamesConfiguratorImpl.NewInstance();
@@ -542,7 +528,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true)
     public final void testFindTaxaAndNamesWithHybridFormula() {
 
         // pass 1
@@ -566,7 +552,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
      * .
      */
     @Test
-    @DataSet
+    @CdmDataSet
     public final void testfindTaxaAndNamesForEditor() {
          IFindTaxaAndNamesConfigurator configurator = FindTaxaAndNamesConfiguratorImpl.NewInstance();
          configurator.setTitleSearchString("Abies bor*");
@@ -593,7 +579,6 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
          Assert.assertEquals("Expecting one entity", 1, list.size());
 
     }
-
 
     /**
      *
@@ -651,7 +636,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
      */
     @Override
     // @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "ClearDBDataSet.xml")
     public final void createTestDataSet() throws FileNotFoundException {
 
         Classification europeanAbiesClassification = Classification.NewInstance("European Abies");
@@ -749,7 +734,6 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
         d_abies_alba.setUuid(UUID.fromString(D_ABIES_ALBA_UUID));
         d_abies_balsamea.setUuid(UUID.fromString(D_ABIES_BALSAMEA_UUID));
 
-
         // CommonTaxonName
         d_abies_alba.addElement(CommonTaxonName.NewInstance("Wei"+UTF8.SHARP_S+"tanne", Language.GERMAN()));
         d_abies_alba.addElement(CommonTaxonName.NewInstance("silver fir", Language.ENGLISH()));
@@ -800,7 +784,6 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
 
         setComplete();
         endTransaction();
-
 
         writeDbUnitDataSetFile(new String[] {
             "TAXONBASE", "TAXONNAME",

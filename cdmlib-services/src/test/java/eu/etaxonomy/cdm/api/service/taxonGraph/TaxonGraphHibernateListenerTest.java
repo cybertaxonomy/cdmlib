@@ -19,14 +19,12 @@ import org.hibernate.SessionFactory;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
 import org.hibernate.internal.SessionFactoryImpl;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.application.IRunAs;
 import eu.etaxonomy.cdm.api.application.RunAsAdmin;
@@ -46,8 +44,8 @@ import eu.etaxonomy.cdm.persistence.dao.taxonGraph.ITaxonGraphDao;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
 import eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO;
 import eu.etaxonomy.cdm.persistence.hibernate.TaxonGraphHibernateListener;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecurity;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTestWithSecurity;
 
 /**
  * Tests the business logic of {@link TaxonGraphBeforeTransactionCompleteProcess}.
@@ -55,24 +53,24 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author a.kohlbecker
  * @since Oct 1, 2018
  */
-public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegrationTestWithSecurity {
+public class TaxonGraphHibernateListenerTest extends CdmServicesTransactionalSpringIntegrationTestWithSecurity {
 
-    @SpringBeanByType
+    @Autowired
     protected ITaxonGraphDao taxonGraphDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonNameDao nameDao;
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceDao referenceDao;
 
-    @SpringBeanByType
+    @Autowired
     private IPreferenceDao prefDao;
 
-    @SpringBeanByName
+    @Autowired
     private AuthenticationProvider runAsAuthenticationProvider;
 
-    @SpringBeanByType
+    @Autowired
     private SessionFactory sessionFactory;
 
     private static boolean isRegistered;
@@ -101,7 +99,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
 
     private static TaxonGraphHibernateListener taxonGraphHibernateListener = new TaxonGraphHibernateListener();
 
-    @Before
+    @BeforeEach
     public void registerListener() throws NoSuchMethodException, SecurityException {
 
         if (!TaxonGraphHibernateListenerTest.isRegistered) {
@@ -117,7 +115,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
                 new Object[] { new RunAsAdmin(runAsAuthenticationProvider), prefDao}, new Class[] { IRunAs.class, IPreferenceDao.class} );
     }
 
-    @After
+    @AfterEach
     public void inactivateListener() {
         taxonGraphHibernateListener.unRegisterProcessClass(TaxonGraphBeforeTransactionCompleteProcess.class);
     }
@@ -129,7 +127,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "TaxonGraphTest.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonGraphTest.xml")
     public void testNewTaxonName() throws TaxonGraphException {
 
         try {
@@ -160,7 +158,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
      * Test for TaxonGraphException when TaxonName.nomenclaturalSource == null
      */
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "TaxonGraphTest.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonGraphTest.xml")
     public void testNewTaxonNameMissingNomRef1() {
 
         TaxonGraphBeforeTransactionCompleteProcess.setFailOnMissingNomRef(true);
@@ -191,7 +189,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
      * Test for TaxonGraphException when TaxonName.nomenclaturalSource.citation == null
      */
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "TaxonGraphTest.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonGraphTest.xml")
     public void testNewTaxonNameMissingNomRef2() {
 
         TaxonGraphBeforeTransactionCompleteProcess.setFailOnMissingNomRef(true);
@@ -223,9 +221,8 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
         }
     }
 
-
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "TaxonGraphTest.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonGraphTest.xml")
     public void testNewGenusName() throws TaxonGraphException {
 
         try {
@@ -257,7 +254,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
      * but modifying the citation of the source indirectly via setNomenclaturalReference()
      */
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonGraphTest.xml")
     public void testChangeNomRef() throws TaxonGraphException{
         try {
             setUuidPref();
@@ -287,7 +284,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
      * Test swapping the nomenclaturalSource.ctation from name A and name B
      */
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonGraphTest.xml")
     public void testSwapNomenclaturalSourceCitation() throws TaxonGraphException{
         try {
             setUuidPref();
@@ -320,7 +317,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
      * Test swapping the nomenclaturalSource from name A and name B
      */
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonGraphTest.xml")
     public void testSwapNomenclaturalSource() throws TaxonGraphException{
         try {
             setUuidPref();
@@ -367,7 +364,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
      * but modifying the citation of the source directly
      */
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonGraphTest.xml")
     public void testChangeNomenclaturalSource() throws TaxonGraphException{
         try {
             setUuidPref();
@@ -393,13 +390,12 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
         }
     }
 
-
     /**
      * Exactly the same as {@link #testRemoveNomenclaturalSource()}
      * but removing the citation of the source indirectly via setNomenclaturalReference()
      */
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonGraphTest.xml")
     public void testRemoveNomRef() throws TaxonGraphException{
         try {
             setUuidPref();
@@ -425,7 +421,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
      * but removing the citation of the source directly
      */
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonGraphTest.xml")
     public void testRemoveNomenclaturalSource() throws TaxonGraphException{
         try {
             setUuidPref();
@@ -447,7 +443,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "TaxonGraphTest.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonGraphTest.xml")
     public void testChangeRank() throws TaxonGraphException {
 
         try {
@@ -476,7 +472,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "TaxonGraphTest.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonGraphTest.xml")
     public void testChangeGenus() throws TaxonGraphException {
 
         try {
@@ -511,7 +507,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "TaxonGraphTest.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonGraphTest.xml")
     public void testChangeSpecificEpithet_of_InfraSpecific() throws TaxonGraphException {
 
         try {
@@ -542,7 +538,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "TaxonGraphTest.xml")
+    @CdmDataSet(cleanSweep = true, value = "TaxonGraphTest.xml")
     public void testChangeSpecificEpithet_of_Species() throws TaxonGraphException {
 
         try {

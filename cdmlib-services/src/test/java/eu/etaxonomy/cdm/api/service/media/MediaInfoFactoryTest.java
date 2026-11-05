@@ -21,24 +21,24 @@ import java.util.List;
 
 import org.apache.hc.core5.http.HttpException;
 import org.cybertaxonomy.media.info.model.MediaInfo;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesSpringIntegrationTest;
 
 /**
  * @author a.kohlbecker
  * @since May 17, 2021
  */
-public class MediaInfoFactoryTest extends CdmIntegrationTest {
+public class MediaInfoFactoryTest extends CdmServicesSpringIntegrationTest {
 
-    @SpringBeanByType
+    @Autowired
     private MediaInfoFactory mediaInfoFactory;
 
     private URI transformableURI_ScalerAPI;
@@ -48,7 +48,7 @@ public class MediaInfoFactoryTest extends CdmIntegrationTest {
 
     private URI mediahubUri;
 
-    @Before
+    @BeforeEach
     public void initUris() throws URISyntaxException {
         transformableURI_ScalerAPI = new URI("https://pictures.bgbm.org/digilib/Scaler?fn=Cyprus/Sisymbrium_aegyptiacum_C1.jpg&mo=file");
         transformableURI_IIIF_API = new URI("https://pictures.bgbm.org/digilib/Scaler/IIIF/Cichorieae!Lactuca_serriola_Bc_08.jpg/full/full/0/default.jpg");

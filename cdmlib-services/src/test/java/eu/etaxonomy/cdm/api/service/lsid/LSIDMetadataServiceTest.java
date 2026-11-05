@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.api.service.lsid;
 
@@ -14,43 +14,39 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.lsid.impl.LsidRegistryImpl;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
-@DataSet("LSIDAuthorityServiceTest.testGetAvailableServices.xml")
-public class LSIDMetadataServiceTest extends CdmTransactionalIntegrationTest {
+@CdmDataSet("LSIDAuthorityServiceTest.testGetAvailableServices.xml")
+public class LSIDMetadataServiceTest extends CdmServicesTransactionalSpringIntegrationTest {
 
-	@SpringBeanByType
+	@Autowired
 	private LSIDMetadataService lsidMetadataService;
 
-	@SpringBeanByType
+	@Autowired
 	private LSIDRegistry lsidRegistry;
-	
-	@SpringBeanByType
-	private INameService nameService;
-	
+
 	private LSID lsid;
-	
-	@Before	
+
+	@BeforeEach
 	public void setUp() throws Exception {
-		
+
 		lsid = new LSID("example.org", "taxonconcepts", "1", null);
 	    ((LsidRegistryImpl)lsidRegistry).init();
 	}
-	
+
 	@Test
-	public void testInit()	{		
+	public void testInit()	{
 		assertNotNull("lsidMetadataService should exist",lsidMetadataService);
-	} 
-	
+	}
+
 	@Test
 	public void testGetMetadataWithKnownLSID() throws Exception {
 		IIdentifiableEntity identifiableEntity = lsidMetadataService.getMetadata(lsid);
@@ -66,7 +62,7 @@ public class LSIDMetadataServiceTest extends CdmTransactionalIntegrationTest {
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

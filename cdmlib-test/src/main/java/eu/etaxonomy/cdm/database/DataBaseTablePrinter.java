@@ -41,11 +41,9 @@ import org.dbunit.dataset.xml.FlatXmlWriter;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.unitils.dbunit.util.MultiSchemaXmlDataSetReader;
 
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
+import eu.etaxonomy.cdm.test.dbunit.FlatFullXmlWriter;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
  * <h2>Creating create DbUnit dataset files</h2>
@@ -57,6 +55,25 @@ public class DataBaseTablePrinter {
 
     protected static final Logger logger = LogManager.getLogger();
 
+    /**
+     * Tables initially populated during term loading ({@code PersistentTermInitializer}).
+     */
+    public static final String[] TERM_LOADING_TABLES = new String[]{
+        "DEFINEDTERMBASE",
+        "DEFINEDTERMBASE_AUD",
+        "DEFINEDTERMBASE_CONTINENT",
+        "DEFINEDTERMBASE_REPRESENTATION",
+        "DEFINEDTERMBASE_REPRESENTATION_AUD",
+        "HIBERNATE_SEQUENCES",
+        "TERMBASE_INVERSEREPRESENTATION",
+        "TERMBASE_INVERSEREPRESENTATION_AUD",
+        "REPRESENTATION",
+        "REPRESENTATION_AUD",
+        "TERMVOCABULARY",
+        "TERMVOCABULARY_AUD",
+        "TERMVOCABULARY_REPRESENTATION",
+        "TERMVOCABULARY_REPRESENTATION_AUD"};
+
     @Autowired
     protected DataSource dataSource;
 
@@ -66,13 +83,9 @@ public class DataBaseTablePrinter {
     protected IDatabaseConnection getConnection() {
         IDatabaseConnection connection = null;
         try {
-            /// FIXME must use unitils.properties: database.schemaNames
             connection = new DatabaseConnection(dataSource.getConnection(), "PUBLIC");
 
             DatabaseConfig config = connection.getConfig();
-
-            // FIXME must use unitils.properties: org.unitils.core.dbsupport.DbSupport.implClassName
-            //       & database.dialect to find configured DataTypeFactory
             config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY,
                     new H2DataTypeFactory());
         } catch (Exception e) {
@@ -91,7 +104,7 @@ public class DataBaseTablePrinter {
      * method exits. Consequently, if you want to test writing to
      * the database, either use the {@literal @ExpectedDataSet}
      * annotation (that executes after the test is run), or use
-     * {@link CdmTransactionalIntegrationTest}.
+     * {@link CdmTransactionalSpringIntegrationTest}.
      *
      * @param out The OutputStream to write to.
      * @see FlatFullXmlWriter
@@ -121,10 +134,6 @@ public class DataBaseTablePrinter {
      * {@link FlatFullXmlWriter}.
      * which is a variant of the {@link org.dbunit.dataset.xml.FlatXmlWriter}. It
      * inserts '[null]' place holders for null values instead of skipping them.
-     * This was necessary for some time to make this xml database export compatible to the
-     * {@link MultiSchemaXmlDataSetReader} which is used in unitils since version 3.x.
-     * In the meanwhile unitils handles <code>null</code> values correctly.
-     * <p>
      * @param out out The OutputStream to write to.
      * @param includeTableNames
      * @deprecated use {@link #printDataSet(OutputStream, String[])
@@ -141,17 +150,13 @@ public class DataBaseTablePrinter {
      * {@link FlatFullXmlWriter}.
      * which is a variant of the {@link org.dbunit.dataset.xml.FlatXmlWriter}. It
      * inserts '[null]' place holders for null values instead of skipping them.
-     * This was necessary for some time to make this xml database export compatible to the
-     * {@link MultiSchemaXmlDataSetReader} which is used in unitils since version 3.x.
-     * In the meanwhile unitils handles <code>null</code> values correctly.
-     * <p>
      * Remember, if you've just called save() or
      * update(), the data isn't written to the database until the
      * transaction is committed, and that isn't until after the
      * method exits. Consequently, if you want to test writing to
-     * the database, either use the {@literal @ExpectedDataSet}
+     * the database, either use the {@literal @CdmExpectedDataSet}
      * annotation (that executes after the test is run), or use
-     * {@link CdmTransactionalIntegrationTest}.
+     * {@link CdmTransactionalSpringIntegrationTest}.
      *
      * @param out The OutputStream to write to.
      * @see FlatFullXmlWriter
@@ -195,7 +200,7 @@ public class DataBaseTablePrinter {
         if(excludeTermLoadingTables != null && excludeTermLoadingTables.equals(true)){
             ExcludeTableFilter excludeTableFilter = new ExcludeTableFilter();
 
-            for(String tname : CdmIntegrationTest.termLoadingTables){
+            for(String tname : TERM_LOADING_TABLES){
                 excludeTableFilter.excludeTable(tname);
             }
             excludeFilter = excludeTableFilter;
@@ -281,7 +286,7 @@ public class DataBaseTablePrinter {
      * method exits. Consequently, if you want to test writing to
      * the database, either use the {@literal @ExpectedDataSet}
      * annotation (that executes after the test is run), or use
-     * {@link CdmTransactionalIntegrationTest}.
+     * {@link CdmTransactionalSpringIntegrationTest}.
      *
      * @see {@link #printDataSet(OutputStream)}
      * @see FlatFullXmlWriter
@@ -326,7 +331,7 @@ public class DataBaseTablePrinter {
      * method exits. Consequently, if you want to test writing to
      * the database, either use the {@literal @ExpectedDataSet}
      * annotation (that executes after the test is run), or use
-     * {@link CdmTransactionalIntegrationTest}.
+     * {@link CdmTransactionalSpringIntegrationTest}.
      *
      * @see {@link #printDataSet(OutputStream)}
      * @see FlatFullXmlWriter
@@ -403,10 +408,8 @@ public class DataBaseTablePrinter {
      * backed up by a VCS like git, svn and therefore recovery of overwritten
      * data source files should not cause any problems.
      * <p>
-     * Writes a  DbUnit  {@link org.unitils.dbunit.annotation.DataSet} file from the current data base connection using the
-     * {@link FlatFullXmlWriter} which is a variant of the
-     * {@link org.dbunit.dataset.xml.FlatXmlWriter}. It
-     * inserts <code>'[null]'</code> place holders for null values instead of skipping them.
+     * Writes a DbUnit {@link eu.etaxonomy.cdm.test.integration.spring.CdmDataSet} file from the
+     * current database connection using {@link FlatFullXmlWriter}.
      *
      */
     public void writeDbUnitDataSetFile(String[] includeTableNames, Class<?> testClass) throws FileNotFoundException {
@@ -416,7 +419,7 @@ public class DataBaseTablePrinter {
     /**
      *
      * Extension of method mentioned in "see also" where you can specify an appendix for the
-     * generated DbUnit {@link org.unitils.dbunit.annotation.DataSet} file.
+     * generated DbUnit dataset file.
      *
      * @param methodName the appendix of the generated DbUnit dataset file
      * @see {@link #writeDbUnitDataSetFile(String[], Class)}

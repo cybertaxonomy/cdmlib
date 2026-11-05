@@ -15,12 +15,8 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Test;
-import org.unitils.database.annotations.Transactional;
-import org.unitils.database.util.TransactionMode;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.ExpectedDataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
@@ -45,33 +41,34 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.term.VocabularyEnum;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmExpectedDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  */
-@Transactional(TransactionMode.DISABLED)
-public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest {
+public class IdentifiableServiceBaseTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     @SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger();
 
-	@SpringBeanByType
+	@Autowired
 	private INameService nameService;
 
-	@SpringBeanByType
+	@Autowired
 	private ITermService termService;
 
-	@SpringBeanByType
+	@Autowired
 	private IVocabularyService vocService;
 
-	@SpringBeanByType
+	@Autowired
 	private ITaxonService taxonService;
 
-	@SpringBeanByType
+	@Autowired
     private IReferenceService referenceService;
 
-	@SpringBeanByType
+	@Autowired
 	private IClassificationService classificationService;
 
 /****************** TESTS *****************************/
@@ -82,8 +79,8 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 	}
 
 	@Test
-	@DataSet
-	@ExpectedDataSet
+	@CdmDataSet
+	@CdmExpectedDataSet
 	public final void testUpdateTitleCache() {
 		Assert.assertEquals("There should be 5 TaxonNames in the data set", 5, nameService.count(TaxonName.class));
 		Class<TaxonName> clazz = TaxonName.class;
@@ -94,7 +91,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 	}
 
 	@Test
-	@DataSet(value="IdentifiableServiceBaseTest.testFindByIdentifierOrMarker.xml")
+	@CdmDataSet("IdentifiableServiceBaseTest.testFindByIdentifierOrMarker.xml")
 	public final void testFindByIdentifier(){
 		UUID uuidIdentifierType1 = UUID.fromString("02bb62db-a229-4eeb-83e6-a9a093943d5e");
 		UUID uuidIdentifierType2 = UUID.fromString("ef6e960f-5289-456c-b25c-cff7f4de2f63");
@@ -130,7 +127,6 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		entity = taxonPager.getRecords().get(0).getCdmEntity();
 		Assert.assertNull("Taxon must not be returned with includeEntity = false", entity.getEntity());
 
-
 		//Matchmode
 		includeEntity = false;
 		MatchMode matchmode = null;
@@ -163,7 +159,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 	}
 
 	@Test
-	@DataSet(value="IdentifiableServiceBaseTest.testFindByIdentifierOrMarker.xml")
+	@CdmDataSet("IdentifiableServiceBaseTest.testFindByIdentifierOrMarker.xml")
 	public final void testFindByIdentifierClassification(){
 		//classification Filter
 		Classification classification = classificationService.find(5000);
@@ -199,7 +195,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 	}
 
 	@Test
-    @DataSet(value="IdentifiableServiceBaseTest.testFindByIdentifierOrMarker.xml")
+    @CdmDataSet("IdentifiableServiceBaseTest.testFindByIdentifierOrMarker.xml")
     public final void testListByIdentifier(){
         //classification Filter
 
@@ -217,7 +213,6 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
         List<IdentifiedEntityDTO<TaxonBase>> tbPager = taxonService.listByIdentifier(TaxonBase.class, "ext-1234", null, MatchMode.EXACT, false, null, null);
         Assert.assertEquals("Result size for 'ext' should be 1",1, tbPager.size());
 
-
         //Synonym
         List<IdentifiedEntityDTO<Synonym>> synPager = taxonService.listByIdentifier(Synonym.class, "ext-syn", null,  MatchMode.BEGINNING, false, null, null);
         Assert.assertEquals("There should be 2 synonyms with identifier ext-syn", 2, synPager.size());
@@ -232,7 +227,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 	}
 
 	@Test
-    @DataSet(value="IdentifiableServiceBaseTest.testFindByIdentifierOrMarker.xml")
+    @CdmDataSet("IdentifiableServiceBaseTest.testFindByIdentifierOrMarker.xml")
     public final void testFindByMarker(){
         //classification Filter
         Classification classification = classificationService.find(5000);
@@ -260,7 +255,6 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Flag must be true", uuidMarkerTypeCompleted, marker.getTypeUuid());
         Assert.assertNotNull("the CDM entity in the dto must not be empty if includeEntity=true", dto.getCdmEntity().getEntity());
         Assert.assertEquals(5000, dto.getCdmEntity().getEntity().getId());
-
 
         markerValue = false;
         taxonPager = taxonService.findByMarker(Taxon.class, markerType, markerValue, rootNode, false, titleType, null, null, null);
@@ -293,8 +287,6 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 
     }
 
-
-
 //	@Test
     @Override
     public void createTestDataSet() throws FileNotFoundException {
@@ -306,7 +298,6 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		IdentifierType identifierType2 = IdentifierType.NewInstance(null, "identifierType2", null);
     	voc.addTerm(identifierType2);
 		termService.save(identifierType2);
-
 
     	IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         Taxon tb = Taxon.NewInstance(name, null);
@@ -339,6 +330,5 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		 }, "xxxx", true);
 
     }
-
 
 }

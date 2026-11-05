@@ -15,32 +15,29 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileNotFoundException;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.database.annotations.Transactional;
-import org.unitils.database.util.TransactionMode;
-import org.unitils.spring.annotation.SpringBeanByName;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.permission.User;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author a.kohlbecker
  * @since Nov 5, 2021
  */
-@Transactional(TransactionMode.DISABLED)
-public class PasswordResetTokenStoreTest extends CdmTransactionalIntegrationTest {
+public class PasswordResetTokenStoreTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     private static final String USER_EMAIL = "dummy@cybertaxonomy.test";
     private static final String USER_PWD = "dummy123";
     private static final String USER_NAME = "dummy";
 
-    @SpringBeanByName
+    @Autowired
     private IAbstractRequestTokenStore<PasswordResetRequest, User> passwordResetTokenStore;
 
     private User testUser;
 
-    @Before
+    @BeforeEach
     public void reset() {
         passwordResetTokenStore.setTokenLifetimeMinutes(IAbstractRequestTokenStore.TOKEN_LIFETIME_MINUTES_DEFAULT);
         testUser = User.NewInstance(USER_NAME, USER_PWD);
@@ -83,7 +80,6 @@ public class PasswordResetTokenStoreTest extends CdmTransactionalIntegrationTest
         assertTrue(resetRequest.isEmpty());
     }
 
-
     @Test
     public void testTokenRemove() {
         String token = passwordResetTokenStore.create(USER_EMAIL, testUser).getToken();
@@ -95,12 +91,9 @@ public class PasswordResetTokenStoreTest extends CdmTransactionalIntegrationTest
         assertFalse("Expecing false since the token has been removed", resetRequest.isPresent());
     }
 
-
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         // NO DATA NEEDED
     }
-
-
 
 }

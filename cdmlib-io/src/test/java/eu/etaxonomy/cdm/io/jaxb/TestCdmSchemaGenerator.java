@@ -10,13 +10,13 @@ package eu.etaxonomy.cdm.io.jaxb;
 
 import java.io.FileNotFoundException;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
-@Ignore // only used for development, thus we exclude this from running in the suite: IGNORE
-public class TestCdmSchemaGenerator extends CdmTransactionalIntegrationTest {
+@Disabled // only used for development, thus we exclude this from running in the suite: IGNORE
+public class TestCdmSchemaGenerator extends CdmIoTransactionalSpringIntegrationTest {
 
 	@Test
 	public void testSchemaGeneration() throws Exception {

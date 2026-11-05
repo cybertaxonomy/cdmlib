@@ -25,20 +25,16 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
-import org.springframework.orm.hibernate5.HibernateSystemException;
 import org.springframework.orm.jpa.EntityManagerHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
-import org.unitils.database.annotations.Transactional;
-import org.unitils.database.util.TransactionMode;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -56,7 +52,8 @@ import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.hibernate.CdmSessionUtils;
 import eu.etaxonomy.cdm.test.function.TestConversationEnabled;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesSpringIntegrationTest;
 
 /**
  * This test class is an exhaustive testing ground for conversations (a.k.a long running sessions)
@@ -64,33 +61,32 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  *
  * @author n.hoffmann
  */
-@Transactional(TransactionMode.DISABLED)
-public class ConcurrentSessionTest extends CdmIntegrationTest {
+public class ConcurrentSessionTest extends CdmServicesSpringIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
-    @SpringBeanByType
+    @Autowired
     private SessionFactory sessionFactory;
 
-    @SpringBeanByType
+    @Autowired
     private PlatformTransactionManager transactionManager;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonDao taxonDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonService taxonService;
 
-    @SpringBeanByType
+    @Autowired
     private ITermService termService;
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceDao referenceDao;
 
-    @SpringBeanByType
+    @Autowired
     private ICommonService commonService;
 
-    @SpringBeanByType
+    @Autowired
     private DataSource dataSource;
 
     private ConversationHolder conversationHolder1 = null;
@@ -105,7 +101,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
     private final UUID referenceUuid1 = UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2");
     private final UUID referenceUuid2 = UUID.fromString("ad4322b7-4b05-48af-be70-f113e46c545e");
 
-    @Before
+    @BeforeEach
     public void setup(){
         targetDataSource = dataSource instanceof TransactionAwareDataSourceProxy ?
                 ((TransactionAwareDataSourceProxy)dataSource).getTargetDataSource():
@@ -117,7 +113,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
         return CdmSessionUtils.getTransactionalSession(sessionFactory);
     }
 
-    @After
+    @AfterEach
     public void tearDown(){
         if(conversationHolder1 != null) {
             conversationHolder1.close();
@@ -134,7 +130,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      * We want to know if the data really gets persisted.
      */
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void testProofOfDataPersistency(){
 
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -170,7 +166,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      * Test the general possibility to open two sessions at the same time
      */
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void testTwoSessions(){
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
         conversationHolder2 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -190,7 +186,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      * However, the resulting objects should be equal but not be the same.
      */
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void testTwoSessionsEqualTaxon(){
         conversationHolder1 = new ConversationHolder(dataSource, sessionFactory, transactionManager);
         conversationHolder2 = new ConversationHolder(dataSource, sessionFactory, transactionManager);
@@ -210,7 +206,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      * However, the resulting objects should be equal but not be the same.
      */
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void testTwoSessionsEqualTaxonWithTaxonService(){
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
         conversationHolder2 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -230,7 +226,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      * However, the resulting objects should be equal but not be the same.
      */
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void testTwoSessionsRemoveTaxonBaseTaxonService(){
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
         conversationHolder2 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -259,7 +255,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      * Interveaving conversations to test session within and outside conversations.
      */
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void interveaveConversations(){
         TaxonBase taxonBase1 = taxonService.find(taxonUuid1);
         Session h4Session1 = taxonService.getSession();
@@ -289,7 +285,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      * Testing multiple transactions for the same conversation holder.
      */
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void testLongConversationWithMultipleTransactions(){
 
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -315,7 +311,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      * Switching sessions. Should not throw any exceptions
      */
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void testSwitchSessions(){
 
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -338,7 +334,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      * same conversation.
      */
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void testReaccessingTheSameLazyLoadedObjectInTwoDifferentTransactions(){
 
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -360,7 +356,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      * same conversation.
      */
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void testReaccessingTheSameObjectInTwoDifferentTransactions(){
 
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -381,7 +377,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      * same conversation.
      */
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void testReaccessingTheSameObjectInSameTransaction(){
 
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -399,7 +395,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      * When reloading the same object we should still be in the same session
      */
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void testSavingAndReaccessingTheSameObject(){
 
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -435,11 +431,11 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      * taxon gets manipulated and the taxon saved afterwards. When trying to persist the other
      * taxon we would expect some form of exception.
      */
-    @Test(expected=HibernateSystemException.class)
-    @DataSet("ConcurrentSessionTest.xml")
-    @Ignore //this explaining "test" does not work anymore since removing cascading from OriginalSourceBase
+    @Test
+    @CdmDataSet("ConcurrentSessionTest.xml")
+    @Disabled //this explaining "test" does not work anymore since removing cascading from OriginalSourceBase
             //to citation #10524, we either should rewrite the test or remove it as it is only an explaining test
-            //how hibernate generally works
+            //how hibernate generally works (was @Test(expected=HibernateSystemException.class))
     public void testWhatHappensWhenEncounteringStaleData(){
 
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -451,12 +447,10 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
         TransactionStatus txStatusOne = conversationHolder1.startTransaction();
         TaxonBase taxonBase1 = taxonService.find(taxonUuid1);
 
-
         conversationHolder2.bind();
         @SuppressWarnings("unused")
         TransactionStatus txStatusTwo = conversationHolder2.startTransaction();
         TaxonBase taxonBase2 = taxonService.find(taxonUuid1);
-
 
         conversationHolder1.bind();
         Reference reference1 = referenceDao.findByUuid(referenceUuid1);
@@ -484,7 +478,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      * Persist data in two different , successive transactions from different conversations
      */
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void testProofOfDataPersistencyNewTransactionModel(){
 
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -504,7 +498,6 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
         taxonService.save(taxonBase);
         conversationHolder1.commit(false);
 
-
         // second conversation
         conversationHolder2.bind();
         conversationHolder2.startTransaction();
@@ -523,7 +516,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      */
 
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void testIfDataGetsPersistedWhenFiringCommit(){
 
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -571,7 +564,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      * Testing multiple transaction in a single conversation (session)
      */
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void testMultipleTransactionsInOneSession() {
 
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -592,7 +585,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      * Testing multiple transaction in a multiple conversations (session)
      */
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void testMultipleTransactionsInMultipleSessions(){
 
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -614,7 +607,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      * in different sessions.
      */
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void testSavingTheSameObjectInTwoSessions(){
         //new session
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -670,7 +663,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      * Testing inserting new data.
      */
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void testInsert(){
 
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -689,7 +682,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      * Testing updating already existing data.
      */
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void testUpdate(){
 
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -711,7 +704,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      * Switch sessions randomly and expect retrieved objects to be same but not equal.
      */
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void testMultipleSessionSwitching(){
 
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -750,7 +743,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      * Switch sessions with multiple transactions randomly and expect retrieved objects to be same but not equal.
      */
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void testMultipleSessionSwitchingInTransactions(){
 
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -794,12 +787,11 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
 
     }
 
-
     /**
      * Testing of locking mechanism
      */
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void testLocking(){
 
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -827,9 +819,9 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
 
     }
 
-    @Ignore //see #4528
+    @Disabled //see #4528
     @Test
-    @DataSet("ConcurrentSessionTest.xml")
+    @CdmDataSet("ConcurrentSessionTest.xml")
     public void testSaveOrUpdate() {
         // this test deals with calling a save or saveOrUpdate after binding a conversation holder
 
@@ -886,8 +878,5 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
-
-
 
 }

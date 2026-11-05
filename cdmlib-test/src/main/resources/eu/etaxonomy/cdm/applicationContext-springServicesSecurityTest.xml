@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+    https://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--
+        Spring Test / JUnit 5 security context for cdmlib-services
+        (mirrors Unitils applicationContext-securityTest.xml).
+        Dedicated H2 mem DB so schema/fixtures stay isolated from the
+        non-security services Spring Test context.
+    -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:mem:cdmSpringServicesSecurityTest;NON_KEYWORDS=VALUE,TYPE,ROLE,SIZE;DATABASE_TO_UPPER=TRUE;DB_CLOSE_DELAY=-1;REFERENTIAL_INTEGRITY=FALSE"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+
+    <bean id="cdmTestSchemaInitializer"
+          class="eu.etaxonomy.cdm.test.integration.spring.CdmTestSchemaInitializer">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="script" value="classpath:dbscripts/001-cdm.h2.sql"/>
+    </bean>
+
+    <bean class="eu.etaxonomy.cdm.test.integration.spring.CdmTestSchemaDependsOnPostProcessor"/>
+
+    <import resource="classpath:/eu/etaxonomy/cdm/persistence.xml" />
+    <import resource="classpath:/eu/etaxonomy/cdm/applicationContext-test.common.xml" />
+
+    <context:property-override location="classpath:override.properties" ignore-resource-not-found="true"/>
+    <context:component-scan base-package="eu/etaxonomy/cdm/api/service"/>
+    <import resource="classpath:/eu/etaxonomy/cdm/services_base_test.xml"/>
+
+    <bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+    <bean id="daoAuthenticationProvider" class="eu.etaxonomy.cdm.api.security.CdmDaoAuthenticationProvider">
+        <property name="userDetailsService" ref="userService"/>
+        <property name="passwordEncoder" ref="passwordEncoder"/>
+    </bean>
+    <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
+        <constructor-arg>
+            <list>
+                <bean class="org.springframework.security.authentication.TestingAuthenticationProvider"/>
+                <ref bean="daoAuthenticationProvider"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <import resource="classpath:/eu/etaxonomy/cdm/security_base.xml"/>
+    <import resource="classpath:/eu/etaxonomy/cdm/services_security_base.xml"/>
+</beans>

@@ -48,7 +48,7 @@ public class IdentifierConverter implements CustomConverter, ServletContextAware
 						stringBuilder.append(servletContext.getContextPath()).append('/');
 					} else {
 						//happens only during testing
-						logger.warn("No ServletContext configured in Unitils");
+						logger.warn("No ServletContext configured (test context)");
 					}
 					String[] classNameTokens = StringUtils.split(source.getClass().getName(), '.');
 					stringBuilder.append(classNameTokens[classNameTokens.length - 2]).append('/');

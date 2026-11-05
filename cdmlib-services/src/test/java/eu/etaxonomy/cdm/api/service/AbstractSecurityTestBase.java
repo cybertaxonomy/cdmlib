@@ -10,18 +10,18 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.UUID;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import eu.etaxonomy.cdm.config.Configuration;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecurity;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTestWithSecurity;
 
 /**
  * @author a.kohlbecker
  * @since Feb 4, 2014
  *
  */
-public abstract class AbstractSecurityTestBase extends CdmTransactionalIntegrationTestWithSecurity {
+public abstract class AbstractSecurityTestBase extends CdmServicesTransactionalSpringIntegrationTestWithSecurity {
 
     protected static final UUID PART_EDITOR_UUID = UUID.fromString("38a251bd-0ba4-426f-8fcb-5c09560749a7");
 
@@ -63,7 +63,7 @@ public abstract class AbstractSecurityTestBase extends CdmTransactionalIntegrati
 
     protected UsernamePasswordAuthenticationToken tokenForUserManager;
 
-    @Before
+    @BeforeEach
     public void setUp(){
         /* User 'admin':
             - ROLE_ADMIN
@@ -126,6 +126,5 @@ public abstract class AbstractSecurityTestBase extends CdmTransactionalIntegrati
          */
         tokenForTaxonomist = new UsernamePasswordAuthenticationToken("taxonomist", "test4");
     }
-
 
 }

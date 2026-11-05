@@ -26,28 +26,28 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 //#8407
 public class FeatureTest {
 
-	    private String resource = "/eu/etaxonomy/cdm/io/jaxb/TermTreeTest.xml";
+    private String resource = "/eu/etaxonomy/cdm/io/jaxb/TermTreeTest.xml";
 
-	    @Test
-	    public void testUnmarshalFeatureTree() throws Exception {
-	        CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
-	        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
-	        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
+    @Test
+    public void testUnmarshalFeatureTree() throws Exception {
+        CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
+        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
+        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
-			TermTree<?> termTree = dataSet.getTermTrees().get(0);
-			DefinedTermBase term = dataSet.getTerms().get(1);
+		TermTree<?> termTree = dataSet.getTermTrees().get(0);
+		DefinedTermBase<?> term = dataSet.getTerms().get(1);
 
-			assertNotNull("TermTree must not be null", termTree);
-			assertNotNull("Term must not be null", term);
+		assertNotNull("TermTree must not be null", termTree);
+		assertNotNull("Term must not be null", term);
 
-			assertNotNull("TermTree.root must not be null", termTree.getRoot());
-			TermNode<?> root = termTree.getRoot();
-			assertNotNull("TermNode.term must not be null", root.getTerm());
-			assertEquals("TermNode.feature must equal Feature", term, root.getTerm());
+		assertNotNull("TermTree.root must not be null", termTree.getRoot());
+		TermNode<?> root = termTree.getRoot();
+		assertNotNull("TermNode.term must not be null", root.getTerm());
+		assertEquals("TermNode.feature must equal Feature", term, root.getTerm());
 
-			assertNotNull("TermNode.children must not be null", root.getChildNodes());
-			assertFalse("TermNode.children must not be empty", root.getChildNodes().isEmpty());
-			assertEquals("TermNode.children must have 4 child nodes", 4, root.getChildNodes().size());
+		assertNotNull("TermNode.children must not be null", root.getChildNodes());
+		assertFalse("TermNode.children must not be empty", root.getChildNodes().isEmpty());
+		assertEquals("TermNode.children must have 4 child nodes", 4, root.getChildNodes().size());
 
-	    }
+    }
 }

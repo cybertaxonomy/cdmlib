@@ -13,36 +13,33 @@ import static org.junit.Assert.assertNotNull;
 import java.io.FileNotFoundException;
 import java.time.ZonedDateTime;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.view.IAuditEventDao;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @author ben.clark
  */
-public class AuditEventDaoTest extends CdmTransactionalIntegrationTest {
+public class AuditEventDaoTest extends CdmTransactionalSpringIntegrationTest {
 
-	@SpringBeanByType
+	@Autowired
 	private IAuditEventDao auditEventDao;
 
 	private ZonedDateTime dateTime;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		dateTime = ZonedDateTime.now();
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.view.AuditEventDao#findByDate()}.
-	 */
 	@Test
-	@DataSet
+	@CdmDataSet
 	public void testFindByDate() {
 		AuditEvent auditEvent = auditEventDao.findByDate(dateTime);
 		assertNotNull(auditEvent);

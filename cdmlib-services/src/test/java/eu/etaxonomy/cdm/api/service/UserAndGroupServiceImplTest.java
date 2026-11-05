@@ -16,45 +16,42 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.permission.Group;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.permission.PermissionDeniedException;
 import eu.etaxonomy.cdm.persistence.permission.Role;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
 
 /**
  * @author a.kohlbecker
  * @since Feb 4, 2014
  */
-@DataSet(value="SecurityTest.xml")
+@CdmDataSet("SecurityTest.xml")
 public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
 
     private static final Logger logger = LogManager.getLogger();
 
-    @SpringBeanByType
+    @Autowired
     private AuthenticationManager authenticationManager;
 
-    @SpringBeanByType
+    @Autowired
     private IUserService userService;
 
-    @SpringBeanByType
+    @Autowired
     private IGroupService groupService;
 
-    @SpringBeanByType
+    @Autowired
     private IGrantedAuthorityService grantedAuthorityService;
-
-    @SpringBeanByType
-    private ITaxonService taxonService;
 
     private Authentication authentication;
 

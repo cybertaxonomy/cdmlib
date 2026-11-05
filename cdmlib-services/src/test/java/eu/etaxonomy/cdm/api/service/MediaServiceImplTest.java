@@ -19,28 +19,28 @@ import java.net.URL;
 import java.util.Map;
 
 import org.apache.hc.core5.http.HttpException;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author a.kohlbecker
  * @since Jul 13, 2020
  */
-public class MediaServiceImplTest extends CdmTransactionalIntegrationTest {
+public class MediaServiceImplTest extends CdmServicesTransactionalSpringIntegrationTest {
 
-    @SpringBeanByType
+    @Autowired
     private IMediaService mediaService;
 
     static final private String imageFileName1 = "IPTC-PhotometadataRef-Std2019.1.jpg";
     static private MediaRepresentation repr1;
 
-    @BeforeClass
+    @BeforeAll
     static public void makeMedia() throws URISyntaxException {
         URL mediaURL = MediaServiceImplTest.class.getResource(imageFileName1);
         ImageFile imageFile = ImageFile.NewInstance(URI.fromUrl(mediaURL), null);

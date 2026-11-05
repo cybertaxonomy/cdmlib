@@ -10,18 +10,16 @@ package eu.etaxonomy.cdm.persistence.validation;
 
 import java.util.List;
 
-import jakarta.validation.Valid;
-
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
+import jakarta.validation.Valid;
 
 /**
  * A Mock class for testing entity validation tasks. DO NOT MODIFY UNLESS YOU
  * ALSO MODIFY THE UNIT TESTS MAKING USE OF THIS CLASS!
  *
  * @author ayco_holleman
- *
  */
 @SuppressWarnings("serial")
 public class Employee extends CdmBase {
@@ -89,5 +87,4 @@ public class Employee extends CdmBase {
         hash = (hash * 31) + (familyName == null ? 0 : familyName.hashCode());
         return hash;
     }
-
 }

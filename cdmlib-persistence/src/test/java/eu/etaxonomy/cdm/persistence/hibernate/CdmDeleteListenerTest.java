@@ -19,40 +19,40 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.ExpectedDataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmExpectedDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 17.09.2009
  */
-public class CdmDeleteListenerTest extends CdmTransactionalIntegrationTest {
+public class CdmDeleteListenerTest extends CdmTransactionalSpringIntegrationTest {
 
     @SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger();
 
-	@SpringBeanByType
+	@Autowired
 	private ITaxonNameDao taxonNameDao;
 
 	private UUID uuid;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		uuid = UUID.fromString("44415fc0-1703-11df-8a39-0800200c9a66");
 	}
 
 	@Test
-	@DataSet("CdmDeleteListenerTest.xml")
-	@ExpectedDataSet
+	@CdmDataSet("CdmDeleteListenerTest.xml")
+	@CdmExpectedDataSet
 	public void testOnDelete() throws Exception {
 		TaxonName name = taxonNameDao.findByUuid(uuid);
 		/**

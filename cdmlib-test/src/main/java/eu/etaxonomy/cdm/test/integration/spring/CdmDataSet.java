@@ -42,4 +42,10 @@ public @interface CdmDataSet {
      * then CLEAN_INSERT the test dataset (Unitils {@code CleanSweepInsertLoadStrategy}).
      */
     boolean cleanSweep() default false;
+
+    /**
+     * If true, use DBUnit REFRESH instead of CLEAN_INSERT
+     * (Unitils {@code RefreshLoadStrategy}).
+     */
+    boolean refresh() default false;
 }

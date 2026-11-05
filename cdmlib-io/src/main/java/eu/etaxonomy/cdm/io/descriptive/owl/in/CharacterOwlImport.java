@@ -30,13 +30,8 @@ public class CharacterOwlImport
         extends CdmImportBase<StructureTreeOwlImportConfigurator, StructureTreeOwlImportState> {
 
     private static final long serialVersionUID = -3659780404413458511L;
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
-
-    @Override
-    protected boolean doCheck(StructureTreeOwlImportState state) {
-        logger.warn("Checking not yet implemented for " + this.getClass().getSimpleName());
-        return true;
-    }
 
     @Override
     public void doInvoke(StructureTreeOwlImportState state) {
@@ -64,8 +59,12 @@ public class CharacterOwlImport
     }
 
     @Override
+    protected boolean doCheck(StructureTreeOwlImportState state) {
+        return true;
+    }
+
+    @Override
     protected boolean isIgnore(StructureTreeOwlImportState state) {
         return false;
     }
-
 }

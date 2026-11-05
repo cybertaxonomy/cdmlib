@@ -19,11 +19,10 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
@@ -60,8 +59,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.strategy.parser.NameParserResult;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
 /**
  * Test for Darwin Core Archive (DwCA) export.
@@ -69,7 +68,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author a.mueller
  * @since 25.06.2017
  */
-public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
+public class DwcaExportTest  extends CdmIoTransactionalSpringIntegrationTest{
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
@@ -77,33 +76,34 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
     private static final UUID UUID_SUBSPEC_NODE = UUID.fromString("f8c9933a-fe3a-42ce-8a92-000e27bfdfac");
     private static final String UUID_UNPUBLISHED_TAXON = "e5cdc392-4e0b-49ad-84e9-8c4b22d1827c";
 
-    @SpringBeanByName
+    @Autowired
+    @Qualifier("defaultExport")
     private CdmApplicationAwareDefaultExport<DwcaTaxExportConfigurator> defaultExport;
 
-    @SpringBeanByType
+    @Autowired
     private IClassificationService classificationService;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonNodeService taxonNodeService;
 
-    @SpringBeanByType
+    @Autowired
     private INameService nameService;
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceService referenceService;
 
-    @SpringBeanByType
+    @Autowired
     private IAgentService agentService;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionService descriptionService;
 
-    @SpringBeanByType
+    @Autowired
     private ITermService termService;
 
     private static State state1;
 
-    @Before
+    @BeforeEach
     public void setUp(){
         if (state1 == null){
             //FIXME #8891
@@ -113,7 +113,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testEmptyData(){
 
         File destinationFolder = null;
@@ -156,7 +156,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testSubTree(){
 
         createFullTestDataSet();
@@ -197,7 +197,6 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
 //        expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"f983cc5e-4c77-4c80-8cb0-73d43df31ee9\",\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"Genus species subsp. subspec Mill.\",\"Subspecies\",\"accepted\",,\"4b6acca1-959b-4790-b76e-e474a0882990\",\"4aa0824a-1197-4143-bc63-702ebfada9d2\",\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"Genus species subsp. subspec Mill.\"";
 //        Assert.assertTrue(coreStr.contains(expected));
 
-
         String expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"Genus species subsp. subspec Mill.\",\"Subspecies\",\"accepted\",,\"4b6acca1-959b-4790-b76e-e474a0882990\",\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"Genus species subsp. subspec Mill.\",\"Genus species Mill. sec. My sec ref\",";
 //        System.out.println(coreStr);
         Assert.assertTrue(coreStr.contains(expected));
@@ -224,7 +223,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testFullData(){
 
         createFullTestDataSet();
@@ -320,7 +319,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testUnpublished(){
 
         createFullTestDataSet();
@@ -345,7 +344,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testNoHeader(){
 
         createFullTestDataSet();

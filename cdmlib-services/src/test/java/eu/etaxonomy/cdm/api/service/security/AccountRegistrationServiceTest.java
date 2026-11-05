@@ -21,26 +21,21 @@ import java.util.regex.Pattern;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.security.AbstractRequestTokenStore;
 import eu.etaxonomy.cdm.api.security.AccountCreationRequest;
 import eu.etaxonomy.cdm.api.security.IAbstractRequestTokenStore;
 import eu.etaxonomy.cdm.api.security.PasswordResetRequest;
-import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.common.LogUtils;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.MimeMessage;
 
@@ -48,7 +43,7 @@ import jakarta.mail.internet.MimeMessage;
  * @author a.kohlbecker
  * @since 18.11.2021
  */
-public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest {
+public class AccountRegistrationServiceTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     private static final double maxRequestRate = 4.0;
 
@@ -63,20 +58,11 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
 
     private static final String requestFormUrlTemplate = "http://cybertaxonomy.test/passwordReset?userName={%s}&sessID=f8d8sf8dsf";
 
-    @SpringBeanByType
-    private IUserService userService;
-
-    @SpringBeanByType
+    @Autowired
     private IAccountRegistrationService accountRegistrationService;
 
-    @SpringBeanByName
-    private IAbstractRequestTokenStore<AccountCreationRequest, Object> accountCreationRequestTokenStore;
-
-    @SpringBeanByType
-    private JavaMailSender emailSender;
-
     @Autowired
-    private Environment env;
+    private IAbstractRequestTokenStore<AccountCreationRequest, Object> accountCreationRequestTokenStore;
 
     private Wiser wiser = null;
 
@@ -84,7 +70,7 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
     private CountDownLatch accountCreatedSignal;
     private Throwable assyncError = null;
 
-    @Before
+    @BeforeEach
     public void startEmailServer() {
         // Integer smtpPort = env.getProperty(SendEmailConfigurer.PORT, Integer.class);
         wiser = Wiser.port(2500); // must be the same as configured for SendEmailConfigurer.PORT
@@ -92,7 +78,7 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
         logger.debug("Wiser email server started");
     }
 
-    @Before
+    @BeforeEach
     public void accountRegistrationService() throws InterruptedException {
         LogUtils.setLevel(logger, Level.DEBUG);
         LogUtils.setLevel(PasswordResetRequest.class, Level.TRACE);
@@ -104,20 +90,20 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
         Thread.sleep(sleepTime);
     }
 
-    @Before
+    @BeforeEach
     public void resetAsyncVars() {
         assyncError = null;
         createRequestTokenSendSignal = null;
         accountCreatedSignal = null;
     }
 
-    @After
+    @AfterEach
     public void stopEmailServer() {
         wiser.stop();
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testSuccessfulEmailReset() throws Throwable {
 
         // printDataSet(System.err, "UserAccount");
@@ -178,7 +164,7 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void emailResetToken_invalidEmailAddress() throws Throwable {
 
         createRequestTokenSendSignal = new CountDownLatch(1);
@@ -193,7 +179,6 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
                     createRequestTokenSendSignal.countDown();
                 });
 
-
         // -- wait for passwordResetService.emailResetToken() to complete
         createRequestTokenSendSignal.await();
 
@@ -202,7 +187,7 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testInvalidToken() throws Throwable {
 
         accountCreatedSignal = new CountDownLatch(1);
@@ -224,7 +209,7 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
     }
 
     // @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testUserNameExists() throws Throwable {
 
         createRequestTokenSendSignal = new CountDownLatch(1);

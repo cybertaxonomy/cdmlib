@@ -15,21 +15,19 @@ import static org.junit.Assert.assertNull;
 
 import java.io.FileNotFoundException;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringApplicationContext;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmSpringIntegrationTest;
 
-@Ignore
-@SpringApplicationContext("classpath:eu/etaxonomy/cdm/applicationContext-testPersistentDataSource.xml")
-public class PersistentTermInitializerTest extends CdmIntegrationTest {
+@Disabled
+public class PersistentTermInitializerTest extends CdmSpringIntegrationTest {
 
-	@SpringBeanByType
+	@Autowired
 	private PersistentTermInitializer persistentTermInitializer;
 
 	@Test
@@ -41,7 +39,7 @@ public class PersistentTermInitializerTest extends CdmIntegrationTest {
 	 * Test method for {@link eu.etaxonomy.cdm.model.term.DefaultTermInitializer#initialize()}.
 	 */
 	@Test
-	@Ignore // does not run yet in a test suite as the Language.DEFAULT() is not null then
+	@Disabled // does not run yet in a test suite as the Language.DEFAULT() is not null then
 	public void testInitialize() {
 		assertNull("At the beginning of the initialization test the default language should still be null but is not", Language.DEFAULT());
 		persistentTermInitializer.initialize();
@@ -52,7 +50,7 @@ public class PersistentTermInitializerTest extends CdmIntegrationTest {
 		assertNotNull("language for language vocabulary representation was null but must be default language", voc.getRepresentation(Language.DEFAULT()));
 	}
 
-	@Ignore //please commit only with ignore
+	@Disabled //please commit only with ignore
 	@Test
 	public void testPrintData() {
 		printDataSet(System.out);

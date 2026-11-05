@@ -17,33 +17,34 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 29.01.2009
  */
-public class TcsRdfImportConfiguratorTest extends CdmTransactionalIntegrationTest {
+public class TcsRdfImportConfiguratorTest extends CdmIoTransactionalSpringIntegrationTest {
 
-	@SpringBeanByName
-	private CdmApplicationAwareDefaultImport<?> defaultImport;
+	@Autowired
+    @Qualifier("defaultImport")
+    private CdmApplicationAwareDefaultImport<?> defaultImport;
 
-	@SpringBeanByType
+	@Autowired
 	private INameService nameService;
 
 	private IImportConfigurator configurator;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		String inputFile = "/eu/etaxonomy/cdm/io/tcsrdf/TcsRdfImportConfiguratorTest-input.xml";
 		URL url = this.getClass().getResource(inputFile);
@@ -64,7 +65,7 @@ public class TcsRdfImportConfiguratorTest extends CdmTransactionalIntegrationTes
 	}
 
 	@Test
-	@DataSet(value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+	@CdmDataSet("/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
 	public void testDoInvoke() {
 		boolean result = defaultImport.invoke(configurator).isSuccess();
 		assertTrue("Return value for import.invoke should be true", result);

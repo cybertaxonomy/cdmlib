@@ -8,17 +8,15 @@
 */
 package eu.etaxonomy.cdm.persistence.validation;
 
-import jakarta.validation.constraints.NotNull;
-
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.validation.Level2;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Mock class for validating entity validation tasks. DO NOT MODIFY UNLESS YOU ALSO MODIFY
  * THE UNIT TESTS MAKING USE OF THIS CLASS!
- * 
+ *
  * @author ayco_holleman
- * 
  */
 @SuppressWarnings("serial")
 public class Company extends CdmBase {
@@ -35,8 +33,8 @@ public class Company extends CdmBase {
 		this.name = name;
 	}
 
-
-	public boolean equals(Object obj){
+	@Override
+    public boolean equals(Object obj){
 		if (this == obj) {
 			return true;
 		}
@@ -47,9 +45,8 @@ public class Company extends CdmBase {
 		return name.equals(other.name);
 	}
 
-
-	public int hashCode(){
+	@Override
+    public int hashCode(){
 		return name.hashCode();
 	}
-
 }

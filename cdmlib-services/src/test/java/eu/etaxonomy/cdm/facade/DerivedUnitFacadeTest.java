@@ -24,15 +24,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.dbunit.annotation.ExpectedDataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -67,23 +64,24 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmExpectedDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * Test class for {@link DerivedUnitFacade}
  * @author a.mueller
  * @since 17.05.2010
  */
-public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
+public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegrationTest {
 
-    @SpringBeanByType
+    @Autowired
     private IOccurrenceService service;
 
-    @SpringBeanByType
+    @Autowired
     private ITermService termService;
 
-    @SpringBeanByType
+    @Autowired
     private IUserService userService;
 
     DerivedUnit specimen;
@@ -121,7 +119,6 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     String originalLabelInfo = "original label info";
     URI stableUri = URI.create("http://www.abc.de");
 
-
     DerivedUnitFacade specimenFacade;
 
     DerivedUnit collectionSpecimen;
@@ -134,11 +131,10 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     // ****************************** SET UP **********************************/
 
-
     /**
      * @throws java.lang.Exception
      */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         specimen = DerivedUnit.NewPreservedSpecimenInstance();
@@ -204,10 +200,10 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     // ****************************** TESTS*****************************/
 
-    @Ignore //doesn't run in suite
+    @Disabled //doesn't run in suite
     @Test
-    @DataSet("DerivedUnitFacadeTest.testSetFieldObjectImageGallery.xml")
-    @ExpectedDataSet
+    @CdmDataSet("DerivedUnitFacadeTest.testSetFieldObjectImageGallery.xml")
+    @CdmExpectedDataSet
     public void testSetFieldObjectImageGallery() {
         UUID imageFeatureUuid = Feature.IMAGE().getUuid();
         Feature imageFeature = (Feature) termService.find(imageFeatureUuid);
@@ -244,11 +240,11 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     // TODO generally works but has id problems when running together with above
     // test ()setFieldObjectImageGallery. Therefore set to ignore.
-    @DataSet("DerivedUnitFacadeTest.testSetDerivedUnitImageGallery.xml")
-    @ExpectedDataSet
+    @CdmDataSet("DerivedUnitFacadeTest.testSetDerivedUnitImageGallery.xml")
+    @CdmExpectedDataSet
     public void testSetDerivedUnitImageGallery() {
         // UUID specimenUUID =
         // UUID.fromString("25383fc8-789b-4eff-92d3-a770d0622351");
@@ -280,12 +276,11 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         // "MEDIA", "MEDIAREPRESENTATION","MEDIAREPRESENTATIONPART"});}
         // } catch(Exception e) { logger.warn(e);}
 
-
     }
 
     @Test
-    @DataSet
-    @Ignore // TODO generally works has id problems with following tests when running in suite
+    @CdmDataSet
+    @Disabled // TODO generally works has id problems with following tests when running in suite
     public void testGetFieldObjectImageGalleryBooleanPersisted() {
         UUID specimenUUID = UUID.fromString("25383fc8-789b-4eff-92d3-a770d0622351");
         DerivedUnit specimen = (DerivedUnit) service.load(specimenUUID);
@@ -309,8 +304,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
-//	@Ignore // TODO generally works has id problems with following tests when running in suite
+    @CdmDataSet
+//	@Disabled // TODO generally works has id problems with following tests when running in suite
 	public void testGetDerivedUnitImageGalleryBooleanPersisted() {
 		UUID specimenUUID = UUID.fromString("25383fc8-789b-4eff-92d3-a770d0622351");
 		DerivedUnit specimen = (DerivedUnit) service.load(specimenUUID);
@@ -366,9 +361,6 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
          assertNotNull("The gathering event should have been created",
         		 specimenFacade.innerGatheringEvent());
     }
-
-
-
 
     /**
      * Test method for
@@ -600,12 +592,10 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         assertEquals("", Integer.valueOf(30), specimenFacade.getAbsoluteElevation());
         assertEquals("", Integer.valueOf(35),specimenFacade.getAbsoluteElevationMaximum());
 
-
         specimenFacade.setAbsoluteElevationRange(41, null);
         assertEquals("ToString should not change by setting range if text is set", elevText,specimenFacade.absoluteElevationToString());
         assertEquals("", Integer.valueOf(41), specimenFacade.getAbsoluteElevation());
         assertEquals("", null,specimenFacade.getAbsoluteElevationMaximum());
-
 
         specimenFacade.setAbsoluteElevationText(null);
         assertNull("", specimenFacade.getAbsoluteElevationText());
@@ -613,7 +603,6 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         assertEquals("", Integer.valueOf(41), specimenFacade.getAbsoluteElevation());
         assertEquals("", null,specimenFacade.getAbsoluteElevationMaximum());
     }
-
 
     /**
      */
@@ -703,7 +692,6 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         assertEquals("", Double.valueOf(41.2), specimenFacade.getDistanceToWaterSurface());
         assertEquals("", null,specimenFacade.getDistanceToWaterSurfaceMax());
     }
-
 
     /**
      * Test method for
@@ -1165,7 +1153,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
      * .
      */
     @Test
-    @Ignore // #######DerivationEvent ---------------------------------------- 1
+    @Disabled // #######DerivationEvent ---------------------------------------- 1
     public void testSetGatheringEvent() {
         GatheringEvent newGatheringEvent = GatheringEvent.NewInstance();
         newGatheringEvent.setDistanceToGround(43.0);
@@ -1238,7 +1226,6 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         emptyFacade().setFieldUnitSex(null);
         assertNull(facade.innerFieldUnit());
     }
-
 
     /**
      * Test method for
@@ -1354,7 +1341,6 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     }
 
-
     /**
      * Test method for
      * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#addDetermination(eu.etaxonomy.cdm.model.occurrence.DeterminationEvent)}
@@ -1377,8 +1363,6 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         assertEquals("There should be no 'non preferred' determination", 0,
                 specimenFacade.getOtherDeterminations().size());
 
-
-
         DeterminationEvent determinationEvent2 = DeterminationEvent.NewInstance();
         specimenFacade.addDetermination(determinationEvent2);
         assertEquals("There should be exactly 2 determinations", 2,
@@ -1389,7 +1373,6 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
                 specimenFacade.getOtherDeterminations().size());
         assertEquals("The only 'non preferred' determination should be determination 2",
                 determinationEvent2, specimenFacade.getOtherDeterminations().iterator().next());
-
 
         DeterminationEvent determinationEvent3 = DeterminationEvent.NewInstance();
         specimenFacade.setPreferredDetermination(determinationEvent3);
@@ -1473,7 +1456,6 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 		assertEquals("New accession number must be 'A12345693'",
                 "A12345693", specimenFacade.getAccessionNumber());
     }
-
 
     /**
      * Test method for
@@ -1735,8 +1717,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     }
 
-    // @Ignore // set to ignore because I did not want to check knowingly
-    // failing tests. Remove @Ignore when this is fixed
+    // @Disabled // set to ignore because I did not want to check knowingly
+    // failing tests. Remove @Disabled when this is fixed
     @Test
     public void testSetBarcode() {
         String barcode = "barcode";
@@ -1764,11 +1746,11 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
      *
      */
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
-   // @Ignore
+   // @Disabled
     public void testNoRecursiveChangeEvents(){
         String username = "username";
         String password = "password";
@@ -1797,7 +1779,6 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         facade.getFieldUnit(true);
         assertEquals("baseUnit is incorrect", specimen, facade.baseUnit());
     }
-
 
     /**
      * Returns an empty DU facade

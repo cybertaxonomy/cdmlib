@@ -18,7 +18,6 @@ public class EntityValidationTaskQueueTest {
 	private EntityValidationTaskBase evt2;
 	private EntityValidationTaskBase evt3;
 
-
 	/*
 	 * Creates two equal EntityValidationTasks. EntityValidationTasks are equal if the entities
 	 * they validate are equal and if the ValidationGroups applied are equal. The simplisticc
@@ -86,5 +85,4 @@ public class EntityValidationTaskQueueTest {
 		Assert.assertEquals(queue.size(), 1);
 		Assert.assertTrue(queue.iterator().next() == evt2);
 	}
-
 }

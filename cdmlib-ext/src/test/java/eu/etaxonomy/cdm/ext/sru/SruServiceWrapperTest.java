@@ -1,5 +1,10 @@
 /**
+ * Copyright (C) 2010 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
  *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
  */
 package eu.etaxonomy.cdm.ext.sru;
 
@@ -19,14 +24,13 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
- *
+ * @since 02.08.2010
  */
 public class SruServiceWrapperTest {
 
     private static final Logger logger = LogManager.getLogger();
 
     private static final String baseUrl = "http://gso.gbv.de/sru/DB=1.83/";
-
 
     private SruServiceWrapper sruServiceWrapper;
 

@@ -15,19 +15,19 @@ import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.TermQuery;
 import org.junit.Assert;
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesSpringIntegrationTest;
 
 /**
  * @author a.kohlbecker
  * @since Jan 13, 2017
  */
-public class QueryFactoryTest extends CdmIntegrationTest {
+public class QueryFactoryTest extends CdmServicesSpringIntegrationTest {
 
-    @SpringBeanByType
+    @Autowired
     private ILuceneIndexToolProvider luceneIndexToolProvider;
 
     @Test
@@ -56,7 +56,6 @@ public class QueryFactoryTest extends CdmIntegrationTest {
         Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"*ctu* *enn*\"", true).getClass().getSimpleName());
         Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"*ctuca per*\"", true).getClass().getSimpleName());
     }
-
 
     /**
      * {@inheritDoc}

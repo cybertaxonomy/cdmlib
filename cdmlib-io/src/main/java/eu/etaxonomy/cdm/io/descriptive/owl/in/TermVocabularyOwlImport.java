@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.io.descriptive.owl.in;
 
-import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 
@@ -68,7 +67,7 @@ public class TermVocabularyOwlImport
             String type = voc.getProperty(OwlUtil.propType).getString();
 
             UUID vocUuid = UUID.fromString(voc.getProperty(OwlUtil.propUuid).getString());
-            TermVocabulary<?> vocabulary = getVocabularyService().load(vocUuid, Arrays.asList("terms"));
+            TermVocabulary<?> vocabulary = getVocabularyService().findWithoutFlush(vocUuid);
             if(vocabulary==null){
                 vocabulary = OwlImportUtil.createVocabulary(voc, this, state.getModel(), state);
                 vocabulary = getVocabularyService().save(vocabulary);
@@ -93,12 +92,21 @@ public class TermVocabularyOwlImport
         Resource termResource = model.createResource(termStatement.getObject().toString());
 
         UUID termUuid = UUID.fromString(termResource.getProperty(OwlUtil.propUuid).getString());
-        if(getTermService().exists(termUuid)) {
-            return getTermService().load(termUuid); // only add term if it does not already exist
+        // Prefer cache + findWithoutFlush over exists()/load(): exists() auto-flushes the session and
+        // triggers Bean Validation on every dirty entity (O(n²) for large OWL files; hangs tests/prod).
+        DefinedTermBase<?> cached = state.getTermCache().get(termUuid);
+        if (cached != null) {
+            return cached;
+        }
+        DefinedTermBase<?> existing = getTermService().findWithoutFlush(termUuid);
+        if (existing != null) {
+            state.getTermCache().put(termUuid, existing);
+            return existing;
         }
         DefinedTermBase<?> term = OwlImportUtil.createTerm(termResource, this, model, state);
         term.getSources().stream().map(s->s.getCitation()).forEach(ref->save(ref));
         term = getTermService().save(term);
+        state.getTermCache().put(termUuid, term);
         ((TermVocabulary)vocabulary).addTerm(term);
 
         //check media

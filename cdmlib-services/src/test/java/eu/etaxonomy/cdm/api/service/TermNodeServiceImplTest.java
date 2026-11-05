@@ -17,12 +17,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.dbunit.datasetloadstrategy.impl.RefreshLoadStrategy;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.config.TermNodeDeletionConfigurator;
@@ -43,14 +40,14 @@ import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.TermNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TermTreeDto;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author k.luther
  * @since Oct 30, 2020
  */
-public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
+public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringIntegrationTest{
 
     private static String[] tableNames = new String[]{"TERMCOLLECTION","TERMRELATION"};
 
@@ -68,19 +65,19 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
     private TermNode<Feature> node3;
     private TermNode<Feature> node2;
 
-    @SpringBeanByType
+    @Autowired
     private ITermNodeService termNodeService;
 
-    @SpringBeanByType
+    @Autowired
     private ITermTreeService termTreeService;
 
-    @SpringBeanByType
+    @Autowired
     private ITermService termService;
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
     public void testSaveCharacterNode_supportedData() {
         UUID characterTreeUuid = createAndSaveCharacterTree();
@@ -109,6 +106,10 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
     }
 
     @Test
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
+    })
     public void testSaveCharacterNode_representation() {
         UUID characterTreeUuid = createAndSaveCharacterTree();
 
@@ -167,7 +168,6 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
         return characterTreeUuid;
     }
 
-
     @Test
     public void testIndexCreatRoot() {
         TermTree<Feature> featureTree = TermTree.NewFeatureInstance();
@@ -184,9 +184,8 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
         Assert.assertEquals("", sep + pref+featureTree.getId()+sep + featureTree.getRoot().getId()+ sep  + newNode.getId() + sep, newNode.treeIndex());
     }
 
-
     @Test
-    @DataSet(loadStrategy=RefreshLoadStrategy.class, value="TermNodeServiceImplTest-indexing.xml")
+    @CdmDataSet(refresh = true, value = "TermNodeServiceImplTest-indexing.xml")
     public final void testIndexCreateNode() {
 
         Feature feature = (Feature)termService.find(914);
@@ -202,9 +201,8 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
         Assert.assertEquals("", oldTreeIndex + newNode.getId() + sep, newNode.treeIndex());
     }
 
-
     @Test
-    @DataSet(loadStrategy=RefreshLoadStrategy.class, value="TermNodeServiceImplTest-indexing.xml")
+    @CdmDataSet(refresh = true, value = "TermNodeServiceImplTest-indexing.xml")
     //this may fail in single test if it is the first test as long as #8174 is not fixed
     public void testIndexMoveNode() {
         //in feature tree
@@ -242,7 +240,7 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
     @Test  //here we may have a test for testing delete of a node and attaching the children
     //to its parents, however this depends on the way delete is implemented and therefore needs
     //to wait until this is finally done
-    @DataSet(loadStrategy=RefreshLoadStrategy.class, value="TermNodeServiceImplTest-indexing.xml")
+    @CdmDataSet(refresh = true, value = "TermNodeServiceImplTest-indexing.xml")
     public final void testIndexDeleteNode() {
         node2 = termNodeService.load(node2Uuid);
         TermNodeDeletionConfigurator config = new TermNodeDeletionConfigurator();
@@ -278,8 +276,8 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
     }
 
     @Test  //#8127  //#5536 //#10101
-    @Ignore  //test still throws exception, see #10101
-//    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @Disabled  //test still throws exception, see #10101
+//    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testMergeDetached(){
         int termNodesAtStart = termNodeService.count(TermNode.class);
 
@@ -347,7 +345,7 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-//    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+//    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testMergeDetachedWithMove() {
         int termNodesAtStart = termNodeService.count(TermNode.class);
 
@@ -389,7 +387,7 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
     }
 
     @Test  //8127  //5536 //10101
-    //  @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    //  @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testSaveDetached(){
         int termNodesAtStart = termNodeService.count(TermNode.class);
 
@@ -450,7 +448,7 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-//  @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+//  @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
   public void testSaveDetachedWithMove() {
 
         int termNodesAtStart = termNodeService.count(TermNode.class);

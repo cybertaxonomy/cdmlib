@@ -163,5 +163,4 @@ public class SpecimenOrObservationBaseVoterTest extends AbstractCdmPermissionVot
 
         DerivationEvent.NewSimpleInstance(duAB, du2, null);
     }
-
 }

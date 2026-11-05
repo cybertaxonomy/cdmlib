@@ -12,22 +12,18 @@ import java.io.FileNotFoundException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
 
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author pplitzner
  * @since 31.03.2014
  */
-public class AmplificationServiceTest extends CdmTransactionalIntegrationTest {
+public class AmplificationServiceTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     @SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger();
-
-    @SpringBeanByType
-    private IAmplificationService amplificationService;
 
     @Test
     public void testNothingTest(){

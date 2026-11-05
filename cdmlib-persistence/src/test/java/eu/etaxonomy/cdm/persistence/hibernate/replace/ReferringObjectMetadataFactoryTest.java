@@ -14,35 +14,33 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.dbunit.annotation.ExpectedDataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmExpectedDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
  * @author ben.clark
  * @since 22.12.2009
  */
-@Ignore
-public class ReferringObjectMetadataFactoryTest extends CdmTransactionalIntegrationTest {
+@Disabled
+public class ReferringObjectMetadataFactoryTest extends CdmTransactionalSpringIntegrationTest {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-	@SpringBeanByType
+	@Autowired
 	private ReferringObjectMetadataFactory referringObjectMetadataFactory;
 
-	@SpringBeanByType
+	@Autowired
 	private IAgentDao agentDao;
 
 	private UUID institution1;
@@ -55,7 +53,7 @@ public class ReferringObjectMetadataFactoryTest extends CdmTransactionalIntegrat
 
 	private UUID person3;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		institution1 = UUID.fromString("18679846-7343-4e5f-b14e-5eb56b967989");
 		institution2 = UUID.fromString("28f6aaa5-e03e-4831-9ce2-71eaf56cdebe");
@@ -70,7 +68,7 @@ public class ReferringObjectMetadataFactoryTest extends CdmTransactionalIntegrat
 	}
 
 	@Test
-	@DataSet
+	@CdmDataSet
 	public void testReplaceUnmapped() throws Exception {
 		Institution x = (Institution)agentDao.findByUuid(institution1);
 		Institution y = (Institution)agentDao.findByUuid(institution2);
@@ -82,12 +80,12 @@ public class ReferringObjectMetadataFactoryTest extends CdmTransactionalIntegrat
 	}
 
 	@Test
-	@DataSets({
-	        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-	        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-	        @DataSet(value="ReferringObjectMetadataFactoryTest.xml")
-	    })
-	@ExpectedDataSet
+	@CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "ReferringObjectMetadataFactoryTest.xml"
+    })
+	@CdmExpectedDataSet
 	public void testReplaceToOneProperty() throws Exception {
 		Person x = (Person)agentDao.findByUuid(person1);
 		Person y = (Person)agentDao.findByUuid(person2);
@@ -101,8 +99,8 @@ public class ReferringObjectMetadataFactoryTest extends CdmTransactionalIntegrat
 	}
 
 	@Test
-	@DataSet
-	//@ExpectedDataSet
+	@CdmDataSet
+	//@CdmExpectedDataSet
 	public void testReplaceToManyProperty() throws Exception {
 		Person x = (Person)agentDao.findByUuid(person3);
 		Person y = (Person)agentDao.findByUuid(person2);

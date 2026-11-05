@@ -12,17 +12,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.junit.Assert;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * Integration tests for {@link CdmMassIndexer} / {@link ICdmMassIndexer}.
@@ -32,17 +31,16 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author a.babadshanjan, a.kohlbecker
  * @author a.mueller (extracted from TaxonServiceSearchTest)
  */
-public class CdmMassIndexerTest extends CdmTransactionalIntegrationTest {
+public class CdmMassIndexerTest extends CdmServicesTransactionalSpringIntegrationTest {
 
-    @SpringBeanByType
+    @Autowired
     private ICdmMassIndexer indexer;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonService taxonService;
 
     @Test
-    @DataSet(value = "/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.xml",
-            loadStrategy = CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.xml")
     public final void testPurge() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
@@ -61,8 +59,7 @@ public class CdmMassIndexerTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value = "/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.xml",
-            loadStrategy = CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.xml")
     public final void testReindex() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();

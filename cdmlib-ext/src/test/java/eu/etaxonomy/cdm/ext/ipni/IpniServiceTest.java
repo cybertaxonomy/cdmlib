@@ -18,8 +18,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -31,7 +29,6 @@ import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.test.TermTestBase;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
@@ -67,10 +64,6 @@ public class IpniServiceTest extends TermTestBase {
 	}
 
 	@Test
-	@DataSets({
-	    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-	    @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
-	})
 	public void testGetAuthors(){
 		ICdmRepository services = null;
 		IpniServiceAuthorConfigurator config = new IpniServiceAuthorConfigurator();
@@ -123,10 +116,6 @@ public class IpniServiceTest extends TermTestBase {
 
 
 	@Test
-	@DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
-        })
 	public void testGetNamesSimple(){
 		ICdmRepository services = null;
 		IpniServiceNamesConfigurator config = null;
@@ -150,10 +139,6 @@ public class IpniServiceTest extends TermTestBase {
 	}
 
 	@Test
-	@DataSets({
-	    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
-    })
 	public void testGetNamesAdvanced(){
 		ICdmRepository services = null;
 		IpniServiceNamesConfigurator config = IpniServiceNamesConfigurator.NewInstance();
@@ -190,10 +175,6 @@ public class IpniServiceTest extends TermTestBase {
 	}
 
 	@Test
-	@DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
-        })
 	public void testPublications(){
 		ICdmRepository services = null;
 		IpniServicePublicationConfigurator config = null;

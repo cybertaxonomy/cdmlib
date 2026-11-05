@@ -21,11 +21,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -34,26 +32,26 @@ import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
  * @author a.babadshanjan
  * @since 10.02.2009
  */
-public class TermVocabularyDaoImplTest extends CdmTransactionalIntegrationTest {
+public class TermVocabularyDaoImplTest extends CdmTransactionalSpringIntegrationTest {
 
-	@SpringBeanByType
+	@Autowired
 	private ITermVocabularyDao dao;
 
-	@Before
+	@BeforeEach
 	public void setUp() {}
 
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")}
-    )
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
+    })
     public void testListVocabularyByType() {
         //test class with no subclasses
         List<TermVocabulary> rankVocabularies = dao.listByTermType(TermType.Rank, false, null, null, null, null);
@@ -83,7 +81,7 @@ public class TermVocabularyDaoImplTest extends CdmTransactionalIntegrationTest {
 
 
     @Test
-    @DataSet("TermVocabularyDaoImplTest.testListVocabularyEmpty.xml")
+    @CdmDataSet("TermVocabularyDaoImplTest.testListVocabularyEmpty.xml")
     public void testListVocabularyByTypeEmpty() {
         List<TermVocabulary> emptyNamedAreas = dao.listByTermType(TermType.NamedArea, true, null, null, null, null);
         assertEquals("There should be no vocabulary, as we do not return ALL empty vocabularies of ANY type anymore", 0, emptyNamedAreas.size());
@@ -93,10 +91,10 @@ public class TermVocabularyDaoImplTest extends CdmTransactionalIntegrationTest {
     }
 
 	@Test()
-	@DataSets({
-	      @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-	      @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")}
-	)
+	@CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
+    })
 	public void testMissingTermUuids() {
 		List<UUID> uuidSet = new ArrayList<>();
 		uuidSet.add(Language.uuidEnglish);
@@ -166,10 +164,10 @@ public class TermVocabularyDaoImplTest extends CdmTransactionalIntegrationTest {
 	}
 
 	@Test
-    @DataSets({
-          @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-          @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")}
-    )
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
+    })
 	public void testFindVocabularyDtoByTermTypes(){
 	    Set<TermType> termTypes = new HashSet<>();
 	    termTypes.add(TermType.NamedArea);

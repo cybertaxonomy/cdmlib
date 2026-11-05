@@ -21,10 +21,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.Hibernate;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -34,20 +33,21 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmSpringIntegrationTest;
 
-@DataSet
-public class MediaDaoHibernateImplTest extends CdmIntegrationTest {
+@CdmDataSet
+public class MediaDaoHibernateImplTest extends CdmSpringIntegrationTest {
 
-	@SpringBeanByType
+	@Autowired
 	private IMediaDao mediaDao;
 
     private UUID media1Uuid;
 
-	@SpringBeanByType
+	@Autowired
 	private IDefinedTermDao definedTermDao;
 
-	@SpringBeanByType
+	@Autowired
 	private ITaxonDao taxonDao;
 
 	private UUID europeUuid;
@@ -57,7 +57,7 @@ public class MediaDaoHibernateImplTest extends CdmIntegrationTest {
 	private Set<Taxon> taxonomicScope;
 	private Set<NamedArea> geoScopes;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		europeUuid = UUID.fromString("e860871c-3a14-4ef2-9367-bbd92586c95b");
 		africaUuid = UUID.fromString("9444016a-b334-4772-8795-ed4019552087");

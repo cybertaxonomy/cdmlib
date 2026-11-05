@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+
 import static org.junit.Assert.assertEquals;
 
 import java.io.FileNotFoundException;
@@ -20,11 +22,9 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -160,51 +160,50 @@ import eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 27.07.2009
  */
-public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
+public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
-	@SpringBeanByType
+	@Autowired
 	private CdmGenericDaoImpl cdmGenericDao;
 
-	@SpringBeanByType
+	@Autowired
 	private ITaxonDao taxonDao;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionDao descriptionDao;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionElementDao descriptionElementDao;
 
-	@SpringBeanByType
+	@Autowired
 	private IOccurrenceDao occurrenceDao;
 
-	@SpringBeanByType
+	@Autowired
 	private ITaxonNameDao nameDao;
 
-	@SpringBeanByType
+	@Autowired
 	private IAgentDao agentDao;
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceDao referenceDao;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {}
 
 // ***************** TESTS **************************************************
 
 	@Test
-	@DataSets({
-      @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-      @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")}
-	)
+	@CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
+    })
 	public void testDelete(){
 		Reference ref1 = ReferenceFactory.newBook();
 		Reference ref2 = ReferenceFactory.newBook();
@@ -372,9 +371,10 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	}
 
 	@Test
-	@DataSets({
-	     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-	     @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")})
+	@CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
+    })
 	public void testGetReferencingObjectsCdmBase() {
 
 	    //create data
@@ -430,9 +430,10 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
     //similar to testGetReferencingObjectsCdmBase but with DTO
 	@Test
-    @DataSets({
-         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-         @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")})
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
+    })
     public void testGetReferencingObjectsDto() {
 
 	    IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
@@ -481,7 +482,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	 * 2nd test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#getReferencingObjects(CdmBase)}.
 	 */
 	@Test
-	@DataSet
+	@CdmDataSet
 	public final void testGetReferencingObjects2() {
 //		SpecimenDescription desc1 = SpecimenDescription.NewInstance();
 //		desc1.setTitleCache("desc1");

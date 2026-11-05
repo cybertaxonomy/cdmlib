@@ -19,10 +19,10 @@ import java.net.URL;
 import java.sql.SQLException;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.INameService;
@@ -39,35 +39,35 @@ import eu.etaxonomy.cdm.io.sdd.out.SDDExportConfigurator;
 import eu.etaxonomy.cdm.io.sdd.out.SDDExportState;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
 /**
  * @author l.morris
  * @since 14 Nov 2012
  */
-public class SDDImportExportTest extends CdmTransactionalIntegrationTest {
+public class SDDImportExportTest extends CdmIoTransactionalSpringIntegrationTest {
 
-    @SpringBeanByType
-    SDDImport sddImport;
+    @Autowired
+    private SDDImport sddImport;
 
     private SDDImportConfigurator importConfigurator;
 
-    @SpringBeanByType
-    SDDCdmExporter sddCdmExporter;
+    @Autowired
+    private SDDCdmExporter sddCdmExporter;
 
-    @SpringBeanByType
-    INameService nameService;
+    @Autowired
+    private INameService nameService;
 
-    @SpringBeanByType
-    ITaxonService taxonService;
+    @Autowired
+    private ITaxonService taxonService;
 
-    @SpringBeanByType
-    IClassificationService classificationService;
+    @Autowired
+    private IClassificationService classificationService;
 
     private IExportConfigurator exportConfigurator;
 
-    @Before
-    @Ignore
+    @BeforeEach
+    @Disabled
     //calling before testInit testDoInvoke. db stuff into devlopeACustomDatabase
     //setDefaultRollback
     public void setUp() throws URISyntaxException, MalformedURLException {
@@ -98,7 +98,7 @@ public class SDDImportExportTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testDoInvoke() {
 
         assertNotNull("sddImport should not be null", sddImport);

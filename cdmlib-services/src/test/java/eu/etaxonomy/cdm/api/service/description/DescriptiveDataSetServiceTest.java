@@ -23,12 +23,10 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
@@ -80,14 +78,14 @@ import eu.etaxonomy.cdm.persistence.dto.QuantitativeDataDto;
 import eu.etaxonomy.cdm.persistence.dto.StateDataDto;
 import eu.etaxonomy.cdm.persistence.dto.StatisticalMeasurementValueDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
 /**
  * @author k.luther
  * @since 01.10.2021
  */
-public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTest {
+public class DescriptiveDataSetServiceTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
@@ -114,55 +112,54 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
 
     private static UUID uuidFeatureTree = UUID.fromString("c8a29a94-2754-4d78-9faa-dff3e1387b2d");
 
-
-    @SpringBeanByType
+    @Autowired
     private ICdmRepository repository;
 
-    @SpringBeanByType
+    @Autowired
     private ITermService termService;
 
-    @SpringBeanByType
+    @Autowired
     private ITermTreeService termTreeService;
 
-    @SpringBeanByType
+    @Autowired
     private IVocabularyService vocabularyService;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptionService descriptionService;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonService taxonService;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonNodeService taxonNodeService;
 
-    @SpringBeanByType
+    @Autowired
     private IOccurrenceService specimenService;
 
-    @SpringBeanByType
+    @Autowired
     private IClassificationService classificationService;
 
-    @SpringBeanByType
+    @Autowired
     private IReferenceService referenceService;
 
-    @SpringBeanByType
+    @Autowired
     private IDescriptiveDataSetService datasetService;
 
     private IProgressMonitor monitor;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
 //        engine.setBatchMinFreeHeap(100 * 1024 * 1024);
         monitor = DefaultProgressMonitor.NewInstance();
     }
 
-//    @Ignore // the tesat fails when running in suite because no dataset is available, running the test in eclipse works as expected.
+//    @Disabled // the tesat fails when running in suite because no dataset is available, running the test in eclipse works as expected.
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="StructuredDescriptionAggregationTest.xml"),
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "StructuredDescriptionAggregationTest.xml"
     })
     public void testGetRowWrapper(){
         createDefaultFeatureTree();
@@ -213,7 +210,6 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
         stateData = cDto.getStates().iterator().next();
         assertEquals(State.uuidPresent, stateData.getState().getUuid());
 
-
         //taxon descriptions
         List<TaxonRowWrapperDTO> taxonDescList = rowWrappers.stream().filter(r->r instanceof TaxonRowWrapperDTO)
                 .map(r->(TaxonRowWrapperDTO)r).collect(Collectors.toList());
@@ -235,12 +231,12 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
         Assert.assertTrue(minDtoType.getTermType().equals(TermType.StatisticalMeasure));
 
     }
-//    @Ignore // the tesat fails when running in suite because no dataset is available, running the test in eclipse works as expected.
+//    @Disabled // the tesat fails when running in suite because no dataset is available, running the test in eclipse works as expected.
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="StructuredDescriptionAggregationTest.xml"),
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "StructuredDescriptionAggregationTest.xml"
     })
     public void testGetRowWrapperForSubtree(){
         createDefaultFeatureTree();
@@ -292,7 +288,6 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
         stateData = cDto.getStates().iterator().next();
         assertEquals(State.uuidPresent, stateData.getState().getUuid());
 
-
         //taxon descriptions
         List<TaxonRowWrapperDTO> taxonDescList = rowWrappers.stream().filter(r->r instanceof TaxonRowWrapperDTO)
                 .map(r->(TaxonRowWrapperDTO)r).collect(Collectors.toList());
@@ -315,13 +310,12 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
 
     }
 
-
-    @Ignore   //the test currently does not run in suite due to exception during descriptionService.mergeDescriptions(descToUpdate, dataSet.getUuid());
+    @Disabled   //the test currently does not run in suite due to exception during descriptionService.mergeDescriptions(descToUpdate, dataSet.getUuid());
     @Test
-    @DataSets({
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
-        @DataSet(value="StructuredDescriptionAggregationTest.xml"),
+    @CdmDataSet(cleanSweep = true, value = {
+            "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
+            "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml",
+            "StructuredDescriptionAggregationTest.xml"
     })
     public void testAddQuantitativeData() {
         createDefaultFeatureTree();
@@ -366,7 +360,6 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
             }
         }
     }
-
 
     private void addLiterature(DescriptiveDataSet dataSet) {
 
@@ -419,8 +412,6 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
         addLiterature(dataSet);
         return dataSet;
     }
-
-
 
     private void addQuantitativeData(DescriptionBase<?> desc, UUID uuidFeature, StatisticalMeasure type, BigDecimal value) {
         Feature feature = (Feature)termService.find(uuidFeature);
@@ -509,7 +500,6 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
         vocabularyService.save(stateVoc);
     }
 
-
     @Override
     public void createTestDataSet() throws FileNotFoundException {
 
@@ -521,7 +511,6 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
 
         referenceService.save(sec);
         referenceService.save(nomRef);
-
 
         // --- Taxa --- //
         //  Lapsana

@@ -17,15 +17,13 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
-
 //import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.ImportResult;
@@ -39,30 +37,31 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  */
-public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
+public class RisReferenceImportTest extends CdmIoTransactionalSpringIntegrationTest {
 
-	@SpringBeanByName
-	private CdmApplicationAwareDefaultImport<?> defaultImport;
+	@Autowired
+    @Qualifier("defaultImport")
+    private CdmApplicationAwareDefaultImport<?> defaultImport;
 
-	@SpringBeanByType
+	@Autowired
 	private IReferenceService referenceService;
 
-	@SpringBeanByType
+	@Autowired
     private IAgentService agentService;
 
-	@Before
+	@BeforeEach
 	public void setUp() {}
 
 //***************************** TESTS *************************************//
 
 	@Test
-	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testShort() {
 	    RisReferenceImportConfigurator configurator = getConfigurator("RisReferenceImportTest-input.ris");
 		ImportResult result = defaultImport.invoke(configurator);
@@ -124,6 +123,7 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
 	}
 
 	@Test
+	@CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
 	public void testChapter() {
 
 	    final RisReferenceImportConfigurator configurator = getConfigurator("Arias2012.ris");
@@ -184,7 +184,6 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
         List<Team> teamList = agentService.list(Team.class, null, null, null, null);
         Assert.assertEquals("There should be 1 team", 1, teamList.size());
 
-
         //test deduplication by running it again
         result = defaultImport.invoke(configurator);
         report = result.createReport().toString();
@@ -233,7 +232,7 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testLongFile() {
 
         RisReferenceImportConfigurator configurator = getConfigurator("Acantholimon.ris");
@@ -263,7 +262,6 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
         printList(institutionList);
         Assert.assertEquals(0, institutionList.size());
 
-
         Reference ref58 = refList.stream().filter(r->hasId(r, "58", false)).findFirst().get();
         Assert.assertNotNull("", ref58);
         Assert.assertEquals((Integer)2003, ref58.getDatePublished().getStartYear());
@@ -273,7 +271,6 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals(ReferenceType.BookSection, ref53.getType());
         Assert.assertNotNull("", ref53.getInReference());
         Assert.assertEquals("Tehran", ref53.getInReference().getPlacePublished());
-
 
         //        for (Reference ref : list){
 //            Assert.assertTrue(ref.getType() == ReferenceType.Article || ref.getType() == ReferenceType.Journal);

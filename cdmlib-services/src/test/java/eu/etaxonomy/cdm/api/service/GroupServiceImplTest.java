@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2014 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertNotNull;
@@ -11,33 +19,36 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.permission.Group;
 import eu.etaxonomy.cdm.model.permission.User;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
-public class GroupServiceImplTest extends CdmTransactionalIntegrationTest {
+/**
+ * @author k.luther
+ * @since 12.02.2014
+ */
+public class GroupServiceImplTest extends CdmServicesTransactionalSpringIntegrationTest {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-    @SpringBeanByType
+    @Autowired
     private IGroupService groupService;
 
-    @SpringBeanByType
+    @Autowired
     private IUserService userService;
 
     @Test
     public void testDeleteGroup(){
-        String admin_all = "ADMIN_ALL";
-    	GrantedAuthorityImpl testAuthority = GrantedAuthorityImpl.NewInstance(admin_all);
-    	Group group = Group.NewInstance("TestGroup");
+        GrantedAuthorityImpl testAuthority = GrantedAuthorityImpl.NewInstance("ADMIN_ALL_DELETE");
+    	Group group = Group.NewInstance("TestGroup-delete");
     	group.addGrantedAuthority(testAuthority);
     	UUID groupUUID =  groupService.saveGroup(group);
-    	User user1 = User.NewInstance("TestUser1", "pwd");
+    	User user1 = User.NewInstance("TestUser1-delete", "pwd");
     	UUID UserUUID =  userService.save(user1).getUuid();
 
 		groupService.delete(group);
@@ -49,23 +60,19 @@ public class GroupServiceImplTest extends CdmTransactionalIntegrationTest {
 
     }
 
-
-
     @Test
     public void testAddMemberToGroup(){
-        String admin_all = "ADMIN_ALL";
-        GrantedAuthorityImpl testAuthority = GrantedAuthorityImpl.NewInstance(admin_all);
-        Group group = Group.NewInstance("TestGroup");
+        GrantedAuthorityImpl testAuthority = GrantedAuthorityImpl.NewInstance("ADMIN_ALL_ADD_MEMBER");
+        Group group = Group.NewInstance("TestGroup-addMember");
         group.addGrantedAuthority(testAuthority);
         UUID groupUUID =  groupService.saveGroup(group);
-        User user1 = User.NewInstance("TestUser1", "pwd");
+        User user1 = User.NewInstance("TestUser1-addMember", "pwd");
         UUID UserUUID =  userService.save(user1).getUuid();
         group.addMember(user1);
         List<Group> groups = new ArrayList<>();
         groups.add(group);
         groupService.merge(groups, true);
         commitAndStartNewTransaction();
-
 
         group = groupService.find(groupUUID);
         assertNotNull(group);

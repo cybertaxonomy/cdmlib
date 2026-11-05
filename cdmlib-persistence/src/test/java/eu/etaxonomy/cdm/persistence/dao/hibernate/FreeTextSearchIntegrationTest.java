@@ -19,10 +19,9 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -32,19 +31,20 @@ import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
-@DataSet
-@Ignore //TODO indexing does not work at all, even before the unitils upgrade
-public class FreeTextSearchIntegrationTest extends CdmTransactionalIntegrationTest {
+@CdmDataSet
+@Disabled //TODO indexing does not work at all, even before the unitils upgrade
+public class FreeTextSearchIntegrationTest extends CdmTransactionalSpringIntegrationTest {
 
 	@SuppressWarnings("unused")
 	private static final Logger loger = LogManager.getLogger();
 
-	@SpringBeanByType
+	@Autowired
 	private ITaxonDao taxonDao;
 
-	@SpringBeanByType
+	@Autowired
 	private IDescriptionElementDao descriptionElementDao;
 
 	@Test

@@ -20,12 +20,10 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.dbunit.annotation.DataSets;
-import org.unitils.spring.annotation.SpringBeanByName;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
@@ -49,39 +47,41 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmIoTransactionalSpringIntegrationTest;
 
 /**
  * @author a.mueller
  * @since 24.05.2013
  */
-public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
+public class ExcelStreamImportTest extends CdmIoTransactionalSpringIntegrationTest{
 
 	@SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-	@SpringBeanByName
-	private CdmApplicationAwareDefaultImport<?> defaultImport;
+	@Autowired
+    @Qualifier("defaultImport")
+    private CdmApplicationAwareDefaultImport<?> defaultImport;
 
-	@SpringBeanByType
+	@Autowired
 	private INameService nameService;
 
-	@SpringBeanByType
+	@Autowired
 	private ITaxonService taxonService;
 
-	@SpringBeanByType
+	@Autowired
 	private ITermService termService;
 
-	@SpringBeanByType
+	@Autowired
 	private IClassificationService classificationService;
 
-	@SpringBeanByType
+	@Autowired
 	private IDescriptionService descriptionService;
 
 	private IImportConfigurator configurator;
 	private IImportConfigurator uuidConfigurator;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws URISyntaxException {
 		//TODO create own test file
 		String inputFile = "/eu/etaxonomy/cdm/io/excel/stream/ExcelStreamImport-TestInput.xls";
@@ -106,10 +106,7 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 	}
 
 	@Test
-    @DataSets({
-        @DataSet(/*loadStrategy=CleanSweepInsertLoadStrategy.class, */value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
-//        @DataSet( value="AbcdGgbnImportTest.testNoAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
-    })
+    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
 	public void testDoInvoke() {
 //		printDataSet(System.out, new String[]{"ANNOTATION"});
 		boolean result = defaultImport.invoke(configurator).isSuccess();
@@ -194,7 +191,7 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 	}
 
 //	@Test
-//	@DataSet(value="NormalExplicitImportTest.testUuid.xml")
+//	@CdmDataSet("NormalExplicitImportTest.testUuid.xml")
 //	public void testUUID() throws URISyntaxException{
 //		UUID taxonUuid = UUID.fromString("aafce7fe-0c5f-42ed-814b-4c7c2c715660");
 //		UUID synonymUuid = UUID.fromString("fc4a995b-37a9-4984-afe6-e352c6c04d92");
@@ -286,7 +283,6 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 		}
 		return null;
 	}
-
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}

@@ -25,7 +25,6 @@ import jakarta.validation.Payload;
  * ALSO MODIFY THE UNIT TESTS MAKING USE OF THIS CLASS!
  *
  * @author ayco_holleman
- *
  */
 @Target({ METHOD, FIELD, ANNOTATION_TYPE })
 @Retention(RUNTIME)

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+    https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <!-- REFERENTIAL_INTEGRITY=FALSE: Unitils H2DbSupport dropped FKs for fixtures/deletes -->
+        <property name="url" value="jdbc:h2:mem:cdmSpringSecurityTest;NON_KEYWORDS=VALUE,TYPE,ROLE,SIZE;DATABASE_TO_UPPER=TRUE;DB_CLOSE_DELAY=-1;REFERENTIAL_INTEGRITY=FALSE"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+
+    <bean id="cdmTestSchemaInitializer"
+          class="eu.etaxonomy.cdm.test.integration.spring.CdmTestSchemaInitializer">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="script" value="classpath:dbscripts/001-cdm.h2.sql"/>
+    </bean>
+
+    <bean class="eu.etaxonomy.cdm.test.integration.spring.CdmTestSchemaDependsOnPostProcessor"/>
+
+    <import resource="classpath:/eu/etaxonomy/cdm/persistence_security.xml" />
+    <import resource="classpath:/eu/etaxonomy/cdm/applicationContext-test.common.xml" />
+</beans>

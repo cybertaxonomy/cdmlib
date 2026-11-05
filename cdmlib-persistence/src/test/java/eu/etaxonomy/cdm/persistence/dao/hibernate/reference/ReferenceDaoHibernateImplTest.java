@@ -18,10 +18,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -30,12 +29,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmSpringIntegrationTest;
 
-@DataSet
-public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
+@CdmDataSet
+public class ReferenceDaoHibernateImplTest extends CdmSpringIntegrationTest {
 
-	@SpringBeanByType
+	@Autowired
 	private IReferenceDao referenceDao;
 
 	private UUID firstBookUuid;
@@ -44,7 +44,7 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 	private UUID articleUuid;
 	private UUID nomenclaturalReferenceBookUuid;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 	    //TODO: is proceedings in reality (!! dirty data !!) AND same as proceedingsUuid below
 		firstBookUuid = UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2");

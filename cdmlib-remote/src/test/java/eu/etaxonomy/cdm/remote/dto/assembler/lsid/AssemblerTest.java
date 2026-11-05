@@ -32,14 +32,13 @@ import org.hibernate.proxy.LazyInitializer;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
-import org.unitils.UnitilsJUnit4;
-import org.unitils.spring.annotation.SpringApplicationContext;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.github.dozermapper.core.Mapper;
 import com.ibm.lsid.MalformedLSIDException;
@@ -83,10 +82,10 @@ import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonRelationshipTerm;
 import eu.etaxonomy.cdm.remote.view.OaiPmhViewTest;
 
-@SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
-public class AssemblerTest extends UnitilsJUnit4 {
+@SpringJUnitConfig(locations = "classpath:/eu/etaxonomy/cdm/applicationContext-test.xml")
+public class AssemblerTest {
 
-    @SpringBeanByType
+    @Autowired
     private Mapper mapper;
 
     private Taxon taxon;
@@ -98,13 +97,13 @@ public class AssemblerTest extends UnitilsJUnit4 {
     private LSID lsid;
     private TaxonDescription taxonDescription;
 
-    @BeforeClass
+    @BeforeAll
     public static void onSetUp() {
         DefaultTermInitializer defaultTermInitializer = new DefaultTermInitializer();
         defaultTermInitializer.initialize();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         lsid = new LSID("urn:lsid:example.org:taxonconcepts:1");
 
