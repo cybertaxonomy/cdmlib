@@ -8,12 +8,14 @@
 */
 package eu.etaxonomy.cdm.api.service.longrunningService;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -61,10 +63,10 @@ public class SortIndexUpdaterWrapperTest extends CdmServicesTransactionalSpringI
             config.setMonitor(DefaultProgressMonitor.NewInstance());
             UpdateResult result = sortIndexUpdater.doInvoke(config);
 
-            Assert.assertEquals("No exception should be thrown during sortindex update", 0, result.getExceptions().size());
+            assertEquals(0, result.getExceptions().size(), "No exception should be thrown during sortindex update");
             commit();
         } catch (SecurityException e1) {  //NoSuchFieldException |
-            Assert.fail("sortIndex field not found");
+            fail("sortIndex field not found");
         }
     }
 
@@ -81,9 +83,9 @@ public class SortIndexUpdaterWrapperTest extends CdmServicesTransactionalSpringI
                 .NewInstance(false, true, false);
         try {
             UpdateResult result = sortIndexUpdater.doInvoke(config);
-            Assert.assertEquals("Missing monitor creates exception", 0, result.getExceptions().size());
+            assertEquals(0, result.getExceptions().size(), "Missing monitor creates exception");
         } catch (Exception e) {
-            Assert.fail("Missing monitor throws exception");
+            fail("Missing monitor throws exception");
         }
     }
 

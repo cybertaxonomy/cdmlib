@@ -8,12 +8,12 @@
  */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.Collection;
@@ -141,28 +141,25 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
         occurrenceService.moveDerivate(specimenA, specimenB, dnaSample);
 
         //test
-        assertTrue("DerivationEvent not removed from source!", specimenA.getDerivationEvents().isEmpty());
-        assertEquals("DerivationEvent not moved to source!", 1, specimenB.getDerivationEvents().size());
+        assertTrue(specimenA.getDerivationEvents().isEmpty(), "DerivationEvent not removed from source!");
+        assertEquals(1, specimenB.getDerivationEvents().size(), "DerivationEvent not moved to source!");
 
         DerivationEvent derivationEvent = specimenB.getDerivationEvents().iterator().next();
-        assertEquals("Moved DerivationEvent not of same type!", DerivationEventType.DNA_EXTRACTION(),
-                derivationEvent.getType());
+        assertEquals(DerivationEventType.DNA_EXTRACTION(), derivationEvent.getType(), "Moved DerivationEvent not of same type!");
         assertEquals(derivationActor, derivationEvent.getActor());
         assertEquals(derivationDescription, derivationEvent.getDescription());
         assertEquals(derivationInstitution, derivationEvent.getInstitution());
         assertEquals(derivationTimePeriod, derivationEvent.getTimeperiod());
         assertEquals(DerivationEventType.DNA_EXTRACTION(), derivationEvent.getType());
 
-        assertEquals("Wrong number of derivation originals!", 1, derivationEvent.getOriginals().size());
+        assertEquals(1, derivationEvent.getOriginals().size(), "Wrong number of derivation originals!");
         SpecimenOrObservationBase<?> newOriginal = derivationEvent.getOriginals().iterator().next();
-        assertEquals("Target of moved object not correct", specimenB, newOriginal);
-        assertEquals("Wrong number of derivatives!", 1, derivationEvent.getDerivatives().size());
+        assertEquals(specimenB, newOriginal, "Target of moved object not correct");
+        assertEquals(1, derivationEvent.getDerivatives().size(), "Wrong number of derivatives!");
 
         DerivedUnit movedDerivate = derivationEvent.getDerivatives().iterator().next();
-        assertEquals("Moved derivate has wrong type", SpecimenOrObservationType.DnaSample,
-                movedDerivate.getRecordBasis());
-        assertNotEquals("DerivationEvent 'derivedFrom' has not been changed after moving", originalDerivedFromEvent,
-                movedDerivate.getDerivedFrom());
+        assertEquals(SpecimenOrObservationType.DnaSample, movedDerivate.getRecordBasis(), "Moved derivate has wrong type");
+        assertNotEquals(originalDerivedFromEvent, movedDerivate.getDerivedFrom(), "DerivationEvent 'derivedFrom' has not been changed after moving");
 
     }
 
@@ -175,17 +172,17 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
         occurrenceService.saveOrUpdate(fieldUnit);
         occurrenceService.saveOrUpdate(derivedUnit);
 
-        assertEquals("DerivationEvent not moved to source!", 0, fieldUnit.getDerivationEvents().size());
+        assertEquals(0, fieldUnit.getDerivationEvents().size(), "DerivationEvent not moved to source!");
         occurrenceService.moveDerivate(null, fieldUnit, derivedUnit);
-        assertEquals("DerivationEvent not moved to source!", 1, fieldUnit.getDerivationEvents().size());
+        assertEquals(1, fieldUnit.getDerivationEvents().size(), "DerivationEvent not moved to source!");
 
         DerivationEvent derivationEvent = fieldUnit.getDerivationEvents().iterator().next();
         assertNull(derivationEvent.getType());
 
-        assertEquals("Wrong number of derivation originals!", 1, derivationEvent.getOriginals().size());
+        assertEquals(1, derivationEvent.getOriginals().size(), "Wrong number of derivation originals!");
         SpecimenOrObservationBase<?> newOriginal = derivationEvent.getOriginals().iterator().next();
-        assertEquals("Target of moved object not correct", fieldUnit, newOriginal);
-        assertEquals("Wrong number of derivatives!", 1, derivationEvent.getDerivatives().size());
+        assertEquals(fieldUnit, newOriginal, "Target of moved object not correct");
+        assertEquals(1, derivationEvent.getDerivatives().size(), "Wrong number of derivatives!");
     }
 
     @Test
@@ -205,11 +202,11 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
         dnaSampleA.addSequence(sequence);
 
         occurrenceService.moveSequence(dnaSampleA, dnaSampleB, sequence);
-        assertEquals("Number of sequences is wrong", 0, dnaSampleA.getSequences().size());
-        assertEquals("Number of sequences is wrong", 1, dnaSampleB.getSequences().size());
+        assertEquals(0, dnaSampleA.getSequences().size(), "Number of sequences is wrong");
+        assertEquals(1, dnaSampleB.getSequences().size(), "Number of sequences is wrong");
         Sequence next = dnaSampleB.getSequences().iterator().next();
-        assertEquals("Sequences are not equals", sequence, next);
-        assertEquals("Sequences are not equals", consensusSequence, next.getSequenceString());
+        assertEquals(sequence, next, "Sequences are not equals");
+        assertEquals(consensusSequence, next.getSequenceString(), "Sequences are not equals");
     }
 
     @Test
@@ -294,16 +291,14 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
         TaxonDescription taxonDescription = (TaxonDescription) descriptionService.load(taxonDEscriptionUuid);
         // check initial state (IndividualsAssociation)
         DescriptionElementBase descriptionElement = taxonDescription.getElements().iterator().next();
-        assertTrue("wrong type of description element", descriptionElement.isInstanceOf(IndividualsAssociation.class));
-        assertEquals("associated specimen is incorrect", associatedFieldUnit,
-                ((IndividualsAssociation) descriptionElement).getAssociatedSpecimenOrObservation());
+        assertTrue(descriptionElement.isInstanceOf(IndividualsAssociation.class), "wrong type of description element");
+        assertEquals(associatedFieldUnit, ((IndividualsAssociation) descriptionElement).getAssociatedSpecimenOrObservation(), "associated specimen is incorrect");
         // check initial state (Type Designation)
         @SuppressWarnings("rawtypes")
         Set<TypeDesignationBase> typeDesignations = name.getTypeDesignations();
         TypeDesignationBase<?> typeDesignation = typeDesignations.iterator().next();
-        assertTrue("wrong type of type designation", typeDesignation.isInstanceOf(SpecimenTypeDesignation.class));
-        assertEquals("type specimen is incorrect", typeSpecimen,
-                ((SpecimenTypeDesignation) typeDesignation).getTypeSpecimen());
+        assertTrue(typeDesignation.isInstanceOf(SpecimenTypeDesignation.class), "wrong type of type designation");
+        assertEquals(typeSpecimen, ((SpecimenTypeDesignation) typeDesignation).getTypeSpecimen(), "type specimen is incorrect");
 
         SpecimenDeleteConfigurator config = new SpecimenDeleteConfigurator();
         // delete type specimen from type designation
@@ -415,27 +410,26 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
         // check for FieldUnit (IndividualsAssociation)
         java.util.Collection<IndividualsAssociation> individualsAssociations = occurrenceService
                 .listIndividualsAssociations(associatedFieldUnit, null, null, null, null);
-        assertEquals("Number of individuals associations is incorrect", 1, individualsAssociations.size());
+        assertEquals(1, individualsAssociations.size(), "Number of individuals associations is incorrect");
         IndividualsAssociation individualsAssociation = individualsAssociations.iterator().next();
-        assertTrue("association has wrong type",
-                individualsAssociation.getInDescription().isInstanceOf(TaxonDescription.class));
+        assertTrue(individualsAssociation.getInDescription().isInstanceOf(TaxonDescription.class), "association has wrong type");
         TaxonDescription retrievedTaxonDescription = HibernateProxyHelper.deproxy(
                 individualsAssociation.getInDescription(), TaxonDescription.class);
         assertEquals(taxonDescription, retrievedTaxonDescription);
-        assertEquals("Associated taxon is incorrect", taxon, retrievedTaxonDescription.getTaxon());
+        assertEquals(taxon, retrievedTaxonDescription.getTaxon(), "Associated taxon is incorrect");
 
         // check for DerivedUnit (Type Designation should exist)
         java.util.Collection<SpecimenTypeDesignation> typeDesignations = occurrenceService.listTypeDesignations(
                 typeSpecimen, null, null, null, null);
-        assertEquals("Number of type designations is incorrect", 1, typeDesignations.size());
+        assertEquals(1, typeDesignations.size(), "Number of type designations is incorrect");
         SpecimenTypeDesignation specimenTypeDesignation = typeDesignations.iterator().next();
         Set<TaxonName> typifiedNames = specimenTypeDesignation.getTypifiedNames();
-        assertEquals("number of typified names is incorrect", 1, typifiedNames.size());
+        assertEquals(1, typifiedNames.size(), "number of typified names is incorrect");
         Set<?> taxonBases = typifiedNames.iterator().next().getTaxonBases();
-        assertEquals("number of taxa incorrect", 1, taxonBases.size());
+        assertEquals(1, taxonBases.size(), "number of taxa incorrect");
         Object next = taxonBases.iterator().next();
         assertTrue(next instanceof CdmBase && ((CdmBase) next).isInstanceOf(Taxon.class));
-        assertEquals("Typed taxon is incorrect", taxon, next);
+        assertEquals(taxon, next, "Typed taxon is incorrect");
     }
 
     @Test
@@ -489,7 +483,7 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
         deleteResult = occurrenceService.isDeletable(derivedUnit.getUuid(), config);
         //deletion of specimen description should always work because there are no
         //specimen description without a specimen
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
+        assertTrue(deleteResult.isOk(), deleteResult.toString());
         occurrenceService.delete(derivedUnit, config);
         specimenDescription = (SpecimenDescription) descriptionService.find(specimenDescriptionUuid);
 
@@ -562,12 +556,12 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
         // check deletion of field unit -> should fail because of voucher
         // specimen (describedSpecimen) in TaxonDescription
         deleteResult = occurrenceService.isDeletable(associatedFieldUnit.getUuid(), config);
-        assertFalse(deleteResult.toString(), deleteResult.isOk());
+        assertFalse(deleteResult.isOk(), deleteResult.toString());
 
         // allow deletion of child derivatives
         config.setDeleteChildren(true);
         deleteResult = occurrenceService.isDeletable(associatedFieldUnit.getUuid(), config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
+        assertTrue(deleteResult.isOk(), deleteResult.toString());
     }
 
     @Test
@@ -635,13 +629,13 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
         // check deletion of field unit -> should fail because of
         // IndividualAssociation
         deleteResult = occurrenceService.isDeletable(associatedFieldUnit.getUuid(), config);
-        assertFalse(deleteResult.toString(), deleteResult.isOk());
-        assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(individualsAssociation));
+        assertFalse(deleteResult.isOk(), deleteResult.toString());
+        assertTrue(deleteResult.getRelatedObjects().contains(individualsAssociation), deleteResult.toString());
 
         // allow deletion of individuals association
         config.setDeleteFromIndividualsAssociation(true);
         deleteResult = occurrenceService.isDeletable(associatedFieldUnit.getUuid(), config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
+        assertTrue(deleteResult.isOk(), deleteResult.toString());
 
     }
 
@@ -710,14 +704,14 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
 
         // check deletion of specimen
         deleteResult = occurrenceService.isDeletable(typeSpecimen.getUuid(), config);
-        assertFalse(deleteResult.toString(), deleteResult.isOk());
-        assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(typeDesignation));
+        assertFalse(deleteResult.isOk(), deleteResult.toString());
+        assertTrue(deleteResult.getRelatedObjects().contains(typeDesignation), deleteResult.toString());
 
         // allow deletion of type designation
         config.setDeleteFromTypeDesignation(true);
 
         deleteResult = occurrenceService.isDeletable(typeSpecimen.getUuid(), config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
+        assertTrue(deleteResult.isOk(), deleteResult.toString());
     }
 
     @Test
@@ -790,27 +784,27 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
         DeleteResult deleteResult = null;
         // check deletion of DnaSample
         deleteResult = occurrenceService.isDeletable(dnaSample.getUuid(), config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
+        assertTrue(deleteResult.isOk(), deleteResult.toString());
 
         // check deletion of Specimen
         deleteResult = occurrenceService.isDeletable(derivedUnit.getUuid(), config);
-        assertFalse(deleteResult.toString(), deleteResult.isOk());
-        assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(derivedUnitToDnaSampleEvent));
+        assertFalse(deleteResult.isOk(), deleteResult.toString());
+        assertTrue(deleteResult.getRelatedObjects().contains(derivedUnitToDnaSampleEvent), deleteResult.toString());
 
         // check deletion of fieldUnit
         deleteResult = occurrenceService.isDeletable(fieldUnit.getUuid(), config);
-        assertFalse(deleteResult.toString(), deleteResult.isOk());
-        assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(fieldUnitToDerivedUnitEvent));
+        assertFalse(deleteResult.isOk(), deleteResult.toString());
+        assertTrue(deleteResult.getRelatedObjects().contains(fieldUnitToDerivedUnitEvent), deleteResult.toString());
 
         // check deletion of Specimen
         config.setDeleteChildren(true);
         deleteResult = occurrenceService.isDeletable(derivedUnit.getUuid(), config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(derivedUnitToDnaSampleEvent));
+        assertTrue(deleteResult.isOk(), deleteResult.toString());
+        assertTrue(deleteResult.getRelatedObjects().contains(derivedUnitToDnaSampleEvent), deleteResult.toString());
 
         // check deletion of fieldUnit
         deleteResult = occurrenceService.isDeletable(fieldUnit.getUuid(), config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
+        assertTrue(deleteResult.isOk(), deleteResult.toString());
 
     }
 
@@ -1257,7 +1251,7 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
         assertTrue(uuidList.contains(synonmTypeDesignationUuid));
         assertFalse(uuidList.contains(tissueUuidNoAssociationUuid));
         assertFalse(uuidList.contains(derivedUnitDeterminationOrphanNameUuid));
-        assertEquals("Wrong number of associated specimens", 6, specimens.size());
+        assertEquals(6, specimens.size(), "Wrong number of associated specimens");
     }
 
     /**
@@ -1356,7 +1350,7 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
         assertTrue(specimens.contains(fossilTypeDesignation));
         assertFalse(specimens.contains(tissueUuidNoAssociation));
         assertFalse(specimens.contains(derivedUnitDeterminationOrphanName));
-        assertEquals("Wrong number of associated specimens", 6, specimens.size());
+        assertEquals(6, specimens.size(), "Wrong number of associated specimens");
 
         /*
          * search for taxon name
@@ -1374,7 +1368,7 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
         assertTrue(!specimens.contains(fossilTypeDesignation));
         assertTrue(!specimens.contains(tissueUuidNoAssociation));
         assertTrue(!specimens.contains(derivedUnitDeterminationOrphanName));
-        assertEquals("Wrong number of associated specimens", 2, specimens.size());
+        assertEquals(2, specimens.size(), "Wrong number of associated specimens");
 
         /*
          * search for synonym name
@@ -1392,7 +1386,7 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
         assertTrue(!specimens.contains(fossilTypeDesignation));
         assertTrue(!specimens.contains(tissueUuidNoAssociation));
         assertTrue(!specimens.contains(derivedUnitDeterminationOrphanName));
-        assertEquals("Wrong number of associated specimens", 1, specimens.size());
+        assertEquals(1, specimens.size(), "Wrong number of associated specimens");
 
         /*
          * search for orphan name
@@ -1410,7 +1404,7 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
         assertTrue(!specimens.contains(fossilTypeDesignation));
         assertTrue(!specimens.contains(tissueUuidNoAssociation));
         assertTrue(specimens.contains(derivedUnitDeterminationOrphanName));
-        assertEquals("Wrong number of associated specimens", 1, specimens.size());
+        assertEquals(1, specimens.size(), "Wrong number of associated specimens");
 
 //        //DERIVATIVES
 //        //determination: taxon

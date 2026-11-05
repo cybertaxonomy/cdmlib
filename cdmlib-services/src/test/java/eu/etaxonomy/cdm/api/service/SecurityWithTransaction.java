@@ -8,9 +8,10 @@
  */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
 import java.util.Iterator;
@@ -21,7 +22,6 @@ import javax.sql.DataSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -98,10 +98,10 @@ public class SecurityWithTransaction extends CdmServicesTransactionalSpringInteg
         //try {
 		DeleteResult result = taxonService.deleteTaxon(actualTaxon.getUuid(), null, null);
 		/*} catch (DataChangeNoRollbackException e) {
-			Assert.fail();
+			fail();
 		}*/
 		if (!result.isOk()){
-			Assert.fail();
+			fail();
 		}
     }
 

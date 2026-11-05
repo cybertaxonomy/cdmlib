@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.service.media;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -18,8 +18,8 @@ import java.util.Map;
 import org.apache.hc.core5.http.HttpException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -33,7 +33,7 @@ public class MediaInfoServiceReaderTest  {
 
     private static final Logger logger = LogManager.getLogger();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {}
 
     @Test

@@ -8,11 +8,12 @@
 */
 package eu.etaxonomy.cdm.api.service.description;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -27,7 +28,6 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -212,14 +212,14 @@ public class DistributionAggregationTest extends CdmServicesTransactionalSpringI
 
         Taxon lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         assertEquals(2, lapsana_communis_alpina.getDescriptions().size());
-        assertEquals("LCA must have 1 computed description", 1, lapsana_communis_alpina.getDescriptions().stream()
-            .filter(td->td.isAggregatedDistribution()).count());
-        assertEquals("Endemic in yug is missing", 1, lapsana_communis_alpina.getDescriptions().stream()
+        assertEquals(1, lapsana_communis_alpina.getDescriptions().stream()
+            .filter(td->td.isAggregatedDistribution()).count(), "LCA must have 1 computed description");
+        assertEquals(1, lapsana_communis_alpina.getDescriptions().stream()
                 .filter(td->td.isAggregatedDistribution())
                 .flatMap(td->td.getElements().stream())
                 .filter(deb->deb.isInstanceOf(Distribution.class))
                 .map(deb->((Distribution)deb))
-                .filter(db->db.getStatus().equals(endemic)&&db.getArea().equals(yug)).count());
+                .filter(db->db.getStatus().equals(endemic)&&db.getArea().equals(yug)).count(), "Endemic in yug is missing");
 
         //TODO decide if absent status should aggregate along rank, originally they were not ignored
 //        Taxon lapsana_communis  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
@@ -231,10 +231,10 @@ public class DistributionAggregationTest extends CdmServicesTransactionalSpringI
 //            Distribution distribution = (Distribution)element;
 //            if(distribution.getArea().equals(yug_ko)){
 //                numExpectedFound++;
-//                assertEquals("aggregated status of area YUG-KO wrong", PresenceAbsenceTerm.INTRODUCED_FORMERLY_INTRODUCED(), distribution.getStatus());
+//                assertEquals(PresenceAbsenceTerm.INTRODUCED_FORMERLY_INTRODUCED(), distribution.getStatus(), "aggregated status of area YUG-KO wrong");
 //            }
 //        }
-//        assertEquals("YUG-KO should have been found before", numExpectedFound, 1);
+//        assertEquals(numExpectedFound, 1, "YUG-KO should have been found before");
     }
 
     @Test
@@ -272,15 +272,15 @@ public class DistributionAggregationTest extends CdmServicesTransactionalSpringI
         Distribution accumulatedDistribution = null;
         for (TaxonDescription description : lapsana_communis_alpina.getDescriptions()) {
             if(description.isAggregatedDistribution()) {
-                assertNull("only one computed Distribution should exists", accumulatedDistribution);
-                assertEquals("the computed Decsription should have only one element", 1, description.getElements().size());
+                assertNull(accumulatedDistribution, "only one computed Distribution should exists");
+                assertEquals(1, description.getElements().size(), "the computed Decsription should have only one element");
                 accumulatedDistribution = (Distribution) description.getElements().iterator().next();
-                assertEquals("Expecting area to be YUG", yug, accumulatedDistribution.getArea());
-                assertEquals("Expecting status to be NATIVE", PresenceAbsenceTerm.NATIVE(), accumulatedDistribution.getStatus());
+                assertEquals(yug, accumulatedDistribution.getArea(), "Expecting area to be YUG");
+                assertEquals(PresenceAbsenceTerm.NATIVE(), accumulatedDistribution.getStatus(), "Expecting status to be NATIVE");
             }
         }
-        assertNotNull("The area YUG should have been found", accumulatedDistribution);
-        assertEquals("Expecting two source references", 2, accumulatedDistribution.getSources().size());
+        assertNotNull(accumulatedDistribution, "The area YUG should have been found");
+        assertEquals(2, accumulatedDistribution.getSources().size(), "Expecting two source references");
         Iterator<DescriptionElementSource> sourceIt = accumulatedDistribution.getSources().iterator();
         // should contain source_LCA_yug_ma and source_LCA_yug_ko, testing the microreference which is unique in the tests
         assertTrue(" 2  4 ".contains(" " + sourceIt.next().getCitationMicroReference() + " "));
@@ -320,12 +320,10 @@ public class DistributionAggregationTest extends CdmServicesTransactionalSpringI
 
         //test
         Taxon lapsana_communis  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
-        assertEquals("Lapsana communis alpina must have 2 Descriptions, 1 with original data, 1 with aggregated data",
-                2, lapsana_communis.getDescriptions().size());
+        assertEquals(2, lapsana_communis.getDescriptions().size(), "Lapsana communis alpina must have 2 Descriptions, 1 with original data, 1 with aggregated data");
 
         Taxon lapsana = (Taxon) taxonService.load(T_LAPSANA_UUID);
-        assertEquals("Lapsana must have 1 Description with only aggregated data (original data does not exist)",
-                1, lapsana.getDescriptions().size());
+        assertEquals(1, lapsana.getDescriptions().size(), "Lapsana must have 1 Description with only aggregated data (original data does not exist)");
         TaxonDescription lapsanaAggregatedDescription = lapsana.getDescriptions().iterator().next();
         assertTrue(lapsanaAggregatedDescription.isAggregatedDistribution());
         assertEquals(3, lapsanaAggregatedDescription.getElements().size());
@@ -339,7 +337,7 @@ public class DistributionAggregationTest extends CdmServicesTransactionalSpringI
             Distribution lapsanaDistribution = (Distribution)element;
             if(lapsanaDistribution.getArea().equals(yug)){
                 numExpectedFound++;
-                assertEquals("Aggregated status of area YUG is wrong", PresenceAbsenceTerm.NATIVE(), lapsanaDistribution.getStatus());
+                assertEquals(PresenceAbsenceTerm.NATIVE(), lapsanaDistribution.getStatus(), "Aggregated status of area YUG is wrong");
                 assertEquals(2, lapsanaDistribution.getSources().size());
                 // should contain source_LCA_yug_ma and source_LCA_yug_ko, testing the microreference which is unique in the tests
                 assertTrue(sourceExists(lapsanaDistribution.getSources(), book_a, "2"));
@@ -348,7 +346,7 @@ public class DistributionAggregationTest extends CdmServicesTransactionalSpringI
             }
             if(lapsanaDistribution.getArea().equals(yug_mn)){
                 numExpectedFound++;
-                assertEquals("Aggregated status of area YUG-MN is wrong", PresenceAbsenceTerm.CULTIVATED(), lapsanaDistribution.getStatus());
+                assertEquals(PresenceAbsenceTerm.CULTIVATED(), lapsanaDistribution.getStatus(), "Aggregated status of area YUG-MN is wrong");
                 assertEquals(2, lapsanaDistribution.getSources().size());
                 // should contain source_LCA_yug_ma and source_LCA_yug_ko, testing the microreference which is unique in the tests
                 assertTrue(sourceExists(lapsanaDistribution.getSources(), book_a, "1"));
@@ -357,14 +355,14 @@ public class DistributionAggregationTest extends CdmServicesTransactionalSpringI
             }
             if(lapsanaDistribution.getArea().equals(yug_ko)){
                 numExpectedFound++;
-                assertEquals("aggregated status of area YUG-KO wrong", PresenceAbsenceTerm.NATIVE(), lapsanaDistribution.getStatus());
+                assertEquals(PresenceAbsenceTerm.NATIVE(), lapsanaDistribution.getStatus(), "aggregated status of area YUG-KO wrong");
                 assertEquals(2, lapsanaDistribution.getSources().size());
                 // should contain source_LCA_yug_ma and source_LCA_yug_ko, testing the microreference which is unique in the tests
                 assertTrue(sourceExists(lapsanaDistribution.getSources(), book_a, "2"));
                 assertTrue(sourceExists(lapsanaDistribution.getSources(), book_a, "4"));
             }
         }
-        assertEquals("All three expected areas should have been found before", numExpectedFound, 3);
+        assertEquals(numExpectedFound, 3, "All three expected areas should have been found before");
 
         //RERUN aggregation, result should be same except for the little changes,
         //      descriptions, distributions and sources should be reused where possible
@@ -377,7 +375,7 @@ public class DistributionAggregationTest extends CdmServicesTransactionalSpringI
         addDistributions(T_LAPSANA_COMMUNIS_ALPINA_UUID, mn_distr);
 
         Set<DescriptionElementSource> lca_yug_ko_sources = descriptionElementService.load(distributions_LCA.get(1).getUuid(), null).getSources();
-        Assert.assertEquals(1, lca_yug_ko_sources.size());
+        assertEquals(1, lca_yug_ko_sources.size());
         DescriptionElementSource lca_yug_ko_source = lca_yug_ko_sources.iterator().next();
         lca_yug_ko_source.setCitationMicroReference("2a");
 
@@ -393,21 +391,21 @@ public class DistributionAggregationTest extends CdmServicesTransactionalSpringI
 
         //test
         lapsana_communis  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
-        assertEquals("Lapsana communis alpina must still have 2 Descriptions", 2, lapsana_communis.getDescriptions().size());
+        assertEquals(2, lapsana_communis.getDescriptions().size(), "Lapsana communis alpina must still have 2 Descriptions");
 
         lapsana = (Taxon) taxonService.load(T_LAPSANA_UUID);
-        assertEquals("Lapsana must only have 1 Description", 1, lapsana.getDescriptions().size());
+        assertEquals(1, lapsana.getDescriptions().size(), "Lapsana must only have 1 Description");
         lapsanaAggregatedDescription = lapsana.getDescriptions().iterator().next();
         assertEquals(lapsanaDescriptionUuid, lapsanaAggregatedDescription.getUuid());
         assertTrue(lapsanaAggregatedDescription.isAggregatedDistribution());
-        assertEquals("After reaggregation there should still be only 3 distributions", 3, lapsanaAggregatedDescription.getElements().size());
+        assertEquals(3, lapsanaAggregatedDescription.getElements().size(), "After reaggregation there should still be only 3 distributions");
         numExpectedFound = 0;
         for (DescriptionElementBase element : lapsanaAggregatedDescription.getElements()){
             Distribution lapsanaDistr = (Distribution)element;
             if(lapsanaDistr.getArea().equals(yug)){
                 numExpectedFound++;
                 assertEquals(yugDistributionUuid, lapsanaDistr.getUuid());
-                assertEquals("aggregated status of area YUG is wrong", PresenceAbsenceTerm.NATIVE(), lapsanaDistr.getStatus());
+                assertEquals(PresenceAbsenceTerm.NATIVE(), lapsanaDistr.getStatus(), "aggregated status of area YUG is wrong");
                 assertEquals(1, lapsanaDistr.getSources().size());
                 assertFalse(sourceExists(lapsanaDistr.getSources(), book_a, "2"));
                 assertFalse(sourceExists(lapsanaDistr.getSources(), book_a, "4"));
@@ -417,19 +415,19 @@ public class DistributionAggregationTest extends CdmServicesTransactionalSpringI
                 //new status and source after reaggregation
                 numExpectedFound++;
                 //this may change in future
-                Assert.assertEquals("Distribution should be reused even if status changes", yug_mn_DistributionUuid, lapsanaDistr.getUuid());
-                assertEquals("aggregated status of area YUG-MN is wrong", PresenceAbsenceTerm.INTRODUCED(), lapsanaDistr.getStatus());
-                assertEquals("on higher status there should only 1 source left",1, lapsanaDistr.getSources().size());
+                assertEquals(yug_mn_DistributionUuid, lapsanaDistr.getUuid(), "Distribution should be reused even if status changes");
+                assertEquals(PresenceAbsenceTerm.INTRODUCED(), lapsanaDistr.getStatus(), "aggregated status of area YUG-MN is wrong");
+                assertEquals(1, lapsanaDistr.getSources().size(), "on higher status there should only 1 source left");
                 assertTrue(sourceExists(lapsanaDistr.getSources(), null, "5"));
             }
             if(lapsanaDistr.getArea().equals(yug_ko)){
                 numExpectedFound++;
-                assertEquals("aggregated status of area YUG-KO wrong", PresenceAbsenceTerm.NATIVE(), lapsanaDistr.getStatus());
+                assertEquals(PresenceAbsenceTerm.NATIVE(), lapsanaDistr.getStatus(), "aggregated status of area YUG-KO wrong");
                 assertEquals(1, lapsanaDistr.getSources().size());
                 assertTrue(sourceExists(lapsanaDistr.getSources(), book_a, "2a"));
             }
         }
-        assertEquals("All three expected areas should have been found before", numExpectedFound, 3);
+        assertEquals(numExpectedFound, 3, "All three expected areas should have been found before");
     }
 
     private boolean sourceExists(Set<DescriptionElementSource> sources, Reference ref, String microCitation) {
@@ -602,14 +600,14 @@ public class DistributionAggregationTest extends CdmServicesTransactionalSpringI
                 .map(el->(Distribution)el).filter(d->d.getArea().equals(yug_ko)).findFirst().get();
         assertEquals(1, dist_yu_ko.getSources().size());
         DescriptionElementSource source = dist_yu_ko.getSources().iterator().next();
-        assertNotNull("", source.getCdmSource());
+        assertNotNull(source.getCdmSource(), "");
         //TODO more checks
 
         Distribution dist_yu = lc_description.getElements().stream()
                 .map(el->(Distribution)el).filter(d->d.getArea().equals(yug)).findFirst().get();
         assertEquals(1, dist_yu.getSources().size());
         source = dist_yu.getSources().iterator().next();
-        assertNotNull("", source.getCdmSource());
+        assertNotNull(source.getCdmSource(), "");
         //TODO more checks
     }
 
@@ -713,7 +711,7 @@ public class DistributionAggregationTest extends CdmServicesTransactionalSpringI
                 testAll = testAll+4;
             }
         }
-        Assert.assertTrue(testAll == 7);
+        assertTrue(testAll == 7);
     }
 
     private Distribution newDistribution(Reference reference, NamedArea area, PresenceAbsenceTerm status,
@@ -772,7 +770,7 @@ public class DistributionAggregationTest extends CdmServicesTransactionalSpringI
 
     private void testStatusOk(DeleteResult result) {
         if (result.getStatus() != DeleteResult.Status.OK){
-            Assert.fail("Aggregation should have status OK but was " + result.toString());
+            fail("Aggregation should have status OK but was " + result.toString());
             for (Exception ex : result.getExceptions()){
                 ex.printStackTrace();
             }

@@ -8,14 +8,16 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeByNameComparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeNaturalComparator;
@@ -39,7 +41,7 @@ public class TaxonNodeDtoByNameComparatorTest {
     private static final Logger logger = LogManager.getLogger();
 
     @Test
-    @Ignore
+    @Disabled
     public void testCompare() {
         Classification classification = Classification.NewInstance("Greuther, 1993");
 
@@ -81,13 +83,13 @@ public class TaxonNodeDtoByNameComparatorTest {
         int i = 0;
         logger.debug("order using default settings");
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_2, taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_2, taxonNodes.get(i++).getTaxon().getName().getNameCache());
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_1, taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_1, taxonNodes.get(i++).getTaxon().getName().getNameCache());
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_3, taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_3, taxonNodes.get(i++).getTaxon().getName().getNameCache());
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_4, taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_4, taxonNodes.get(i++).getTaxon().getName().getNameCache());
 
         // order without ignoring hybrid signs
         taxonNodeByNameComparator.setIgnoreHybridSign(false);
@@ -97,13 +99,13 @@ public class TaxonNodeDtoByNameComparatorTest {
         i = 0;
         logger.debug("order without ignoring hybrid signs");
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_3, taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_3, taxonNodes.get(i++).getTaxon().getName().getNameCache());
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_4, taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_4, taxonNodes.get(i++).getTaxon().getName().getNameCache());
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_1, taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_1, taxonNodes.get(i++).getTaxon().getName().getNameCache());
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_2, taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_2, taxonNodes.get(i++).getTaxon().getName().getNameCache());
 
     }
 
@@ -128,14 +130,14 @@ public class TaxonNodeDtoByNameComparatorTest {
 
         TaxonNodeDtoByNameComparator taxonNodeByNameComparator = new TaxonNodeDtoByNameComparator();
 
-        Assert.assertEquals(0, taxonNodeByNameComparator.compare(null, null));
-        Assert.assertEquals(-1, taxonNodeByNameComparator.compare(node1, null));
-        Assert.assertEquals(1, taxonNodeByNameComparator.compare(null, node1));
+        assertEquals(0, taxonNodeByNameComparator.compare(null, null));
+        assertEquals(-1, taxonNodeByNameComparator.compare(node1, null));
+        assertEquals(1, taxonNodeByNameComparator.compare(null, node1));
 
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testCompareNaturalOrder() {
         Classification classification = Classification.NewInstance("Greuther, 1993");
 
@@ -183,27 +185,27 @@ public class TaxonNodeDtoByNameComparatorTest {
         int i = 0;
         logger.debug("order using default settings");
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_1, taxonNodes.get(i).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_1, taxonNodes.get(i).getTaxon().getName().getNameCache());
         logger.debug(taxonNodes.get(i++).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_2, taxonNodes.get(i).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_2, taxonNodes.get(i).getTaxon().getName().getNameCache());
         logger.debug(taxonNodes.get(i++).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_3, taxonNodes.get(i).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_3, taxonNodes.get(i).getTaxon().getName().getNameCache());
         logger.debug(taxonNodes.get(i++).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_4, taxonNodes.get(i).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_4, taxonNodes.get(i).getTaxon().getName().getNameCache());
 
         TaxonNode result = classification.addChildTaxon(taxon_5, 2, null, null);
-        Assert.assertTrue(result.getSortIndex() == 2);
+        assertTrue(result.getSortIndex() == 2);
 
         i = 0;
 
         logger.debug(classification.getChildNodes().get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_1, classification.getChildNodes().get(i).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_1, classification.getChildNodes().get(i).getTaxon().getName().getNameCache());
         logger.debug(classification.getChildNodes().get(i++).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_2, classification.getChildNodes().get(i).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_2, classification.getChildNodes().get(i).getTaxon().getName().getNameCache());
         logger.debug(classification.getChildNodes().get(i++).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_5, classification.getChildNodes().get(i).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_5, classification.getChildNodes().get(i).getTaxon().getName().getNameCache());
         logger.debug(classification.getChildNodes().get(i++).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_3, classification.getChildNodes().get(i).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_3, classification.getChildNodes().get(i).getTaxon().getName().getNameCache());
 
     }
 }

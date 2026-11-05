@@ -8,6 +8,12 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +25,6 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,20 +111,20 @@ public class ClassificationServiceImplTest extends CdmServicesTransactionalSprin
 	        }
         }
 
-        Assert.assertEquals("Acacia N.Jacobsen, Bastm. & Yuji Sasaki", nodes.get(1).getTaxon().getName().getTitleCache());
-        Assert.assertEquals("Acacia subgen. Aculeiferum Pedley", nodes.get(2).getTaxon().getName().getTitleCache());
-        Assert.assertEquals("Acacia sect. Botrycephalae Yuji Sasaki", nodes.get(3).getTaxon().getName().getTitleCache());
-        Assert.assertEquals("Acacia subgen. Phyllodineae N.Jacobsen, Bastm. & Yuji Sasaki", nodes.get(4).getTaxon().getName().getTitleCache());
-        Assert.assertEquals("Acacia acicularis Willd.", nodes.get(5).getTaxon().getName().getTitleCache());
-        Assert.assertEquals("×Acacia acicularis Willd. subsp. acicularis", nodes.get(6).getTaxon().getName().getTitleCache());
-        Assert.assertEquals("Acacia cuspidifolia Maslin", nodes.get(7).getTaxon().getName().getTitleCache());
-        Assert.assertEquals("Acacia mearnsii Benth", nodes.get(8).getTaxon().getName().getTitleCache());
+        assertEquals("Acacia N.Jacobsen, Bastm. & Yuji Sasaki", nodes.get(1).getTaxon().getName().getTitleCache());
+        assertEquals("Acacia subgen. Aculeiferum Pedley", nodes.get(2).getTaxon().getName().getTitleCache());
+        assertEquals("Acacia sect. Botrycephalae Yuji Sasaki", nodes.get(3).getTaxon().getName().getTitleCache());
+        assertEquals("Acacia subgen. Phyllodineae N.Jacobsen, Bastm. & Yuji Sasaki", nodes.get(4).getTaxon().getName().getTitleCache());
+        assertEquals("Acacia acicularis Willd.", nodes.get(5).getTaxon().getName().getTitleCache());
+        assertEquals("×Acacia acicularis Willd. subsp. acicularis", nodes.get(6).getTaxon().getName().getTitleCache());
+        assertEquals("Acacia cuspidifolia Maslin", nodes.get(7).getTaxon().getName().getTitleCache());
+        assertEquals("Acacia mearnsii Benth", nodes.get(8).getTaxon().getName().getTitleCache());
 
         /*
         ((TaxonNodeByNameComparator)taxonNodeComparator).setSortInfraGenericFirst(false);
         Collections.sort(taxonNodes, taxonNodeComparator);
 
-        Assert.assertEquals("Acacia cuspidifolia Maslin", taxonNodes.get(0).getTaxon().getName().getTitleCache());
+        assertEquals("Acacia cuspidifolia Maslin", taxonNodes.get(0).getTaxon().getName().getTitleCache());
         System.err.println();
         for (TaxonNode node: taxonNodes){
             System.err.println(node.getTaxon().getName().getTitleCache() );
@@ -150,32 +155,32 @@ public class ClassificationServiceImplTest extends CdmServicesTransactionalSprin
         // for more historic Acacia taxonomy see http://lexikon.freenet.de/Akazien
 
         List<TaxonNode> taxonNodes = service.listRankSpecificRootNodes(null, null, null, includeUnpublished, null, null, NODE_INIT_STRATEGY);
-        Assert.assertEquals(2, taxonNodes.size());
+        assertEquals(2, taxonNodes.size());
 
         taxonNodes = service.listRankSpecificRootNodes(classification, null, null, includeUnpublished, null, null, NODE_INIT_STRATEGY);
-        Assert.assertEquals(2, taxonNodes.size());
+        assertEquals(2, taxonNodes.size());
 
         taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SECTION_BOTANY(), includeUnpublished, null, null, NODE_INIT_STRATEGY);
-        Assert.assertEquals(4, taxonNodes.size());
+        assertEquals(4, taxonNodes.size());
 
         // also test if the pager works
         taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SECTION_BOTANY(), includeUnpublished, 10, 0, NODE_INIT_STRATEGY);
-        Assert.assertEquals(4, taxonNodes.size());
+        assertEquals(4, taxonNodes.size());
         taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SECTION_BOTANY(), includeUnpublished, 2, 0, NODE_INIT_STRATEGY);
-        Assert.assertEquals(2, taxonNodes.size());
+        assertEquals(2, taxonNodes.size());
         taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SECTION_BOTANY(), includeUnpublished, 2, 1, NODE_INIT_STRATEGY);
-        Assert.assertEquals(2, taxonNodes.size());
+        assertEquals(2, taxonNodes.size());
         taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SECTION_BOTANY(), includeUnpublished, 2, 2, NODE_INIT_STRATEGY);
-        Assert.assertEquals(0, taxonNodes.size());
+        assertEquals(0, taxonNodes.size());
 
         taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SPECIES(), includeUnpublished, null, null, NODE_INIT_STRATEGY);
-        Assert.assertEquals(3, taxonNodes.size());
+        assertEquals(3, taxonNodes.size());
 
         // also test if the pager works
         taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SPECIES(), includeUnpublished, 10, 0, NODE_INIT_STRATEGY);
-        Assert.assertEquals(3, taxonNodes.size());
+        assertEquals(3, taxonNodes.size());
         taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SPECIES(), includeUnpublished, 2, 1, NODE_INIT_STRATEGY);
-        Assert.assertEquals(1, taxonNodes.size());
+        assertEquals(1, taxonNodes.size());
     }
 
     @Test
@@ -200,37 +205,37 @@ public class ClassificationServiceImplTest extends CdmServicesTransactionalSprin
         TaxonNode subtree = taxonNodeService.find(UUID.fromString("bcdf945f-1f02-423e-883d-fe89e0af93e4"));
 
         List<TaxonNode> taxonNodes = service.listRankSpecificRootNodes(null, subtree, null, includeUnpublished, null, null, NODE_INIT_STRATEGY);
-        Assert.assertEquals(2, taxonNodes.size());
+        assertEquals(2, taxonNodes.size());
 
         taxonNodes = service.listRankSpecificRootNodes(classification, null, null, includeUnpublished, null, null, NODE_INIT_STRATEGY);
-        Assert.assertEquals(2, taxonNodes.size());
+        assertEquals(2, taxonNodes.size());
 
         taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SECTION_BOTANY(), includeUnpublished, null, null, NODE_INIT_STRATEGY);
-        Assert.assertEquals(4, taxonNodes.size());
+        assertEquals(4, taxonNodes.size());
 
         // also test if the pager works
         taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SECTION_BOTANY(), includeUnpublished, 10, 0, NODE_INIT_STRATEGY);
-        Assert.assertEquals(4, taxonNodes.size());
+        assertEquals(4, taxonNodes.size());
         taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SECTION_BOTANY(), includeUnpublished, 2, 0, NODE_INIT_STRATEGY);
-        Assert.assertEquals(2, taxonNodes.size());
+        assertEquals(2, taxonNodes.size());
         taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SECTION_BOTANY(), includeUnpublished, 2, 1, NODE_INIT_STRATEGY);
-        Assert.assertEquals(2, taxonNodes.size());
+        assertEquals(2, taxonNodes.size());
         taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SECTION_BOTANY(), includeUnpublished, 2, 2, NODE_INIT_STRATEGY);
-        Assert.assertEquals(0, taxonNodes.size());
+        assertEquals(0, taxonNodes.size());
 
         taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SPECIES(), includeUnpublished, null, null, NODE_INIT_STRATEGY);
-        Assert.assertEquals(3, taxonNodes.size());
+        assertEquals(3, taxonNodes.size());
 
         // also test if the pager works
         taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SPECIES(), includeUnpublished, 10, 0, NODE_INIT_STRATEGY);
-        Assert.assertEquals(3, taxonNodes.size());
+        assertEquals(3, taxonNodes.size());
         taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SPECIES(), includeUnpublished, 2, 1, NODE_INIT_STRATEGY);
-        Assert.assertEquals(1, taxonNodes.size());
+        assertEquals(1, taxonNodes.size());
     }
 
     @Test
     public final void testSetDaoIClassificationDao() {
-        Assert.assertNotNull(service);
+        assertNotNull(service);
     }
 
     @Test
@@ -246,19 +251,19 @@ public class ClassificationServiceImplTest extends CdmServicesTransactionalSprin
 
         List<GroupedTaxonDTO> result = this.service.groupTaxaByHigherTaxon(taxonUuids, CLASSIFICATION_UUID, minRank, maxRank);
         System.out.println(result);
-        Assert.assertEquals(3, result.size());
+        assertEquals(3, result.size());
         //acacia_acicularis_uuid  //is a root taxon with no parents
-        Assert.assertEquals(acacia_acicularis_uuid, result.get(0).getTaxonUuid());
-        Assert.assertNull(result.get(0).getGroupTaxonUuid());
-        Assert.assertTrue(StringUtils.isBlank(result.get(0).getGroupTaxonName()));
+        assertEquals(acacia_acicularis_uuid, result.get(0).getTaxonUuid());
+        assertNull(result.get(0).getGroupTaxonUuid());
+        assertTrue(StringUtils.isBlank(result.get(0).getGroupTaxonName()));
         //acacia_cuspidifolia_uuid
-        Assert.assertEquals(acacia_cuspidifolia_uuid, result.get(1).getTaxonUuid());
-        Assert.assertNotNull(result.get(1).getGroupTaxonUuid());
-        Assert.assertFalse(StringUtils.isBlank(result.get(1).getGroupTaxonName()));
+        assertEquals(acacia_cuspidifolia_uuid, result.get(1).getTaxonUuid());
+        assertNotNull(result.get(1).getGroupTaxonUuid());
+        assertFalse(StringUtils.isBlank(result.get(1).getGroupTaxonName()));
         //acacia_sect_botrycephalae_uuid
-        Assert.assertEquals(acacia_sect_botrycephalae_uuid, result.get(2).getTaxonUuid());
-        Assert.assertNotNull(result.get(2).getGroupTaxonUuid());
-        Assert.assertFalse(StringUtils.isBlank(result.get(2).getGroupTaxonName()));
+        assertEquals(acacia_sect_botrycephalae_uuid, result.get(2).getTaxonUuid());
+        assertNotNull(result.get(2).getGroupTaxonUuid());
+        assertFalse(StringUtils.isBlank(result.get(2).getGroupTaxonName()));
     }
 
     private UUID acacia_acicularis_uuid  = UUID.fromString("90ad2d8f-19a9-4a10-bab3-7d1de5ce1968");

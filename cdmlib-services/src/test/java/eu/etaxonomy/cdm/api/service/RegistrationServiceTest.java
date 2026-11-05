@@ -8,10 +8,10 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
@@ -83,7 +83,7 @@ public class RegistrationServiceTest extends CdmServicesTransactionalSpringInteg
 
         pager = repo.getRegistrationService().page((UUID)null, null, null, null, null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
-        assertEquals("with authenticated user expecting all 4 Registrations", 4l, pager.getCount().longValue());
+        assertEquals(4l, pager.getCount().longValue(), "with authenticated user expecting all 4 Registrations");
 
         pager = repo.getRegistrationService().page(USER1_UUID, null, null, null, null, null, null, null, null, null);
         assertEquals(2l, pager.getCount().longValue());
@@ -137,11 +137,11 @@ public class RegistrationServiceTest extends CdmServicesTransactionalSpringInteg
         assertEquals(2l, pager.getCount().longValue());
 
         assertEquals("test/1001", pager.getRecords().get(0).getIdentifier());
-        assertNotNull("expecting registration test/1001 to be with name", pager.getRecords().get(0).getName());
-        assertTrue("expecting registration test/1001 to be witout type designation",  pager.getRecords().get(0).getTypeDesignations().isEmpty());
+        assertNotNull(pager.getRecords().get(0).getName(), "expecting registration test/1001 to be with name");
+        assertTrue(pager.getRecords().get(0).getTypeDesignations().isEmpty(), "expecting registration test/1001 to be witout type designation");
 
         assertEquals("test/1003", pager.getRecords().get(1).getIdentifier());
-        assertNull("Expecting the registration test/1003 to be without name", pager.getRecords().get(1).getName());
+        assertNull(pager.getRecords().get(1).getName(), "Expecting the registration test/1003 to be without name");
         assertEquals(STD2_UUID, pager.getRecords().get(1).getTypeDesignations().iterator().next().getUuid());
 
         pager = repo.getRegistrationService().page((UUID)null, null, null, "Digita*", null, null, null, null, null, null);
@@ -233,14 +233,14 @@ public class RegistrationServiceTest extends CdmServicesTransactionalSpringInteg
         Collection<UUID> nameUuids = null;
         Pager<Registration> pager = repo.getRegistrationService().page((UUID)null, null, nameUuids , null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
-        assertEquals("expecting no Registration, since the user is not authenticated", 0l, pager.getCount().longValue());
+        assertEquals(0l, pager.getCount().longValue(), "expecting no Registration, since the user is not authenticated");
     }
 
     @Test
     public void testPageWithPatternFilters_unautheticated(){
         Pager<Registration> pager = repo.getRegistrationService().page((UUID)null, null, null, null, null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
-        assertEquals("expecting only the PUBLISHED Registration, since the user is not authenticated", 1l, pager.getCount().longValue());
+        assertEquals(1l, pager.getCount().longValue(), "expecting only the PUBLISHED Registration, since the user is not authenticated");
     }
 
     @Override

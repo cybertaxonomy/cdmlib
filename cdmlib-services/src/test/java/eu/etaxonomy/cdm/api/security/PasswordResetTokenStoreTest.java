@@ -8,9 +8,9 @@
 */
 package eu.etaxonomy.cdm.api.security;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.Optional;
@@ -88,7 +88,7 @@ public class PasswordResetTokenStoreTest extends CdmServicesTransactionalSpringI
         assertTrue(resetRequest.isPresent());
         passwordResetTokenStore.remove(token);
         resetRequest = passwordResetTokenStore.findRequest(token);
-        assertFalse("Expecing false since the token has been removed", resetRequest.isPresent());
+        assertFalse(resetRequest.isPresent(), "Expecing false since the token has been removed");
     }
 
     @Override

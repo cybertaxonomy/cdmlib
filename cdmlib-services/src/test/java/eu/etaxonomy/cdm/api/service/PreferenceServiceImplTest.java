@@ -8,10 +8,13 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.io.FileNotFoundException;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -36,7 +39,7 @@ public class PreferenceServiceImplTest  extends CdmServicesSpringIntegrationTest
     @Test
     @CdmDataSet
     public void testService() {
-    	Assert.assertNotNull(service);
+    	assertNotNull(service);
     }
 
     @Test
@@ -44,19 +47,19 @@ public class PreferenceServiceImplTest  extends CdmServicesSpringIntegrationTest
     public void testGet() {
         PrefKey key = CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.NomenclaturalCode);
         CdmPreference pref = service.find(key);
-        Assert.assertNotNull("CdmPreference for given key must exist", pref);
-        Assert.assertEquals("ICNAFP", pref.getValue());
+        assertNotNull(pref, "CdmPreference for given key must exist");
+        assertEquals("ICNAFP", pref.getValue());
 
         key = CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.Test);
         pref = service.find(key);
-        Assert.assertNull("CdmPreference for given key must not exist", pref);
+        assertNull(pref, "CdmPreference for given key must not exist");
     }
 
     @Test
     @CdmDataSet
     public void testCount() {
     	 long countStart = service.count();
-         Assert.assertEquals("There should be 3 preference in the CDM store", 3, countStart);
+         assertEquals(3, countStart, "There should be 3 preference in the CDM store");
     }
 
     @Test
@@ -64,31 +67,31 @@ public class PreferenceServiceImplTest  extends CdmServicesSpringIntegrationTest
     public void testPedicate() {
         List<CdmPreference> list = service.list(PreferencePredicate.Test);
         long n = list.size();
-        Assert.assertEquals("There should be 2 test preferences in the CDM store", 2, n);
+        assertEquals(2, n, "There should be 2 test preferences in the CDM store");
 
         PreferenceSubject editordistrSubject = PreferenceSubject.NewTaxEditorInstance()
                 .with(PreferenceSubjectEnum.DistributionEditor);
         PrefKey key = CdmPreference.NewKey(editordistrSubject, PreferencePredicate.Test);
         CdmPreference pref = service.find(key);
-        Assert.assertEquals("testForDistribution", pref.getValue());
+        assertEquals("testForDistribution", pref.getValue());
     }
 
     @Test
     @CdmDataSet
     public void testSet() {
     	long countStart = service.count();
-        Assert.assertEquals(3, countStart);
+        assertEquals(3, countStart);
 
     	CdmPreference pref = CdmPreference.NewDatabaseInstance(PreferencePredicate.Test, "200");
     	service.set(pref);
 	   	long count = service.count();
-	    Assert.assertEquals("There should be 1 new preference", countStart + 1, count);
+	    assertEquals(countStart + 1, count, "There should be 1 new preference");
 
         pref = CdmPreference.NewDatabaseInstance( PreferencePredicate.NomenclaturalCode, "ICZN");
         service.set(pref);
 
 	   	count = service.count();
-	    Assert.assertEquals("There should be only 1 new preference", countStart + 1, count);
+	    assertEquals(countStart + 1, count, "There should be only 1 new preference");
 
     }
 

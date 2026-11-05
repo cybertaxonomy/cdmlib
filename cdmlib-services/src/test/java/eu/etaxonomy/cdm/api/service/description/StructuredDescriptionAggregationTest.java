@@ -8,6 +8,11 @@
 */
 package eu.etaxonomy.cdm.api.service.description;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,7 +24,6 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -252,9 +256,8 @@ public class StructuredDescriptionAggregationTest extends CdmServicesTransaction
         //remove data
         removeSomeDataFromFirstAggregation();
         commitAndStartNewTransaction();
-        Assert.assertEquals("Should have 3 specimen desc, 1 literature desc, 2 individual association holder, "
-                + "4 aggregated descriptions, 4 cloned specimen descriptions (still not deleted), (0(3) cloned aggregated descriptions?) = 14",
-                14, descriptionService.count(null));
+        assertEquals(14, descriptionService.count(null), "Should have 3 specimen desc, 1 literature desc, 2 individual association holder, "
+                + "4 aggregated descriptions, 4 cloned specimen descriptions (still not deleted), (0(3) cloned aggregated descriptions?) = 14");
 
         // 2nd aggregation
         result = engine.invoke(config, repository);
@@ -294,7 +297,7 @@ public class StructuredDescriptionAggregationTest extends CdmServicesTransaction
         addQuantitativeData(specDescAlpina2, uuidFeatureLeafLength, StatisticalMeasure.MAX(), new BigDecimal("7.0"));
 
         TaxonNode tnLapsana = taxonNodeService.find(TN_LAPSANA_UUID);
-        Assert.assertNotNull(tnLapsana);
+        assertNotNull(tnLapsana);
         dataSet.addTaxonSubtree(tnLapsana);
 
         @SuppressWarnings("unchecked")
@@ -332,7 +335,7 @@ public class StructuredDescriptionAggregationTest extends CdmServicesTransaction
         addCategoricalData(specDescAlpina1, uuidFeatureLeafColor, null);
 
         TaxonNode tnLapsana = taxonNodeService.find(TN_LAPSANA_UUID);
-        Assert.assertNotNull(tnLapsana);
+        assertNotNull(tnLapsana);
         dataSet.addTaxonSubtree(tnLapsana);
 
         @SuppressWarnings("unchecked")
@@ -453,9 +456,8 @@ public class StructuredDescriptionAggregationTest extends CdmServicesTransaction
 
 //        removeSomeDataFromFirstAggregation();
 //        commitAndStartNewTransaction();
-//        Assert.assertEquals("Should have 3 specimen desc, 1 literature desc, 2 individual association holder, "
-//                + "4 aggregated descriptions, 4 cloned specimen descriptions (still not deleted), (3 cloned aggregated descriptions?) = 17",
-//                17, descriptionService.count(null));
+//        assertEquals(//                17, descriptionService.count(null), "Should have 3 specimen desc, 1 literature desc, 2 individual association holder, "
+//                + "4 aggregated descriptions, 4 cloned specimen descriptions (still not deleted), (3 cloned aggregated descriptions?) = 17");
 //
 //        // 2nd aggregation
 //        result = engine.invoke(config, repository);
@@ -494,7 +496,7 @@ public class StructuredDescriptionAggregationTest extends CdmServicesTransaction
 
     private void verifyStatusOk(DeleteResult result) {
         if (result.getStatus() != DeleteResult.Status.OK){
-            Assert.fail("Aggregation should have status OK but was " + result.toString());
+            fail("Aggregation should have status OK but was " + result.toString());
             for (Exception ex : result.getExceptions()){
                 ex.printStackTrace();
             }
@@ -502,22 +504,22 @@ public class StructuredDescriptionAggregationTest extends CdmServicesTransaction
     }
 
     private void verifyUpdatedObjects(DeleteResult result, int nInserted, int nUpdated) {
-        Assert.assertEquals(nInserted, result.getInsertedUuids(TaxonDescription.class).size());
-        Assert.assertEquals(nUpdated, result.getUpdatedUuids(TaxonDescription.class).size());
+        assertEquals(nInserted, result.getInsertedUuids(TaxonDescription.class).size());
+        assertEquals(nUpdated, result.getUpdatedUuids(TaxonDescription.class).size());
     }
 
     private void verifyStatusError(DeleteResult result, String expectedMessage) {
         if (result.getStatus() != DeleteResult.Status.ERROR){
-            Assert.fail("Aggregation should fail with status error " + result.toString());
+            fail("Aggregation should fail with status error " + result.toString());
         }
         if (result.getExceptions().isEmpty()){
-            Assert.fail("Failing aggregation include exception " + result.toString());
+            fail("Failing aggregation include exception " + result.toString());
         }
         Exception e = result.getExceptions().iterator().next();
         if (! (e instanceof AggregationException)){
-            Assert.fail("Exception should be of type AggregationException " + result.toString());
+            fail("Exception should be of type AggregationException " + result.toString());
         }else if (expectedMessage != null){
-            Assert.assertEquals(expectedMessage, e.getMessage());
+            assertEquals(expectedMessage, e.getMessage());
         }
     }
 
@@ -584,15 +586,15 @@ public class StructuredDescriptionAggregationTest extends CdmServicesTransaction
         verifyQuantitativeData(uuidFeatureLeafLength, count, min, max, avg, aggrDescLapsanaCommunisAlpina);
         //... sources
         int nWithinSources = isWithinNone ? 0 : 3+intLit+intDel;
-        Assert.assertEquals(nWithinSources, aggrDescLapsanaCommunisAlpina.getSources().size());
+        assertEquals(nWithinSources, aggrDescLapsanaCommunisAlpina.getSources().size());
         SpecimenOrObservationBase<?> specLcommunisAlpina1 = CdmBase.deproxy(occurrenceService.find(T_LAPSANA_COMMUNIS_ALPINA_SPEC1_UUID));
         int nCloned = isWithinNone ? 0 : 1;
-        Assert.assertEquals("Spec1 must have 2 descriptions now. The primary one and the cloned.", 1+nCloned, specLcommunisAlpina1.getSpecimenDescriptions().size());
-        Assert.assertEquals(nCloned, specLcommunisAlpina1.getSpecimenDescriptions().stream().filter(d->d.isCloneForSource()).count());
+        assertEquals(1+nCloned, specLcommunisAlpina1.getSpecimenDescriptions().size(), "Spec1 must have 2 descriptions now. The primary one and the cloned.");
+        assertEquals(nCloned, specLcommunisAlpina1.getSpecimenDescriptions().stream().filter(d->d.isCloneForSource()).count());
         if (nCloned > 0){
             DescriptionBase<?> clonedDesc = specLcommunisAlpina1.getDescriptions().stream().filter(d->d.isCloneForSource()).findFirst().get();
             DescriptionBase<?> sourceDescription = getSingleSpecimenDescriptionSource(aggrDescLapsanaCommunisAlpina, T_LAPSANA_COMMUNIS_ALPINA_SPEC1_UUID);
-            Assert.assertEquals(clonedDesc, sourceDescription);
+            assertEquals(clonedDesc, sourceDescription);
         }
 
         //L. communis adenophora
@@ -619,23 +621,23 @@ public class StructuredDescriptionAggregationTest extends CdmServicesTransaction
                 new BigDecimal("10.0"), avg, aggrDescLapsanaCommunis);
         //... sources
         int nToParent = isToParentNone ? 0 : 2;
-        Assert.assertEquals(nToParent, aggrDescLapsanaCommunis.getSources().size());
+        assertEquals(nToParent, aggrDescLapsanaCommunis.getSources().size());
         Map<UUID, List<TaxonDescription>> taxonDescriptionMap = getSourceTaxonDescriptionMap(aggrDescLapsanaCommunis);
         int nToParentDescs = isToParentTaxon? 0 : nToParent;
-        Assert.assertEquals(nToParentDescs, taxonDescriptionMap.size());
+        assertEquals(nToParentDescs, taxonDescriptionMap.size());
         if (nToParentDescs > 0){
-            Assert.assertEquals(1, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_ALPINA_UUID).size());
-            Assert.assertEquals(1, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_ADENOPHORA_UUID).size());
+            assertEquals(1, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_ALPINA_UUID).size());
+            assertEquals(1, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_ADENOPHORA_UUID).size());
             if (cloneAggSourceDesc){
-                Assert.assertNotEquals(aggrDescLapsanaCommunisAlpina, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_ALPINA_UUID).get(0));
+                assertNotEquals(aggrDescLapsanaCommunisAlpina, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_ALPINA_UUID).get(0));
             }else{
-                Assert.assertEquals(aggrDescLapsanaCommunisAlpina, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_ALPINA_UUID).get(0));
+                assertEquals(aggrDescLapsanaCommunisAlpina, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_ALPINA_UUID).get(0));
             }
         }else if (isToParentTaxon){
             Map<UUID, List<Taxon>> taxonToTaxonSourceMap = getSourceTaxonMap(aggrDescLapsanaCommunis);
-            Assert.assertEquals(1, taxonToTaxonSourceMap.get(T_LAPSANA_COMMUNIS_ALPINA_UUID).size());
-            Assert.assertEquals(1, taxonToTaxonSourceMap.get(T_LAPSANA_COMMUNIS_ADENOPHORA_UUID).size());
-            Assert.assertEquals(taxLapsanaCommunisAlpina, taxonToTaxonSourceMap.get(T_LAPSANA_COMMUNIS_ALPINA_UUID).get(0));
+            assertEquals(1, taxonToTaxonSourceMap.get(T_LAPSANA_COMMUNIS_ALPINA_UUID).size());
+            assertEquals(1, taxonToTaxonSourceMap.get(T_LAPSANA_COMMUNIS_ADENOPHORA_UUID).size());
+            assertEquals(taxLapsanaCommunisAlpina, taxonToTaxonSourceMap.get(T_LAPSANA_COMMUNIS_ALPINA_UUID).get(0));
         }
 
         //Lapsana
@@ -649,29 +651,28 @@ public class StructuredDescriptionAggregationTest extends CdmServicesTransaction
                 new BigDecimal("10.0"), avg, aggrDescLapsana);
         //... sources
         nToParent = isToParentNone ? 0 : 1;
-        Assert.assertEquals(nToParent, aggrDescLapsana.getSources().size());
+        assertEquals(nToParent, aggrDescLapsana.getSources().size());
         nToParentDescs = isToParentTaxon? 0 : nToParent;
         taxonDescriptionMap = getSourceTaxonDescriptionMap(aggrDescLapsana);
-        Assert.assertEquals(nToParentDescs, taxonDescriptionMap.size());
+        assertEquals(nToParentDescs, taxonDescriptionMap.size());
         if (nToParentDescs > 0){
-            Assert.assertEquals(1, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_UUID).size());
+            assertEquals(1, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_UUID).size());
             if (cloneAggSourceDesc){
-                Assert.assertNotEquals(aggrDescLapsanaCommunis, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_UUID).get(0));
+                assertNotEquals(aggrDescLapsanaCommunis, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_UUID).get(0));
             }else{
-                Assert.assertEquals(aggrDescLapsanaCommunis, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_UUID).get(0));
+                assertEquals(aggrDescLapsanaCommunis, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_UUID).get(0));
             }
 
         }else if (isToParentTaxon){
             Map<UUID, List<Taxon>> taxonToTaxonSourceMap = getSourceTaxonMap(aggrDescLapsana);
-            Assert.assertEquals(1, taxonToTaxonSourceMap.get(T_LAPSANA_COMMUNIS_UUID).size());
-            Assert.assertEquals(taxLapsanaCommunis, taxonToTaxonSourceMap.get(T_LAPSANA_COMMUNIS_UUID).get(0));
+            assertEquals(1, taxonToTaxonSourceMap.get(T_LAPSANA_COMMUNIS_UUID).size());
+            assertEquals(taxLapsanaCommunis, taxonToTaxonSourceMap.get(T_LAPSANA_COMMUNIS_UUID).get(0));
         }
 
         //total description count
         nCloned = (isToParentNone || isToParentTaxon || !cloneAggSourceDesc ? 0 : 3) + (isWithinNone ? 0 : 4);
-        Assert.assertEquals("Should have 4 specimen desc, 1 literature desc, 2 individual association holder, "
-                + "4 aggregated descriptions, 4/0 cloned specimen descriptions, (3/4/0 cloned aggregated descriptions?) = 18/19",
-                11+nCloned+intLit+(intDel*2), descriptionService.count(null));
+        assertEquals(11+nCloned+intLit+(intDel*2), descriptionService.count(null), "Should have 4 specimen desc, 1 literature desc, 2 individual association holder, "
+                + "4 aggregated descriptions, 4/0 cloned specimen descriptions, (3/4/0 cloned aggregated descriptions?) = 18/19");
 
     }
 
@@ -701,7 +702,7 @@ public class StructuredDescriptionAggregationTest extends CdmServicesTransaction
             .map(src->(DescriptionBase<?>)src.getCdmSource())
             .filter(o-> o != null)
             .collect(Collectors.groupingBy(fDescToDescribedUuid));
-        Assert.assertEquals(1, map.get(specimenUuid).size());
+        assertEquals(1, map.get(specimenUuid).size());
         return map.get(specimenUuid).get(0);
 
     }
@@ -748,7 +749,7 @@ public class StructuredDescriptionAggregationTest extends CdmServicesTransaction
         addCategoricalData(specDescAdenophora, uuidFeatureLeafColor, uuidLeafColorYellow);
 
         TaxonNode tnLapsana = taxonNodeService.find(TN_LAPSANA_UUID);
-        Assert.assertNotNull(tnLapsana);
+        assertNotNull(tnLapsana);
         dataSet.addTaxonSubtree(tnLapsana);
 
         @SuppressWarnings("unchecked")
@@ -765,10 +766,10 @@ public class StructuredDescriptionAggregationTest extends CdmServicesTransaction
                 .filter(desc->!desc.getTypes().contains(DescriptionType.CLONE_FOR_SOURCE))
                 .collect(Collectors.toList());
 
-        Assert.assertEquals(1, aggrNonCloneTaxonDescriptions.size());
+        assertEquals(1, aggrNonCloneTaxonDescriptions.size());
         TaxonDescription aggrDesc = aggrNonCloneTaxonDescriptions.iterator().next();
         Set<DescriptionElementBase> elements = aggrDesc.getElements();
-        Assert.assertEquals(elementCount, elements.size());
+        assertEquals(elementCount, elements.size());
         return aggrDesc;
     }
 
@@ -776,7 +777,7 @@ public class StructuredDescriptionAggregationTest extends CdmServicesTransaction
         long n = taxon.getDescriptions().stream()
             .filter(desc->desc.getTypes().contains(DescriptionType.AGGREGATED_STRUC_DESC))
             .filter(desc->!desc.getTypes().contains(DescriptionType.CLONE_FOR_SOURCE)).count();
-        Assert.assertEquals(descriptionCount, n);
+        assertEquals(descriptionCount, n);
     }
 
     private void verifyNumberDescriptionElements(DescriptionBase<?> description, UUID featureUuid, long elementCount){
@@ -784,7 +785,7 @@ public class StructuredDescriptionAggregationTest extends CdmServicesTransaction
                 .filter(element->element.getFeature().getUuid().equals(featureUuid))
                 .map(catData->CdmBase.deproxy(catData, CategoricalData.class))
                 .count();
-        Assert.assertEquals(elementCount, n);
+        assertEquals(elementCount, n);
     }
 
     private void verifyQuantitativeData(UUID featureUuid, BigDecimal sampleSize, BigDecimal min,
@@ -793,14 +794,14 @@ public class StructuredDescriptionAggregationTest extends CdmServicesTransaction
                 .filter(element->element.getFeature().getUuid().equals(featureUuid))
                 .map(catData->CdmBase.deproxy(catData, QuantitativeData.class))
                 .collect(Collectors.toList());
-        Assert.assertEquals(1, quantitativeDatas.size());
+        assertEquals(1, quantitativeDatas.size());
         QuantitativeData leafLength = quantitativeDatas.iterator().next();
-        Assert.assertEquals(sampleSize, leafLength.getSampleSize());
-        Assert.assertEquals(min, leafLength.getMin());
-        Assert.assertEquals(max, leafLength.getMax());
-        Assert.assertEquals(avg, leafLength.getAverage());
-        Assert.assertEquals(MeasurementUnit.METER(), leafLength.getUnit());
-        Assert.assertNotNull(leafLength.getUnit());
+        assertEquals(sampleSize, leafLength.getSampleSize());
+        assertEquals(min, leafLength.getMin());
+        assertEquals(max, leafLength.getMax());
+        assertEquals(avg, leafLength.getAverage());
+        assertEquals(MeasurementUnit.METER(), leafLength.getUnit());
+        assertNotNull(leafLength.getUnit());
     }
 
     private List<StateData> verifyCategoricalData(UUID featureUuid, int stateDataCount, TaxonDescription taxonDescription, boolean withAddedData) {
@@ -809,7 +810,7 @@ public class StructuredDescriptionAggregationTest extends CdmServicesTransaction
                 .map(catData->CdmBase.deproxy(catData, CategoricalData.class))
                 .collect(Collectors.toList());
         int nCD = withAddedData ? 2 : 1;
-        Assert.assertEquals(nCD, categoricalDatas.size());
+        assertEquals(nCD, categoricalDatas.size());
         CategoricalData categoricalData;
         if (withAddedData){
             categoricalData = categoricalDatas.stream().filter(cd->cd.getStateData().get(0).getCount() != null ).findFirst().get();
@@ -817,7 +818,7 @@ public class StructuredDescriptionAggregationTest extends CdmServicesTransaction
             categoricalData = categoricalDatas.iterator().next(); // categoricalDatas.stream().filter(cd->cd.getStateData().size() != 1).collect(Collectors.toList());
         }
         List<StateData> stateDatas = categoricalData.getStateData();
-        Assert.assertEquals(stateDataCount, stateDatas.size());
+        assertEquals(stateDataCount, stateDatas.size());
         return stateDatas;
     }
 
@@ -827,13 +828,13 @@ public class StructuredDescriptionAggregationTest extends CdmServicesTransaction
                 .collect(Collectors.toList());
         if(stateDataCount==0){
             // non-existence test
-            Assert.assertEquals(0, filteredStateDatas.size());
+            assertEquals(0, filteredStateDatas.size());
             return;
         }
-        Assert.assertEquals(1, filteredStateDatas.size());
+        assertEquals(1, filteredStateDatas.size());
         StateData stateData = filteredStateDatas.iterator().next();
-        Assert.assertEquals(stateDataCount, stateData.getCount());
-        Assert.assertEquals(stateUuid, stateData.getState().getUuid());
+        assertEquals(stateDataCount, stateData.getCount());
+        assertEquals(stateUuid, stateData.getState().getUuid());
     }
 
     private void addQuantitativeData(DescriptionBase<?> desc, UUID uuidFeature, StatisticalMeasure type, BigDecimal value) {
@@ -841,7 +842,7 @@ public class StructuredDescriptionAggregationTest extends CdmServicesTransaction
         QuantitativeData qd = save(QuantitativeData.NewInstance(feature));
         StatisticalMeasurementValue smv = StatisticalMeasurementValue.NewInstance(type, value);
         qd.addStatisticalValue(smv);
-        Assert.assertNotNull(MeasurementUnit.METER());
+        assertNotNull(MeasurementUnit.METER());
         qd.setUnit(MeasurementUnit.METER());
         desc.addElement(qd);
     }

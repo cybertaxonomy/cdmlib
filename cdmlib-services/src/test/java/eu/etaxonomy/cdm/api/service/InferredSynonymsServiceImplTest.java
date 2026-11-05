@@ -8,9 +8,9 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -82,7 +82,7 @@ public class InferredSynonymsServiceImplTest extends CdmServicesTransactionalSpr
 
         //verify expected initial DB state
         List<Synonym> synonyms = taxonService.list(Synonym.class, null, null, null, null);
-        assertEquals("Number of synonyms should be 5", 5, synonyms.size());
+        assertEquals(5, synonyms.size(), "Number of synonyms should be 5");
 
         //load accepted species
 //        Taxon taxon = (Taxon)taxonService.find(acherontiaLachesisTaxonUuid);
@@ -93,10 +93,9 @@ public class InferredSynonymsServiceImplTest extends CdmServicesTransactionalSpr
         List<Synonym> inferredSynonyms = inferredSynonymService.computeInferredSynonyms(taxonUuid,
                 classificationUuid, SynonymType.INFERRED_EPITHET_OF, includeMisapplied, includeUnpublished,
                 null);
-        assertNotNull("there should be a new synonym ", inferredSynonyms);
-        assertEquals("There should be 1 inferred epithet synonym", 1, inferredSynonyms.size());
-        assertEquals("the name of inferred epithet should be SynOfAcherontia lachesis",
-                "SynOfAcherontia lachesis syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache());
+        assertNotNull(inferredSynonyms, "there should be a new synonym ");
+        assertEquals(1, inferredSynonyms.size(), "There should be 1 inferred epithet synonym");
+        assertEquals("SynOfAcherontia lachesis syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache(), "the name of inferred epithet should be SynOfAcherontia lachesis");
         Synonym inferredSyn = inferredSynonyms.iterator().next();
         assertEquals(1, inferredSyn.getSources().size());
         IdentifiableSource source = inferredSyn.getSources().iterator().next();
@@ -110,8 +109,7 @@ public class InferredSynonymsServiceImplTest extends CdmServicesTransactionalSpr
         includeMisapplied = true;
         inferredSynonyms = inferredSynonymService.computeInferredSynonyms(taxonUuid, classificationUuid,
                 SynonymType.INFERRED_EPITHET_OF, includeMisapplied, includeUnpublished, null);
-        assertEquals("There should still be only 1 inferred epithet synonym because genus Acherontia has no MAN.",
-                1, inferredSynonyms.size());
+        assertEquals(1, inferredSynonyms.size(), "There should still be only 1 inferred epithet synonym because genus Acherontia has no MAN.");
         inferredSyn = inferredSynonyms.iterator().next();
         assertEquals(1, inferredSyn.getSources().size());
         source = inferredSyn.getSources().iterator().next();
@@ -125,9 +123,8 @@ public class InferredSynonymsServiceImplTest extends CdmServicesTransactionalSpr
         includeMisapplied = false;
         inferredSynonyms = inferredSynonymService.computeInferredSynonyms(taxonUuid, classificationUuid,
                 SynonymType.INFERRED_GENUS_OF, includeMisapplied, includeUnpublished, null);
-        assertEquals("There should be 1 inferred genus synonym (note: Acherontia lachesis should not be inferred as it is a duplicate for an existing synonym",
-                1, inferredSynonyms.size());
-        assertEquals("the name of inferred genus should be Acherontia balosus", "Acherontia balosus syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache());
+        assertEquals(1, inferredSynonyms.size(), "There should be 1 inferred genus synonym (note: Acherontia lachesis should not be inferred as it is a duplicate for an existing synonym");
+        assertEquals("Acherontia balosus syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache(), "the name of inferred genus should be Acherontia balosus");
         inferredSyn = inferredSynonyms.iterator().next();
         assertEquals(1, inferredSyn.getSources().size());
         source = inferredSyn.getSources().iterator().next();
@@ -142,22 +139,18 @@ public class InferredSynonymsServiceImplTest extends CdmServicesTransactionalSpr
         includeMisapplied = true;
         inferredSynonyms = inferredSynonymService.computeInferredSynonyms(taxonUuid, classificationUuid,
                 SynonymType.INFERRED_GENUS_OF, includeMisapplied, includeUnpublished, null);
-        assertEquals("There should be 2 inferred genus synonyms now (note: Acherontia lachensis should not be inferred as it is a duplicate for an existing synonym",
-                2, inferredSynonyms.size());
+        assertEquals(2, inferredSynonyms.size(), "There should be 2 inferred genus synonyms now (note: Acherontia lachensis should not be inferred as it is a duplicate for an existing synonym");
         commitAndStartNewTransaction();
 
         //inferred combination
         includeMisapplied = false;
         inferredSynonyms = inferredSynonymService.computeInferredSynonyms(taxonUuid, classificationUuid,
                 SynonymType.POTENTIAL_COMBINATION_OF, includeMisapplied, includeUnpublished, null);
-        assertEquals("There should be 2 potential combination synonyms (SynOfAcherontia ciprosus, SynOfAcherontia balosus)",
-                2, inferredSynonyms.size());
+        assertEquals(2, inferredSynonyms.size(), "There should be 2 potential combination synonyms (SynOfAcherontia ciprosus, SynOfAcherontia balosus)");
         Synonym syn1 = inferredSynonyms.stream().filter(s->s.getName().getNameCache().equals("SynOfAcherontia ciprosus")).findFirst().get();
-        assertEquals("the name of potential combination should be SynOfAcherontia ciprosus",
-                "SynOfAcherontia ciprosus syn. sec. Sp. Pl.", syn1.getTitleCache());
+        assertEquals("SynOfAcherontia ciprosus syn. sec. Sp. Pl.", syn1.getTitleCache(), "the name of potential combination should be SynOfAcherontia ciprosus");
         Synonym syn2 = inferredSynonyms.stream().filter(s->s.getName().getNameCache().equals("SynOfAcherontia balosus")).findFirst().get();
-        assertEquals("the name of potential combination should be SynOfAcherontia balosus",
-                "SynOfAcherontia balosus syn. sec. Sp. Pl.", syn2.getTitleCache());
+        assertEquals("SynOfAcherontia balosus syn. sec. Sp. Pl.", syn2.getTitleCache(), "the name of potential combination should be SynOfAcherontia balosus");
         commitAndStartNewTransaction();
 
         //...with MAN
@@ -165,21 +158,17 @@ public class InferredSynonymsServiceImplTest extends CdmServicesTransactionalSpr
         inferredSynonyms = inferredSynonymService.computeInferredSynonyms(taxonUuid, classificationUuid,
                 SynonymType.POTENTIAL_COMBINATION_OF, includeMisapplied, includeUnpublished, null);
 //        inferredSynonyms.forEach(s->System.out.println(s.getTitleCache()));
-        assertEquals("There should be 3 potential combination synonyms (SynOfAcherontia ciprosus, SynOfAcherontia balosus)",
-                3, inferredSynonyms.size());
+        assertEquals(3, inferredSynonyms.size(), "There should be 3 potential combination synonyms (SynOfAcherontia ciprosus, SynOfAcherontia balosus)");
         syn1 = inferredSynonyms.stream().filter(s->s.getName().getNameCache().equals("SynOfAcherontia ciprosus")).findFirst().get();
-        assertEquals("the name of potential combination should be SynOfAcherontia ciprosus",
-                "SynOfAcherontia ciprosus syn. sec. Sp. Pl.", syn1.getTitleCache());
+        assertEquals("SynOfAcherontia ciprosus syn. sec. Sp. Pl.", syn1.getTitleCache(), "the name of potential combination should be SynOfAcherontia ciprosus");
         assertEquals(1, syn1.getSources().size());
 
         syn2 = inferredSynonyms.stream().filter(s->s.getName().getNameCache().equals("SynOfAcherontia balosus")).findFirst().get();
-        assertEquals("the name of potential combination should be SynOfAcherontia balosus",
-                "SynOfAcherontia balosus syn. sec. Sp. Pl.", syn2.getTitleCache());
+        assertEquals("SynOfAcherontia balosus syn. sec. Sp. Pl.", syn2.getTitleCache(), "the name of potential combination should be SynOfAcherontia balosus");
         assertEquals(1, syn2.getSources().size());
 
         Synonym syn3 = inferredSynonyms.stream().filter(s->s.getName().getNameCache().equals("SynOfAcherontia erronus")).findFirst().get();
-        assertEquals("the name of potential combination should be Heterontia erronus",
-                "SynOfAcherontia erronus syn. sec. Sp. Pl.", syn3.getTitleCache());
+        assertEquals("SynOfAcherontia erronus syn. sec. Sp. Pl.", syn3.getTitleCache(), "the name of potential combination should be Heterontia erronus");
         assertEquals(1, syn3.getSources().size());
         source = syn3.getSources().iterator().next();
         assertEquals("Potential combination", source.getIdNamespace());
@@ -205,44 +194,37 @@ public class InferredSynonymsServiceImplTest extends CdmServicesTransactionalSpr
         List<Synonym> inferredSynonyms = inferredSynonymService.computeInferredSynonyms(taxonUuid,
                 classificationUuid, SynonymType.INFERRED_EPITHET_OF, includeMisapplied, includeUnpublished,
                 null);
-        assertEquals("There should be 2 inferred epithet synonym", 2, inferredSynonyms.size());
+        assertEquals(2, inferredSynonyms.size(), "There should be 2 inferred epithet synonym");
         Set<String> caches = inferredSynonyms.stream().map(s->s.getTitleCache()).collect(Collectors.toSet());
-        assertTrue("Should contain Acherontia ciprosus subsp. sublachesis",
-                caches.contains("Acherontia ciprosus subsp. sublachesis syn. sec. Sp. Pl."));
-        assertTrue("Should contain Heterontia balosus subsp. sublachesis",
-                caches.contains("Heterontia balosus subsp. sublachesis syn. sec. Sp. Pl."));
+        assertTrue(caches.contains("Acherontia ciprosus subsp. sublachesis syn. sec. Sp. Pl."), "Should contain Acherontia ciprosus subsp. sublachesis");
+        assertTrue(caches.contains("Heterontia balosus subsp. sublachesis syn. sec. Sp. Pl."), "Should contain Heterontia balosus subsp. sublachesis");
 
         //... with MAN
         commitAndStartNewTransaction();
         includeMisapplied = true;
         inferredSynonyms = inferredSynonymService.computeInferredSynonyms(taxonUuid, classificationUuid,
                 SynonymType.INFERRED_EPITHET_OF, includeMisapplied, includeUnpublished, null);
-        assertEquals("There should be 3 inferred epithet synonym", 3, inferredSynonyms.size());
+        assertEquals(3, inferredSynonyms.size(), "There should be 3 inferred epithet synonym");
 
         //.... inferred genus
         inferredSynonyms = inferredSynonymService.computeInferredSynonyms(taxonUuid, classificationUuid,
                 SynonymType.INFERRED_GENUS_OF, includeMisapplied, includeUnpublished, null);
-        assertNotNull("there should be a new synonym ", inferredSynonyms);
-        assertEquals("There should be 1 inferred genus synonym (note: Acherontia lachensis should not be inferred as it is a duplicate for an existing synonym",
-                1, inferredSynonyms.size());
-        assertEquals("the name of inferred genus should be Acherontia lachesis", "Acherontia lachesis subsp. subsynonus syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache());
+        assertNotNull(inferredSynonyms, "there should be a new synonym ");
+        assertEquals(1, inferredSynonyms.size(), "There should be 1 inferred genus synonym (note: Acherontia lachensis should not be inferred as it is a duplicate for an existing synonym");
+        assertEquals("Acherontia lachesis subsp. subsynonus syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache(), "the name of inferred genus should be Acherontia lachesis");
 
         //... inferred combination
         inferredSynonyms = taxonService.createInferredSynonyms(taxon, classification,
                 SynonymType.POTENTIAL_COMBINATION_OF, includeMisapplied);
-        assertNotNull("there should be a new synonym ", inferredSynonyms);
+        assertNotNull(inferredSynonyms, "there should be a new synonym ");
 //        inferredSynonyms.stream().map(s->s.getTitleCache()).forEach(n->System.out.println(n));
-        assertEquals("There should be 3 potential combination synonyms",
-                3, inferredSynonyms.size());
+        assertEquals(3, inferredSynonyms.size(), "There should be 3 potential combination synonyms");
         Synonym syn1 = inferredSynonyms.stream().filter(s->s.getName().getNameCache().equals("Acherontia ciprosus subsp. subsynonus")).findFirst().get();
-        assertEquals("the name of potential combination should be Acherontia ciprosus subsp. subsynonus",
-                "Acherontia ciprosus subsp. subsynonus syn. sec. Sp. Pl.", syn1.getTitleCache());
+        assertEquals("Acherontia ciprosus subsp. subsynonus syn. sec. Sp. Pl.", syn1.getTitleCache(), "the name of potential combination should be Acherontia ciprosus subsp. subsynonus");
         Synonym syn2 = inferredSynonyms.stream().filter(s->s.getName().getNameCache().equals("Heterontia balosus subsp. subsynonus")).findFirst().get();
-        assertEquals("the name of potential combination should be Heterontia balosus subsp. subsynonus",
-                "Heterontia balosus subsp. subsynonus syn. sec. Sp. Pl.", syn2.getTitleCache());
+        assertEquals("Heterontia balosus subsp. subsynonus syn. sec. Sp. Pl.", syn2.getTitleCache(), "the name of potential combination should be Heterontia balosus subsp. subsynonus");
         Synonym syn3 = inferredSynonyms.stream().filter(s->s.getName().getNameCache().equals("Misapplicatus erronus subsp. subsynonus")).findFirst().get();
-        assertEquals("the name of potential combination should be Misapplicatus erronus subsp. subsynonus",
-                "Misapplicatus erronus subsp. subsynonus syn. sec. Sp. Pl.", syn3.getTitleCache());
+        assertEquals("Misapplicatus erronus subsp. subsynonus syn. sec. Sp. Pl.", syn3.getTitleCache(), "the name of potential combination should be Misapplicatus erronus subsp. subsynonus");
     }
 
     @Test
@@ -266,26 +248,24 @@ public class InferredSynonymsServiceImplTest extends CdmServicesTransactionalSpr
         List<Synonym> inferredSynonyms = inferredSynonymService.computeInferredSynonyms(taxonUuid,
                 classificationUuid, SynonymType.INFERRED_EPITHET_OF, includeMisapplied, includeUnpublished,
                 null);
-        assertNotNull("there should be a new synonym ", inferredSynonyms);
-        assertEquals("There should be 1 inferred epithet synonym", 1, inferredSynonyms.size());
-        assertEquals("the name of inferred epithet should be SynOfAcherontia subg. Bonsa",
-                "SynOfAcherontia subg. Bonsa syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache());
+        assertNotNull(inferredSynonyms, "there should be a new synonym ");
+        assertEquals(1, inferredSynonyms.size(), "There should be 1 inferred epithet synonym");
+        assertEquals("SynOfAcherontia subg. Bonsa syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache(), "the name of inferred epithet should be SynOfAcherontia subg. Bonsa");
 
         //.... inferred genus
         inferredSynonyms = inferredSynonymService.computeInferredSynonyms(taxonUuid, classificationUuid,
                 SynonymType.INFERRED_GENUS_OF, includeMisapplied, includeUnpublished, null);
-        assertNotNull("there should be a new synonym ", inferredSynonyms);
-        assertEquals("There should be 1 inferred genus synonym", 1, inferredSynonyms.size());
-        assertEquals("the name of inferred genus should be Acherontia subg. Synbonsa", "Acherontia subg. Synbonsa syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache());
+        assertNotNull(inferredSynonyms, "there should be a new synonym ");
+        assertEquals(1, inferredSynonyms.size(), "There should be 1 inferred genus synonym");
+        assertEquals("Acherontia subg. Synbonsa syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache(), "the name of inferred genus should be Acherontia subg. Synbonsa");
 
         //... inferred combination
         inferredSynonyms = inferredSynonymService.computeInferredSynonyms(taxonUuid, classificationUuid,
                 SynonymType.POTENTIAL_COMBINATION_OF, includeUnpublished, includeUnpublished, null);
-        assertNotNull("there should be a new synonym ", inferredSynonyms);
+        assertNotNull(inferredSynonyms, "there should be a new synonym ");
 //        inferredSynonyms.stream().map(s->s.getTitleCache()).forEach(n->System.out.println(n));
-        assertEquals("There should be 1 potential combination", 1, inferredSynonyms.size());
-        assertEquals("the name of potential combinatio should be SynOfAcherontia subg. Synbonsa",
-                "SynOfAcherontia subg. Synbonsa syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache());
+        assertEquals(1, inferredSynonyms.size(), "There should be 1 potential combination");
+        assertEquals("SynOfAcherontia subg. Synbonsa syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache(), "the name of potential combinatio should be SynOfAcherontia subg. Synbonsa");
     }
 
     @Test
@@ -294,7 +274,7 @@ public class InferredSynonymsServiceImplTest extends CdmServicesTransactionalSpr
 
         //verify expected DB state
         List<Synonym> synonyms = taxonService.list(Synonym.class, null, null, null, null);
-        assertEquals("Number of synonyms should be 5", 5, synonyms.size());
+        assertEquals(5, synonyms.size(), "Number of synonyms should be 5");
 
         //inferred epithet
         includeMisapplied = false;
@@ -302,9 +282,9 @@ public class InferredSynonymsServiceImplTest extends CdmServicesTransactionalSpr
                 acherontiaLachesisTaxonUuid,
                 classificationUuid, SynonymType.INFERRED_GENUS_OF, includeMisapplied,
                 includeUnpublished, null);
-        assertEquals("There should be 1 new synonym", 1, inferredSynonyms.size());
+        assertEquals(1, inferredSynonyms.size(), "There should be 1 new synonym");
         synonyms = taxonService.list(Synonym.class, null, null, null, null);
-        assertEquals("Number of synonyms should be 6 now", 6, synonyms.size());
+        assertEquals(6, synonyms.size(), "Number of synonyms should be 6 now");
 
 //        Set<String> caches = inferredSynonymService.getDistinctNameCaches();
         inferredSynonyms = inferredSynonymService.computeInferredSynonyms(
@@ -312,17 +292,17 @@ public class InferredSynonymsServiceImplTest extends CdmServicesTransactionalSpr
                 classificationUuid, SynonymType.INFERRED_GENUS_OF, includeMisapplied,
                 includeUnpublished, null);
         synonyms = taxonService.list(Synonym.class, null, null, null, null);
-        assertEquals("Number of synonyms should be 6 now", 6, synonyms.size());
-        assertEquals("The new synonym should not be created again", 0, inferredSynonyms.size());
+        assertEquals(6, synonyms.size(), "Number of synonyms should be 6 now");
+        assertEquals(0, inferredSynonyms.size(), "The new synonym should not be created again");
 
         //...with MAN
         includeMisapplied = true;
         inferredSynonyms = inferredSynonymService.createInferredSynonyms(
                 acherontiaLachesisTaxonUuid,
                 classificationUuid, SynonymType.INFERRED_GENUS_OF, includeMisapplied, true, null);
-        assertEquals("There should be 1 new synonym", 1, inferredSynonyms.size());
+        assertEquals(1, inferredSynonyms.size(), "There should be 1 new synonym");
         synonyms = taxonService.list(Synonym.class, null, null, null, null);
-        assertEquals("Number of synonyms should be 7 now", 7, synonyms.size());
+        assertEquals(7, synonyms.size(), "Number of synonyms should be 7 now");
 
         //... and again (no new record should be created)
         inferredSynonyms = inferredSynonymService.computeInferredSynonyms(
@@ -330,8 +310,8 @@ public class InferredSynonymsServiceImplTest extends CdmServicesTransactionalSpr
                 classificationUuid, SynonymType.INFERRED_GENUS_OF, includeMisapplied,
                 includeUnpublished, null);
         synonyms = taxonService.list(Synonym.class, null, null, null, null);
-        assertEquals("Number of synonyms should be 7 now", 7, synonyms.size());
-        assertEquals("The new synonym should not be created again", 0, inferredSynonyms.size());
+        assertEquals(7, synonyms.size(), "Number of synonyms should be 7 now");
+        assertEquals(0, inferredSynonyms.size(), "The new synonym should not be created again");
     }
 
     @Test
@@ -340,24 +320,24 @@ public class InferredSynonymsServiceImplTest extends CdmServicesTransactionalSpr
 
         //verify expected DB state
         List<Synonym> synonyms = taxonService.list(Synonym.class, null, null, null, null);
-        assertEquals("Number of synonyms should be 5", 5, synonyms.size());
+        assertEquals(5, synonyms.size(), "Number of synonyms should be 5");
 
         //inferred epithet
         boolean doPersist = false;
         List<Synonym> inferredSynonyms = inferredSynonymService.createAllInferredSynonyms(
                 acherontiaLachesisTaxonUuid, classificationUuid, includeMisapplied,
                 includeUnpublished, null, doPersist);
-        assertEquals("There should be 6 new synonyms", 6, inferredSynonyms.size());
+        assertEquals(6, inferredSynonyms.size(), "There should be 6 new synonyms");
         synonyms = taxonService.list(Synonym.class, null, null, null, null);
-        assertEquals("Number of synonyms should still be 5", 5, synonyms.size());
+        assertEquals(5, synonyms.size(), "Number of synonyms should still be 5");
         commitAndStartNewTransaction();
 ////        Set<String> caches = inferredSynonymService.getDistinctNameCaches();
 //        inferredSynonyms = inferredSynonymService.createAllInferredSynonyms(
 //                acherontiaLachesisTaxonUuid, classificationUuid, includeMisapplied,
 //                includeUnpublished, null, doPersist);
 //        synonyms = taxonService.list(Synonym.class, null, null, null, null);
-//        assertEquals("Number of synonyms should still be 11 now", 11, synonyms.size());
-//        assertEquals("The new synonym should not be created again", 0, inferredSynonyms.size());
+//        assertEquals(11, synonyms.size(), "Number of synonyms should still be 11 now");
+//        assertEquals(0, inferredSynonyms.size(), "The new synonym should not be created again");
 //        commitAndStartNewTransaction();
 
         //...with persist
@@ -365,9 +345,9 @@ public class InferredSynonymsServiceImplTest extends CdmServicesTransactionalSpr
         inferredSynonyms = inferredSynonymService.createAllInferredSynonyms(
                 acherontiaLachesisTaxonUuid, classificationUuid, includeMisapplied,
                 includeUnpublished, null, doPersist);
-        assertEquals("There should be 6 new synonyms", 6, inferredSynonyms.size());
+        assertEquals(6, inferredSynonyms.size(), "There should be 6 new synonyms");
         synonyms = taxonService.list(Synonym.class, null, null, null, null);
-        assertEquals("Number of synonyms should be 11 now", 11, synonyms.size());
+        assertEquals(11, synonyms.size(), "Number of synonyms should be 11 now");
         commitAndStartNewTransaction();
 
         //... and again (no new record should be created)
@@ -375,8 +355,8 @@ public class InferredSynonymsServiceImplTest extends CdmServicesTransactionalSpr
                 acherontiaLachesisTaxonUuid, classificationUuid, includeMisapplied,
                 includeUnpublished, null, doPersist);
         synonyms = taxonService.list(Synonym.class, null, null, null, null);
-        assertEquals("Number of synonyms should still be 11", 11, synonyms.size());
-        assertEquals("The new synonym should not be created again", 0, inferredSynonyms.size());
+        assertEquals(11, synonyms.size(), "Number of synonyms should still be 11");
+        assertEquals(0, inferredSynonyms.size(), "The new synonym should not be created again");
     }
 
     @Test
@@ -385,7 +365,7 @@ public class InferredSynonymsServiceImplTest extends CdmServicesTransactionalSpr
 
         //verify expected DB state
         List<Synonym> synonyms = taxonService.list(Synonym.class, null, null, null, null);
-        assertEquals("Number of synonyms should be 5", 5, synonyms.size());
+        assertEquals(5, synonyms.size(), "Number of synonyms should be 5");
 
         //without cache (default behaviour)
         boolean doPersist = false;
@@ -393,20 +373,20 @@ public class InferredSynonymsServiceImplTest extends CdmServicesTransactionalSpr
         List<Synonym> inferredSynonyms = inferredSynonymService.createAllInferredSynonyms(
                 acherontiaLachesisTaxonUuid, classificationUuid, includeMisapplied,
                 includeUnpublished, caches, doPersist);
-        assertEquals("There should be 6 new synonyms", 6, inferredSynonyms.size());
+        assertEquals(6, inferredSynonyms.size(), "There should be 6 new synonyms");
         commitAndStartNewTransaction();
 
         //with cache
         caches = inferredSynonymService.getDistinctNameCaches();
 //        caches.forEach(c->System.out.println(c));
-        assertEquals("There should be 9 distinct nameCaches for names below genus", 9, caches.size());
+        assertEquals(9, caches.size(), "There should be 9 distinct nameCaches for names below genus");
 
         caches.add("SynOfAcherontia lachesis");
         doPersist = true;
         inferredSynonyms = inferredSynonymService.createAllInferredSynonyms(
                 acherontiaLachesisTaxonUuid, classificationUuid, includeMisapplied,
                 includeUnpublished, caches, doPersist);
-        assertEquals("There should be only 5 new synonyms now", 5, inferredSynonyms.size());
+        assertEquals(5, inferredSynonyms.size(), "There should be only 5 new synonyms now");
     }
 
     @Override

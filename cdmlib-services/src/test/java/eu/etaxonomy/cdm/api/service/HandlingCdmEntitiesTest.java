@@ -8,6 +8,8 @@
  */
 package eu.etaxonomy.cdm.api.service;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +17,6 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.LazyInitializationException;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -117,7 +118,7 @@ public class HandlingCdmEntitiesTest extends CdmServicesTransactionalSpringInteg
         // since name is lazy loaded the call to getName should fail
         try {
             CdmBase.deproxy(taxon.getName());
-            Assert.fail("LazyInitializationException not thrown for lazy loaded Taxon.name");
+            fail("LazyInitializationException not thrown for lazy loaded Taxon.name");
         } catch(LazyInitializationException lie) {
             assertIsLieNoSession(lie);
         }
@@ -133,7 +134,7 @@ public class HandlingCdmEntitiesTest extends CdmServicesTransactionalSpringInteg
         // since name is lazy loaded the call to getName should fail
         try {
             CdmBase.deproxy(taxon.getName(),TaxonName.class);
-            Assert.fail("LazyInitializationException not thrown for lazy loaded Taxon.name");
+            fail("LazyInitializationException not thrown for lazy loaded Taxon.name");
         } catch(LazyInitializationException lie) {
             assertIsLieNoSession(lie);
         }
@@ -171,10 +172,10 @@ public class HandlingCdmEntitiesTest extends CdmServicesTransactionalSpringInteg
             taxonService.update(taxon);
             // disabled since #10524 because missing cascading for name.combinationAuthor
             // will prevent from throwing the expected LIE
-            //Assert.fail("LazyInitializationException not thrown for lazy loaded Team.teamMembers");
+            //fail("LazyInitializationException not thrown for lazy loaded Team.teamMembers");
         } catch(LazyInitializationException lie) {
             if(!lie.getMessage().equals(LIE_TEAMMEMBERS_NOSESSION)) {
-                Assert.fail("LazyInitializationException thrown, but not : " + LIE_TEAMMEMBERS_NOSESSION);
+                fail("LazyInitializationException thrown, but not : " + LIE_TEAMMEMBERS_NOSESSION);
             }
         }
 
@@ -198,7 +199,7 @@ public class HandlingCdmEntitiesTest extends CdmServicesTransactionalSpringInteg
 
     private void assertIsLieNoSession(LazyInitializationException lie) {
         if(!lie.getMessage().matches(LIE_NOSESSION)) {
-            Assert.fail("LazyInitializationException ("+lie.getMessage()+") thrown, but does not match: " + LIE_NOSESSION);
+            fail("LazyInitializationException ("+lie.getMessage()+") thrown, but does not match: " + LIE_NOSESSION);
         }
     }
 
@@ -298,10 +299,10 @@ public class HandlingCdmEntitiesTest extends CdmServicesTransactionalSpringInteg
             taxonService.update(taxon);
             // disabled since #10524 because missing cascading for name.combinationAuthor
             // will prevent from throwing the expected LIE
-            //Assert.fail("LazyInitializationException not thrown for lazy loaded Team.teamMembers");
+            //fail("LazyInitializationException not thrown for lazy loaded Team.teamMembers");
         } catch(LazyInitializationException lie) {
             if(!lie.getMessage().equals(LIE_TEAMMEMBERS_NOSESSION)) {
-                Assert.fail("LazyInitializationException thrown, but not : " + LIE_TEAMMEMBERS_NOSESSION);
+                fail("LazyInitializationException thrown, but not : " + LIE_TEAMMEMBERS_NOSESSION);
             }
        }
     }

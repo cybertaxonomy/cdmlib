@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
@@ -56,7 +56,7 @@ public class RegistrationWorkingSetServiceTest extends CdmServicesTransactionalS
 
         Pager<RegistrationWrapperDTO> pager = service.pageDTOs((UUID)null, null, null, null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
-        assertEquals("with authenticated user expecting all 3 Registrations", 4l, pager.getCount().longValue());
+        assertEquals(4l, pager.getCount().longValue(), "with authenticated user expecting all 3 Registrations");
 
         pager = service.pageDTOs(RegistrationServiceTest.USER1_UUID, null, null, null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
@@ -182,7 +182,7 @@ public class RegistrationWorkingSetServiceTest extends CdmServicesTransactionalS
     public void testPageDTOs_unautheticated(){
         Pager<RegistrationWrapperDTO> pager = service.pageDTOs((UUID)null, null, null, null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
-        assertEquals("expecting only the PUBLISHED Registration, since the user is not authenticated", 1l, pager.getCount().longValue());
+        assertEquals(1l, pager.getCount().longValue(), "expecting only the PUBLISHED Registration, since the user is not authenticated");
     }
 
     @Override

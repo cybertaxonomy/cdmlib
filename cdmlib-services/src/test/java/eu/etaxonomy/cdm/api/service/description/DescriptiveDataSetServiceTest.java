@@ -8,8 +8,9 @@
 */
 package eu.etaxonomy.cdm.api.service.description;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
@@ -22,7 +23,6 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -175,60 +175,60 @@ public class DescriptiveDataSetServiceTest extends CdmServicesTransactionalSprin
         List<SpecimenRowWrapperDTO> alpinaSpec1List = rowWrappers.stream().filter(r->r instanceof SpecimenRowWrapperDTO)
             .map(r->(SpecimenRowWrapperDTO)r)
             .filter(s->s.getSpecimenDto().getLabel().equals("alpina specimen1")).collect(Collectors.toList());
-        Assert.assertEquals(1, alpinaSpec1List.size());
+        assertEquals(1, alpinaSpec1List.size());
         SpecimenRowWrapperDTO alpinaSpec1Dto = alpinaSpec1List.get(0);
 
         //leafColor
         Set<DescriptionElementDto> leafColorElements = alpinaSpec1Dto.getDataValueForFeature(uuidFeatureLeafColor);
-        Assert.assertNotNull(leafColorElements);
-        Assert.assertTrue(leafColorElements.size() == 1);
+        assertNotNull(leafColorElements);
+        assertTrue(leafColorElements.size() == 1);
         DescriptionElementDto dto = leafColorElements.iterator().next();
-        Assert.assertTrue(dto instanceof CategoricalDataDto);
+        assertTrue(dto instanceof CategoricalDataDto);
         CategoricalDataDto cDto = (CategoricalDataDto)dto;
-        assertTrue("The states should contain one element", cDto.getStates().size() == 1);
+        assertTrue(cDto.getStates().size() == 1, "The states should contain one element");
         StateDataDto stateData = cDto.getStates().iterator().next();
         assertEquals(uuidLeafColorBlue, stateData.getState().getUuid());
 
         //leaf length
         Set<DescriptionElementDto> leafLengthElements = alpinaSpec1Dto.getDataValueForFeature(uuidFeatureLeafLength);
-        Assert.assertNotNull(leafLengthElements);
-        Assert.assertTrue(leafLengthElements.size() == 1);
+        assertNotNull(leafLengthElements);
+        assertTrue(leafLengthElements.size() == 1);
         dto = leafLengthElements.iterator().next();
-        Assert.assertTrue(dto instanceof QuantitativeDataDto);
+        assertTrue(dto instanceof QuantitativeDataDto);
         QuantitativeDataDto qDto = (QuantitativeDataDto)dto;
-        assertTrue("The statistical values should contain one element", qDto.getValues().size() == 1);
+        assertTrue(qDto.getValues().size() == 1, "The statistical values should contain one element");
         StatisticalMeasurementValueDto statValue = qDto.getValues().iterator().next();
         assertEquals(new BigDecimal("5.0"), statValue.getValue());
 
         Set<DescriptionElementDto> leafPAElements = alpinaSpec1Dto.getDataValueForFeature(uuidFeatureLeafPA);
-        Assert.assertNotNull(leafPAElements);
-        Assert.assertTrue(leafPAElements.size() == 1);
+        assertNotNull(leafPAElements);
+        assertTrue(leafPAElements.size() == 1);
         dto = leafPAElements.iterator().next();
-        Assert.assertTrue(dto instanceof CategoricalDataDto);
+        assertTrue(dto instanceof CategoricalDataDto);
         cDto = (CategoricalDataDto)dto;
-        assertTrue("The statistical values should contain one element", cDto.getStates().size() == 1);
+        assertTrue(cDto.getStates().size() == 1, "The statistical values should contain one element");
         stateData = cDto.getStates().iterator().next();
         assertEquals(State.uuidPresent, stateData.getState().getUuid());
 
         //taxon descriptions
         List<TaxonRowWrapperDTO> taxonDescList = rowWrappers.stream().filter(r->r instanceof TaxonRowWrapperDTO)
                 .map(r->(TaxonRowWrapperDTO)r).collect(Collectors.toList());
-        Assert.assertEquals(1, taxonDescList.size());
+        assertEquals(1, taxonDescList.size());
 //        .filter(s->s.getTaxonDto().getLabel().equals("alpina specimen1")).collect(Collectors.toList());
         TaxonRowWrapperDTO taxonDto = taxonDescList.get(0);
         leafLengthElements = taxonDto.getDataValueForFeature(uuidFeatureLeafLength);
-        Assert.assertNotNull(leafLengthElements);
-        Assert.assertTrue(leafLengthElements.size() == 1);
+        assertNotNull(leafLengthElements);
+        assertTrue(leafLengthElements.size() == 1);
         dto = leafLengthElements.iterator().next();
-        Assert.assertTrue(dto instanceof QuantitativeDataDto);
+        assertTrue(dto instanceof QuantitativeDataDto);
         qDto = (QuantitativeDataDto)dto;
-        assertTrue("The statistical values should contain one element", qDto.getValues().size() == 2);
+        assertTrue(qDto.getValues().size() == 2, "The statistical values should contain one element");
         List<StatisticalMeasurementValueDto> minList = qDto.getValues().stream()
                 .filter(vs->vs.getValue().equals(new BigDecimal("4.5"))).collect(Collectors.toList());
-        Assert.assertEquals(1, minList.size());
+        assertEquals(1, minList.size());
         TermDto minDtoType = minList.get(0).getType();
-        Assert.assertTrue(minDtoType.getUuid().equals(StatisticalMeasure.MIN().getUuid()));
-        Assert.assertTrue(minDtoType.getTermType().equals(TermType.StatisticalMeasure));
+        assertTrue(minDtoType.getUuid().equals(StatisticalMeasure.MIN().getUuid()));
+        assertTrue(minDtoType.getTermType().equals(TermType.StatisticalMeasure));
 
     }
 //    @Disabled // the tesat fails when running in suite because no dataset is available, running the test in eclipse works as expected.
@@ -253,60 +253,60 @@ public class DescriptiveDataSetServiceTest extends CdmServicesTransactionalSprin
         List<SpecimenRowWrapperDTO> alpinaSpec1List = rowWrappers.stream().filter(r->r instanceof SpecimenRowWrapperDTO)
             .map(r->(SpecimenRowWrapperDTO)r)
             .filter(s->s.getSpecimenDto().getLabel().equals("alpina specimen1")).collect(Collectors.toList());
-        Assert.assertEquals(1, alpinaSpec1List.size());
+        assertEquals(1, alpinaSpec1List.size());
         SpecimenRowWrapperDTO alpinaSpec1Dto = alpinaSpec1List.get(0);
 
         //leafColor
         Set<DescriptionElementDto> leafColorElements = alpinaSpec1Dto.getDataValueForFeature(uuidFeatureLeafColor);
-        Assert.assertNotNull(leafColorElements);
-        Assert.assertTrue(leafColorElements.size() == 1);
+        assertNotNull(leafColorElements);
+        assertTrue(leafColorElements.size() == 1);
         DescriptionElementDto dto = leafColorElements.iterator().next();
-        Assert.assertTrue(dto instanceof CategoricalDataDto);
+        assertTrue(dto instanceof CategoricalDataDto);
         CategoricalDataDto cDto = (CategoricalDataDto)dto;
-        assertTrue("The states should contain one element", cDto.getStates().size() == 1);
+        assertTrue(cDto.getStates().size() == 1, "The states should contain one element");
         StateDataDto stateData = cDto.getStates().iterator().next();
         assertEquals(uuidLeafColorBlue, stateData.getState().getUuid());
 
         //leaf length
         Set<DescriptionElementDto> leafLengthElements = alpinaSpec1Dto.getDataValueForFeature(uuidFeatureLeafLength);
-        Assert.assertNotNull(leafLengthElements);
-        Assert.assertTrue(leafLengthElements.size() == 1);
+        assertNotNull(leafLengthElements);
+        assertTrue(leafLengthElements.size() == 1);
         dto = leafLengthElements.iterator().next();
-        Assert.assertTrue(dto instanceof QuantitativeDataDto);
+        assertTrue(dto instanceof QuantitativeDataDto);
         QuantitativeDataDto qDto = (QuantitativeDataDto)dto;
-        assertTrue("The statistical values should contain one element", qDto.getValues().size() == 1);
+        assertTrue(qDto.getValues().size() == 1, "The statistical values should contain one element");
         StatisticalMeasurementValueDto statValue = qDto.getValues().iterator().next();
         assertEquals(new BigDecimal("5.0"), statValue.getValue());
 
         Set<DescriptionElementDto> leafPAElements = alpinaSpec1Dto.getDataValueForFeature(uuidFeatureLeafPA);
-        Assert.assertNotNull(leafPAElements);
-        Assert.assertTrue(leafPAElements.size() == 1);
+        assertNotNull(leafPAElements);
+        assertTrue(leafPAElements.size() == 1);
         dto = leafPAElements.iterator().next();
-        Assert.assertTrue(dto instanceof CategoricalDataDto);
+        assertTrue(dto instanceof CategoricalDataDto);
         cDto = (CategoricalDataDto)dto;
-        assertTrue("The statistical values should contain one element", cDto.getStates().size() == 1);
+        assertTrue(cDto.getStates().size() == 1, "The statistical values should contain one element");
         stateData = cDto.getStates().iterator().next();
         assertEquals(State.uuidPresent, stateData.getState().getUuid());
 
         //taxon descriptions
         List<TaxonRowWrapperDTO> taxonDescList = rowWrappers.stream().filter(r->r instanceof TaxonRowWrapperDTO)
                 .map(r->(TaxonRowWrapperDTO)r).collect(Collectors.toList());
-        Assert.assertEquals(1, taxonDescList.size());
+        assertEquals(1, taxonDescList.size());
 //        .filter(s->s.getTaxonDto().getLabel().equals("alpina specimen1")).collect(Collectors.toList());
         TaxonRowWrapperDTO taxonDto = taxonDescList.get(0);
         leafLengthElements = taxonDto.getDataValueForFeature(uuidFeatureLeafLength);
-        Assert.assertNotNull(leafLengthElements);
-        Assert.assertTrue(leafLengthElements.size() == 1);
+        assertNotNull(leafLengthElements);
+        assertTrue(leafLengthElements.size() == 1);
         dto = leafLengthElements.iterator().next();
-        Assert.assertTrue(dto instanceof QuantitativeDataDto);
+        assertTrue(dto instanceof QuantitativeDataDto);
         qDto = (QuantitativeDataDto)dto;
-        assertTrue("The statistical values should contain one element", qDto.getValues().size() == 2);
+        assertTrue(qDto.getValues().size() == 2, "The statistical values should contain one element");
         List<StatisticalMeasurementValueDto> minList = qDto.getValues().stream()
                 .filter(vs->vs.getValue().equals(new BigDecimal("4.5"))).collect(Collectors.toList());
-        Assert.assertEquals(1, minList.size());
+        assertEquals(1, minList.size());
         TermDto minDtoType = minList.get(0).getType();
-        Assert.assertTrue(minDtoType.getUuid().equals(StatisticalMeasure.MIN().getUuid()));
-        Assert.assertTrue(minDtoType.getTermType().equals(TermType.StatisticalMeasure));
+        assertTrue(minDtoType.getUuid().equals(StatisticalMeasure.MIN().getUuid()));
+        assertTrue(minDtoType.getTermType().equals(TermType.StatisticalMeasure));
 
     }
 
@@ -402,7 +402,7 @@ public class DescriptiveDataSetServiceTest extends CdmServicesTransactionalSprin
         addCategoricalData(specDescAdenophora, uuidFeatureLeafColor, uuidLeafColorYellow);
 
         TaxonNode tnLapsana = taxonNodeService.find(TN_LAPSANA_UUID);
-        Assert.assertNotNull(tnLapsana);
+        assertNotNull(tnLapsana);
         dataSet.addTaxonSubtree(tnLapsana);
 
         @SuppressWarnings("unchecked")

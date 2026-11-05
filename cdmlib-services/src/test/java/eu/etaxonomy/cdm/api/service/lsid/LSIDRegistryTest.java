@@ -8,13 +8,13 @@
 */
 package eu.etaxonomy.cdm.api.service.lsid;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.test.integration.spring.CdmServicesSpringIntegrationTest
 public class LSIDRegistryTest extends CdmServicesSpringIntegrationTest {
 
 	@Autowired
-	LSIDRegistry lsidRegistry;
+	private LSIDRegistry lsidRegistry;
 
 	private LSID lsid;
 	private LSID ipniLsid;
@@ -44,25 +44,25 @@ public class LSIDRegistryTest extends CdmServicesSpringIntegrationTest {
 		    ipniLsid = new LSID("urn:lsid:ipni.org:names:1");
 		    unknownAuthorityLsid = new LSID("urn:lsid:fred.org:dagg:1");
 		} catch(MalformedLSIDException mle) {
-			Assert.fail();
+			fail();
 		}
 		((LsidRegistryImpl)lsidRegistry).init();
 	}
 
 	@Test
 	public void testGetService() {
-		assertNotNull("lsidRegistry should exist",lsidRegistry);
+		assertNotNull(lsidRegistry, "lsidRegistry should exist");
 	}
 
 	@Test
 	public void testLookupDao() {
-		assertNotNull("lookupDao should return a dao",lsidRegistry.lookupDAO(lsid));
-		assertEquals("lookupDao should return the same dao for " + lsid + " as for " + ipniLsid,lsidRegistry.lookupDAO(lsid),lsidRegistry.lookupDAO(ipniLsid));
+		assertNotNull(lsidRegistry.lookupDAO(lsid), "lookupDao should return a dao");
+		assertEquals(lsidRegistry.lookupDAO(lsid), lsidRegistry.lookupDAO(ipniLsid), "lookupDao should return the same dao for " + lsid + " as for " + ipniLsid);
 	}
 
 	@Test
 	public void testLookupDaoWithUnknownLsid() {
-		assertNull("lookupDao shoud return null for an lsid it does not recognise",lsidRegistry.lookupDAO(unknownAuthorityLsid));
+		assertNull(lsidRegistry.lookupDAO(unknownAuthorityLsid), "lookupDao shoud return null for an lsid it does not recognise");
 	}
 
     @Override

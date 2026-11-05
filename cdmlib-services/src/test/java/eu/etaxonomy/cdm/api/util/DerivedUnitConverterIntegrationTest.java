@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;

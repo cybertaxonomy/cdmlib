@@ -8,9 +8,9 @@
 */
 package eu.etaxonomy.cdm.validation;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.Set;
@@ -68,7 +68,7 @@ public class ValidationTest extends CdmServicesTransactionalSpringIntegrationTes
 	@Test
 	@CdmDataSet
 	public final void testValidatorAutowire() {
-        assertNotNull("the validator should not be null", validator);
+        assertNotNull(validator, "the validator should not be null");
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class ValidationTest extends CdmServicesTransactionalSpringIntegrationTes
 	@CdmDataSet
 	public final void testDefaultValidationWithValidName() {
         Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name);
-        assertTrue("There should be no constraint violations as this name is valid at the default level",constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should be no constraint violations as this name is valid at the default level");
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class ValidationTest extends CdmServicesTransactionalSpringIntegrationTes
 	public final void testDefaultValidationWithInValidName() {
 		name.setGenusOrUninomial("");
         Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name);
-        assertTrue("There should not be a constraint violation as this name is invalid at the default level because the setter checks for the empty string",constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should not be a constraint violation as this name is invalid at the default level because the setter checks for the empty string");
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class ValidationTest extends CdmServicesTransactionalSpringIntegrationTes
 		name.setFullTitleCache("Abies balsamea L.");
 
         Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Default.class,Level2.class);
-        assertTrue("There should not be a constraint violation as this name is valid at the default and at the second level",constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should not be a constraint violation as this name is valid at the default and at the second level");
 	}
 
 	/**
@@ -119,10 +119,10 @@ public class ValidationTest extends CdmServicesTransactionalSpringIntegrationTes
 		name.setSpecificEpithet("balsamea");
 
         Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Default.class);
-        assertTrue("There should not be a constraint violation as this name is valid at the default level",constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should not be a constraint violation as this name is valid at the default level");
 
         constraintViolations  = validator.validate(name, Default.class,Level2.class);
-        assertFalse("There should be a constraint violation as this name is valid at the default level, but invalid at the second level",constraintViolations.isEmpty());
+        assertFalse(constraintViolations.isEmpty(), "There should be a constraint violation as this name is valid at the default level, but invalid at the second level");
 	}
 
 	/**
@@ -139,7 +139,7 @@ public class ValidationTest extends CdmServicesTransactionalSpringIntegrationTes
 		name.setFullTitleCache("Abies balsamea L.");
 
         Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Default.class, Level2.class/*, Level3.class*/);
-        assertTrue("There should not be a constraint violation as this name is valid at all levels",constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should not be a constraint violation as this name is valid at all levels");
 	}
 
 	/**
@@ -158,9 +158,9 @@ public class ValidationTest extends CdmServicesTransactionalSpringIntegrationTes
 		//name.setNomenclaturalMicroReference(" ");
 
         Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Default.class, Level2.class);
-        assertTrue("There should not be a constraint violation as this name is valid at the default and second level", constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should not be a constraint violation as this name is valid at the default and second level");
         constraintViolations  = validator.validate(name, Default.class,Level2.class, Level3.class);
-        assertFalse("There should be a constraint violation as this name is valid at the default and second level, but invalid at the third level as duplicates exist", constraintViolations.isEmpty());
+        assertFalse(constraintViolations.isEmpty(), "There should be a constraint violation as this name is valid at the default and second level, but invalid at the third level as duplicates exist");
 	}
 
     @Override

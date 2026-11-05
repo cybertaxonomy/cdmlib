@@ -8,9 +8,12 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
 import java.util.HashSet;
@@ -18,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,12 +106,12 @@ public class TaxonServiceImplBusinessTest extends CdmServicesTransactionalSpring
 		UpdateResult result = service.swapSynonymAndAcceptedTaxon(s1, t1, true, false, SecReferenceHandlingSwapEnum.KeepOrWarn, null, null);
 		Synonym syn = (Synonym)service.load(s1.getUuid());
 		//only the name has changed
-		Assert.assertNotNull(syn);
+		assertNotNull(syn);
 		TaxonName name = nameService.load(s1n.getUuid());
-		Assert.assertNotNull(name);
+		assertNotNull(name);
 
 		//The name of the new accepted taxon should be the same as from the former synonym
-		Assert.assertEquals(((Taxon)result.getCdmEntity()).getName(), name);
+		assertEquals(((Taxon)result.getCdmEntity()).getName(), name);
 	}
 
 	/**
@@ -120,33 +122,33 @@ public class TaxonServiceImplBusinessTest extends CdmServicesTransactionalSpring
 
 		t1.addSynonym(s1, homoTypicSynonymType);
 		HomotypicalGroup oldGroup = s1.getName().getHomotypicalGroup();
-		Assert.assertEquals("Homotypical group of new accepted taxon should contain exactly 2 names", 2, oldGroup.getTypifiedNames().size());
+		assertEquals(2, oldGroup.getTypifiedNames().size(), "Homotypical group of new accepted taxon should contain exactly 2 names");
 		boolean deleteSynonym = false;
 		Taxon taxon = null;
 
 		UpdateResult result;
         try {
             result = service.changeSynonymToAcceptedTaxon(s1, t1, null, null, null,deleteSynonym);
-            Assert.assertTrue("Change must fail for synonym and taxon in same homotypical group",result.isAbort());
+            assertTrue(result.isAbort(), "Change must fail for synonym and taxon in same homotypical group");
         } catch (HomotypicalGroupChangeException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
 
 		t1.addSynonym(s2, heteroTypicSynonymType);
-		Assert.assertEquals("Homotypical group of old accepted taxon should still contain exactly 2 names", 2, oldGroup.getTypifiedNames().size());
-		Assert.assertTrue("Old accepted taxon should now have 2 synonyms", t1.getSynonyms().size() == 2);
+		assertEquals(2, oldGroup.getTypifiedNames().size(), "Homotypical group of old accepted taxon should still contain exactly 2 names");
+		assertTrue(t1.getSynonyms().size() == 2, "Old accepted taxon should now have 2 synonyms");
 		try {
 			taxon = (Taxon)service.changeSynonymToAcceptedTaxon(s2, t1, null, null, null,deleteSynonym).getCdmEntity();
 		} catch (HomotypicalGroupChangeException e) {
-			Assert.fail("Change must not throw exception for heterotypic synonym change");
+			fail("Change must not throw exception for heterotypic synonym change");
 		}
 
-		Assert.assertTrue("Former accepted taxon should still have 1 synonym", t1.getSynonyms().size() == 1);
-		Assert.assertNotNull(taxon);
-		Assert.assertEquals(s2n, taxon.getName());
+		assertTrue(t1.getSynonyms().size() == 1, "Former accepted taxon should still have 1 synonym");
+		assertNotNull(taxon);
+		assertEquals(s2n, taxon.getName());
 		HomotypicalGroup newGroup = taxon.getName().getHomotypicalGroup();
-		Assert.assertEquals("Homotypical group of new accepted taxon should contain exactly one name", 1, newGroup.getTypifiedNames().size());
+		assertEquals(1, newGroup.getTypifiedNames().size(), "Homotypical group of new accepted taxon should contain exactly one name");
 	}
 
 	/**
@@ -166,49 +168,49 @@ public class TaxonServiceImplBusinessTest extends CdmServicesTransactionalSpring
 		String microReference1 = "p. 55";
 		Synonym s2 = t1.addHeterotypicSynonymName(s2n, citation1, microReference1, group);
 		HomotypicalGroup homoGroup2 = s1.getHomotypicGroup();
-		Assert.assertEquals("Homotypical group must be the same group as for the old synonym", group, homoGroup2);
+		assertEquals(group, homoGroup2, "Homotypical group must be the same group as for the old synonym");
 
 		//run
 		Taxon newTaxon = null;
 		try {
 			newTaxon = (Taxon)service.changeSynonymToAcceptedTaxon(s1, t1, null, null, SecReferenceHandlingEnum.KeepOrWarn, false).getCdmEntity();
 		} catch (HomotypicalGroupChangeException e1) {
-			Assert.fail("Invocation of change method should not throw an exception");
+			fail("Invocation of change method should not throw an exception");
 		}
 
-		Assert.assertEquals("Former accepted taxon should now have 2 synonyms left", 2, t1.getSynonyms().size());
-		Assert.assertEquals("Former accepted taxon should now have 1 heterotypic synonym group left", 1, t1.getHeterotypicSynonymyGroups().size());
-		Assert.assertNotNull(newTaxon);
-		Assert.assertEquals(s1n, newTaxon.getName());
-		Assert.assertEquals("New accepted taxon should have 1 synonym", 1, newTaxon.getSynonyms().size());
-		Assert.assertEquals("The new synonym must be the homotypic synonym of the old synonym", s2, newTaxon.getSynonyms().iterator().next());
+		assertEquals(2, t1.getSynonyms().size(), "Former accepted taxon should now have 2 synonyms left");
+		assertEquals(1, t1.getHeterotypicSynonymyGroups().size(), "Former accepted taxon should now have 1 heterotypic synonym group left");
+		assertNotNull(newTaxon);
+		assertEquals(s1n, newTaxon.getName());
+		assertEquals(1, newTaxon.getSynonyms().size(), "New accepted taxon should have 1 synonym");
+		assertEquals(s2, newTaxon.getSynonyms().iterator().next(), "The new synonym must be the homotypic synonym of the old synonym");
 		HomotypicalGroup homoGroup = newTaxon.getHomotypicGroup();
-		Assert.assertEquals("Homotypical group must be the same group as for the old synonym", group, homoGroup);
+		assertEquals(group, homoGroup, "Homotypical group must be the same group as for the old synonym");
 
 		List<Synonym> synonymsInNewTaxonsGroup = newTaxon.getSynonymsInGroup(homoGroup);
 		String message = "New accepted taxon should have 1 synonym in its homotypic group: s2. The old synonym may still exist (or not) but not as a synonym of the new taxon";
-		Assert.assertEquals(message, 1, synonymsInNewTaxonsGroup.size());
-		Assert.assertTrue("The old synonym's homotypic 'partner' must be a synonym of the new accepted taxon, too.", synonymsInNewTaxonsGroup.contains(s2));
-		Assert.assertTrue("The old synonym must be in the new accepted taxons homotypic group as it has not been deleted ", newTaxon.getName().getHomotypicalGroup().equals(s2.getName().getHomotypicalGroup()));
+		assertEquals(1, synonymsInNewTaxonsGroup.size(), message);
+		assertTrue(synonymsInNewTaxonsGroup.contains(s2), "The old synonym's homotypic 'partner' must be a synonym of the new accepted taxon, too.");
+		assertTrue(newTaxon.getName().getHomotypicalGroup().equals(s2.getName().getHomotypicalGroup()), "The old synonym must be in the new accepted taxons homotypic group as it has not been deleted ");
 
 		boolean iWasHere = false;
 		for (Synonym syn : synonymsInNewTaxonsGroup){
 			if (syn.equals(s2) ){
-				Assert.assertEquals("s2 relationship needs to have the same citation as the former relation to the given accepted taxon.", citation1, s2.getSec());
+				assertEquals(citation1, s2.getSec(), "s2 relationship needs to have the same citation as the former relation to the given accepted taxon.");
 				iWasHere = true;
 			}
 		}
-		Assert.assertTrue("Relationship to s2 must have been concidered in 'for'-loop", iWasHere);
+		assertTrue(iWasHere, "Relationship to s2 must have been concidered in 'for'-loop");
 
 		try {
 			UpdateResult result = service.changeSynonymToAcceptedTaxon(homotypicSynonym, t1, null, null, null,false);
 
-			Assert.assertTrue("The method should throw an exception when invoked on taxa in the same homotypical group", !result.getExceptions().isEmpty());
+			assertTrue(!result.getExceptions().isEmpty(), "The method should throw an exception when invoked on taxa in the same homotypical group");
 		} catch (HomotypicalGroupChangeException e) {
 			//OK
 		}
 
-//		Assert.assertNull("Synonym should not be used in a name anymore", s1.getName());
+//		assertNull(s1.getName(), "Synonym should not be used in a name anymore");
 	}
 
 	@Test
@@ -275,66 +277,66 @@ public class TaxonServiceImplBusinessTest extends CdmServicesTransactionalSpring
 		t1.getName().addBasionym(homotypicSynonymName);
 
 		//Preconditions test
-		Assert.assertFalse("s2 must not be in s1 homotypic group", s2.getHomotypicGroup().equals(s1.getHomotypicGroup()));
-		Assert.assertFalse("s2 must not be in t1 homotypic group", s2.getHomotypicGroup().equals(t1.getHomotypicGroup()));
-		Assert.assertNotNull("s2 must have exactly 1 synonym relationship/ must have accepted taxon", s2.getAcceptedTaxon());
-		Assert.assertEquals("s2 must have heterotypic relationship type", heteroTypicSynonymType, s2.getType());
-		Assert.assertEquals("s2 must have exactly 1 basionym relationships", 1, s2.getName().getBasionyms().size());
+		assertFalse(s2.getHomotypicGroup().equals(s1.getHomotypicGroup()), "s2 must not be in s1 homotypic group");
+		assertFalse(s2.getHomotypicGroup().equals(t1.getHomotypicGroup()), "s2 must not be in t1 homotypic group");
+		assertNotNull(s2.getAcceptedTaxon(), "s2 must have exactly 1 synonym relationship/ must have accepted taxon");
+		assertEquals(heteroTypicSynonymType, s2.getType(), "s2 must have heterotypic relationship type");
+		assertEquals(1, s2.getName().getBasionyms().size(), "s2 must have exactly 1 basionym relationships");
 
 		//do it
 		service.changeHomotypicalGroupOfSynonym(s2, s1.getHomotypicGroup(), t1, true);
 
 		//postconditions
-		Assert.assertEquals("s2 must be in s1 homotypic group", s2.getHomotypicGroup(), s1.getHomotypicGroup());
-		Assert.assertNotNull("s2 must have exactly 1 synonym relationship/accepted taxon", s2.getAcceptedTaxon());
-		Assert.assertEquals("s2 must have heterotypic relationship", heteroTypicSynonymType, s2.getType());
-		Assert.assertEquals("s2 must have exactly 0 basionym relationships", 0, s2.getName().getBasionyms().size());
+		assertEquals(s2.getHomotypicGroup(), s1.getHomotypicGroup(), "s2 must be in s1 homotypic group");
+		assertNotNull(s2.getAcceptedTaxon(), "s2 must have exactly 1 synonym relationship/accepted taxon");
+		assertEquals(heteroTypicSynonymType, s2.getType(), "s2 must have heterotypic relationship");
+		assertEquals(0, s2.getName().getBasionyms().size(), "s2 must have exactly 0 basionym relationships");
 
 		//Preconditions test
-		Assert.assertEquals("'homotypicSynonym' must have exactly 1 basionym relationships", 1, homotypicSynonym.getName().getNameRelations().size());
-		Assert.assertEquals("'t1' must have exactly 1 basionym relationships", 1, t1.getName().getBasionyms().size());
-		Assert.assertFalse("s2 must not be in t1 homotypic group", s2.getHomotypicGroup().equals(t1.getHomotypicGroup()));
+		assertEquals(1, homotypicSynonym.getName().getNameRelations().size(), "'homotypicSynonym' must have exactly 1 basionym relationships");
+		assertEquals(1, t1.getName().getBasionyms().size(), "'t1' must have exactly 1 basionym relationships");
+		assertFalse(s2.getHomotypicGroup().equals(t1.getHomotypicGroup()), "s2 must not be in t1 homotypic group");
 
 		//do it
 		service.changeHomotypicalGroupOfSynonym(s2, homotypicSynonym.getHomotypicGroup(), null, true);
 
 		//postconditions
-		Assert.assertEquals("s2 must be in 'homotypicSynonym' homotypic group", s2.getHomotypicGroup(), homotypicSynonym.getHomotypicGroup());
-		Assert.assertEquals("s2 must be in 't1' homotypic group", s2.getHomotypicGroup(), t1.getHomotypicGroup());
-		Assert.assertNotNull("s2 must have exactly 1 synonym relationship/accepted taxon", s2.getAcceptedTaxon());
-		Assert.assertEquals("s2 must have homotypic relationship", this.homoTypicSynonymType, s2.getType());
-		Assert.assertEquals("s2 must have exactly 1 basionym relationships", 1, s2.getName().getBasionyms().size());
-		Assert.assertEquals("'homotypicSynonym' must have exactly 2 basionym relationships", 2, homotypicSynonym.getName().getNameRelations().size());
-		Assert.assertEquals("'t1' must have exactly 1 basionym relationships", 1, t1.getName().getBasionyms().size());
-		Assert.assertEquals("'t1' must have exactly 2 homotypic synonyms", 2, t1.getHomotypicSynonymsByHomotypicSynonymType().size());
-		Assert.assertEquals("'t1' must have exactly 2 names in homotypic group", 2, t1.getHomotypicSynonymsByHomotypicGroup(null).size());
-		Assert.assertEquals("'t1' homotypic group must include 3 names (t1, s2, homotypicSynonym)", 3, t1.getHomotypicGroup().getTypifiedNames().size());
+		assertEquals(s2.getHomotypicGroup(), homotypicSynonym.getHomotypicGroup(), "s2 must be in 'homotypicSynonym' homotypic group");
+		assertEquals(s2.getHomotypicGroup(), t1.getHomotypicGroup(), "s2 must be in 't1' homotypic group");
+		assertNotNull(s2.getAcceptedTaxon(), "s2 must have exactly 1 synonym relationship/accepted taxon");
+		assertEquals(this.homoTypicSynonymType, s2.getType(), "s2 must have homotypic relationship");
+		assertEquals(1, s2.getName().getBasionyms().size(), "s2 must have exactly 1 basionym relationships");
+		assertEquals(2, homotypicSynonym.getName().getNameRelations().size(), "'homotypicSynonym' must have exactly 2 basionym relationships");
+		assertEquals(1, t1.getName().getBasionyms().size(), "'t1' must have exactly 1 basionym relationships");
+		assertEquals(2, t1.getHomotypicSynonymsByHomotypicSynonymType().size(), "'t1' must have exactly 2 homotypic synonyms");
+		assertEquals(2, t1.getHomotypicSynonymsByHomotypicGroup(null).size(), "'t1' must have exactly 2 names in homotypic group");
+		assertEquals(3, t1.getHomotypicGroup().getTypifiedNames().size(), "'t1' homotypic group must include 3 names (t1, s2, homotypicSynonym)");
 
 		//do it
 		service.changeHomotypicalGroupOfSynonym(s2, t2.getHomotypicGroup(), t2, false);
 
 		//postconditions
-		Assert.assertEquals("s2 must be in 't2' homotypic group", t2.getHomotypicGroup(), s2.getHomotypicGroup());
-		Assert.assertFalse("s2 must not be in 't1' homotypic group", s2.getHomotypicGroup().equals(t1.getHomotypicGroup()));
-		Assert.assertNotNull("s2 must have exactly 1 synonym relationship/accepted taxon", s2.getAcceptedTaxon());
-		Assert.assertEquals("s2 must have homotypic relationship", this.homoTypicSynonymType, s2.getType());
-		Assert.assertEquals("s2 must have exactly 0 basionym relationships", 0, s2.getName().getBasionyms().size());
-		Assert.assertEquals("'homotypicSynonym' must have exactly 1 basionym relationships", 1, homotypicSynonym.getName().getNameRelations().size());
-		Assert.assertEquals("'t1' must have exactly 1 basionym relationships", 1, t1.getName().getBasionyms().size());
-		Assert.assertEquals("'t1' must have exactly 1 homotypic synonyms", 1, t1.getHomotypicSynonymsByHomotypicSynonymType().size());
-		Assert.assertEquals("'t1' must have exactly 1 names in homotypic group", 1, t1.getHomotypicSynonymsByHomotypicGroup().size());
-		Assert.assertEquals("'t1' homotypic group must include 2 names (t1, homotypicSynonym)", 2, t1.getHomotypicGroup().getTypifiedNames().size());
+		assertEquals(t2.getHomotypicGroup(), s2.getHomotypicGroup(), "s2 must be in 't2' homotypic group");
+		assertFalse(s2.getHomotypicGroup().equals(t1.getHomotypicGroup()), "s2 must not be in 't1' homotypic group");
+		assertNotNull(s2.getAcceptedTaxon(), "s2 must have exactly 1 synonym relationship/accepted taxon");
+		assertEquals(this.homoTypicSynonymType, s2.getType(), "s2 must have homotypic relationship");
+		assertEquals(0, s2.getName().getBasionyms().size(), "s2 must have exactly 0 basionym relationships");
+		assertEquals(1, homotypicSynonym.getName().getNameRelations().size(), "'homotypicSynonym' must have exactly 1 basionym relationships");
+		assertEquals(1, t1.getName().getBasionyms().size(), "'t1' must have exactly 1 basionym relationships");
+		assertEquals(1, t1.getHomotypicSynonymsByHomotypicSynonymType().size(), "'t1' must have exactly 1 homotypic synonyms");
+		assertEquals(1, t1.getHomotypicSynonymsByHomotypicGroup().size(), "'t1' must have exactly 1 names in homotypic group");
+		assertEquals(2, t1.getHomotypicGroup().getTypifiedNames().size(), "'t1' homotypic group must include 2 names (t1, homotypicSynonym)");
 
 		//do it
 		service.changeHomotypicalGroupOfSynonym(s2, s1.getHomotypicGroup(), t1, false);
 
 		//postconditions
-		Assert.assertEquals("s2 must be in s1 homotypic group", s2.getHomotypicGroup(), s1.getHomotypicGroup());
-		Assert.assertFalse("s2 must not be in 't2' homotypic group", t2.getHomotypicGroup().equals(s2.getHomotypicGroup()));
+		assertEquals(s2.getHomotypicGroup(), s1.getHomotypicGroup(), "s2 must be in s1 homotypic group");
+		assertFalse(t2.getHomotypicGroup().equals(s2.getHomotypicGroup()), "s2 must not be in 't2' homotypic group");
 		//had 2 accepted taxa when synonym relationships still existed
-		Assert.assertNotNull("s2 must have accepted taxon", s2.getAcceptedTaxon());
-		Assert.assertEquals("Both relationships of s2 must be heterotypic", heteroTypicSynonymType, s2.getType());
-		Assert.assertEquals("s2 must have exactly 0 basionym relationships", 0, s2.getName().getBasionyms().size());
+		assertNotNull(s2.getAcceptedTaxon(), "s2 must have accepted taxon");
+		assertEquals(heteroTypicSynonymType, s2.getType(), "Both relationships of s2 must be heterotypic");
+		assertEquals(0, s2.getName().getBasionyms().size(), "s2 must have exactly 0 basionym relationships");
 
 	}
 

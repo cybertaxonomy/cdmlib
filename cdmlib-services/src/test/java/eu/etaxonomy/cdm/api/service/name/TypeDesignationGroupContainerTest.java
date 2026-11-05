@@ -8,17 +8,17 @@
 */
 package eu.etaxonomy.cdm.api.service.name;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.common.UTF8;
@@ -77,7 +77,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
     private Reference book;
     private Team team;
 
-    @Before
+    @BeforeEach
     public void init(){
 
         Person person1 = Person.NewInstance("DC", "Decandolle", "A.", null);
@@ -314,10 +314,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
             typeDesignationManager.addTypeDesigations(mtd_HT_published);
             typeDesignationManager.addTypeDesigations(mtd_IT_unpublished);
 
-            assertEquals("failed after repeating " + i + " times",
-                    "Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] A nice picture in Kohlbecker & Kusber 2008: 33; isotype: [icon] B Slide A565656)"
-                    , typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages)
-                    );
+            assertEquals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] A nice picture in Kohlbecker & Kusber 2008: 33; isotype: [icon] B Slide A565656)", typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages), "failed after repeating " + i + " times");
 
             Media media = ((MediaSpecimen)mtd_HT_published.getTypeSpecimen()).getMediaSpecimen();
             Reference ref2 = ReferenceFactory.newBook();
@@ -326,10 +323,8 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
             IdentifiableSource newSource = IdentifiableSource.NewPrimaryMediaSourceInstance(ref2, "tab. 4");
             media.addSource(newSource);
             String with2Sources = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages);
-            Assert.assertTrue("failed after repeating " + i + " times",
-                    //the order of the sources is currently not yet defined (rare case), therefore 2 possibilities
-                    with2Sources.equals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] A nice picture in Mueller 2009: tab. 4, Kohlbecker & Kusber 2008: 33; isotype: [icon] B Slide A565656)")
-                    || with2Sources.equals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] A nice picture in Kohlbecker & Kusber 2008: 33, Mueller 2009: tab. 4; isotype: [icon] B Slide A565656)"))
+            assertTrue(with2Sources.equals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] A nice picture in Mueller 2009: tab. 4, Kohlbecker & Kusber 2008: 33; isotype: [icon] B Slide A565656)")
+                    || with2Sources.equals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] A nice picture in Kohlbecker & Kusber 2008: 33, Mueller 2009: tab. 4; isotype: [icon] B Slide A565656)"), "failed after repeating " + i + " times")
                     ;
             media.removeSource(newSource);
 
@@ -339,20 +334,14 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
             TypeDesignationGroupContainer typeDesignationManager2 = new TypeDesignationGroupContainer(typifiedName);
             typeDesignationManager2.addTypeDesigations(mtd_HT_published);
 
-            assertEquals("failed after repeating " + i + " times",
-                    "Holotype: [icon] A nice picture in Kohlbecker & Kusber 2008: 33"
-                    , typeDesignationManager2.print(WITH_CITATION, WITH_TYPE_LABEL, !WITH_NAME, WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages)
-                    );
+            assertEquals("Holotype: [icon] A nice picture in Kohlbecker & Kusber 2008: 33", typeDesignationManager2.print(WITH_CITATION, WITH_TYPE_LABEL, !WITH_NAME, WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages), "failed after repeating " + i + " times");
 
             //with empty field unit
             FieldUnit emptyFieldUnit = FieldUnit.NewInstance();
             createDerivationEvent(emptyFieldUnit, mediaSpecimen);
             TypeDesignationGroupContainer typeDesignationManager3 = new TypeDesignationGroupContainer(typifiedName);
             typeDesignationManager3.addTypeDesigations(mtd_HT_published);
-            assertEquals("failed after repeating " + i + " times",
-                    "Holotype: [icon] A nice picture in Kohlbecker & Kusber 2008: 33"
-                    , typeDesignationManager3.print(WITH_CITATION, WITH_TYPE_LABEL, !WITH_NAME, WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages)
-                    );
+            assertEquals("Holotype: [icon] A nice picture in Kohlbecker & Kusber 2008: 33", typeDesignationManager3.print(WITH_CITATION, WITH_TYPE_LABEL, !WITH_NAME, WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages), "failed after repeating " + i + " times");
         }
     }
 

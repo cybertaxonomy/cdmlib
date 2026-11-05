@@ -8,19 +8,19 @@
 */
 package eu.etaxonomy.cdm.facade;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.FileNotFoundException;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.proxy.HibernateProxy;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -64,11 +64,7 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest
 	private static final Logger logger = LogManager.getLogger();
 
     @Autowired
-    private IOccurrenceService occService;
-    @Autowired
     private ITaxonService taxonService;
-    @Autowired
-    private IDescriptionService descService;
 
     private static final UUID taxonUuid = UUID.fromString("10cfb372-0b1a-4d82-9707-c5ffd2b93a55");
 
@@ -192,7 +188,7 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest
 ////		specimenFacade.setPlantDescription(plantDescription);
 
 		collection.setCode("B");
-		Assert.assertEquals(correctCache, specimen.getTitleCache());
+		assertEquals(correctCache, specimen.getTitleCache());
 	}
 
     @Test
@@ -207,7 +203,7 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest
 //        fieldUnitDescription.addElement(plantDescItem);
 
         collection.setCode("B");  //no effect
-        Assert.assertEquals(correctCache, fieldUnit.getTitleCache());
+        assertEquals(correctCache, fieldUnit.getTitleCache());
     }
 
     //Test if even a hibernate proxy class correctly loads the DerivedUnitCacheStrategy.
@@ -218,11 +214,11 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest
 
         IndividualsAssociation indivAssoc = getDescriptionElement(taxon, 5000);
         SpecimenOrObservationBase<?> specimen = indivAssoc.getAssociatedSpecimenOrObservation();
-        Assert.assertTrue("Specimen should be proxy otherwise the test does not test what it should", specimen instanceof HibernateProxy);
+        assertTrue(specimen instanceof HibernateProxy, "Specimen should be proxy otherwise the test does not test what it should");
         DerivedUnit myUnit = CdmBase.deproxy(specimen, DerivedUnit.class);
         myUnit.setTitleCache(null, false);
         String expectedDerivedUnitCache = "Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E, 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (8909756)";
-        Assert.assertEquals(expectedDerivedUnitCache, myUnit.getTitleCache());
+        assertEquals(expectedDerivedUnitCache, myUnit.getTitleCache());
     }
 
     @Test
@@ -231,11 +227,11 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest
         Taxon taxon = (Taxon)this.taxonService.find(taxonUuid);
         IndividualsAssociation indivAssoc = getDescriptionElement(taxon, 5001);
         SpecimenOrObservationBase<?> fieldUnit = indivAssoc.getAssociatedSpecimenOrObservation();
-        Assert.assertTrue("FieldUnit should be proxy otherwise the test does not test what it should", fieldUnit instanceof HibernateProxy);
+        assertTrue(fieldUnit instanceof HibernateProxy, "FieldUnit should be proxy otherwise the test does not test what it should");
         FieldUnit myFieldUnit = CdmBase.deproxy(fieldUnit, FieldUnit.class);
         myFieldUnit.setTitleCache(null, false);
         String expectedFieldUnitCache = "Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E, 3 May 2005, Kilian 5678, A. Muller & Kohlbecker";
-        Assert.assertEquals(expectedFieldUnitCache, myFieldUnit.getTitleCache());
+        assertEquals(expectedFieldUnitCache, myFieldUnit.getTitleCache());
     }
 
     private IndividualsAssociation getDescriptionElement(Taxon taxon, int id) {

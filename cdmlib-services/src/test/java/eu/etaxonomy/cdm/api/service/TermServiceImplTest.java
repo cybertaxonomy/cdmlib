@@ -8,10 +8,10 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -25,7 +25,6 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,7 +140,7 @@ public class TermServiceImplTest extends CdmServicesTransactionalSpringIntegrati
      */
     public void testListTerms() {
         Pager<SpecimenTypeDesignationStatus> results = termService.page(SpecimenTypeDesignationStatus.class, null,null,null,null);
-        assertNotNull("Results should not be null",results);
+        assertNotNull(results, "Results should not be null");
     }
 
     @Disabled
@@ -158,7 +157,7 @@ public class TermServiceImplTest extends CdmServicesTransactionalSpringIntegrati
     	commitAndStartNewTransaction(null);
 
     	termBase = termService.find(fromString);
-    	assertEquals("Title cache did not update after setting the label and saving the term", expectedTitleCache, termBase.getTitleCache());
+    	assertEquals(expectedTitleCache, termBase.getTitleCache(), "Title cache did not update after setting the label and saving the term");
 
     	// add new representation for default language
     	String expecteTitleCacheAfterRepresentationChange = "new label";
@@ -172,7 +171,7 @@ public class TermServiceImplTest extends CdmServicesTransactionalSpringIntegrati
     	commitAndStartNewTransaction(null);
 
     	termBase = termService.find(fromString);
-    	assertEquals("Title cache did not update after adding a new representation for default language and saving the term", expecteTitleCacheAfterRepresentationChange, termBase.getTitleCache());
+    	assertEquals(expecteTitleCacheAfterRepresentationChange, termBase.getTitleCache(), "Title cache did not update after adding a new representation for default language and saving the term");
     }
 
     @Test
@@ -295,7 +294,7 @@ public class TermServiceImplTest extends CdmServicesTransactionalSpringIntegrati
     	termService.moveTerm(secondTermDto, markerUuid, TermMovePosition.AFTER);
     	OrderedTerm marker2 = (OrderedTerm)termService.load(secondTermUuid);
     	marker = (OrderedTerm) termService.load(markerUuid);
-    	assertTrue("marker2 should be behind marker", marker2.getOrderIndex() == marker.getOrderIndex() + 1);
+    	assertTrue(marker2.getOrderIndex() == marker.getOrderIndex() + 1, "marker2 should be behind marker");
     }
 
     @Test
@@ -317,40 +316,35 @@ public class TermServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         //titleCache
         List<UuidAndTitleCache<NamedArea>> result = termService.getUuidAndTitleCache(NamedArea.class,
                 termCollections, null, "Au", Language.DEFAULT(), TermSearchField.NoAbbrev);
-        Assert.assertEquals("There should be 2 countries + Australasia and Australia should not be duplicated",
-                3, result.size());
-        Assert.assertEquals("AUS - Country", result.get(0).getTitleCache());
-        Assert.assertEquals("Australasia", result.get(1).getTitleCache());
-        Assert.assertEquals("AUT - Country", result.get(2).getTitleCache());
+        assertEquals(3, result.size(), "There should be 2 countries + Australasia and Australia should not be duplicated");
+        assertEquals("AUS - Country", result.get(0).getTitleCache());
+        assertEquals("Australasia", result.get(1).getTitleCache());
+        assertEquals("AUT - Country", result.get(2).getTitleCache());
 
         result = termService.getUuidAndTitleCache(NamedArea.class,
                 termCollections, 2, "Au", Language.DEFAULT(), TermSearchField.NoAbbrev);
-        Assert.assertEquals("There should be 2 records",
-                2, result.size());
+        assertEquals(2, result.size(), "There should be 2 records");
 
         //idInVoc - lower case
         result = termService.getUuidAndTitleCache(NamedArea.class,
                 termCollections, null, "Au", Language.DEFAULT(), TermSearchField.IDInVocabulary);
-        Assert.assertEquals("IdInVoc are upper case and therefore should not be found",
-                0, result.size());
+        assertEquals(0, result.size(), "IdInVoc are upper case and therefore should not be found");
 
         //idInVoc - upper case
         result = termService.getUuidAndTitleCache(NamedArea.class,
                 termCollections, null, "AU", Language.DEFAULT(), TermSearchField.IDInVocabulary);
-        Assert.assertEquals("Australasia and Australia should be found as they have and IdInVoc",
-                3, result.size());
-        Assert.assertEquals("AUS - Country - AUS", result.get(0).getTitleCache());
-        Assert.assertEquals("Australasia - AUSA", result.get(1).getTitleCache());
-        Assert.assertEquals("AUT - Country - AUT", result.get(2).getTitleCache());
+        assertEquals(3, result.size(), "Australasia and Australia should be found as they have and IdInVoc");
+        assertEquals("AUS - Country - AUS", result.get(0).getTitleCache());
+        assertEquals("Australasia - AUSA", result.get(1).getTitleCache());
+        assertEquals("AUT - Country - AUT", result.get(2).getTitleCache());
 
         //no voc
         termCollections.remove(countryVoc);
         result = termService.getUuidAndTitleCache(NamedArea.class,
                 termCollections, null, "AU", Language.DEFAULT(), TermSearchField.IDInVocabulary);
-        Assert.assertEquals("Austria should not be found anymore as it is not in the term tree",
-                2, result.size());
-        Assert.assertEquals("AUS - Country - AUS", result.get(0).getTitleCache());
-        Assert.assertEquals("Australasia - AUSA", result.get(1).getTitleCache());
+        assertEquals(2, result.size(), "Austria should not be found anymore as it is not in the term tree");
+        assertEquals("AUS - Country - AUS", result.get(0).getTitleCache());
+        assertEquals("Australasia - AUSA", result.get(1).getTitleCache());
     }
 
     /**

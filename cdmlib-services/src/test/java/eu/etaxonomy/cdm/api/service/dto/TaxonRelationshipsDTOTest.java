@@ -8,12 +8,14 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.api.service.dto.TaxonRelationshipsDTO.TaxonRelationDTO;
 import eu.etaxonomy.cdm.format.taxon.TaxonRelationshipFormatter;
@@ -56,7 +58,7 @@ public class TaxonRelationshipsDTOTest extends TermTestBase {
     Person toNameAuthor;
     private List<Language> languages;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         fromName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         fromName.setGenusOrUninomial("Abies");
@@ -98,7 +100,7 @@ public class TaxonRelationshipsDTOTest extends TermTestBase {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void test() {
         //2
         Reference sec2 = ReferenceFactory.newGeneric();
@@ -129,16 +131,16 @@ public class TaxonRelationshipsDTOTest extends TermTestBase {
         dto.createMisapplicationString();
 
         List<List<TaggedText>> misapplications = dto.getMisapplications();
-        Assert.assertEquals("2 of 5 misapplications must be deduplicated", 3, misapplications.size());  //2/5 were deduplicated
+        assertEquals(3, misapplications.size(), "2 of 5 misapplications must be deduplicated");  //2/5 were deduplicated
 
         List<TaggedText> deduplicated = misapplications.get(0);
-        Assert.assertEquals(13, deduplicated.size());
-        Assert.assertSame(relToDuplicate.getTaggedText().get(6), deduplicated.get(8));
+        assertEquals(13, deduplicated.size());
+        assertSame(relToDuplicate.getTaggedText().get(6), deduplicated.get(8));
 
-        Assert.assertEquals(11, misapplications.get(1).size());
+        assertEquals(11, misapplications.get(1).size());
 
         deduplicated = misapplications.get(2);
-        Assert.assertEquals(9, deduplicated.size());
-        Assert.assertSame(duplicateWithoutRelSec2.getTaggedText().get(6), deduplicated.get(8));
+        assertEquals(9, deduplicated.size());
+        assertSame(duplicateWithoutRelSec2.getTaggedText().get(6), deduplicated.get(8));
     }
 }

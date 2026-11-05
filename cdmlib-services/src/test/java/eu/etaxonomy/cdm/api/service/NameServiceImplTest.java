@@ -8,8 +8,13 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
@@ -21,7 +26,6 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,7 +147,7 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
      */
     @Test
     public void testSetDao() {
-//		Assert.assertNotNull(((NameServiceImpl)nameService).dao);
+//		assertNotNull(((NameServiceImpl)nameService).dao);
     }
 
     /**
@@ -151,7 +155,7 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
      */
     @Test
     public void testSetVocabularyDao() {
-//        Assert.assertNotNull(( (NameServiceImpl)nameService.vocabularyDao);
+//        assertNotNull(( (NameServiceImpl)nameService.vocabularyDao);
     }
 
     /**
@@ -185,12 +189,12 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         DeleteResult result = nameService.delete(name1);
         if (!result.isOk()){
         	Exception e = result.getExceptions().iterator().next();
-        	Assert.assertEquals("The Ecxeption should be a ReferencedObjectException because it is a basionym", "Name can't be deleted as it is a basionym.", e.getMessage());
+        	assertEquals("Name can't be deleted as it is a basionym.", e.getMessage(), "The Ecxeption should be a ReferencedObjectException because it is a basionym");
         } else{
-        	Assert.fail();
+        	fail();
         }
         name1 = nameService.find(name1.getUuid());
-        Assert.assertNotNull("Name should still be in database",name1);
+        assertNotNull(name1, "Name should still be in database");
         nameWithBasionym = name1.getNameRelations().iterator().next().getToName();
         nameWithBasionym.removeBasionyms();
 
@@ -198,7 +202,7 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
 
         commitAndStartNewTransaction(tableNames);
         name1 = nameService.find(name1.getUuid());
-        Assert.assertNull("Name should not be in database anymore",name1);
+        assertNull(name1, "Name should not be in database anymore");
     }
 
     @Test
@@ -225,11 +229,11 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         name1 = nameService.find(name1.getUuid());
         DeleteResult result = nameService.delete(name1.getUuid(), config);
         if (result.isOk()){
-        	Assert.fail("This should throw an error as long as name relationships exist.");
+        	fail("This should throw an error as long as name relationships exist.");
         }
 
         name1 = nameService.find(name1.getUuid());
-        Assert.assertNotNull("Name should still be in database",name1);
+        assertNotNull(name1, "Name should still be in database");
 
         //ignore is basionym for
         config.setIgnoreIsBasionymFor(true);
@@ -238,7 +242,7 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         nameService.delete(name1.getUuid(),  config);
         commitAndStartNewTransaction(tableNames);
         name1 = nameService.find(name1.getUuid());
-        Assert.assertNull("Name should not be in database anymore",name1);
+        assertNull(name1, "Name should not be in database anymore");
 
     }
 
@@ -261,11 +265,11 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         name1 = nameService.find(name1.getUuid());
         DeleteResult result = nameService.delete(name1.getUuid(), config);
         if (result.isOk()){
-    	   Assert.fail("Delete should throw an error as long as name relationships exist.");
+    	   fail("Delete should throw an error as long as name relationships exist.");
         }
 
         name1 = nameService.find(name1.getUuid());
-        Assert.assertNotNull("Name should still be in database",name1);
+        assertNotNull(name1, "Name should still be in database");
 
         //ignore all name relationships
         config.setRemoveAllNameRelationships(true);
@@ -275,7 +279,7 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         logger.debug(result);
         commitAndStartNewTransaction(tableNames);
         name1 = nameService.find(name1.getUuid());
-        Assert.assertNull("Name should not be in database anymore",name1);
+        assertNull(name1, "Name should not be in database anymore");
     }
 
     @Test
@@ -298,11 +302,11 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         name1 = nameService.find(name1.getUuid());
         DeleteResult result = nameService.delete(name1.getUuid(), config);
         if (result.isOk()){
-    	    Assert.fail("Delete should throw an error as long as name relationships exist.");
+    	    fail("Delete should throw an error as long as name relationships exist.");
         }
 
         name1 = nameService.find(name1.getUuid());
-        Assert.assertNotNull("Name should still be in database",name1);
+        assertNotNull(name1, "Name should still be in database");
 
         //ignore has basionym
         config.setIgnoreHasBasionym(true);
@@ -312,9 +316,9 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
             logger.debug(result);
             commitAndStartNewTransaction(tableNames);
             name1 = nameService.find(name1.getUuid());
-            Assert.assertNull("Name should not be in database anymore",name1);
+            assertNull(name1, "Name should not be in database anymore");
         } catch (Exception e) {
-            Assert.fail("Delete should not throw an error for .");
+            fail("Delete should not throw an error for .");
         }
     }
 
@@ -343,20 +347,20 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         nameService.save(name1);
         nameService.save(parent);
         commitAndStartNewTransaction(tableNames); //otherwise first save is rolled back with following failing delete
-        Assert.assertEquals("'Parent' should be a parent in a hybrid relation.", 1,parent.getHybridParentRelations().size());
+        assertEquals(1, parent.getHybridParentRelations().size(), "'Parent' should be a parent in a hybrid relation.");
 
         //parent
 
         name1 = nameService.find(name1.getUuid());
         DeleteResult result = nameService.delete(name1);
         if (result.isError()){
-            Assert.fail("Delete should throw NO exception when deleting a hybrid child: " + result.getExceptions().iterator().next().getMessage());
+            fail("Delete should throw NO exception when deleting a hybrid child: " + result.getExceptions().iterator().next().getMessage());
         }
         commitAndStartNewTransaction(tableNames);
         name1 = nameService.find(name1.getUuid());
-        Assert.assertNull("Name should not be in database anymore",name1);
+        assertNull(name1, "Name should not be in database anymore");
         parent = nameService.find(parent.getUuid());
-        Assert.assertEquals("'Parent' should not be a parent anymore.", 0,parent.getHybridParentRelations().size());
+        assertEquals(0, parent.getHybridParentRelations().size(), "'Parent' should not be a parent anymore.");
 
         //child
         name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
@@ -367,20 +371,20 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
 
         result = nameService.delete(name1);
         if (result.isOk()){
-            Assert.fail("Delete should throw an error as long as hybrid child exist.");
+            fail("Delete should throw an error as long as hybrid child exist.");
         }
         name1 = nameService.find(name1.getUuid());
-        Assert.assertNotNull("Name should still be in database",name1);
+        assertNotNull(name1, "Name should still be in database");
         name1.removeHybridChild(child);
 
         result = nameService.delete(name1); //should throw now exception
         if (result.isError()){
-        	Assert.fail("Delete should throw NO exception when deleting a hybrid child: " +result.getExceptions().iterator().next().getMessage());
+        	fail("Delete should throw NO exception when deleting a hybrid child: " +result.getExceptions().iterator().next().getMessage());
         }
 
         commitAndStartNewTransaction(tableNames);
         name1 = nameService.find(name1.getUuid());
-        Assert.assertNull("Name should not be in database anymore",name1);
+        assertNull(name1, "Name should not be in database anymore");
     }
 
     @Test
@@ -401,12 +405,12 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         DeleteResult result = nameService.delete(name1);
 
         if (result.isOk()){
-        	Assert.fail("Delete should throw an error as long as name is used in a concept.");
+        	fail("Delete should throw an error as long as name is used in a concept.");
         }
         TaxonName nameBase =nameService.find(name1.getUuid());
-        Assert.assertNotNull("Name should still be in database",nameBase);
+        assertNotNull(nameBase, "Name should still be in database");
         TaxonBase taxonBase = taxonService.find(taxon.getUuid());
-        Assert.assertNotNull("Taxon should still be in database",taxonBase);
+        assertNotNull(taxonBase, "Taxon should still be in database");
         taxon = (Taxon)taxonBase;
         taxon.setName(basionym);
         taxonService.save(taxon);
@@ -414,13 +418,13 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
 
         result = nameService.delete(nameBase); //should throw no exception
         if (result.isError()){
-        	Assert.fail("Delete should throw NO error ");
+        	fail("Delete should throw NO error ");
         }
         commitAndStartNewTransaction(tableNames);
         name1 = nameService.find(name1.getUuid());
-        Assert.assertNull("Name should still be in database",name1);
+        assertNull(name1, "Name should still be in database");
         taxon = (Taxon)taxonService.find(taxon.getUuid());
-        Assert.assertNotNull("Taxon should still be in database",taxon);
+        assertNotNull(taxon, "Taxon should still be in database");
     }
 
     @Test
@@ -448,20 +452,20 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
             commitAndStartNewTransaction(tableNames);
             name1 = nameService.find(name1.getUuid());
             nameService.delete(name1);
-            Assert.fail("Delete should throw an error as long as name is used in a source.");
+            fail("Delete should throw an error as long as name is used in a source.");
         } catch (Exception e) {
             if (e.getMessage().contains("Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource")){
                 //ok
                 endTransaction();  //exception rolls back transaction!
                 startNewTransaction();
             }else{
-                Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
+                fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
             }
         }
         name1 = nameService.find(name1.getUuid());
-        Assert.assertNotNull("Name should still be in database",name1);
+        assertNotNull(name1, "Name should still be in database");
         taxon = (Taxon)taxonService.find(taxon.getUuid());
-        Assert.assertNotNull("Taxon should still be in database",name1);
+        assertNotNull(name1, "Taxon should still be in database");
         source = taxon.getDescriptions().iterator().next().getElements().iterator().next().getSources().iterator().next();
         source.setNameUsedInSource(null);
         taxonService.saveOrUpdate(taxon);
@@ -470,11 +474,11 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
 
         commitAndStartNewTransaction(tableNames);
         name1 = nameService.find(name1.getUuid());
-        Assert.assertNull("Name should not be in database anymore",name1);
+        assertNull(name1, "Name should not be in database anymore");
         taxon = (Taxon)taxonService.find(taxon.getUuid());
-        Assert.assertNotNull("Taxon should still be in database",taxon);
+        assertNotNull(taxon, "Taxon should still be in database");
         source = taxon.getDescriptions().iterator().next().getElements().iterator().next().getSources().iterator().next();
-        Assert.assertNull("Source should not have a nameUsedInSource anymore",source.getNameUsedInSource());
+        assertNull(source.getNameUsedInSource(), "Source should not have a nameUsedInSource anymore");
     }
 
     @Test
@@ -496,12 +500,12 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         name1 = nameService.find(name1.getUuid());
         DeleteResult result = nameService.delete(name1);
         if (result.isOk()){
-            Assert.fail("This should throw an error because name is used in a type designation.");
+            fail("This should throw an error because name is used in a type designation.");
         }
 
         commitAndStartNewTransaction(tableNames);
         name1 = nameService.find(name1.getUuid());
-        Assert.assertNotNull("Name should still be in database",name1);
+        assertNotNull(name1, "Name should still be in database");
         higherName = nameService.find(higherName.getUuid());
         higherName.getNameTypeDesignations().iterator().next().removeType();  //keeps the designation but removes the name from it
 //		nameService.deleteTypeDesignation(higherName,commitAndStartNewTransaction(tableNames) );  //deletes the complete designation  //both options can be used
@@ -510,10 +514,10 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
 
     	commitAndStartNewTransaction(tableNames);
         name1 = nameService.find(name1.getUuid());
-        Assert.assertNull("Name should not be in database anymore",name1);
+        assertNull(name1, "Name should not be in database anymore");
         higherName = nameService.find(higherName.getUuid());
-        Assert.assertNotNull("Higher name should still exist in database",higherName);
-        Assert.assertEquals("Higher name should not have type designations anymore",1, higherName.getTypeDesignations().size());
+        assertNotNull(higherName, "Higher name should still exist in database");
+        assertEquals(1, higherName.getTypeDesignations().size(), "Higher name should not have type designations anymore");
     }
 
     @Test
@@ -536,7 +540,7 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         endTransaction();
 
         name1 = nameService.find(name1.getUuid());
-        Assert.assertNull("Name should not be in database anymore",name1);
+        assertNull(name1, "Name should not be in database anymore");
 
 //		printDataSet(System.out, tableNames);
 
@@ -552,7 +556,7 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
 
         nameService.delete(name1);  //should throw no exception
         if (!result.isOk()){
-        	Assert.fail();
+        	fail();
         }
         commitAndStartNewTransaction();
 //		printDataSet(System.out, tableNames);
@@ -577,7 +581,7 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
 
         result = nameService.delete(name1);  //should throw no exception
         if (!result.isOk()){
-        	Assert.fail();
+        	fail();
         }
         setComplete();
         endTransaction();
@@ -639,11 +643,11 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         @SuppressWarnings("rawtypes")
         Set<TypeDesignationBase> desigs3 = name3.getTypeDesignations();
 
-        Assert.assertEquals("name1 should have 2 type designations", 2, desigs1.size());
-        Assert.assertEquals("name2 should have 1 type designations", 1, desigs2.size());
-        Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
-        Assert.assertEquals("Specimen1 should be used in 1 type designation", 1, specimen1.getSpecimenTypeDesignations().size());
-        Assert.assertEquals("Fossil should be used in 1 type designation", 1, fossil.getSpecimenTypeDesignations().size());
+        assertEquals(2, desigs1.size(), "name1 should have 2 type designations");
+        assertEquals(1, desigs2.size(), "name2 should have 1 type designations");
+        assertEquals(1, desigs3.size(), "name3 should have 1 type designations");
+        assertEquals(1, specimen1.getSpecimenTypeDesignations().size(), "Specimen1 should be used in 1 type designation");
+        assertEquals(1, fossil.getSpecimenTypeDesignations().size(), "Fossil should be used in 1 type designation");
 
         nameService.deleteTypeDesignation((TaxonName)null, null);
 
@@ -659,11 +663,11 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         desigs2 = name2.getTypeDesignations();
         desigs3 = name3.getTypeDesignations();
         //nothing should be deleted
-        Assert.assertEquals("name1 should have 2 type designations", 2, desigs1.size());
-        Assert.assertEquals("name2 should have 1 type designations", 1, desigs2.size());
-        Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
-        Assert.assertEquals("Specimen1 should be used in 1 type designation", 1, specimen1.getSpecimenTypeDesignations().size());
-        Assert.assertEquals("Fossil should be used in 1 type designation", 1, fossil.getSpecimenTypeDesignations().size());
+        assertEquals(2, desigs1.size(), "name1 should have 2 type designations");
+        assertEquals(1, desigs2.size(), "name2 should have 1 type designations");
+        assertEquals(1, desigs3.size(), "name3 should have 1 type designations");
+        assertEquals(1, specimen1.getSpecimenTypeDesignations().size(), "Specimen1 should be used in 1 type designation");
+        assertEquals(1, fossil.getSpecimenTypeDesignations().size(), "Fossil should be used in 1 type designation");
 
         nameService.deleteTypeDesignation(name1, null);
 
@@ -679,11 +683,11 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         desigs2 = name2.getTypeDesignations();
         desigs3 = name3.getTypeDesignations();
         //only the types of name1 should be deleted
-        Assert.assertEquals("name1 should have 0 type designations", 0, desigs1.size());
-        Assert.assertEquals("name2 should have 1 type designations", 1, desigs2.size());
-        Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
-        Assert.assertEquals("Specimen1 should be used in 1 type designation", 1, specimen1.getSpecimenTypeDesignations().size());
-        Assert.assertEquals("Fossil should be used in 0 type designation", 0, fossil.getSpecimenTypeDesignations().size());
+        assertEquals(0, desigs1.size(), "name1 should have 0 type designations");
+        assertEquals(1, desigs2.size(), "name2 should have 1 type designations");
+        assertEquals(1, desigs3.size(), "name3 should have 1 type designations");
+        assertEquals(1, specimen1.getSpecimenTypeDesignations().size(), "Specimen1 should be used in 1 type designation");
+        assertEquals(0, fossil.getSpecimenTypeDesignations().size(), "Fossil should be used in 0 type designation");
 
         SpecimenTypeDesignation desig2 = (SpecimenTypeDesignation)name2.getTypeDesignations().iterator().next();
         nameService.deleteTypeDesignation(name2, desig2);
@@ -700,11 +704,11 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         desigs2 = name2.getTypeDesignations();
         desigs3 = name3.getTypeDesignations();
 
-        Assert.assertEquals("name1 should have 0 type designations", 0, desigs1.size());
-        Assert.assertEquals("name2 should have 0 type designations", 0, desigs2.size());
-        Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
-        Assert.assertEquals("Specimen1 should be used in 0 type designation", 0, specimen1.getSpecimenTypeDesignations().size());
-        Assert.assertEquals("Fossil should be used in 0 type designation", 0, fossil.getSpecimenTypeDesignations().size());
+        assertEquals(0, desigs1.size(), "name1 should have 0 type designations");
+        assertEquals(0, desigs2.size(), "name2 should have 0 type designations");
+        assertEquals(1, desigs3.size(), "name3 should have 1 type designations");
+        assertEquals(0, specimen1.getSpecimenTypeDesignations().size(), "Specimen1 should be used in 0 type designation");
+        assertEquals(0, fossil.getSpecimenTypeDesignations().size(), "Fossil should be used in 0 type designation");
 
         NameTypeDesignation desig3 = (NameTypeDesignation)name3.getTypeDesignations().iterator().next();
         SpecimenTypeDesignation std3 = SpecimenTypeDesignation.NewInstance();
@@ -718,7 +722,7 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         commitAndStartNewTransaction(/*tableNames*/);
         name3 = nameService.load(name3.getUuid());
 
-        Assert.assertEquals("name3 should have 2 type designations", 2, desigs3.size());
+        assertEquals(2, desigs3.size(), "name3 should have 2 type designations");
 
         nameService.deleteTypeDesignation(name3, desig3);
         commitAndStartNewTransaction(/*tableNames*/);
@@ -733,11 +737,11 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         desigs2 = name2.getTypeDesignations();
         desigs3 = name3.getTypeDesignations();
 
-        Assert.assertEquals("name1 should have 0 type designations", 0, desigs1.size());
-        Assert.assertEquals("name2 should have 0 type designations", 0, desigs2.size());
-        Assert.assertEquals("name3 should have 0 type designations", 1, desigs3.size());
-        Assert.assertEquals("Specimen1 should be used in 0 type designation", 0, specimen1.getSpecimenTypeDesignations().size());
-        Assert.assertEquals("Fossil should be used in 0 type designation", 0, fossil.getSpecimenTypeDesignations().size());
+        assertEquals(0, desigs1.size(), "name1 should have 0 type designations");
+        assertEquals(0, desigs2.size(), "name2 should have 0 type designations");
+        assertEquals(1, desigs3.size(), "name3 should have 0 type designations");
+        assertEquals(0, specimen1.getSpecimenTypeDesignations().size(), "Specimen1 should be used in 0 type designation");
+        assertEquals(0, fossil.getSpecimenTypeDesignations().size(), "Fossil should be used in 0 type designation");
     }
 
     @Test
@@ -774,9 +778,9 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
 
         Set<Registration> regs = name3.getRegistrations();
         desigs3 = name3.getTypeDesignations();
-        Assert.assertEquals("name3 should have 2 type designations", 2, desigs3.size());
-        Assert.assertEquals("name should have 1 registrations", 1, regs.size());
-        Assert.assertEquals("registration should have 1 type designations",1, regs.iterator().next().getTypeDesignations().size());
+        assertEquals(2, desigs3.size(), "name3 should have 2 type designations");
+        assertEquals(1, regs.size(), "name should have 1 registrations");
+        assertEquals(1, regs.iterator().next().getTypeDesignations().size(), "registration should have 1 type designations");
 
         nameService.deleteTypeDesignation(name3, desig3);
         commitAndStartNewTransaction(/*tableNames*/);
@@ -784,8 +788,8 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
 
         regs = name3.getRegistrations();
-        Assert.assertEquals("name3 should have 1 registration", 1, regs.size());
-        Assert.assertEquals("registration should have 1 type designations",1, regs.iterator().next().getTypeDesignations().size());
+        assertEquals(1, regs.size(), "name3 should have 1 registration");
+        assertEquals(1, regs.iterator().next().getTypeDesignations().size(), "registration should have 1 type designations");
 
         desigs3 = name3.getTypeDesignations();
 
@@ -795,8 +799,8 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         regs = name3.getRegistrations();
         desigs3 = name3.getTypeDesignations();
 
-        Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
-        Assert.assertEquals("registration should have 0 type designations",0, regs.iterator().next().getTypeDesignations().size());
+        assertEquals(1, desigs3.size(), "name3 should have 1 type designations");
+        assertEquals(0, regs.iterator().next().getTypeDesignations().size(), "registration should have 0 type designations");
     }
 
     @Test
@@ -819,11 +823,11 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         @SuppressWarnings("rawtypes")
         Set<TypeDesignationBase> desigs3 = name3.getTypeDesignations();
 
-        Assert.assertEquals("name1 should have 2 type designations", 2, desigs1.size());
-        Assert.assertEquals("name2 should have 1 type designations", 1, desigs2.size());
-        Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
-        Assert.assertEquals("Specimen1 should be used in 1 type designation", 1, specimen1.getSpecimenTypeDesignations().size());
-        Assert.assertEquals("Fossil should be used in 1 type designation", 1, fossil.getSpecimenTypeDesignations().size());
+        assertEquals(2, desigs1.size(), "name1 should have 2 type designations");
+        assertEquals(1, desigs2.size(), "name2 should have 1 type designations");
+        assertEquals(1, desigs3.size(), "name3 should have 1 type designations");
+        assertEquals(1, specimen1.getSpecimenTypeDesignations().size(), "Specimen1 should be used in 1 type designation");
+        assertEquals(1, fossil.getSpecimenTypeDesignations().size(), "Fossil should be used in 1 type designation");
 
         SpecimenTypeDesignation desig2 = (SpecimenTypeDesignation)name2.getTypeDesignations().iterator().next();
 
@@ -841,11 +845,11 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         desigs2 = name2.getTypeDesignations();
         desigs3 = name3.getTypeDesignations();
 
-        Assert.assertEquals("name1 should have 1 type designations", 1, desigs1.size());
-        Assert.assertEquals("name2 should have 0 type designations", 0, desigs2.size());
-        Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
-        Assert.assertEquals("Specimen1 should be used in 0 type designation", 0, specimen1.getSpecimenTypeDesignations().size());
-        Assert.assertEquals("Fossil should be used in 1 type designation", 1, fossil.getSpecimenTypeDesignations().size());
+        assertEquals(1, desigs1.size(), "name1 should have 1 type designations");
+        assertEquals(0, desigs2.size(), "name2 should have 0 type designations");
+        assertEquals(1, desigs3.size(), "name3 should have 1 type designations");
+        assertEquals(0, specimen1.getSpecimenTypeDesignations().size(), "Specimen1 should be used in 0 type designation");
+        assertEquals(1, fossil.getSpecimenTypeDesignations().size(), "Fossil should be used in 1 type designation");
     }
 
     @Test
@@ -903,7 +907,7 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
 
         restrictions = Arrays.asList(new Restriction<>("typeDesignations.typeSpecimen.titleCache", MatchMode.BEGINNING, "Specimen"));
         result = nameService.findByTitleWithRestrictions(null, "Name1", MatchMode.EXACT, restrictions, null, null, null, null);
-        assertEquals("names with multiple matching typeSpecimens must be deduplicated", 1l, result.getCount().longValue());
+        assertEquals(1l, result.getCount().longValue(), "names with multiple matching typeSpecimens must be deduplicated");
         assertEquals("Name1", result.getRecords().iterator().next().getTitleCache());
 
         restrictions = Arrays.asList(new Restriction<>("typeDesignations.typeSpecimen.titleCache", MatchMode.BEGINNING, "Specimen"));
@@ -931,7 +935,7 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
 
         restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeSpecimen.titleCache", null, "Specimen1", "Specimen2"));
         result = nameService.findByTitleWithRestrictions(null, "Name1", MatchMode.EXACT, restrictions, null, null, null, null);
-        assertEquals("names with multiple matching typeSpecimens must be distinct", 1l, result.getCount().longValue());
+        assertEquals(1l, result.getCount().longValue(), "names with multiple matching typeSpecimens must be distinct");
         assertEquals("Name1", result.getRecords().iterator().next().getTitleCache());
     }
 
@@ -1067,39 +1071,39 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         TaxonName name3 = nameService.loadWithoutInitializing(NAME3_ID);
 
         name1 = CdmBase.deproxy(name1);
-        assertEquals("TitleCache should be the persisted one", "Name1", titleCacheField.get(name1));
-        assertEquals("NameCache should be the persisted one", "", nameCacheField.get(name1));
-        assertEquals("AuthorCache should be the persisted one", "", authorCacheField.get(name1));
-        assertEquals("FullTitleCache should be the persisted one", "", fullTitleCacheField.get(name1));
+        assertEquals("Name1", titleCacheField.get(name1), "TitleCache should be the persisted one");
+        assertEquals("", nameCacheField.get(name1), "NameCache should be the persisted one");
+        assertEquals("", authorCacheField.get(name1), "AuthorCache should be the persisted one");
+        assertEquals("", fullTitleCacheField.get(name1), "FullTitleCache should be the persisted one");
 
         name2 = CdmBase.deproxy(name2);
-        assertEquals("TitleCache should be the persisted one", "Name2", titleCacheField.get(name2));
-        assertEquals("NameCache should be the persisted one", "Protected name", nameCacheField.get(name2));
-        assertEquals("AuthorCache should be the persisted one", null, authorCacheField.get(name2));
-        assertEquals("FullTitleCache should be the persisted one", "", fullTitleCacheField.get(name2));
+        assertEquals("Name2", titleCacheField.get(name2), "TitleCache should be the persisted one");
+        assertEquals("Protected name", nameCacheField.get(name2), "NameCache should be the persisted one");
+        assertEquals(null, authorCacheField.get(name2), "AuthorCache should be the persisted one");
+        assertEquals("", fullTitleCacheField.get(name2), "FullTitleCache should be the persisted one");
 
         name3 = CdmBase.deproxy(name3);
-        assertEquals("TitleCache should be the persisted one", "Name3", titleCacheField.get(name3));
-        assertEquals("NameCache should be the persisted one", "", nameCacheField.get(name3));
-        assertEquals("AuthorCache should be the persisted one", "No-author", authorCacheField.get(name3));
-        assertEquals("FullTitleCache should be the persisted one", "", fullTitleCacheField.get(name3));
+        assertEquals("Name3", titleCacheField.get(name3), "TitleCache should be the persisted one");
+        assertEquals("", nameCacheField.get(name3), "NameCache should be the persisted one");
+        assertEquals("No-author", authorCacheField.get(name3), "AuthorCache should be the persisted one");
+        assertEquals("", fullTitleCacheField.get(name3), "FullTitleCache should be the persisted one");
 
         nameService.updateCaches();
 
-        assertEquals("Expecting titleCache to be updated", "First name Turl.", titleCacheField.get(name1));
-        assertEquals("Expecting nameCache to be updated", "First name", nameCacheField.get(name1));
-        assertEquals("Expecting authorshipCache to be updated", "Turl.", authorCacheField.get(name1));
-        assertEquals("Expecting fullTitleCache to be updated", "First name Turl.", fullTitleCacheField.get(name1));
+        assertEquals("First name Turl.", titleCacheField.get(name1), "Expecting titleCache to be updated");
+        assertEquals("First name", nameCacheField.get(name1), "Expecting nameCache to be updated");
+        assertEquals("Turl.", authorCacheField.get(name1), "Expecting authorshipCache to be updated");
+        assertEquals("First name Turl.", fullTitleCacheField.get(name1), "Expecting fullTitleCache to be updated");
 
-        assertEquals("Expecting titleCache to be updated", "Protected name", titleCacheField.get(name2));
-        assertEquals("Expecting nameCache to not be updated", "Protected name", nameCacheField.get(name2));
-        assertEquals("Expecting authorshipCache to be updated", "", authorCacheField.get(name2));
-        assertEquals("Expecting fullTitleCache to be updated", "Protected name", fullTitleCacheField.get(name2));
+        assertEquals("Protected name", titleCacheField.get(name2), "Expecting titleCache to be updated");
+        assertEquals("Protected name", nameCacheField.get(name2), "Expecting nameCache to not be updated");
+        assertEquals("", authorCacheField.get(name2), "Expecting authorshipCache to be updated");
+        assertEquals("Protected name", fullTitleCacheField.get(name2), "Expecting fullTitleCache to be updated");
 
-        assertEquals("Expecting titleCache to be updated", "Name3", titleCacheField.get(name3));
-        assertEquals("Expecting nameCache to be updated", "Third", nameCacheField.get(name3));
-        assertEquals("Expecting authorshipCache to be updated", "No-author", authorCacheField.get(name3));
-        assertEquals("Expecting fullTitleCache to be updated", "Name3", fullTitleCacheField.get(name3));
+        assertEquals("Name3", titleCacheField.get(name3), "Expecting titleCache to be updated");
+        assertEquals("Third", nameCacheField.get(name3), "Expecting nameCache to be updated");
+        assertEquals("No-author", authorCacheField.get(name3), "Expecting authorshipCache to be updated");
+        assertEquals("Name3", fullTitleCacheField.get(name3), "Expecting fullTitleCache to be updated");
     }
 
     @Test  //#3666 and others
@@ -1107,7 +1111,7 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
     public void testParseName() {
 
         boolean doDeduplicate = true;
-        Assert.assertEquals(3, nameService.count(TaxonName.class));
+        assertEquals(3, nameService.count(TaxonName.class));
 
         String nameToParseStr = "Abies alba Mill., Sp. Pl. 2: 333. 1751 [as \"alpa\"]";
         UpdateResult parsedNameResult = nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), doDeduplicate);
@@ -1127,8 +1131,8 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         TaxonName parsedName2 = (TaxonName)nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), doDeduplicate).getCdmEntity();
         UUID abiesAlbaMill2Uuid = parsedName2.getUuid();
         UUID originalSpelling2Uuid = parsedName2.getOriginalSpelling().getUuid();
-        Assert.assertEquals(originalSpellingUuid, originalSpelling2Uuid);
-        Assert.assertNotEquals(abiesAlbaMillUuid, abiesAlbaMill2Uuid);  //currently we do not deduplicate the main name yet
+        assertEquals(originalSpellingUuid, originalSpelling2Uuid);
+        assertNotEquals(abiesAlbaMillUuid, abiesAlbaMill2Uuid);  //currently we do not deduplicate the main name yet
 
         //try with hybrids
         nameToParseStr = "Abies alba x Pinus alba";
@@ -1149,9 +1153,9 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         rels = hybridFormName2.getHybridChildRelations();
         abiesAlbaParent = rels.stream().filter(rel->rel.getParentName().getNameCache().equals("Abies alba")).findFirst().get().getParentName();
         pinusAlbaParent = rels.stream().filter(rel->rel.getParentName().getNameCache().equals("Pinus alba")).findFirst().get().getParentName();
-        Assert.assertEquals(abiesAlbaUuid, abiesAlbaParent.getUuid());
-        Assert.assertEquals(pinusAlbaUuid, pinusAlbaParent.getUuid());
-        Assert.assertNotEquals(hybridFormName.getUuid(), hybridFormName2.getUuid());  //currently we do not deduplicate the main name yet
+        assertEquals(abiesAlbaUuid, abiesAlbaParent.getUuid());
+        assertEquals(pinusAlbaUuid, pinusAlbaParent.getUuid());
+        assertNotEquals(hybridFormName.getUuid(), hybridFormName2.getUuid());  //currently we do not deduplicate the main name yet
         //do not persist to avoid having 2 versions of the hybrid formula name persisted (important for following tests)
 
         nameToParseStr = "Abies alba x Pinus beta";
@@ -1159,8 +1163,8 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         rels = hybridFormName3.getHybridChildRelations();
         abiesAlbaParent = rels.stream().filter(rel->rel.getParentName().getNameCache().equals("Abies alba")).findFirst().get().getParentName();
         TaxonName pinusBetaParent = rels.stream().filter(rel->rel.getParentName().getNameCache().equals("Pinus beta")).findFirst().get().getParentName();
-        Assert.assertEquals(abiesAlbaUuid, abiesAlbaParent.getUuid());
-        Assert.assertFalse(pinusAlbaUuid.equals(pinusBetaParent.getUuid()));
+        assertEquals(abiesAlbaUuid, abiesAlbaParent.getUuid());
+        assertFalse(pinusAlbaUuid.equals(pinusBetaParent.getUuid()));
         nameService.merge(pinusBetaParent, true);
         nameService.merge(hybridFormName3, true);
         nameService.getSession().flush();
@@ -1170,9 +1174,8 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         rels = hybridFormName4.getHybridChildRelations();
         TaxonName abiesAlbaMillParent = rels.stream().filter(rel->rel.getParentName().getNameCache().equals("Abies alba")).findFirst().get().getParentName();
         pinusBetaParent = rels.stream().filter(rel->rel.getParentName().getNameCache().equals("Pinus beta")).findFirst().get().getParentName();
-        Assert.assertEquals("Abies alba Mill. should match existing name from above original spelling test",
-                abiesAlbaMillUuid, abiesAlbaMillParent.getUuid());
-        Assert.assertFalse(pinusAlbaUuid.equals(pinusBetaParent.getUuid()));
+        assertEquals(abiesAlbaMillUuid, abiesAlbaMillParent.getUuid(), "Abies alba Mill. should match existing name from above original spelling test");
+        assertFalse(pinusAlbaUuid.equals(pinusBetaParent.getUuid()));
 
         //parse a name xxx
         nameToParseStr = "Campanula aizoon Boiss. & Spruner in Boissiers, Diagn. Pl. Orient. 4: 34. 1844";

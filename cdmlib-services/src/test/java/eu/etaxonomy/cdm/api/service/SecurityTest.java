@@ -8,9 +8,13 @@
  */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
 import java.util.Collection;
@@ -25,7 +29,6 @@ import javax.sql.DataSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,7 +143,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         context.setAuthentication(authentication);
 
         List<User> userList = userService.listByUsername("Editor", MatchMode.ANYWHERE, null, null, 0, null, null);
-        Assert.assertTrue("The user list must have elements", userList.size() > 0 );
+        assertTrue(userList.size() > 0, "The user list must have elements");
     }
 
     @Test
@@ -152,7 +155,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         context.setAuthentication(authentication);
 
         User user = userService.loadUserByUsernameAsUser("taxonEditor");
-        Assert.assertNotNull("The user list must have elements", user );
+        assertNotNull(user, "The user list must have elements");
     }
 
     @Test
@@ -179,7 +182,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             endTransaction();
             startNewTransaction();
         }
-        Assert.assertNotNull("Must fail here!", exception);
+        assertNotNull(exception, "Must fail here!");
 
     }
 
@@ -207,7 +210,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             endTransaction();
             startNewTransaction();
         }
-        Assert.assertNull("Must not fail here!", exception);
+        assertNull(exception, "Must not fail here!");
 
     }
 
@@ -297,7 +300,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             endTransaction();
             startNewTransaction();
         }
-        Assert.assertNull("must not fail here!", exception);
+        assertNull(exception, "must not fail here!");
     }
 
     @Test
@@ -328,7 +331,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             endTransaction();
             startNewTransaction();
         }
-        Assert.assertNull("must not fail here!", exception);
+        assertNull(exception, "must not fail here!");
     }
 
     @Test
@@ -359,7 +362,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             endTransaction();
             startNewTransaction();
         }
-        Assert.assertNull("must not fail here!", exception);
+        assertNull(exception, "must not fail here!");
     }
 
     @Test
@@ -401,9 +404,9 @@ public class SecurityTest extends AbstractSecurityTestBase{
             endTransaction();
             startNewTransaction();
         }
-        Assert.assertNull("must not fail here!", exception);
+        assertNull(exception, "must not fail here!");
         book = referenceService.load(BOOK1_UUID);
-        Assert.assertEquals("Mobydick", book.getTitleCache());
+        assertEquals("Mobydick", book.getTitleCache());
     }
 
     @Test
@@ -433,9 +436,9 @@ public class SecurityTest extends AbstractSecurityTestBase{
             endTransaction();
             startNewTransaction();
         }
-        Assert.assertNotNull("Updating reference should not be allowed, only CREATE and READ! An exception should be thrown", exception);
+        assertNotNull(exception, "Updating reference should not be allowed, only CREATE and READ! An exception should be thrown");
         Reference updatedRef = referenceService.find(refUuid);
-        Assert.assertEquals("TitleCache should still be the old titleCache", "Lorem ipsum", updatedRef.getTitleCache());
+        assertEquals("Lorem ipsum", updatedRef.getTitleCache(), "TitleCache should still be the old titleCache");
     }
 
     @Test
@@ -482,7 +485,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             endTransaction();
             startNewTransaction();
         }
-        Assert.assertNull("must not fail here!", exception);
+        assertNull(exception, "must not fail here!");
 
         // ok, now try authenticating taxonomist with new password
         UsernamePasswordAuthenticationToken newToken = new UsernamePasswordAuthenticationToken("taxonomist", "zuaisd");
@@ -500,11 +503,11 @@ public class SecurityTest extends AbstractSecurityTestBase{
         context.setAuthentication(authentication);
 
         // check test preconditions user name and authorities
-        Assert.assertEquals("descriptionEditor", context.getAuthentication().getName());
+        assertEquals("descriptionEditor", context.getAuthentication().getName());
         Collection<? extends GrantedAuthority> authorities = context.getAuthentication().getAuthorities();
         for(GrantedAuthority authority: authorities){
             // role prefix 'ROLE_' is defined in org.springframework.security.access.vote.RoleVoter !!!
-            Assert.assertNotSame("user must not have authority 'ROLE_ADMIN'", "ROLE_ADMIN", authority.getAuthority());
+            assertNotSame("ROLE_ADMIN", authority.getAuthority(), "user must not have authority 'ROLE_ADMIN'");
         }
         // finally perform the test :
         try{
@@ -522,7 +525,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             endTransaction();
             startNewTransaction();
         }
-        Assert.assertNotNull("must fail here!", exception);
+        assertNotNull(exception, "must fail here!");
     }
 
     @Test
@@ -558,7 +561,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         RuntimeException securityException= null;
 
         TaxonBase taxon = taxonService.find(UUID_ACHERONTIA_STYX);
-        Assert.assertFalse(taxon.isDoubtful());
+        assertFalse(taxon.isDoubtful());
         taxon.setDoubtful(true);
         try{
             taxonService.saveOrUpdate(taxon);
@@ -572,10 +575,10 @@ public class SecurityTest extends AbstractSecurityTestBase{
             endTransaction();
             startNewTransaction();
         }
-        Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
+        assertNull(securityException, "evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""));
         // reload taxon
         taxon = taxonService.find(UUID_ACHERONTIA_STYX);
-        Assert.assertTrue("The change must be persisted", taxon.isDoubtful());
+        assertTrue(taxon.isDoubtful(), "The change must be persisted");
     }
 
     /**
@@ -593,7 +596,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         context.setAuthentication(authentication);
 
         TaxonBase  taxon = taxonService.find(UUID_ACHERONTIA_STYX);
-        Assert.assertFalse(taxon.isDoubtful());
+        assertFalse(taxon.isDoubtful());
         taxon.setDoubtful(true);
         try{
             taxonService.saveOrUpdate(taxon);
@@ -607,10 +610,10 @@ public class SecurityTest extends AbstractSecurityTestBase{
             endTransaction();
             startNewTransaction();
         }
-        Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
+        assertNull(securityException, "evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""));
         // reload taxon
         taxon = taxonService.find(UUID_ACHERONTIA_STYX);
-        Assert.assertTrue("The change must be persisted", taxon.isDoubtful());
+        assertTrue(taxon.isDoubtful(), "The change must be persisted");
     }
 
     /**
@@ -627,7 +630,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         TaxonBase taxon = taxonService.find(UUID_ACHERONTIA_STYX);
 
-        Assert.assertFalse(taxon.isDoubtful());
+        assertFalse(taxon.isDoubtful());
         taxon.setDoubtful(true);
         try {
             taxonService.saveOrUpdate(taxon);
@@ -642,10 +645,10 @@ public class SecurityTest extends AbstractSecurityTestBase{
             startNewTransaction();
         }
 
-        Assert.assertNotNull("evaluation must fail since the user is not permitted", securityException);
+        assertNotNull(securityException, "evaluation must fail since the user is not permitted");
         // reload taxon
         taxon = taxonService.find(UUID_ACHERONTIA_STYX);
-        Assert.assertFalse("The change must not be persisted", taxon.isDoubtful());
+        assertFalse(taxon.isDoubtful(), "The change must not be persisted");
     }
 
     @Test
@@ -673,10 +676,10 @@ public class SecurityTest extends AbstractSecurityTestBase{
             endTransaction();
             startNewTransaction();
         }
-        Assert.assertNull("evaluation must not fail since the user has ROLE_ADMIN, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
+        assertNull(securityException, "evaluation must not fail since the user has ROLE_ADMIN, CAUSE :" + (securityException != null ? securityException.getMessage() : ""));
         // reload taxon
         taxon = (Taxon) taxonService.find(UUID_ACHERONTIA_STYX);
-        Assert.assertTrue("The change must be persisted", taxon.isPublish() != lastIsPublish);
+        assertTrue(taxon.isPublish() != lastIsPublish, "The change must be persisted");
     }
 
     /**
@@ -707,10 +710,10 @@ public class SecurityTest extends AbstractSecurityTestBase{
             endTransaction();
             startNewTransaction();
         }
-        Assert.assertNull("evaluation must not fail since the user has ROLE_ADMIN, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
+        assertNull(securityException, "evaluation must not fail since the user has ROLE_ADMIN, CAUSE :" + (securityException != null ? securityException.getMessage() : ""));
         // reload taxon
         taxon = (Taxon) taxonService.find(UUID_ACHERONTIA_STYX);
-        Assert.assertTrue("The change must be persisted", taxon.isPublish() != lastIsPublish);
+        assertTrue(taxon.isPublish() != lastIsPublish, "The change must be persisted");
     }
 
     /**
@@ -742,10 +745,10 @@ public class SecurityTest extends AbstractSecurityTestBase{
             startNewTransaction();
         }
 
-        Assert.assertNotNull("evaluation must fail since the user is not permitted", securityException);
+        assertNotNull(securityException, "evaluation must fail since the user is not permitted");
         // reload taxon
         taxon = (Taxon) taxonService.find(UUID_ACHERONTIA_STYX);
-        Assert.assertTrue("The taxon must be unchanged", taxon.isPublish() == lastIsPublish);
+        assertTrue(taxon.isPublish() == lastIsPublish, "The taxon must be unchanged");
     }
 
     /**
@@ -764,11 +767,11 @@ public class SecurityTest extends AbstractSecurityTestBase{
             taxonService.delete(taxon);
             commitAndStartNewTransaction(null);
         } catch (Exception e) {
-            Assert.fail("Evaluation must not fail since the user is permitted, CAUSE :" + e.getMessage());
+            fail("Evaluation must not fail since the user is permitted, CAUSE :" + e.getMessage());
         }
         // reload taxon
         taxon = taxonService.load(UUID_LACTUCA);
-        Assert.assertNull("The taxon must be deleted", taxon);
+        assertNull(taxon, "The taxon must be deleted");
     }
 
     /**
@@ -788,10 +791,10 @@ public class SecurityTest extends AbstractSecurityTestBase{
            // try {
         	DeleteResult result = taxonService.deleteTaxon(taxon.getUuid(), null, taxon.getTaxonNodes().iterator().next().getClassification().getUuid());
             /*} catch (DataChangeNoRollbackException e) {
-                Assert.fail();
+                fail();
             }*/
             if (!result.isOk()){
-            	Assert.fail();
+            	fail();
             }
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
@@ -803,11 +806,11 @@ public class SecurityTest extends AbstractSecurityTestBase{
             endTransaction();
             startNewTransaction();
         }
-        Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
+        assertNull(securityException, "evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""));
         // reload taxon
 
         taxon = (Taxon)taxonService.find(UUID_ACHERONTINII);
-        Assert.assertNull("The taxon must be deleted", taxon);
+        assertNull(taxon, "The taxon must be deleted");
     }
 
     /**
@@ -826,7 +829,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         try{
         DeleteResult result = taxonService.deleteTaxon(taxon.getUuid(), null, null);
         if(result.isOk()){
-            Assert.fail();
+            fail();
         }
         }catch(PermissionDeniedException e){
 
@@ -834,12 +837,12 @@ public class SecurityTest extends AbstractSecurityTestBase{
        endTransaction();
        startNewTransaction();
 
-        //Assert.assertNotNull("evaluation must fail since the user is not permitted", securityException);
+        //assertNotNull(securityException, "evaluation must fail since the user is not permitted");
         // reload taxon
         taxon = (Taxon)taxonService.load(UUID_LACTUCA);
 
-        Assert.assertNotNull("The change must still exist", taxon);
-        Assert.assertNotNull("The name must still exist",taxon.getName());
+        assertNotNull(taxon, "The change must still exist");
+        assertNotNull(taxon.getName(), "The name must still exist");
     }
 
     @Test
@@ -873,7 +876,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
          * Expectation:
          * The user should not be granted to add the Description to a taxon
          */
-        Assert.assertNotNull("evaluation should fail since the user is not permitted to edit Taxa", securityException);
+        assertNotNull(securityException, "evaluation should fail since the user is not permitted to edit Taxa");
         taxon = (Taxon)taxonService.load(ACHERONTIA_LACHESIS_UUID);
         assertTrue(taxon.getDescriptions().contains(description));
     }
@@ -908,7 +911,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         /*
          * Expectation:
          */
-        Assert.assertNull("evaluation should not fail since the user has sufficient permissions", securityException);
+        assertNull(securityException, "evaluation should not fail since the user has sufficient permissions");
 
     }
 
@@ -948,7 +951,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
             logger.error("Unexpected Exception ", e);
-            Assert.fail("Unexpected Exception: " + e.getMessage());
+            fail("Unexpected Exception: " + e.getMessage());
         } finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
@@ -958,14 +961,14 @@ public class SecurityTest extends AbstractSecurityTestBase{
         /*
          * Expectation:
          */
-        Assert.assertNull("evaluation should not fail since the user has sufficient permissions", securityException);
+        assertNull(securityException, "evaluation should not fail since the user has sufficient permissions");
 
         // reload from db and check assertions
         t_acherontia_styx = (Taxon)taxonService.load(UUID_ACHERONTIA_STYX);
-        Assert.assertEquals(numOfSynonymsBefore_styx +1 + numOfSynonymsBefore_lachesis, t_acherontia_styx.getSynonyms().size());
+        assertEquals(numOfSynonymsBefore_styx +1 + numOfSynonymsBefore_lachesis, t_acherontia_styx.getSynonyms().size());
 
-        Assert.assertNotNull(nameService.load(name_acherontia_lachesis_uuid) );
-        Assert.assertNull("The old TaxonNode should no longer exist", taxonNodeService.find(n_acherontia_lachesis.getUuid()));
+        assertNotNull(nameService.load(name_acherontia_lachesis_uuid) );
+        assertNull(taxonNodeService.find(n_acherontia_lachesis.getUuid()), "The old TaxonNode should no longer exist");
     }
 
     @Test
@@ -978,7 +981,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         TaxonDescription description = null;
         RuntimeException securityException = null;
         Taxon taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
-        Assert.assertTrue("taxon must not yet have descriptions", taxon.getDescriptions().size() == 0);
+        assertTrue(taxon.getDescriptions().size() == 0, "taxon must not yet have descriptions");
 
         // 1) test for failure - description element but no feature
         description = TaxonDescription.NewInstance(taxon);
@@ -1000,10 +1003,10 @@ public class SecurityTest extends AbstractSecurityTestBase{
             startNewTransaction();
         }
 
-        Assert.assertNotNull("evaluation should fail", securityException);
+        assertNotNull(securityException, "evaluation should fail");
         taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
         Set<TaxonDescription> descriptions = taxon.getDescriptions();
-        assertTrue("taxon must not have any description", descriptions.size() == 0);
+        assertTrue(descriptions.size() == 0, "taxon must not have any description");
 
     }
 
@@ -1017,7 +1020,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         TaxonDescription description = null;
         RuntimeException securityException = null;
         Taxon taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
-        Assert.assertTrue("taxon must not yet have descriptions", taxon.getDescriptions().size() == 0);
+        assertTrue(taxon.getDescriptions().size() == 0, "taxon must not yet have descriptions");
 
         // 2) test for failure  - description element but not granted feature
         description = TaxonDescription.NewInstance(taxon);
@@ -1038,10 +1041,10 @@ public class SecurityTest extends AbstractSecurityTestBase{
             startNewTransaction();
         }
 
-        Assert.assertNotNull("evaluation should fail", securityException);
+        assertNotNull(securityException, "evaluation should fail");
         taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
         Set<TaxonDescription> descriptions = taxon.getDescriptions();
-        assertTrue("taxon must not have any description", descriptions.size() == 0);
+        assertTrue(descriptions.size() == 0, "taxon must not have any description");
 
     }
 
@@ -1055,7 +1058,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         TaxonDescription description = null;
         RuntimeException securityException = null;
         Taxon taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
-        Assert.assertTrue("taxon must not yet have descriptions", taxon.getDescriptions().size() == 0);
+        assertTrue(taxon.getDescriptions().size() == 0, "taxon must not yet have descriptions");
 
         // 3) test for failure
         description = TaxonDescription.NewInstance(taxon);
@@ -1076,11 +1079,11 @@ public class SecurityTest extends AbstractSecurityTestBase{
             startNewTransaction();
         }
 
-        Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
+        assertNull(securityException, "evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""));
         taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
         Set<TaxonDescription> descriptions = taxon.getDescriptions();
-        assertTrue("taxon must now have one description", descriptions.size() == 1);
-        assertTrue("description should have one description element", descriptions.iterator().next().getElements().size() == 1);
+        assertTrue(descriptions.size() == 1, "taxon must now have one description");
+        assertTrue(descriptions.iterator().next().getElements().size() == 1, "description should have one description element");
     }
 
     @Test
@@ -1109,8 +1112,8 @@ public class SecurityTest extends AbstractSecurityTestBase{
             endTransaction();
             startNewTransaction();
         }
-        Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
-        Assert.assertNotNull("The new Synonym must be persisted", taxonService.find(synUuid));
+        assertNull(securityException, "evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""));
+        assertNotNull(taxonService.find(synUuid), "The new Synonym must be persisted");
     }
 
     @Test
@@ -1137,8 +1140,8 @@ public class SecurityTest extends AbstractSecurityTestBase{
             startNewTransaction();
         }
 
-        Assert.assertNotNull("evaluation must fail since the user is not permitted", securityException);
-        Assert.assertNull("The Synonym must not be persisted", taxonService.find(synUuid));
+        assertNotNull(securityException, "evaluation must fail since the user is not permitted");
+        assertNull(taxonService.find(synUuid), "The Synonym must not be persisted");
     }
 
     @Test
@@ -1168,8 +1171,8 @@ public class SecurityTest extends AbstractSecurityTestBase{
         }
 
         acherontia_node = taxonNodeService.load(ACHERONTIA_NODE_UUID);
-        Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
-        Assert.assertEquals("the acherontia_node must now have one more child node ", numOfChildNodes + 1 , acherontia_node.getChildNodes().size());
+        assertNull(securityException, "evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""));
+        assertEquals(numOfChildNodes + 1, acherontia_node.getChildNodes().size(), "the acherontia_node must now have one more child node ");
     }
 
     @Test
@@ -1200,8 +1203,8 @@ public class SecurityTest extends AbstractSecurityTestBase{
         }
 
         acherontiini_node = taxonNodeService.load(ACHERONTIINI_NODE_UUID);
-        Assert.assertNotNull("evaluation must fail since the user is not permitted", securityException);
-        Assert.assertEquals("the number of child nodes must be unchanged ", numOfChildNodes , acherontiini_node.getChildNodes().size());
+        assertNotNull(securityException, "evaluation must fail since the user is not permitted");
+        assertEquals(numOfChildNodes, acherontiini_node.getChildNodes().size(), "the number of child nodes must be unchanged ");
 
     }
 
@@ -1211,14 +1214,14 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         int partEditorId = 5;
         User partEditor = userService.find(partEditorId);
-        Assert.assertEquals("{md5}41af8a6dac9f86b1081aa5840df75a53", partEditor.getPassword());
+        assertEquals("{md5}41af8a6dac9f86b1081aa5840df75a53", partEditor.getPassword());
 
         Authentication auth = authenticationManager.authenticate(tokenForPartEditor);
-        Assert.assertTrue(auth.isAuthenticated());
+        assertTrue(auth.isAuthenticated());
 
         partEditor = userService.find(partEditorId);
         //not necessarily required, may also become false in future
-//        Assert.assertEquals("Password not yet changed in old session", "{md5}41af8a6dac9f86b1081aa5840df75a53", partEditor.getPassword());
+//        assertEquals("{md5}41af8a6dac9f86b1081aa5840df75a53", partEditor.getPassword(), "Password not yet changed in old session");
 //        testIsMd5Password(partEditor, true);
 
         //new session
@@ -1226,11 +1229,11 @@ public class SecurityTest extends AbstractSecurityTestBase{
         partEditor = userService.find(partEditorId);
         testIsMd5Password(partEditor, false);
         auth = authenticationManager.authenticate(tokenForPartEditor);
-        Assert.assertTrue(auth.isAuthenticated());
+        assertTrue(auth.isAuthenticated());
     }
 
     private void testIsMd5Password(User partEditor, boolean expectedValue) {
-        Assert.assertEquals(expectedValue, partEditor.getPassword().startsWith("{md5}"));
+        assertEquals(expectedValue, partEditor.getPassword().startsWith("{md5}"));
     }
 
     @Override

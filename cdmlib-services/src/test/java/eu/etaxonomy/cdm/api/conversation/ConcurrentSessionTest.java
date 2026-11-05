@@ -8,11 +8,11 @@
  */
 package eu.etaxonomy.cdm.api.conversation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.io.FileNotFoundException;
 import java.util.Set;
@@ -143,7 +143,7 @@ public class ConcurrentSessionTest extends CdmServicesSpringIntegrationTest {
         // get a reference
         Reference reference = referenceDao.findByUuid(referenceUuid2);
         // make sure
-        assertNotSame("this reference should not be the taxons sec.", taxonBase.getSec(), reference);
+        assertNotSame(taxonBase.getSec(), reference, "this reference should not be the taxons sec.");
         // set the reference as the taxons new sec
         taxonBase.setSec(reference);
         // save and commit
@@ -158,8 +158,8 @@ public class ConcurrentSessionTest extends CdmServicesSpringIntegrationTest {
         // load the reference
         Reference referenceInSecondTransaction = referenceDao.findByUuid(referenceUuid2);
         // we assume that
-        assertSame("The reference should be the sec now.", taxonBaseInSecondTransaction.getSec(), referenceInSecondTransaction);
-        assertNotSame("The reference should not be the same object as in first transaction.", reference, referenceInSecondTransaction);
+        assertSame(taxonBaseInSecondTransaction.getSec(), referenceInSecondTransaction, "The reference should be the sec now.");
+        assertNotSame(reference, referenceInSecondTransaction, "The reference should not be the same object as in first transaction.");
     }
 
     /**
@@ -177,8 +177,8 @@ public class ConcurrentSessionTest extends CdmServicesSpringIntegrationTest {
         conversationHolder2.bind();
         long context2Count = taxonDao.count();
 
-        assertEquals("Both contexts should yield the same results(at least if " +
-                "there where no write operations in between)", context1Count, context2Count);
+        assertEquals(context1Count, context2Count, "Both contexts should yield the same results(at least if " +
+                "there where no write operations in between)");
     }
 
     /**
@@ -197,8 +197,8 @@ public class ConcurrentSessionTest extends CdmServicesSpringIntegrationTest {
         conversationHolder2.bind();
         TaxonBase taxonBase2 = taxonDao.findByUuid(taxonUuid1);
 
-        assertEquals("The objects should be equal.", taxonBase1, taxonBase2);
-        assertNotSame("The objects should be the same.", taxonBase1, taxonBase2);
+        assertEquals(taxonBase1, taxonBase2, "The objects should be equal.");
+        assertNotSame(taxonBase1, taxonBase2, "The objects should be the same.");
     }
 
     /**
@@ -217,8 +217,8 @@ public class ConcurrentSessionTest extends CdmServicesSpringIntegrationTest {
         conversationHolder2.bind();
         TaxonBase taxonBase2 = taxonService.find(taxonUuid1);
 
-        assertEquals("The objects should be equal", taxonBase1, taxonBase2);
-        assertNotSame("The objects should not be the same", taxonBase1, taxonBase2);
+        assertEquals(taxonBase1, taxonBase2, "The objects should be equal");
+        assertNotSame(taxonBase1, taxonBase2, "The objects should not be the same");
     }
 
     /**
@@ -247,8 +247,8 @@ public class ConcurrentSessionTest extends CdmServicesSpringIntegrationTest {
         TaxonBase taxonBase2 = taxonService.find(taxonUuid1);
         taxonBases = taxonBase2.getName().getTaxonBases();
 
-        assertEquals("There should be only one taxon left", taxonBases.size(), 1);
-        assertNotSame("The objects should not be the same", taxonBase1, taxonBase2);
+        assertEquals(taxonBases.size(), 1, "There should be only one taxon left");
+        assertNotSame(taxonBase1, taxonBase2, "The objects should not be the same");
     }
 
     /**
@@ -265,20 +265,20 @@ public class ConcurrentSessionTest extends CdmServicesSpringIntegrationTest {
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
         EntityManagerHolder emHolder1 = (EntityManagerHolder)TransactionSynchronizationManager.getResource(sessionFactory);
         Session session1 = emHolder1.getEntityManager().unwrap(Session.class);
-        assertNotSame("The sessions should not be the same", h4Session1, session1);
+        assertNotSame(h4Session1, session1, "The sessions should not be the same");
         TaxonBase taxonBase2 = taxonService.find(taxonUuid1);
         EntityManagerHolder emHolder2 = (EntityManagerHolder)TransactionSynchronizationManager.getResource(sessionFactory);
         Session session2 = emHolder2.getEntityManager().unwrap(Session.class);
-        assertEquals("The entity manager holders should be equal", emHolder1, emHolder2);
-        assertEquals("The sessions should be equal", session1, session2);
+        assertEquals(emHolder1, emHolder2, "The entity manager holders should be equal");
+        assertEquals(session1, session2, "The sessions should be equal");
         conversationHolder1.close();
 
         h4Session1 = taxonService.getSession();
-        assertNotSame("The sessions should not be the same", h4Session1, session2);
+        assertNotSame(h4Session1, session2, "The sessions should not be the same");
         taxonService.find(taxonUuid1);
         Session h4Session2 = taxonService.getSession();
         taxonService.find(taxonUuid1);
-        assertNotSame("The sessions should not be the same", h4Session1, h4Session2);
+        assertNotSame(h4Session1, h4Session2, "The sessions should not be the same");
     }
 
     /**
@@ -303,8 +303,8 @@ public class ConcurrentSessionTest extends CdmServicesSpringIntegrationTest {
         conversationHolder1.commit();
 
         assertNotSame(txStatusOne, txStatusTwo);
-        assertSame("Two objects from different transactions should be the same, because we are still in " +
-                "same persistence context", taxonName1, taxonName2);
+        assertSame(taxonName1, taxonName2, "Two objects from different transactions should be the same, because we are still in " +
+                "same persistence context");
     }
 
     /**
@@ -422,8 +422,8 @@ public class ConcurrentSessionTest extends CdmServicesSpringIntegrationTest {
         TaxonBase taxonBase2 = taxonService.find(taxonUuid1);
         conversationHolder1.commit();
 
-        assertEquals("The taxa should be equal.", taxonBase, taxonBase2);
-        assertEquals("The name objects should be the same.", taxonBase.getName(), taxonBase2.getName());
+        assertEquals(taxonBase, taxonBase2, "The taxa should be equal.");
+        assertEquals(taxonBase.getName(), taxonBase2.getName(), "The name objects should be the same.");
     }
 
     /**
@@ -454,7 +454,7 @@ public class ConcurrentSessionTest extends CdmServicesSpringIntegrationTest {
 
         conversationHolder1.bind();
         Reference reference1 = referenceDao.findByUuid(referenceUuid1);
-        assertSame("This should be the sec", taxonBase1.getSec(), reference1);
+        assertSame(taxonBase1.getSec(), reference1, "This should be the sec");
 
         Reference reference2 = referenceDao.findByUuid(referenceUuid2);
         taxonBase1.setSec(reference2);
@@ -491,7 +491,7 @@ public class ConcurrentSessionTest extends CdmServicesSpringIntegrationTest {
         // get a reference
         Reference reference = referenceDao.findByUuid(referenceUuid2);
         // make sure
-        assertNotSame("this reference should not be the taxons sec.", taxonBase.getSec(), reference);
+        assertNotSame(taxonBase.getSec(), reference, "this reference should not be the taxons sec.");
         // set the reference as the taxons new sec
         taxonBase.setSec(reference);
         // save and commit
@@ -506,8 +506,8 @@ public class ConcurrentSessionTest extends CdmServicesSpringIntegrationTest {
         // load the reference
         Reference referenceInSecondTransaction = referenceDao.findByUuid(referenceUuid2);
         // we assume that
-        assertSame("The reference should be the sec now.", taxonBaseInSecondTransaction.getSec(), referenceInSecondTransaction);
-        assertNotSame("The reference should not be the same object as in first transaction.", reference, referenceInSecondTransaction);
+        assertSame(taxonBaseInSecondTransaction.getSec(), referenceInSecondTransaction, "The reference should be the sec now.");
+        assertNotSame(reference, referenceInSecondTransaction, "The reference should not be the same object as in first transaction.");
 
     }
 
@@ -577,8 +577,8 @@ public class ConcurrentSessionTest extends CdmServicesSpringIntegrationTest {
         TaxonBase taxonBase2 = taxonService.find(taxonUuid1);
         conversationHolder1.commit();
 
-        assertSame("The objects should be the same", taxonBase1, taxonBase2);
-        assertEquals("The objects should be equal", taxonBase1, taxonBase2);
+        assertSame(taxonBase1, taxonBase2, "The objects should be the same");
+        assertEquals(taxonBase1, taxonBase2, "The objects should be equal");
     }
 
     /**

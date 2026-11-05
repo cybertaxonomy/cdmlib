@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.service.lsid;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.FileNotFoundException;
@@ -46,14 +46,14 @@ public class LSIDDataServiceTest extends CdmServicesTransactionalSpringIntegrati
 
 	@Test
 	public void testInit()	{
-		assertNotNull("lsidDataService should exist",lsidDataService);
+		assertNotNull(lsidDataService, "lsidDataService should exist");
 	}
 
 	@Test
 	public void testGetDataWithKnownLSID() throws Exception {
 		commitAndStartNewTransaction(null);
 		Object object = lsidDataService.getData(knownLsid);
-		assertNull("getData should return a null response",object);
+		assertNull(object, "getData should return a null response");
 	}
 
 	@Test

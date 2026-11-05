@@ -24,9 +24,9 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @author a.mueller
  */
 public class ApplicationExample {
-	//change to VALIDATE to connect to an existing CDM database
-	static DbSchemaValidation schemaValidation = DbSchemaValidation.CREATE;
 
+    //change to VALIDATE to connect to an existing CDM database
+	private static DbSchemaValidation schemaValidation = DbSchemaValidation.CREATE;
 
 	private void testH2(){
 

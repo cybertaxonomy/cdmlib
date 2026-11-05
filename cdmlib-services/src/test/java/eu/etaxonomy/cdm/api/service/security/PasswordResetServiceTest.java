@@ -8,10 +8,10 @@
 */
 package eu.etaxonomy.cdm.api.service.security;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.time.Duration;
@@ -260,9 +260,9 @@ public class PasswordResetServiceTest extends CdmServicesTransactionalSpringInte
         if(assyncError != null) {
             throw assyncError; // an error should not have been thrown
         }
-        assertTrue("First request should have been successful", emailResetFuture.get());
-        assertFalse("Second request should have been rejected", emailResetFuture2.get());
-        assertTrue("Third request should have been successful again", emailResetFuture.get());
+        assertTrue(emailResetFuture.get(), "First request should have been successful");
+        assertFalse(emailResetFuture2.get(), "Second request should have been rejected");
+        assertTrue(emailResetFuture.get(), "Third request should have been successful again");
         //sleep 5 seconds to "cleanup" rate limiter before next test
         try {Thread.sleep(5000);} catch (InterruptedException e1) {}
     }
@@ -292,7 +292,7 @@ public class PasswordResetServiceTest extends CdmServicesTransactionalSpringInte
         if(assyncError != null) {
             throw assyncError; // emailResetToken must be agnostic of the existence of user names
         }
-        assertTrue("The request should look like succesful even if the user does not exist.", emailResetFuture.get());
+        assertTrue(emailResetFuture.get(), "The request should look like succesful even if the user does not exist.");
     }
 
     @Test

@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
@@ -97,15 +97,15 @@ public class NaturalLanguageGeneratorTest extends CdmServicesSpringIntegrationTe
 
 	@Test
 	public void testGenerateNaturalLanguageDescription() {
-		assertNotNull("FeatureTree should exist", featureTree);
-		assertNotNull("TaxonDescription should exist", description);
+		assertNotNull(featureTree, "FeatureTree should exist");
+		assertNotNull(description, "TaxonDescription should exist");
 		StringBuilder stringBuilder = new StringBuilder();
 		List<TextData> result = generator.generateNaturalLanguageDescription(featureTree,description, Language.DEFAULT());
 		for (Iterator<TextData> td = result.iterator() ; td.hasNext();) {
 			TextData textD = td.next();
 			stringBuilder.append(textD.getText(Language.DEFAULT()));
 		}
-		assertTrue("Empty text",!stringBuilder.equals(""));
+		assertTrue(!stringBuilder.equals(""), "Empty text");
 		System.out.println(stringBuilder.toString());
 	}
 

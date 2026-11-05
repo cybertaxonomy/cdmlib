@@ -8,6 +8,11 @@
 */
 package eu.etaxonomy.cdm.api.service.portal;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -16,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -176,63 +180,61 @@ public class TaxonPageDtoLoaderTest extends CdmServicesTransactionalSpringIntegr
         config.setTaxonUuid(taxonUuid);
         TaxonPageDto dto = portalService.taxonPageDto(config);
 
-        Assert.assertNotNull(dto);
+        assertNotNull(dto);
         List<TaggedText> list = dto.getTaggedName();
-        Assert.assertEquals("Genus", list.get(0).getText());
-        Assert.assertEquals("Genus species Mill. sec. My secbook", dto.getLabel());
-        Assert.assertNull(dto.getKeys());
+        assertEquals("Genus", list.get(0).getText());
+        assertEquals("Genus species Mill. sec. My secbook", dto.getLabel());
+        assertNull(dto.getKeys());
         //TODO check if there is not some duplication between nameDto and dto
-        Assert.assertEquals("Basionym relations are not necessary", null, dto.getName().getRelatedNames());
+        assertEquals(null, dto.getName().getRelatedNames(), "Basionym relations are not necessary");
         //... identifier
-        Assert.assertNotNull(dto.getIdentifiers());
+        assertNotNull(dto.getIdentifiers());
         IdentifierDto wfoIdentifier = dto.getIdentifiers().getItems().get(0);
-        Assert.assertEquals("wfo-12345", wfoIdentifier.getIdentifier());
-        Assert.assertEquals(IdentifierType.uuidWfoNameIdentifier, wfoIdentifier.getTypeUuid());
-        Assert.assertEquals("WFO Name Identifier", wfoIdentifier.getType());
-        Assert.assertEquals("https://www.worldfloraonline.org/taxon/wfo-12345", wfoIdentifier.getLink());
-        Assert.assertNotNull(dto.getIdentifiers());
+        assertEquals("wfo-12345", wfoIdentifier.getIdentifier());
+        assertEquals(IdentifierType.uuidWfoNameIdentifier, wfoIdentifier.getTypeUuid());
+        assertEquals("WFO Name Identifier", wfoIdentifier.getType());
+        assertEquals("https://www.worldfloraonline.org/taxon/wfo-12345", wfoIdentifier.getLink());
+        assertNotNull(dto.getIdentifiers());
 
         //homotypic synonyms
         HomotypicGroupDTO homoSyns = dto.getHomotypicSynonyms();
-        Assert.assertEquals(1, homoSyns.getSynonyms().getCount());
+        assertEquals(1, homoSyns.getSynonyms().getCount());
         TaxonBaseDto homoSyn = homoSyns.getSynonyms().getItems().get(0);
-        Assert.assertEquals("Genusnovus species (Mill.) Noll. syn. sec. My secbook", homoSyn.getLabel());
+        assertEquals("Genusnovus species (Mill.) Noll. syn. sec. My secbook", homoSyn.getLabel());
         //... annotation on name and synonym
-        Assert.assertEquals("The synonym must have 2 annotations, a synonym annotation and a name annotation",
-                2, homoSyn.getAnnotations().getCount());
-        Assert.assertNull("No homotypic syn sec should exist as the syn sec is same as acc sec", homoSyns.getSynSecSources());
+        assertEquals(2, homoSyn.getAnnotations().getCount(), "The synonym must have 2 annotations, a synonym annotation and a name annotation");
+        assertNull(homoSyns.getSynSecSources(), "No homotypic syn sec should exist as the syn sec is same as acc sec");
 
         //... related homonym
-        Assert.assertEquals(1, homoSyn.getRelatedNames().getCount());
+        assertEquals(1, homoSyn.getRelatedNames().getCount());
         NameRelationDTO homonymRel = homoSyn.getRelatedNames().getItems().get(0);
-        Assert.assertEquals("Genusnovus species Woll.", TaggedTextFormatter.createString(homonymRel.getNameLabel()));
-        Assert.assertEquals(1, homonymRel.getAnnotations().getCount());
-        Assert.assertEquals("Art. 5", homonymRel.getRuleConsidered());
-        Assert.assertEquals("Shenzhen 2017", homonymRel.getCodeEdition());
-        Assert.assertEquals("Turland, N.J., Wiersema, J.H., Barrie, F.R., Greuter, W., Hawksworth, D.L., Herendeen, P.S., Knapp, S., Kusber, W.-H., Li, D.-Z., Marhold, K., May, T.W., McNeill, J., Monro, A.M., Prado, J., Price, M.J. & Smith, G.F. (eds.) 2018: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code), adopted by the Nineteenth International Botanical Congress, Shenzhen, China, July 2017. Regnum Vegetabile 159. – Glash"+UTF8.U_UMLAUT+"tten: Koeltz Botanical Books",
+        assertEquals("Genusnovus species Woll.", TaggedTextFormatter.createString(homonymRel.getNameLabel()));
+        assertEquals(1, homonymRel.getAnnotations().getCount());
+        assertEquals("Art. 5", homonymRel.getRuleConsidered());
+        assertEquals("Shenzhen 2017", homonymRel.getCodeEdition());
+        assertEquals("Turland, N.J., Wiersema, J.H., Barrie, F.R., Greuter, W., Hawksworth, D.L., Herendeen, P.S., Knapp, S., Kusber, W.-H., Li, D.-Z., Marhold, K., May, T.W., McNeill, J., Monro, A.M., Prado, J., Price, M.J. & Smith, G.F. (eds.) 2018: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code), adopted by the Nineteenth International Botanical Congress, Shenzhen, China, July 2017. Regnum Vegetabile 159. – Glash"+UTF8.U_UMLAUT+"tten: Koeltz Botanical Books",
                 homonymRel.getCodeEditionSource().getLabel().get(0).getLabel());
 
         //heterotypic synonyms
         ContainerDto<HomotypicGroupDTO> heteroSynGroups = dto.getHeterotypicSynonymGroups();
-        Assert.assertEquals(3, heteroSynGroups.getCount());
+        assertEquals(3, heteroSynGroups.getCount());
         //... first group
         HomotypicGroupDTO firstHeteroSynGroup = heteroSynGroups.getItems().get(0);
-        Assert.assertEquals(2, firstHeteroSynGroup.getSynonyms().getCount());
-        Assert.assertEquals(2, firstHeteroSynGroup.getSynSecSources().getCount());
-        Assert.assertEquals("My hetero sec book: 48, My hetero sec book: 49", TaggedTextFormatter.createString(firstHeteroSynGroup.getTaggedSynSecs()));
+        assertEquals(2, firstHeteroSynGroup.getSynonyms().getCount());
+        assertEquals(2, firstHeteroSynGroup.getSynSecSources().getCount());
+        assertEquals("My hetero sec book: 48, My hetero sec book: 49", TaggedTextFormatter.createString(firstHeteroSynGroup.getTaggedSynSecs()));
 
         //... second group
         HomotypicGroupDTO secondHeteroSynGroup = heteroSynGroups.getItems().get(1);
-        Assert.assertEquals(2, secondHeteroSynGroup.getSynonyms().getCount());
-        Assert.assertNull("No syn sec should exist as all syn sec do not exist or are equal with taxon sec",
-                secondHeteroSynGroup.getSynSecSources());
-        Assert.assertEquals("", TaggedTextFormatter.createString(secondHeteroSynGroup.getTaggedSynSecs()));
+        assertEquals(2, secondHeteroSynGroup.getSynonyms().getCount());
+        assertNull(secondHeteroSynGroup.getSynSecSources(), "No syn sec should exist as all syn sec do not exist or are equal with taxon sec");
+        assertEquals("", TaggedTextFormatter.createString(secondHeteroSynGroup.getTaggedSynSecs()));
 
         //... third group
         HomotypicGroupDTO thirdHeteroSynGroup = heteroSynGroups.getItems().get(2);
-        Assert.assertEquals(2, thirdHeteroSynGroup.getSynonyms().getCount());
-        Assert.assertEquals(2, thirdHeteroSynGroup.getSynSecSources().getCount());
-        Assert.assertEquals("2012: My book4: 33, 2012: My book4", TaggedTextFormatter.createString(thirdHeteroSynGroup.getTaggedSynSecs()));
+        assertEquals(2, thirdHeteroSynGroup.getSynonyms().getCount());
+        assertEquals(2, thirdHeteroSynGroup.getSynSecSources().getCount());
+        assertEquals("2012: My book4: 33, 2012: My book4", TaggedTextFormatter.createString(thirdHeteroSynGroup.getTaggedSynSecs()));
 
         //types
 
@@ -264,10 +266,9 @@ public class TaxonPageDtoLoaderTest extends CdmServicesTransactionalSpringIntegr
         config.setTaxonUuid(taxonUuid);
         config.setUseDtoLoading(isDto);
         TaxonPageDto dto = portalService.taxonPageDto(config);
-        Assert.assertTrue("There should be no warnings", CdmUtils.isNullSafeEmpty(dto.getMessages()));
+        assertTrue(CdmUtils.isNullSafeEmpty(dto.getMessages()), "There should be no warnings");
         ContainerDto<FeatureDto> features = dto.getTaxonFacts();
-        Assert.assertEquals("There should be 9 features, distribution and description and common names",
-                9, features.getCount());
+        assertEquals(9, features.getCount(), "There should be 9 features, distribution and description and common names");
 
         //test with feature tree, that has only features that do not exist in taxon
         TermTree<Feature> termTree = this.termTreeService.load(uuidTermTree);
@@ -278,9 +279,9 @@ public class TaxonPageDtoLoaderTest extends CdmServicesTransactionalSpringIntegr
         }
         config.setFeatureTree(termTree.getUuid());
         dto = portalService.taxonPageDto(config);
-        Assert.assertTrue("There should be no warnings", CdmUtils.isNullSafeEmpty(dto.getMessages()));
+        assertTrue(CdmUtils.isNullSafeEmpty(dto.getMessages()), "There should be no warnings");
         features = dto.getTaxonFacts();
-        Assert.assertNull(features);
+        assertNull(features);
     }
 
     @Test
@@ -332,69 +333,68 @@ public class TaxonPageDtoLoaderTest extends CdmServicesTransactionalSpringIntegr
     private void testDistributionWithAreaFilter(TaxonPageDtoConfiguration config) {
 
         TaxonPageDto dto = portalService.taxonPageDto(config);
-        Assert.assertTrue("There should be no warnings", CdmUtils.isNullSafeEmpty(dto.getMessages()));
+        assertTrue(CdmUtils.isNullSafeEmpty(dto.getMessages()), "There should be no warnings");
 
         //facts
         ContainerDto<FeatureDto> features = dto.getTaxonFacts();
-        Assert.assertEquals("There should be 1 feature (distribution)",
-                1, features.getCount());
+        assertEquals(1, features.getCount(), "There should be 1 feature (distribution)");
 
         //... distribution
         FeatureDto distributionDto = features.getItems().get(0);
-        Assert.assertEquals("Distribution", distributionDto.getLabel());
+        assertEquals("Distribution", distributionDto.getLabel());
 
         ContainerDto<IFactDto> distributions = distributionDto.getFacts();
-        Assert.assertEquals(1, distributions.getCount());
+        assertEquals(1, distributions.getCount());
         IFactDto distribution = distributions.getItems().get(0);
-        Assert.assertEquals(DistributionInfoDto.class.getSimpleName(), distribution.getClazz());
+        assertEquals(DistributionInfoDto.class.getSimpleName(), distribution.getClazz());
         DistributionInfoDto distributionInfo = (DistributionInfoDto)distribution;
 
         //... condensed distribution
-        Assert.assertEquals("DEU", distributionInfo.getCondensedDistribution().getHtmlString());
-        Assert.assertEquals("as=a:4daf4a,,0.1,&ad=country_earth%3Agmi_cntry:a:DEU&title=a:present", distributionInfo.getMapUriParams());
+        assertEquals("DEU", distributionInfo.getCondensedDistribution().getHtmlString());
+        assertEquals("as=a:4daf4a,,0.1,&ad=country_earth%3Agmi_cntry:a:DEU&title=a:present", distributionInfo.getMapUriParams());
 
         //...tree
         DistributionTreeDto tree = (DistributionTreeDto)distributionInfo.getTree();
-        Assert.assertEquals("Tree:1<Germany:present{Second ref article. – The journal. p 22}:0>", new DistributionInfoBuilderTest().tree2String(tree));
-        Assert.assertEquals("Should be Germany only", 1, tree.getRootElement().children.size());
+        assertEquals("Tree:1<Germany:present{Second ref article. – The journal. p 22}:0>", new DistributionInfoBuilderTest().tree2String(tree));
+        assertEquals(1, tree.getRootElement().children.size(), "Should be Germany only");
         TreeNode<Set<DistributionDto>, NamedAreaDto> germanyNode = tree.getRootElement().getChildren().get(0);
-        Assert.assertEquals("Germany", germanyNode.getNodeId().getLabel());
+        assertEquals("Germany", germanyNode.getNodeId().getLabel());
         DistributionDto germanyDistribution = germanyNode.getData().iterator().next();
-        Assert.assertEquals(1, germanyDistribution.getAnnotations().getCount());
-        Assert.assertEquals("There should be 1 source (even if it has no name used in source)", 1, germanyDistribution.getSources().getCount());
+        assertEquals(1, germanyDistribution.getAnnotations().getCount());
+        assertEquals(1, germanyDistribution.getSources().getCount(), "There should be 1 source (even if it has no name used in source)");
     }
 
     private void testDistributionWithStatusFilter(TaxonPageDtoConfiguration config) {
         TaxonPageDto dto = portalService.taxonPageDto(config);
-        Assert.assertTrue("There should be no warnings", CdmUtils.isNullSafeEmpty(dto.getMessages()));
+        assertTrue(CdmUtils.isNullSafeEmpty(dto.getMessages()), "There should be no warnings");
 
         //facts
         ContainerDto<FeatureDto> features = dto.getTaxonFacts();
-        Assert.assertEquals("There should be 1 feature (distribution)", 1, features.getCount());
+        assertEquals(1, features.getCount(), "There should be 1 feature (distribution)");
 
         //... distribution
         FeatureDto distributionDto = features.getItems().get(0);
-        Assert.assertEquals("Distribution", distributionDto.getLabel());
+        assertEquals("Distribution", distributionDto.getLabel());
 
         ContainerDto<IFactDto> distributions = distributionDto.getFacts();
-        Assert.assertEquals(1, distributions.getCount());
+        assertEquals(1, distributions.getCount());
         IFactDto distribution = distributions.getItems().get(0);
-        Assert.assertEquals(DistributionInfoDto.class.getSimpleName(), distribution.getClazz());
+        assertEquals(DistributionInfoDto.class.getSimpleName(), distribution.getClazz());
         DistributionInfoDto distributionInfo = (DistributionInfoDto)distribution;
 
         //... condensed distribution
-        Assert.assertEquals("DEU", distributionInfo.getCondensedDistribution().getHtmlString());
-        Assert.assertEquals("as=a:4daf4a,,0.1,&ad=country_earth%3Agmi_cntry:a:DEU&title=a:present", distributionInfo.getMapUriParams());
+        assertEquals("DEU", distributionInfo.getCondensedDistribution().getHtmlString());
+        assertEquals("as=a:4daf4a,,0.1,&ad=country_earth%3Agmi_cntry:a:DEU&title=a:present", distributionInfo.getMapUriParams());
 
         //...tree
         DistributionTreeDto tree = (DistributionTreeDto)distributionInfo.getTree();
-        Assert.assertEquals("Tree:1<Germany:present{Second ref article. – The journal. p 22}:0>", new DistributionInfoBuilderTest().tree2String(tree));
-        Assert.assertEquals("Should be Germany only", 1, tree.getRootElement().children.size());
+        assertEquals("Tree:1<Germany:present{Second ref article. – The journal. p 22}:0>", new DistributionInfoBuilderTest().tree2String(tree));
+        assertEquals(1, tree.getRootElement().children.size(), "Should be Germany only");
         TreeNode<Set<DistributionDto>, NamedAreaDto> germanyNode = tree.getRootElement().getChildren().get(0);
-        Assert.assertEquals("Germany", germanyNode.getNodeId().getLabel());
+        assertEquals("Germany", germanyNode.getNodeId().getLabel());
         DistributionDto germanyDistribution = germanyNode.getData().iterator().next();
-        Assert.assertEquals(1, germanyDistribution.getAnnotations().getCount());
-        Assert.assertEquals("There should be 1 source (even if it has no name used in source)", 1, germanyDistribution.getSources().getCount());
+        assertEquals(1, germanyDistribution.getAnnotations().getCount());
+        assertEquals(1, germanyDistribution.getSources().getCount(), "There should be 1 source (even if it has no name used in source)");
     }
 
     /**
@@ -432,71 +432,67 @@ public class TaxonPageDtoLoaderTest extends CdmServicesTransactionalSpringIntegr
         }
 
         TaxonPageDto dto = portalService.taxonPageDto(config);
-        Assert.assertTrue("There should be no warnings", CdmUtils.isNullSafeEmpty(dto.getMessages()));
+        assertTrue(CdmUtils.isNullSafeEmpty(dto.getMessages()), "There should be no warnings");
 
-        Assert.assertNotNull(dto);
+        assertNotNull(dto);
         List<TaggedText> list = dto.getTaggedName();
-        Assert.assertEquals("Genus", list.get(0).getText());
+        assertEquals("Genus", list.get(0).getText());
 
         //facts
         ContainerDto<FeatureDto> features = dto.getTaxonFacts();
-        Assert.assertEquals("There should be 9 features, distribution and description and common names",
-                9, features.getCount());
+        assertEquals(9, features.getCount(), "There should be 9 features, distribution and description and common names");
 
         //... common taxon name
         int i = 0;
         FeatureDto commonNameDto = features.getItems().get(i++);
-        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically. Also as >1 common name exists it should use plural.",
-                "Common Names", commonNameDto.getLabel());
+        assertEquals("Common Names", commonNameDto.getLabel(), "As no feature tree is defined features should be sorted alphabetically. Also as >1 common name exists it should use plural.");
         testCommonNames(commonNameDto);
 
         //... textData ("description")
         FeatureDto descriptionDto = features.getItems().get(i++);
-        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically. Also as >1 'Description' exists it should use plural and German as locale was set to German and German representation exists.",
-                "Beschreibungen", descriptionDto.getLabel());
+        assertEquals("Beschreibungen", descriptionDto.getLabel(), "As no feature tree is defined features should be sorted alphabetically. Also as >1 'Description' exists it should use plural and German as locale was set to German and German representation exists.");
         testTextDataAndMedia(descriptionDto, isExcludedMarker);
 
         //... discussion
         FeatureDto discussionDto = features.getItems().get(i++);
-        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
-                "Discussion", discussionDto.getLabel());
+        assertEquals("Discussion", discussionDto.getLabel(), "As no feature tree is defined features should be sorted alphabetically");
         testTextDataEmpty(discussionDto);
 
         //... distribution
         FeatureDto distributionDto = features.getItems().get(i++);
-        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
-                "Distribution", distributionDto.getLabel());
+        assertEquals("Distribution", distributionDto.getLabel(), "As no feature tree is defined features should be sorted alphabetically");
         testDistributions(distributionDto, isExcludedMarker);
 
         //termporal data
         FeatureDto floweringDto = features.getItems().get(i++);
-        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
-                "Flowering Season", floweringDto.getLabel());
+        assertEquals("Flowering Season", floweringDto.getLabel(), "As no feature tree is defined features should be sorted alphabetically");
         testTemporalData(floweringDto);
 
         //taxon interaction
         FeatureDto hostPlantDto = features.getItems().get(i++);
-        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
-                "Host Plant", hostPlantDto.getLabel());
+        assertEquals("Host Plant", hostPlantDto.getLabel(), "As no feature tree is defined features should be sorted alphabetically");
         testTaxonInteraction(hostPlantDto);
 
         //quantitative data("introduction")
         //TODO use some better feature, e.g. altitude (but maybe this needs to be added to the test data)
         FeatureDto introductionDto = features.getItems().get(i++);
+<<<<<<< HEAD
         Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically.",
                 "Introduction", introductionDto.getLabel());
         testQuantitativeData(introductionDto, isDto);
+=======
+        assertEquals("Introduction", introductionDto.getLabel(), "As no feature tree is defined features should be sorted alphabetically.");
+//        testQuantitativeData();
+>>>>>>> 3e5cf035aa (ref #11072 replace junit4 by 5 in cdmlib-services)
 
         //...categorical data ("Life-form")
         FeatureDto lifeFormDto = features.getItems().get(i++);
-        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically.",
-                "Life-form", lifeFormDto.getLabel());
+        assertEquals("Life-form", lifeFormDto.getLabel(), "As no feature tree is defined features should be sorted alphabetically.");
         testCategoricalData(lifeFormDto, isDto);
 
         //individuals association
         FeatureDto materialExaminedDto = features.getItems().get(i++);
-        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
-                "Materials Examined", materialExaminedDto.getLabel());
+        assertEquals("Materials Examined", materialExaminedDto.getLabel(), "As no feature tree is defined features should be sorted alphabetically");
         testIndividualsAssociation(materialExaminedDto);
 
         //use data
@@ -514,89 +510,83 @@ public class TaxonPageDtoLoaderTest extends CdmServicesTransactionalSpringIntegr
     }
 
     private void testCategoricalData(FeatureDto lifeFormDto, boolean isDto) {
-        Assert.assertEquals(1, lifeFormDto.getFacts().getCount());
+        assertEquals(1, lifeFormDto.getFacts().getCount());
         FactDto lifeForm = (FactDto)lifeFormDto.getFacts().getItems().get(0);
         //FIXME implement for dto
         if (!isDto) {
-            Assert.assertEquals("Fact modifying State modifying State1", lifeForm.getTypedLabel().get(0).getLabel());
+            assertEquals("Fact modifying State modifying State1", lifeForm.getTypedLabel().get(0).getLabel());
         }
         //...
     }
 
     private void testIndividualsAssociation(FeatureDto materialExaminedDto) {
-        Assert.assertEquals(2, materialExaminedDto.getFacts().getCount());
+        assertEquals(2, materialExaminedDto.getFacts().getCount());
         IndividualsAssociationDto materialExamined1 = (IndividualsAssociationDto)materialExaminedDto.getFacts().getItems().get(0);
         IndividualsAssociationDto materialExamined2 = (IndividualsAssociationDto)materialExaminedDto.getFacts().getItems().get(1);
-        Assert.assertTrue("Currently we only compare by id. This may change in future",
-                materialExamined1.getId()<materialExamined2.getId());
+        assertTrue(materialExamined1.getId()<materialExamined2.getId(), "Currently we only compare by id. This may change in future");
         IndividualsAssociationDto materialExaminedToCheck = (IndividualsAssociationDto)materialExaminedDto.getFacts().getItems().stream()
                 .filter(f->((IndividualsAssociationDto)f).getOccurrenceUuid().equals(specimenUuid1))
                 .findFirst().get();
-        Assert.assertEquals("My specimen", materialExaminedToCheck.getOccurrence());
-        Assert.assertEquals(specimenUuid1, materialExaminedToCheck.getOccurrenceUuid());
+        assertEquals("My specimen", materialExaminedToCheck.getOccurrence());
+        assertEquals(specimenUuid1, materialExaminedToCheck.getOccurrenceUuid());
         //FIXME description can not yet be loaded by DTO only loader, see comment in TaxonFactsDtoLoader.loadFactsPerFeature()
-//        Assert.assertEquals("Associated specimen description1", materialExamined1.getDescription());
+//        assertEquals("Associated specimen description1", materialExamined1.getDescription());
     }
 
     private void testTaxonInteraction(FeatureDto hostPlantDto) {
-        Assert.assertEquals(2, hostPlantDto.getFacts().getCount());
+        assertEquals(2, hostPlantDto.getFacts().getCount());
         TaxonInteractionDto hostPlant1 = (TaxonInteractionDto)hostPlantDto.getFacts().getItems().get(0);
         TaxonInteractionDto hostPlant2 = (TaxonInteractionDto)hostPlantDto.getFacts().getItems().get(1);
-        Assert.assertTrue("Currently we only compare by id. This may change in future",
-                hostPlant1.getId()<hostPlant2.getId());
+        assertTrue(hostPlant1.getId()<hostPlant2.getId(), "Currently we only compare by id. This may change in future");
         TaxonInteractionDto hostPlantToCheck = (TaxonInteractionDto)hostPlantDto.getFacts().getItems().stream()
                 .filter(f->((TaxonInteractionDto)f).getTaxonUuid().equals(taxonUuid1))
                 .findFirst().get();
-        Assert.assertEquals("Genus species Mill. sec. My secbook", TaggedTextFormatter.createString(hostPlantToCheck.getTaxon()));
-        Assert.assertEquals(taxonUuid1, hostPlantToCheck.getTaxonUuid());
+        assertEquals("Genus species Mill. sec. My secbook", TaggedTextFormatter.createString(hostPlantToCheck.getTaxon()));
+        assertEquals(taxonUuid1, hostPlantToCheck.getTaxonUuid());
         //FIXME description can not yet be loaded by DTO only loader, see comment in TaxonFactsDtoLoader.loadFactsPerFeature()
-//        Assert.assertEquals("Taxon interaction description1", hostPlantToCheck.getDescription());
+//        assertEquals("Taxon interaction description1", hostPlantToCheck.getDescription());
     }
 
     private void testTemporalData(FeatureDto floweringDto) {
-        Assert.assertEquals(2, floweringDto.getFacts().getCount());
+        assertEquals(2, floweringDto.getFacts().getCount());
         FactDto flowering1 = (FactDto)floweringDto.getFacts().getItems().get(0);
         FactDto flowering2 = (FactDto)floweringDto.getFacts().getItems().get(1);
-        Assert.assertTrue("Currently we only compare by id. This may change in future",
-                flowering1.getId()<flowering2.getId());
+        assertTrue(flowering1.getId()<flowering2.getId(), "Currently we only compare by id. This may change in future");
         TypedLabel typedLabel1 = flowering1.getTypedLabel().get(0);
         String label1 = typedLabel1.getLabel();
         String label2 = flowering2.getTypedLabel().get(0).getLabel();
         String expectedLabel = "(10 Mar–)15 Apr–30 Jun(–20 Jul)";
-        Assert.assertTrue(expectedLabel + "should be label of either flowering1 or flowering2",
-                label1.equals(expectedLabel) || label2.equals(expectedLabel));
-        Assert.assertEquals("TemporalData", typedLabel1.getCdmClass());
-        Assert.assertNotNull(typedLabel1.getUuid());
+        assertTrue(label1.equals(expectedLabel) || label2.equals(expectedLabel), expectedLabel + "should be label of either flowering1 or flowering2");
+        assertEquals("TemporalData", typedLabel1.getCdmClass());
+        assertNotNull(typedLabel1.getUuid());
     }
 
     private void testCommonNames(FeatureDto commonNameDto) {
         ContainerDto<IFactDto> commonNames = commonNameDto.getFacts();
-        Assert.assertEquals(2, commonNames.getCount());
+        assertEquals(2, commonNames.getCount());
         CommonNameDto cn1 = (CommonNameDto)commonNames.getItems().get(0);
         CommonNameDto cn2 = (CommonNameDto)commonNames.getItems().get(1);
-        Assert.assertEquals("For now common names without sortindex should be ordered alphabetically by name. This may change in future",
-                "Meine Blume", cn1.getName());
-        Assert.assertEquals("For now common names without sortindex should be ordered alphabetically by name. This may change in future",
-                "My flower", cn2.getName());
-        Assert.assertNull(cn2.getSources());
-        Assert.assertEquals("cn1 should have the source of the indescription", 1, cn1.getSources().getCount());
+        assertEquals("Meine Blume", cn1.getName(), "For now common names without sortindex should be ordered alphabetically by name. This may change in future");
+        assertEquals("My flower", cn2.getName(), "For now common names without sortindex should be ordered alphabetically by name. This may change in future");
+        assertNull(cn2.getSources());
+        assertEquals(1, cn1.getSources().getCount(), "cn1 should have the source of the indescription");
     }
 
     private void testTextDataEmpty(FeatureDto discussionDto) {
         ContainerDto<IFactDto> discussions = discussionDto.getFacts();
-        Assert.assertEquals(1, discussions.getCount());
+        assertEquals(1, discussions.getCount());
         FactDto discussion1 = (FactDto)discussions.getItems().get(0);
-        Assert.assertEquals(1, discussion1.getTypedLabel().size());
+        assertEquals(1, discussion1.getTypedLabel().size());
         TypedLabel typedLabel = discussion1.getTypedLabel().get(0);
-        Assert.assertEquals("", typedLabel.getLabel());
-        Assert.assertEquals("TextData", typedLabel.getCdmClass());
-        Assert.assertNotNull(typedLabel.getUuid());
+        assertEquals("", typedLabel.getLabel());
+        assertEquals("TextData", typedLabel.getCdmClass());
+        assertNotNull(typedLabel.getUuid());
     }
 
     private void testTextDataAndMedia(FeatureDto descriptionDto, boolean isExcludedMarker) {
 
         ContainerDto<IFactDto> descriptions = descriptionDto.getFacts();
-        Assert.assertEquals(isExcludedMarker? 3: 4, descriptions.getCount());
+        assertEquals(isExcludedMarker? 3: 4, descriptions.getCount());
         FactDto description1 = (FactDto)descriptions.getItems().get(0);
         FactDto description2 = (FactDto)descriptions.getItems().get(1);
         FactDto NULL_FACT = new FactDto();  //to avoid null-warnings
@@ -604,102 +594,96 @@ public class TaxonPageDtoLoaderTest extends CdmServicesTransactionalSpringIntegr
         FactDto description4 = (FactDto)descriptions.getItems().get(isExcludedMarker? 2: 3);
 
         //test sorting
-        Assert.assertNull("Current sorting should sort null to the top. This may change in future.",
-                description1.getSortIndex());
-        Assert.assertNull("Current sorting should sort null to the top. This may change in future.",
-                description2.getSortIndex());
-        Assert.assertTrue("Current sorting should work on id if no sortIndex is given. This may change in future.",
-                description1.getId() < description2.getId());
+        assertNull(description1.getSortIndex(), "Current sorting should sort null to the top. This may change in future.");
+        assertNull(description2.getSortIndex(), "Current sorting should sort null to the top. This may change in future.");
+        assertTrue(description1.getId() < description2.getId(), "Current sorting should work on id if no sortIndex is given. This may change in future.");
         //TODO use typed label formatter (once implemented)
         if (!isExcludedMarker) {
-            Assert.assertEquals("If sortindex is given it should be used for sorting.",
-                    "My fourth description", description3.getTypedLabel().get(0).getLabel());
+            assertEquals("My fourth description", description3.getTypedLabel().get(0).getLabel(), "If sortindex is given it should be used for sorting.");
         }
-        Assert.assertEquals("If sortindex is given it should be used for sorting.",
-                "My third description", description4.getTypedLabel().get(0).getLabel());
+        assertEquals("My third description", description4.getTypedLabel().get(0).getLabel(), "If sortindex is given it should be used for sorting.");
 
         if (!isExcludedMarker) {
             FactDto td4Fact = description3; //renaming to original name td4 for better understanding
-            Assert.assertEquals(td4Uuid, td4Fact.getUuid());
+            assertEquals(td4Uuid, td4Fact.getUuid());
             TypedLabel td4TypedLabel = td4Fact.getTypedLabel().get(0);
-            Assert.assertEquals(td4Uuid, td4TypedLabel.getUuid());
-            Assert.assertEquals("TextData", td4TypedLabel.getCdmClass());
+            assertEquals(td4Uuid, td4TypedLabel.getUuid());
+            assertEquals("TextData", td4TypedLabel.getCdmClass());
         }
 
         FactDto td3Fact = description4; //renaming to original name td3 for better understanding
-        Assert.assertEquals(1, td3Fact.getSources().getCount());
+        assertEquals(1, td3Fact.getSources().getCount());
         SourceDto source = td3Fact.getSources().getItems().get(0);
-        Assert.assertEquals(1, source.getLabel().size());
+        assertEquals(1, source.getLabel().size());
         TypedLabel sourceTypedLabel = source.getLabel().get(0);
-        Assert.assertEquals("DescriptionElementSource", sourceTypedLabel.getCdmClass());
+        assertEquals("DescriptionElementSource", sourceTypedLabel.getCdmClass());
 
         //media
         ContainerDto<MediaDto2> factMedia = description4.getMedia();
-        Assert.assertEquals(2, factMedia.getCount());
+        assertEquals(2, factMedia.getCount());
         MediaDto2 media1 = factMedia.getItems().stream()
                 .filter(m->m.getUuid().equals(mediaUuid1))
                 .findFirst().get();
-        Assert.assertEquals("Media title", media1.getLabel());  //this is computed from the path, may change in future
+        assertEquals("Media title", media1.getLabel());  //this is computed from the path, may change in future
         //TODO supplemental data
 
-        Assert.assertEquals(2, media1.getRepresentations().getCount());
+        assertEquals(2, media1.getRepresentations().getCount());
         MediaRepresentationDTO rep = media1.getRepresentations().getItems().stream()
                 .filter(r->r.getMimeType().equals("JPG2"))
                 .findFirst().get();
-        Assert.assertEquals("http://media.de/file/rep2.jpg", rep.getUri().toString());
-        Assert.assertEquals((Integer)200, rep.getWidth());
-        Assert.assertEquals("ImageFile", rep.getClazz());
+        assertEquals("http://media.de/file/rep2.jpg", rep.getUri().toString());
+        assertEquals((Integer)200, rep.getWidth());
+        assertEquals("ImageFile", rep.getClazz());
     }
 
     private void testDistributions(FeatureDto distributionDto, boolean isExcludedMarker) {
         ContainerDto<IFactDto> distributions = distributionDto.getFacts();
-        Assert.assertEquals(1, distributions.getCount());
+        assertEquals(1, distributions.getCount());
         IFactDto distribution = distributions.getItems().get(0);
-        Assert.assertEquals(DistributionInfoDto.class.getSimpleName(), distribution.getClazz());
+        assertEquals(DistributionInfoDto.class.getSimpleName(), distribution.getClazz());
         DistributionInfoDto distributionInfo = (DistributionInfoDto)distribution;
         //... condensed distribution
         //TODO maybe the order is not deterministic
         String expectedCondensedHtml = isExcludedMarker ? "DEU": "FRA – DEU";
-        Assert.assertEquals(expectedCondensedHtml, distributionInfo.getCondensedDistribution().getHtmlString());
+        assertEquals(expectedCondensedHtml, distributionInfo.getCondensedDistribution().getHtmlString());
         //TODO probably the order is not deterministic, so we may need to check single parts only, same as in according builder test
         String mapUriParamsStart = distributionInfo.getMapUriParams().substring(0, 62);
         String mapUriParamsEnd = distributionInfo.getMapUriParams().replace(mapUriParamsStart, "");
         if(isExcludedMarker) {
-            Assert.assertEquals("as=a:4daf4a,,0.1,&ad=country_earth%3Agmi_cntry:a:DEU&title=a:present", distributionInfo.getMapUriParams());
+            assertEquals("as=a:4daf4a,,0.1,&ad=country_earth%3Agmi_cntry:a:DEU&title=a:present", distributionInfo.getMapUriParams());
             //as the filtering generally seems to work we do not further test details here
             return;
         }else {
-            Assert.assertTrue("was:" + mapUriParamsStart, "as=a:4daf4a,,0.1,|b:377eb8,,0.1,&ad=country_earth%3Agmi_cntry:".equals(mapUriParamsStart)
-                    || "as=a:377eb8,,0.1,|b:4daf4a,,0.1,&ad=country_earth%3Agmi_cntry:".equals(mapUriParamsStart));
-            Assert.assertTrue("End does not match, but is: " + mapUriParamsEnd, mapUriParamsEnd.matches("a:(FRA|DEU)\\|b:(FRA|DEU)&title=[ab]:present\\|[ab]:native%3A\\+doubtfully\\+native"));
+            assertTrue("as=a:4daf4a,,0.1,|b:377eb8,,0.1,&ad=country_earth%3Agmi_cntry:".equals(mapUriParamsStart)
+                    || "as=a:377eb8,,0.1,|b:4daf4a,,0.1,&ad=country_earth%3Agmi_cntry:".equals(mapUriParamsStart), "was:" + mapUriParamsStart);
+            assertTrue(mapUriParamsEnd.matches("a:(FRA|DEU)\\|b:(FRA|DEU)&title=[ab]:present\\|[ab]:native%3A\\+doubtfully\\+native"), "End does not match, but is: " + mapUriParamsEnd);
         }
         //...tree
         DistributionTreeDto tree = (DistributionTreeDto)distributionInfo.getTree();
-        Assert.assertEquals("Tree:2<FRA:native: doubtfully native{Miller, M.M. 1978: My French distribution. p 44 [accessed: 1792]}:0><Germany:present{Second ref article. – The journal. p 22}:0>", new DistributionInfoBuilderTest().tree2String(tree));
-        Assert.assertEquals("Should be France and Germany", 2, tree.getRootElement().children.size());
+        assertEquals("Tree:2<FRA:native: doubtfully native{Miller, M.M. 1978: My French distribution. p 44 [accessed: 1792]}:0><Germany:present{Second ref article. – The journal. p 22}:0>", new DistributionInfoBuilderTest().tree2String(tree));
+        assertEquals(2, tree.getRootElement().children.size(), "Should be France and Germany");
         TreeNode<Set<DistributionDto>, NamedAreaDto> germanyNode = tree.getRootElement().getChildren().get(1);
-        Assert.assertEquals("Germany", germanyNode.getNodeId().getLabel());
+        assertEquals("Germany", germanyNode.getNodeId().getLabel());
         DistributionDto germanyDistribution = germanyNode.getData().iterator().next();
-        Assert.assertEquals(2, germanyDistribution.getAnnotations().getCount());
-        Assert.assertEquals("Missing type annotation should exist",
-                + 1, germanyDistribution.getAnnotations().getItems().stream()
-                     .filter(a->"Missing Type Annotation".equals(a.getText())).count());
-        Assert.assertEquals("There should be 1 source (even if it has no name used in source)", 1, germanyDistribution.getSources().getCount());
+        assertEquals(2, germanyDistribution.getAnnotations().getCount());
+        assertEquals(+ 1, germanyDistribution.getAnnotations().getItems().stream()
+                     .filter(a->"Missing Type Annotation".equals(a.getText())).count(), "Missing type annotation should exist");
+        assertEquals(1, germanyDistribution.getSources().getCount(), "There should be 1 source (even if it has no name used in source)");
 
         //france
         TreeNode<Set<DistributionDto>, NamedAreaDto> franceNode = tree.getRootElement().getChildren().get(0);
-        Assert.assertEquals("FRA", franceNode.getNodeId().getLabel());
-        Assert.assertTrue("Size was not 1, but " + franceNode.getData().size(), franceNode.getData().size() == 1);
+        assertEquals("FRA", franceNode.getNodeId().getLabel());
+        assertTrue(franceNode.getData().size() == 1, "Size was not 1, but " + franceNode.getData().size());
         DistributionDto franceDistributionDto = franceNode.getData().iterator().next();
         //...source
-        Assert.assertEquals(1, franceDistributionDto.getSources().getCount());
+        assertEquals(1, franceDistributionDto.getSources().getCount());
         SourceDto source = franceDistributionDto.getSources().getItems().get(0);
-        Assert.assertEquals("PrimaryTaxonomicSource", source.getType());
-        Assert.assertEquals("44", source.getCitationDetail());
-        Assert.assertEquals("1792", source.getAccessed());
-        Assert.assertEquals("https://doi.org/10.10.0123/suf-456", source.getDoi());
-        Assert.assertEquals("https://uri.org", source.getUri().toString());
-        Assert.assertEquals("Genus insourcus", TaggedTextFormatter.createString(source.getNameInSource()));
+        assertEquals("PrimaryTaxonomicSource", source.getType());
+        assertEquals("44", source.getCitationDetail());
+        assertEquals("1792", source.getAccessed());
+        assertEquals("https://doi.org/10.10.0123/suf-456", source.getDoi());
+        assertEquals("https://uri.org", source.getUri().toString());
+        assertEquals("Genus insourcus", TaggedTextFormatter.createString(source.getNameInSource()));
     }
 
     private void createTestData() {

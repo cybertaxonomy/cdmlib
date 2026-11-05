@@ -8,6 +8,11 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +20,6 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -65,7 +69,7 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
         try{
             userService.createUser(User.NewInstance("new_user_1", "00000"));
         }catch(Exception e){
-            Assert.fail();
+            fail();
         }
 
         authentication = authenticationManager.authenticate(tokenForTaxonEditor);
@@ -74,9 +78,9 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
 
         try{
             userService.createUser(User.NewInstance("new_user_2", "00000"));
-            Assert.fail();
+            fail();
         }catch(Exception e){
-            Assert.assertEquals("Access is denied", e.getMessage());
+            assertEquals("Access is denied", e.getMessage());
         }
     }
 
@@ -95,7 +99,7 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
         try{
             userService.updateUser(user);
         }catch (Exception e){
-            Assert.fail("the user TaxonEditor should be able to change its own email address");
+            fail("the user TaxonEditor should be able to change its own email address");
         }
         */
 
@@ -108,7 +112,7 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
         try{
             userService.updateUser(user);
         }catch (Exception e){
-            Assert.fail("the user UserManager should be able to change others email addresses");
+            fail("the user UserManager should be able to change others email addresses");
         }
 
         authentication = authenticationManager.authenticate(tokenForPartEditor);
@@ -117,9 +121,9 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
 
         try{
             userService.updateUser(user);
-            Assert.fail("the user PartEditor should NOT be able to change others email addresses");
+            fail("the user PartEditor should NOT be able to change others email addresses");
         }catch (Exception e){
-            Assert.assertEquals("Access is denied", e.getMessage());
+            assertEquals("Access is denied", e.getMessage());
         }
     }
 
@@ -150,7 +154,7 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
             endTransaction();
             startNewTransaction();
         }
-        Assert.assertNotNull("must fail here!", exception);
+        assertNotNull(exception, "must fail here!");
 
         // the user User manager should be able to change others passwords
         authentication = authenticationManager.authenticate(tokenForUserManager);
@@ -179,7 +183,7 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
 
         List<GrantedAuthority> groupAuthorities = groupService.findGroupAuthorities(remotingGroupName);
 
-        Assert.assertEquals(Role.ROLE_REMOTING.toString(), groupAuthorities.get(0).getAuthority());
+        assertEquals(Role.ROLE_REMOTING.toString(), groupAuthorities.get(0).getAuthority());
     }
 
     @Test
@@ -198,12 +202,12 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
         // check that everything is clean
         for(GrantedAuthority authority : user.getAuthorities()){
             if(authority.equals(Role.ROLE_PUBLISH)){
-                Assert.fail("an authority '" + Role.ROLE_PUBLISH + "' must not yet exists");
+                fail("an authority '" + Role.ROLE_PUBLISH + "' must not yet exists");
             }
         }
         for(Group group : user.getGroups()){
             if(group.getName().equals(newGroupName)){
-                Assert.fail("the group '" + newGroupName + "' must not yet exists");
+                fail("the group '" + newGroupName + "' must not yet exists");
             }
         }
 
@@ -263,7 +267,7 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
                 break;
             }
         }
-        Assert.assertTrue("the new authority '" + Role.ROLE_PUBLISH + "' is missing", newAuthorityFound);
+        assertTrue(newAuthorityFound, "the new authority '" + Role.ROLE_PUBLISH + "' is missing");
 
         // 2. check for role in existing group
         boolean newAuthorityFoundInExistingGroup = false;
@@ -280,7 +284,7 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
                 }
             }
         }
-        Assert.assertTrue("the new authority '" + Role.ROLE_PUBLISH + "' is missing in existing group", newAuthorityFoundInExistingGroup);
+        assertTrue(newAuthorityFoundInExistingGroup, "the new authority '" + Role.ROLE_PUBLISH + "' is missing in existing group");
 
         // 3. check new group
         boolean newGroupFound = false;
@@ -290,7 +294,7 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
                 break;
             }
         }
-        Assert.assertTrue("the new group '" + newGroupName + "' is missing", newGroupFound);
+        assertTrue(newGroupFound, "the new group '" + newGroupName + "' is missing");
 
         // ==================================================================
         // again authenticate as UserManager to be able to add the role ROLE_PUBLISH in various ways
@@ -313,7 +317,7 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
 
         for(Group group: user.getGroups()){
             if(group.getName().equals(groupSpecialEditor_Name)){
-                Assert.fail("The user TaxonEditor should no longer be member of this group");
+                fail("The user TaxonEditor should no longer be member of this group");
             }
         }
     }

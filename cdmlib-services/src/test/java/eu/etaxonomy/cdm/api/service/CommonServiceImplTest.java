@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.util.Set;
@@ -16,7 +17,6 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -66,7 +66,7 @@ public class CommonServiceImplTest extends CdmServicesTransactionalSpringIntegra
 
 	@Test
 	public final void testSetDao() {
-		Assert.assertNotNull(service);
+		assertNotNull(service);
 	}
 
     @Test

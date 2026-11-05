@@ -8,9 +8,11 @@
 */
 package eu.etaxonomy.cdm.test.suite;
 
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+@Ignore // JUnit4 suite holder; tests run via Surefire discovery
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
 		{

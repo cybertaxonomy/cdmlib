@@ -8,15 +8,17 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,10 +100,10 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
             List<TermNode<Feature>> childNodes = characterTree.getRoot().getChildNodes();
             TermNode<Feature> child = childNodes.get(0);
 
-            Assert.assertTrue(child.getTerm().isSupportsCategoricalData());
+            assertTrue(child.getTerm().isSupportsCategoricalData());
 
         }else{
-            Assert.fail();
+            fail();
         }
     }
 
@@ -135,10 +137,10 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
             List<TermNode<Feature>> childNodes = characterTree.getRoot().getChildNodes();
             TermNode<Feature> child = childNodes.get(0);
 
-            Assert.assertTrue(child.getTerm().getPreferredRepresentation(Language.DEFAULT()).getText().equals("Test"));
+            assertTrue(child.getTerm().getPreferredRepresentation(Language.DEFAULT()).getText().equals("Test"));
 
         }else{
-            Assert.fail();
+            fail();
         }
     }
 
@@ -181,7 +183,7 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
 
         commitAndStartNewTransaction(/*new String[]{"FeatureNode"}*/);
         newNode = termNodeService.load(newNode.getUuid());
-        Assert.assertEquals("", sep + pref+featureTree.getId()+sep + featureTree.getRoot().getId()+ sep  + newNode.getId() + sep, newNode.treeIndex());
+        assertEquals(sep + pref+featureTree.getId()+sep + featureTree.getRoot().getId()+ sep  + newNode.getId() + sep, newNode.treeIndex(), "");
     }
 
     @Test
@@ -198,7 +200,7 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
 
         commitAndStartNewTransaction();
         newNode = termNodeService.load(newNode.getUuid());
-        Assert.assertEquals("", oldTreeIndex + newNode.getId() + sep, newNode.treeIndex());
+        assertEquals(oldTreeIndex + newNode.getId() + sep, newNode.treeIndex(), "");
     }
 
     @Test
@@ -214,7 +216,7 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
         termNodeService.saveOrUpdate(node2);
         commitAndStartNewTransaction();
         TermNode<?> node6 = termNodeService.load(node6Uuid);
-        Assert.assertEquals("Node6 treeindex is not correct", node3.treeIndex() + "2#4#6#", node6.treeIndex());
+        assertEquals(node3.treeIndex() + "2#4#6#", node6.treeIndex(), "Node6 treeindex is not correct");
 
         //root of new feature tree
         TermTree<Feature> featureTree2 = termTreeService.load(featureTree2Uuid);
@@ -223,9 +225,9 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
         termNodeService.saveOrUpdate(node2);
         commitAndStartNewTransaction();
         node2 = termNodeService.load(node2Uuid);
-        Assert.assertEquals("Node2 treeindex is not correct", "#t5002#7#2#", node2.treeIndex());
+        assertEquals("#t5002#7#2#", node2.treeIndex(), "Node2 treeindex is not correct");
         node6 = termNodeService.load(node6Uuid);
-        Assert.assertEquals("Node6 treeindex is not correct", "#t5002#7#2#4#6#", node6.treeIndex());
+        assertEquals("#t5002#7#2#4#6#", node6.treeIndex(), "Node6 treeindex is not correct");
 
         //into new classification
         node3 = termNodeService.load(node3Uuid);
@@ -234,7 +236,7 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
         termNodeService.saveOrUpdate(node5);
         commitAndStartNewTransaction(new String[]{"FeatureNode"});
         node3 = termNodeService.load(node3Uuid);
-        Assert.assertEquals("Node3 treeindex is not correct", node5.treeIndex() + node3.getId() + sep, node3.treeIndex());
+        assertEquals(node5.treeIndex() + node3.getId() + sep, node3.treeIndex(), "Node3 treeindex is not correct");
     }
 
     @Test  //here we may have a test for testing delete of a node and attaching the children
@@ -305,10 +307,10 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
         //test result
         rootNode = termNodeService.find(tree.getRoot().getUuid());
         rootNode.getChildNodes();
-        Assert.assertEquals(2, rootNode.getChildNodes().size());
-        Assert.assertEquals(child2.getUuid(), rootNode.getChildNodes().get(0).getUuid());
-        Assert.assertEquals(child3.getUuid(), rootNode.getChildNodes().get(1).getUuid());
-        Assert.assertEquals("Should be root + 2 children", 3 + termNodesAtStart, termNodeService.count(TermNode.class));
+        assertEquals(2, rootNode.getChildNodes().size());
+        assertEquals(child2.getUuid(), rootNode.getChildNodes().get(0).getUuid());
+        assertEquals(child3.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        assertEquals(3 + termNodesAtStart, termNodeService.count(TermNode.class), "Should be root + 2 children");
         commitAndStartNewTransaction();
 
 //        System.out.println("NEXT");
@@ -338,10 +340,10 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
 
         rootNode = termNodeService.find(tree.getRoot().getUuid());
         rootNode.getChildNodes();
-        Assert.assertEquals(2, rootNode.getChildNodes().size());
-        Assert.assertEquals(child3.getUuid(), rootNode.getChildNodes().get(0).getUuid());
-        Assert.assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
-        Assert.assertEquals("Should be root + 2 children", 3 +termNodesAtStart, termNodeService.count(TermNode.class));
+        assertEquals(2, rootNode.getChildNodes().size());
+        assertEquals(child3.getUuid(), rootNode.getChildNodes().get(0).getUuid());
+        assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        assertEquals(3 +termNodesAtStart, termNodeService.count(TermNode.class), "Should be root + 2 children");
     }
 
     @Test
@@ -377,13 +379,13 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
 
         rootNode = termNodeService.find(tree.getRoot().getUuid());
         rootNode.getChildNodes();
-        Assert.assertEquals(2, rootNode.getChildNodes().size());
+        assertEquals(2, rootNode.getChildNodes().size());
         TermNode<Feature> firstChild = rootNode.getChildNodes().get(0);
-        Assert.assertEquals(child2.getUuid(), firstChild.getUuid());
-        Assert.assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
-        Assert.assertEquals(1, firstChild.getChildNodes().size());
-        Assert.assertEquals(child1.getUuid(), firstChild.getChildNodes().get(0).getUuid());
-        Assert.assertEquals("Should be root + 2 children + 1 grandchild", 4 + termNodesAtStart, termNodeService.count(TermNode.class));
+        assertEquals(child2.getUuid(), firstChild.getUuid());
+        assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        assertEquals(1, firstChild.getChildNodes().size());
+        assertEquals(child1.getUuid(), firstChild.getChildNodes().get(0).getUuid());
+        assertEquals(4 + termNodesAtStart, termNodeService.count(TermNode.class), "Should be root + 2 children + 1 grandchild");
     }
 
     @Test  //8127  //5536 //10101
@@ -416,10 +418,10 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
         //test result
         rootNode = termNodeService.find(tree.getRoot().getUuid());
         rootNode.getChildNodes();
-        Assert.assertEquals(2, rootNode.getChildNodes().size());
-        Assert.assertEquals(child2.getUuid(), rootNode.getChildNodes().get(0).getUuid());
-        Assert.assertEquals(child3.getUuid(), rootNode.getChildNodes().get(1).getUuid());
-        Assert.assertEquals("Should be root + 2 children", 3 + termNodesAtStart, termNodeService.count(TermNode.class));
+        assertEquals(2, rootNode.getChildNodes().size());
+        assertEquals(child2.getUuid(), rootNode.getChildNodes().get(0).getUuid());
+        assertEquals(child3.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        assertEquals(3 + termNodesAtStart, termNodeService.count(TermNode.class), "Should be root + 2 children");
         commitAndStartNewTransaction();
 
 //      System.out.println("NEXT");
@@ -441,10 +443,10 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
 
         rootNode = termNodeService.find(tree.getRoot().getUuid());
         rootNode.getChildNodes();
-        Assert.assertEquals(2, rootNode.getChildNodes().size());
-        Assert.assertEquals(child3.getUuid(), rootNode.getChildNodes().get(0).getUuid());
-        Assert.assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
-        Assert.assertEquals("Should be root + 2 children", 3 +termNodesAtStart, termNodeService.count(TermNode.class));
+        assertEquals(2, rootNode.getChildNodes().size());
+        assertEquals(child3.getUuid(), rootNode.getChildNodes().get(0).getUuid());
+        assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        assertEquals(3 +termNodesAtStart, termNodeService.count(TermNode.class), "Should be root + 2 children");
     }
 
     @Test
@@ -480,13 +482,13 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
 
         rootNode = termNodeService.find(tree.getRoot().getUuid());
         rootNode.getChildNodes();
-        Assert.assertEquals(2, rootNode.getChildNodes().size());
+        assertEquals(2, rootNode.getChildNodes().size());
         TermNode<Feature> firstChild = rootNode.getChildNodes().get(0);
-        Assert.assertEquals(child2.getUuid(), firstChild.getUuid());
-        Assert.assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
-        Assert.assertEquals(1, firstChild.getChildNodes().size());
-        Assert.assertEquals(child1.getUuid(), firstChild.getChildNodes().get(0).getUuid());
-        Assert.assertEquals("Should be root + 2 children + 1 grandchild", 4 + termNodesAtStart, termNodeService.count(TermNode.class));
+        assertEquals(child2.getUuid(), firstChild.getUuid());
+        assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        assertEquals(1, firstChild.getChildNodes().size());
+        assertEquals(child1.getUuid(), firstChild.getChildNodes().get(0).getUuid());
+        assertEquals(4 + termNodesAtStart, termNodeService.count(TermNode.class), "Should be root + 2 children + 1 grandchild");
     }
 
     @Override

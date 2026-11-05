@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.molecular;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -42,10 +42,10 @@ public class PrimerServiceTest extends CdmServicesTransactionalSpringIntegration
         UUID uuid = primerService.save(primer).getUuid();
 
         List<UuidAndTitleCache<Primer>> primerUuidAndTitleCache = primerService.getPrimerUuidAndTitleCache();
-        assertEquals("Number of Primers in DB is incorrect.", 1, primerUuidAndTitleCache.size());
+        assertEquals(1, primerUuidAndTitleCache.size(), "Number of Primers in DB is incorrect.");
         UuidAndTitleCache<Primer> uuidAndTitleCache = primerUuidAndTitleCache.iterator().next();
-        assertEquals("UUID is incorrect.", uuid, uuidAndTitleCache.getUuid());
-        assertEquals("Label is incorrect.", primerLabel, uuidAndTitleCache.getTitleCache());
+        assertEquals(uuid, uuidAndTitleCache.getUuid(), "UUID is incorrect.");
+        assertEquals(primerLabel, uuidAndTitleCache.getTitleCache(), "Label is incorrect.");
     }
 
     @Override

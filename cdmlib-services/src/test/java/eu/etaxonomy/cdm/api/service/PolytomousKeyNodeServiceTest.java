@@ -8,13 +8,13 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.FileNotFoundException;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,8 +39,8 @@ public class PolytomousKeyNodeServiceTest extends CdmServicesTransactionalSpring
 	@Test
     @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
 	public final void testSetDao() {
-		Assert.assertNotNull(service);
-		Assert.assertNotNull(keyService);
+		assertNotNull(service);
+		assertNotNull(keyService);
 	}
 
 	@Test
@@ -77,8 +77,8 @@ public class PolytomousKeyNodeServiceTest extends CdmServicesTransactionalSpring
         loaded3 = service.load(uuidChild3);
         assertNull(loaded3);
         PolytomousKeyNode loaded4 = service.load(uuidChild4);
-        assertNotNull("Child4 should be moved to "
-                + "parent child2 but not removed completely", loaded4);
+        assertNotNull(loaded4, "Child4 should be moved to "
+                + "parent child2 but not removed completely");
 
         //assert delete with children
         PolytomousKeyNode loaded2 = service.load(uuidChild2);
@@ -87,7 +87,7 @@ public class PolytomousKeyNodeServiceTest extends CdmServicesTransactionalSpring
         loaded2 = service.load(uuidChild2);
         assertNull(loaded2);
         loaded4 = service.load(uuidChild4);
-        assertNull("Child4 should be deleted with child3 this time", loaded4);
+        assertNull(loaded4, "Child4 should be deleted with child3 this time");
     }
 
     @Test  //8127  //5536 //10101
@@ -119,10 +119,10 @@ public class PolytomousKeyNodeServiceTest extends CdmServicesTransactionalSpring
         //test result
         rootNode = service.find(key.getRoot().getUuid());
         rootNode.getChildren();
-        Assert.assertEquals(2, rootNode.getChildren().size());
-        Assert.assertEquals(child2.getUuid(), rootNode.getChildren().get(0).getUuid());
-        Assert.assertEquals(child3.getUuid(), rootNode.getChildren().get(1).getUuid());
-        Assert.assertEquals("Should be root + 2 children", 3, service.count(PolytomousKeyNode.class));
+        assertEquals(2, rootNode.getChildren().size());
+        assertEquals(child2.getUuid(), rootNode.getChildren().get(0).getUuid());
+        assertEquals(child3.getUuid(), rootNode.getChildren().get(1).getUuid());
+        assertEquals(3, service.count(PolytomousKeyNode.class), "Should be root + 2 children");
         commitAndStartNewTransaction();
 
 //        System.out.println("NEXT");
@@ -153,10 +153,10 @@ public class PolytomousKeyNodeServiceTest extends CdmServicesTransactionalSpring
 
         rootNode = service.find(key.getRoot().getUuid());
         rootNode.getChildren();
-        Assert.assertEquals(2, rootNode.getChildren().size());
-        Assert.assertEquals(child3.getUuid(), rootNode.getChildren().get(0).getUuid());
-        Assert.assertEquals(child4.getUuid(), rootNode.getChildren().get(1).getUuid());
-        Assert.assertEquals("Should be root + 2 children", 3, service.count(PolytomousKeyNode.class));
+        assertEquals(2, rootNode.getChildren().size());
+        assertEquals(child3.getUuid(), rootNode.getChildren().get(0).getUuid());
+        assertEquals(child4.getUuid(), rootNode.getChildren().get(1).getUuid());
+        assertEquals(3, service.count(PolytomousKeyNode.class), "Should be root + 2 children");
     }
 
     @Test
@@ -192,13 +192,13 @@ public class PolytomousKeyNodeServiceTest extends CdmServicesTransactionalSpring
 
         rootNode = service.find(key.getRoot().getUuid());
         rootNode.getChildren();
-        Assert.assertEquals(2, rootNode.getChildren().size());
+        assertEquals(2, rootNode.getChildren().size());
         PolytomousKeyNode firstChild = rootNode.getChildren().get(0);
-        Assert.assertEquals(child2.getUuid(), firstChild.getUuid());
-        Assert.assertEquals(child4.getUuid(), rootNode.getChildren().get(1).getUuid());
-        Assert.assertEquals(1, firstChild.getChildren().size());
-        Assert.assertEquals(child1.getUuid(), firstChild.getChildren().get(0).getUuid());
-        Assert.assertEquals("Should be root + 2 children + 1 grandchild", 4, service.count(PolytomousKeyNode.class));
+        assertEquals(child2.getUuid(), firstChild.getUuid());
+        assertEquals(child4.getUuid(), rootNode.getChildren().get(1).getUuid());
+        assertEquals(1, firstChild.getChildren().size());
+        assertEquals(child1.getUuid(), firstChild.getChildren().get(0).getUuid());
+        assertEquals(4, service.count(PolytomousKeyNode.class), "Should be root + 2 children + 1 grandchild");
     }
 
     @Test //10101 same as testMerge but with saveOrUpdate
@@ -231,10 +231,10 @@ public class PolytomousKeyNodeServiceTest extends CdmServicesTransactionalSpring
         //test result
         rootNode = service.find(key.getRoot().getUuid());
         rootNode.getChildren();
-        Assert.assertEquals(2, rootNode.getChildren().size());
-        Assert.assertEquals(child2.getUuid(), rootNode.getChildren().get(0).getUuid());
-        Assert.assertEquals(child3.getUuid(), rootNode.getChildren().get(1).getUuid());
-        Assert.assertEquals("Should be root + 2 children", 3, service.count(PolytomousKeyNode.class));
+        assertEquals(2, rootNode.getChildren().size());
+        assertEquals(child2.getUuid(), rootNode.getChildren().get(0).getUuid());
+        assertEquals(child3.getUuid(), rootNode.getChildren().get(1).getUuid());
+        assertEquals(3, service.count(PolytomousKeyNode.class), "Should be root + 2 children");
         commitAndStartNewTransaction();
 
 //        System.out.println("NEXT");
@@ -259,10 +259,10 @@ public class PolytomousKeyNodeServiceTest extends CdmServicesTransactionalSpring
 
         rootNode = service.find(key.getRoot().getUuid());
         rootNode.getChildren();
-        Assert.assertEquals(2, rootNode.getChildren().size());
-        Assert.assertEquals(child3.getUuid(), rootNode.getChildren().get(0).getUuid());
-        Assert.assertEquals(child4.getUuid(), rootNode.getChildren().get(1).getUuid());
-        Assert.assertEquals("Should be root + 2 children", 3, service.count(PolytomousKeyNode.class));
+        assertEquals(2, rootNode.getChildren().size());
+        assertEquals(child3.getUuid(), rootNode.getChildren().get(0).getUuid());
+        assertEquals(child4.getUuid(), rootNode.getChildren().get(1).getUuid());
+        assertEquals(3, service.count(PolytomousKeyNode.class), "Should be root + 2 children");
     }
 
     @Test
@@ -297,13 +297,13 @@ public class PolytomousKeyNodeServiceTest extends CdmServicesTransactionalSpring
 
         rootNode = service.find(key.getRoot().getUuid());
         rootNode.getChildren();
-        Assert.assertEquals(2, rootNode.getChildren().size());
+        assertEquals(2, rootNode.getChildren().size());
         PolytomousKeyNode firstChild = rootNode.getChildren().get(0);
-        Assert.assertEquals(child2.getUuid(), firstChild.getUuid());
-        Assert.assertEquals(child4.getUuid(), rootNode.getChildren().get(1).getUuid());
-        Assert.assertEquals(1, firstChild.getChildren().size());
-        Assert.assertEquals(child1.getUuid(), firstChild.getChildren().get(0).getUuid());
-        Assert.assertEquals("Should be root + 2 children + 1 grandchild", 4, service.count(PolytomousKeyNode.class));
+        assertEquals(child2.getUuid(), firstChild.getUuid());
+        assertEquals(child4.getUuid(), rootNode.getChildren().get(1).getUuid());
+        assertEquals(1, firstChild.getChildren().size());
+        assertEquals(child1.getUuid(), firstChild.getChildren().get(0).getUuid());
+        assertEquals(4, service.count(PolytomousKeyNode.class), "Should be root + 2 children + 1 grandchild");
     }
 
     @Override

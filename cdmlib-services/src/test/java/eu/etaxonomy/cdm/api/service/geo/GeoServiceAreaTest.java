@@ -8,14 +8,15 @@
 */
 package eu.etaxonomy.cdm.api.service.geo;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.mueller
@@ -42,8 +43,8 @@ public class GeoServiceAreaTest {
 		String input = "<?xml version=\"1.0\" ?><mapService xmlns=\"http://www.etaxonomy.eu/cdm\" type=\"editMapService\"><area><layer>vmap0_as_bnd_political_boundary_a</layer><field>nam</field><value>PULAU BANGKA#SUMATERA SELATAN</value></area></mapService>";
 		GeoServiceArea areas = GeoServiceArea.valueOf(input);
 		try {
-			Assert.assertNotNull("Result must not be null", areas);
-			Assert.assertEquals("Input string must be equal to output string", input, areas.toXml());
+			assertNotNull(areas, "Result must not be null");
+			assertEquals(input, areas.toXml(), "Input string must be equal to output string");
 		} catch (XMLStreamException e) {
 			fail();
 		}

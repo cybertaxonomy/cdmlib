@@ -8,9 +8,10 @@
 */
 package eu.etaxonomy.cdm.facade;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -130,7 +131,7 @@ public class DerivedUnitFacadeFieldUnitCacheStrategyTest extends TermTestBase {
 //****************************** SET UP *****************************************/
 
 	@Deprecated
-    @Before
+    @BeforeEach
 	public void setUp() throws Exception {
 		specimen = DerivedUnit.NewPreservedSpecimenInstance();
 
@@ -200,18 +201,18 @@ public class DerivedUnitFacadeFieldUnitCacheStrategyTest extends TermTestBase {
 		specimenFacade.setEcology(ecology);
 		specimenFacade.setPlantDescription(plantDescription);
 		collection.setCode("B");
-		Assert.assertEquals(correctCache, specimenFacade.innerFieldUnit().getTitleCache());
+		assertEquals(correctCache, specimenFacade.innerFieldUnit().getTitleCache());
 
 		//freetext without unit
 		String altitudeText = "approx. 40";
 		specimenFacade.setAbsoluteElevationText(altitudeText);
 		String expected = correctCache.replace("alt. 40 m", "alt. "+ altitudeText);
-		Assert.assertEquals(expected, specimenFacade.innerFieldUnit().getTitleCache());
+		assertEquals(expected, specimenFacade.innerFieldUnit().getTitleCache());
 
 		//freetext with unit
 		String altitudeTextM = "approx. 40 m";
 		specimenFacade.setAbsoluteElevationText(altitudeTextM);
 		expected = correctCache.replace("alt. 40 m", "alt. "+ altitudeTextM);
-		Assert.assertEquals(expected, specimenFacade.innerFieldUnit().getTitleCache());
+		assertEquals(expected, specimenFacade.innerFieldUnit().getTitleCache());
 	}
 }

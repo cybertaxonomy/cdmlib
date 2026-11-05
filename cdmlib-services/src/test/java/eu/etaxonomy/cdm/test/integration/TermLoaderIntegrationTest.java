@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.test.integration;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.util.UUID;
@@ -34,24 +34,24 @@ public class TermLoaderIntegrationTest extends CdmServicesSpringIntegrationTest 
 
 	@Test
 	public final void testTermsAreLoaded() {
-		assertNotNull("TaxonRelationshipType.IS_MISAPPLIED_NAME_FOR should have been initialized", TaxonRelationshipType.MISAPPLIED_NAME_FOR());
-		assertEquals("TaxonRelationshipType.IS_MISAPPLIED_NAME_FOR should have a uuid of " + misappliedNameFroUuid, misappliedNameFroUuid, TaxonRelationshipType.uuidMisappliedNameFor);
+		assertNotNull(TaxonRelationshipType.MISAPPLIED_NAME_FOR(), "TaxonRelationshipType.IS_MISAPPLIED_NAME_FOR should have been initialized");
+		assertEquals(misappliedNameFroUuid, TaxonRelationshipType.uuidMisappliedNameFor, "TaxonRelationshipType.IS_MISAPPLIED_NAME_FOR should have a uuid of " + misappliedNameFroUuid);
 	}
 
 	@Test
 	public void testUnlazyStatusTerms() {
-			assertNotNull("NomenclaturalStatusType.SUPERFLUOUS should exist",NomenclaturalStatusType.SUPERFLUOUS());
-			assertNotNull("NomenclaturalStatusType.NUDUM should exist",NomenclaturalStatusType.NUDUM());
-			assertNotNull("NomenclaturalStatusType.ILLEGITIMATE should exist",NomenclaturalStatusType.ILLEGITIMATE());
-			assertNotNull("NomenclaturalStatusType.INVALID should exist",NomenclaturalStatusType.INVALID());
-			assertNotNull("NomenclaturalStatusType.CONSERVED should exist",NomenclaturalStatusType.CONSERVED());
-			assertNotNull("NomenclaturalStatusType.ALTERNATIVE should exist",NomenclaturalStatusType.ALTERNATIVE());
-			assertNotNull("NomenclaturalStatusType.REJECTED should exist",NomenclaturalStatusType.REJECTED());
-			assertNotNull("NomenclaturalStatusType.REJECTED_PROP should exist",NomenclaturalStatusType.REJECTED_PROP());
-			assertNotNull("NomenclaturalStatusType.PROVISIONAL should exist",NomenclaturalStatusType.PROVISIONAL());
-			assertNotNull("NomenclaturalStatusType.SUBNUDUM should exist",NomenclaturalStatusType.SUBNUDUM());
-			assertNotNull("NomenclaturalStatusType.OPUS_UTIQUE_OPPR should exist",NomenclaturalStatusType.OPUS_UTIQUE_OPPR());
-			assertNotNull("NomenclaturalStatusType.VALID should exist",NomenclaturalStatusType.VALID());
+			assertNotNull(NomenclaturalStatusType.SUPERFLUOUS(), "NomenclaturalStatusType.SUPERFLUOUS should exist");
+			assertNotNull(NomenclaturalStatusType.NUDUM(), "NomenclaturalStatusType.NUDUM should exist");
+			assertNotNull(NomenclaturalStatusType.ILLEGITIMATE(), "NomenclaturalStatusType.ILLEGITIMATE should exist");
+			assertNotNull(NomenclaturalStatusType.INVALID(), "NomenclaturalStatusType.INVALID should exist");
+			assertNotNull(NomenclaturalStatusType.CONSERVED(), "NomenclaturalStatusType.CONSERVED should exist");
+			assertNotNull(NomenclaturalStatusType.ALTERNATIVE(), "NomenclaturalStatusType.ALTERNATIVE should exist");
+			assertNotNull(NomenclaturalStatusType.REJECTED(), "NomenclaturalStatusType.REJECTED should exist");
+			assertNotNull(NomenclaturalStatusType.REJECTED_PROP(), "NomenclaturalStatusType.REJECTED_PROP should exist");
+			assertNotNull(NomenclaturalStatusType.PROVISIONAL(), "NomenclaturalStatusType.PROVISIONAL should exist");
+			assertNotNull(NomenclaturalStatusType.SUBNUDUM(), "NomenclaturalStatusType.SUBNUDUM should exist");
+			assertNotNull(NomenclaturalStatusType.OPUS_UTIQUE_OPPR(), "NomenclaturalStatusType.OPUS_UTIQUE_OPPR should exist");
+			assertNotNull(NomenclaturalStatusType.VALID(), "NomenclaturalStatusType.VALID should exist");
 	}
 
     @Override

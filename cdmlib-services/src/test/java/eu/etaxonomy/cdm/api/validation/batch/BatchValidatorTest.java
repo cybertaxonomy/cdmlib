@@ -8,6 +8,8 @@
  */
 package eu.etaxonomy.cdm.api.validation.batch;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.List;
@@ -15,7 +17,6 @@ import java.util.Set;
 
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
-import org.junit.Assert;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
@@ -105,14 +106,14 @@ public class BatchValidatorTest extends CdmServicesTransactionalSpringIntegratio
         // journals);
         IEntityValidationService validationResultService = app.getEntityValidationService();
         List<EntityValidation> results = validationResultService.getValidationResults();
-        Assert.assertEquals("Expected 20 validation results", 20, results.size());
+        assertEquals(20, results.size(), "Expected 20 validation results");
 
         // And we should have a total of 70 (10 * (3+4)) constraint violations
         int errors = 0;
         for(EntityValidation result: results) {
             errors += result.getEntityConstraintViolations().size();
         }
-        Assert.assertEquals("Expected 70 errors", 70, errors);
+        assertEquals(70, errors, "Expected 70 errors");
 
     }
 

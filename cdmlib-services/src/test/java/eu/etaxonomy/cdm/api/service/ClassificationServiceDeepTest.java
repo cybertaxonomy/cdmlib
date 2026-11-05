@@ -8,6 +8,10 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,7 +22,6 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -65,34 +68,34 @@ public class ClassificationServiceDeepTest extends CdmServicesTransactionalSprin
         UpdateResult result = service.createHierarchyInClassification(classification, null);
         Classification classification2 = CdmBase.deproxy(result.getCdmEntity(), Classification.class);
         //creating the classification was succesful
-        Assert.assertNotNull(classification2);
+        assertNotNull(classification2);
         for(TaxonNode node: classification2.getAllNodes()){
         	node = taxonNodeService.load(node.getUuid(), NODE_INIT_STRATEGY);
         	//check if TaxonNode was moved and has a new parent-child-relation
         	if(node.getTaxon().getUuid().equals(UUID.fromString("e8bc5566-eca6-4814-b18a-814c16c66144"))){
         		//parent has new Child
-        		Assert.assertTrue(node.getCountChildren() == 1);
+        		assertTrue(node.getCountChildren() == 1);
         		//child is Griftus grifatus subsp. fikus
-        		Assert.assertTrue(node.getChildNodes().get(0).getTaxon().getUuid().equals(UUID.fromString("15d719a2-d27d-4366-92de-0898b2f3ebc8")));
+        		assertTrue(node.getChildNodes().get(0).getTaxon().getUuid().equals(UUID.fromString("15d719a2-d27d-4366-92de-0898b2f3ebc8")));
         	}else if(node.getTaxon().getUuid().equals(UUID.fromString("15d719a2-d27d-4366-92de-0898b2f3ebc8"))){
         		//Assert that taxon has a parent and that parent is Griftus
-        		Assert.assertTrue(node.getParent().getTaxon().getUuid().equals(UUID.fromString("e8bc5566-eca6-4814-b18a-814c16c66144")));
+        		assertTrue(node.getParent().getTaxon().getUuid().equals(UUID.fromString("e8bc5566-eca6-4814-b18a-814c16c66144")));
         	}
         	//check if existing parent-child-relation was not touched
         	else if(node.getTaxon().getUuid().equals(UUID.fromString("c1cae3aa-960e-482f-b336-f3e657e96c43"))){
         		//node genus genus
-        		Assert.assertTrue(node.getCountChildren()==3);
+        		assertTrue(node.getCountChildren()==3);
         		//check if existing parent-child-relation was not touched and has a newly created parentNode
         		//assert this node is not anymore in the highest taxa
-        		Assert.assertTrue(!node.isTopmostNode());
+        		assertTrue(!node.isTopmostNode());
         		//assert this node has a parent
-        		Assert.assertTrue(node.getParent()!=null);
+        		assertTrue(node.getParent()!=null);
         	}
         }
         UUID uuid = classification2.getUuid();
         logger.debug("New Classification: " + uuid.toString());
         List<TaxonNode> taxonNodes2 = taxonNodeService.listAllNodesForClassification(classification2, 0, null);
-        Assert.assertNotEquals(taxonNodes.size(), taxonNodes2.size());
+        assertNotEquals(taxonNodes.size(), taxonNodes2.size());
     }
 
     @Override

@@ -8,14 +8,13 @@
 */
 package eu.etaxonomy.cdm.api.service.name;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.common.UTF8;
@@ -59,7 +58,7 @@ public class NameTypeDesignationGroupFormatterTest extends TermTestBase {
     private NameTypeDesignation ntd_LT;
     private Reference book;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         Person person1 = Person.NewInstance("DC", "Decandolle", "A.", null);
@@ -107,37 +106,30 @@ public class NameTypeDesignationGroupFormatterTest extends TermTestBase {
                 new TypeDesignationGroupContainerFormatter(WITH_CITATION, WITH_TYPE_LABEL,
                         WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages);
         String text = formatter.format(manager);
-        Assert.assertEquals("Prionus L."+DASH_W+"Type: Prionus coriatius L.", text);
+        assertEquals("Prionus L."+DASH_W+"Type: Prionus coriatius L.", text);
 
         List<TaggedText> taggedText = formatter.toTaggedText(manager);
-        Assert.assertEquals("first entry should be the typified name",
-                new TaggedText(TagEnum.name, "Prionus L.",TypedEntityReferenceFactory.fromEntity(typifiedName, false)), taggedText.get(0));
-        Assert.assertEquals("fourth entry should be the name type nameCache",
-                new TaggedText(TagEnum.name, "Prionus"), taggedText.get(4));  //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
-        Assert.assertEquals("fourth entry should be the name type nameCache",
-                new TaggedText(TagEnum.name, "coriatius"), taggedText.get(5)); //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
-        Assert.assertEquals("fifth entry should be the name type authorship cache",
-                new TaggedText(TagEnum.authors, "L."), taggedText.get(6));
+        assertEquals(new TaggedText(TagEnum.name, "Prionus L.",TypedEntityReferenceFactory.fromEntity(typifiedName, false)), taggedText.get(0), "first entry should be the typified name");
+        assertEquals(new TaggedText(TagEnum.name, "Prionus"), taggedText.get(4), "fourth entry should be the name type nameCache");  //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
+        assertEquals(new TaggedText(TagEnum.name, "coriatius"), taggedText.get(5), "fourth entry should be the name type nameCache"); //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
+        assertEquals(new TaggedText(TagEnum.authors, "L."), taggedText.get(6), "fifth entry should be the name type authorship cache");
 
         //protected titleCache
         ntd.getTypeName().setTitleCache("Prionus coriatius L.", true);
         taggedText = formatter.toTaggedText(manager);
-        Assert.assertEquals("fourth entry should be the name type titleCache",
-                new TaggedText(TagEnum.name, "Prionus coriatius L."), taggedText.get(4)); //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
-        Assert.assertEquals("there should be 5 tags only", 5, taggedText.size());
+        assertEquals(new TaggedText(TagEnum.name, "Prionus coriatius L."), taggedText.get(4), "fourth entry should be the name type titleCache"); //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
+        assertEquals(5, taggedText.size(), "there should be 5 tags only");
         ntd.getTypeName().setTitleCache(null, false);
 
         //with status
         ntd.getTypeName().addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE()));
         formatter.withNameIfAvailable(false); //to simplify the evaluation
         text = formatter.format(manager);
-        Assert.assertEquals("Type: Prionus coriatius L., nom. illeg.", text);
+        assertEquals("Type: Prionus coriatius L., nom. illeg.", text);
 
         taggedText = formatter.toTaggedText(manager);
-        Assert.assertEquals("sixth entry should be the status separator",
-                new TaggedText(TagEnum.separator, ", "), taggedText.get(5));
-        Assert.assertEquals("seventh entry should be the abbreviated status",
-                "nom. illeg.", taggedText.get(6).getText());
+        assertEquals(new TaggedText(TagEnum.separator, ", "), taggedText.get(5), "sixth entry should be the status separator");
+        assertEquals("nom. illeg.", taggedText.get(6).getText(), "seventh entry should be the abbreviated status");
     }
 
     //see #9262, see also similar test in SpecimenTypeDesignationGroupFormatterTest

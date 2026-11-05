@@ -8,10 +8,11 @@
  */
 package eu.etaxonomy.cdm.api.service.search;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -49,13 +50,13 @@ public class CdmMassIndexerTest extends CdmServicesTransactionalSpringIntegratio
 
         Pager<SearchResult<TaxonBase>> pager = taxonService.findByFullText(null, "Abies", null, subtree,
                 includeUnpublished, null, true, null, null, null, null);
-        Assert.assertEquals("Expecting 8 entities after initial reindex", 8, pager.getCount().intValue());
+        assertEquals(8, pager.getCount().intValue(), "Expecting 8 entities after initial reindex");
 
         indexer.purge(null);
         commitAndStartNewTransaction(null);
 
         pager = taxonService.findByFullText(null, "Abies", null, subtree, includeUnpublished, null, true, null, null, null, null);
-        Assert.assertEquals("Expecting no entities since the index has been purged", 0, pager.getCount().intValue());
+        assertEquals(0, pager.getCount().intValue(), "Expecting no entities since the index has been purged");
     }
 
     @Test
@@ -71,13 +72,13 @@ public class CdmMassIndexerTest extends CdmServicesTransactionalSpringIntegratio
 
         Pager<SearchResult<TaxonBase>> pager = taxonService.findByFullText(null, "Abies", null, subtree,
                 includeUnpublished, null, true, null, null, null, null);
-        Assert.assertEquals("Expecting no entities since the index has been purged", 0, pager.getCount().intValue());
+        assertEquals(0, pager.getCount().intValue(), "Expecting no entities since the index has been purged");
 
         indexer.reindex(indexer.indexedClasses(), null);
         commitAndStartNewTransaction(null);
 
         pager = taxonService.findByFullText(null, "Abies", null, subtree, includeUnpublished, null, true, null, null, null, null);
-        Assert.assertEquals("Expecting 8 entities after reindex", 8, pager.getCount().intValue());
+        assertEquals(8, pager.getCount().intValue(), "Expecting 8 entities after reindex");
     }
 
     private void refreshLuceneIndex() {

@@ -8,10 +8,12 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
@@ -19,7 +21,6 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -78,53 +79,53 @@ public class AgentServiceImplTest extends CdmServicesTransactionalSpringIntegrat
             UpdateResult result = service.convertPerson2Team(person.getUuid());
             team = (Team) result.getCdmEntity();
         } catch (MergeException e) {
-            Assert.fail("No Merge exception should be thrown");
+            fail("No Merge exception should be thrown");
         }
-        Assert.assertNotNull(team);
-        Assert.assertEquals("Title cache must be equal", fullAuthor, team.getTitleCache());
-        Assert.assertEquals("Nom. title must be equal", nomTitle, team.getNomenclaturalTitleCache());
-        Assert.assertTrue("Members must be empty", team.getTeamMembers().isEmpty());
-        Assert.assertEquals("Annotations should be moved", 1, team.getAnnotations().size());
-        Assert.assertEquals("Team must be combination author now", team, name.getCombinationAuthorship());
+        assertNotNull(team);
+        assertEquals(fullAuthor, team.getTitleCache(), "Title cache must be equal");
+        assertEquals(nomTitle, team.getNomenclaturalTitleCache(), "Nom. title must be equal");
+        assertTrue(team.getTeamMembers().isEmpty(), "Members must be empty");
+        assertEquals(1, team.getAnnotations().size(), "Annotations should be moved");
+        assertEquals(team, name.getCombinationAuthorship(), "Team must be combination author now");
 
         //test un-protected titleCache
         Person person2 = person.clone();
         person2.setProtectedTitleCache(false);
-        Assert.assertEquals("Title cache must be equal", nomTitle, person2.getTitleCache());
+        assertEquals(nomTitle, person2.getTitleCache(), "Title cache must be equal");
         service.save(person2);
 
         try {
             UpdateResult result = service.convertPerson2Team(person2.getUuid());
             team = (Team) result.getCdmEntity();
         } catch (MergeException e) {
-            Assert.fail("No Merge exception should be thrown, but was: " + e.getMessage());
+            fail("No Merge exception should be thrown, but was: " + e.getMessage());
         }
-        Assert.assertEquals("Title cache must be equal", person2.getTitleCache(), team.getTitleCache());
-        Assert.assertEquals("Nom. title must be equal", nomTitle, team.getNomenclaturalTitleCache());
-        Assert.assertTrue("Nom. title must be protected", team.isProtectedNomenclaturalTitleCache());
+        assertEquals(person2.getTitleCache(), team.getTitleCache(), "Title cache must be equal");
+        assertEquals(nomTitle, team.getNomenclaturalTitleCache(), "Nom. title must be equal");
+        assertTrue(team.isProtectedNomenclaturalTitleCache(), "Nom. title must be protected");
 
         //test fully empty
         person2 = person2.clone();
         person2.setNomenclaturalTitle(null);  //now it is fully empty
-        Assert.assertEquals("Title cache must be equal", "Person#0<" + person2.getUuid() + ">", person2.getTitleCache());
+        assertEquals("Person#0<" + person2.getUuid() + ">", person2.getTitleCache(), "Title cache must be equal");
 
         service.save(person2);
         try {
             UpdateResult result = service.convertPerson2Team(person2.getUuid());
             team = (Team) result.getCdmEntity();
         } catch (MergeException e) {
-            Assert.fail("No Merge exception should be thrown, but was: " + e.getMessage());
+            fail("No Merge exception should be thrown, but was: " + e.getMessage());
         }
-        Assert.assertEquals("If person was completely empty we don't expect the title cache to be taken from person.nomenclaturalTitle", TeamDefaultCacheStrategy.EMPTY_TEAM, team.getTitleCache());
-        Assert.assertFalse("If person was completely empty we don't expect the title cache to be protected", team.isProtectedTitleCache());
-        Assert.assertEquals("If person was completely empty we expect nom. title to be the empty team constant", TeamDefaultCacheStrategy.EMPTY_TEAM, team.getNomenclaturalTitleCache());
-        Assert.assertEquals("If person was completely empty we expect collector title to be the empty team constant", TeamDefaultCacheStrategy.EMPTY_TEAM, team.getCollectorTitleCache());
+        assertEquals(TeamDefaultCacheStrategy.EMPTY_TEAM, team.getTitleCache(), "If person was completely empty we don't expect the title cache to be taken from person.nomenclaturalTitle");
+        assertFalse(team.isProtectedTitleCache(), "If person was completely empty we don't expect the title cache to be protected");
+        assertEquals(TeamDefaultCacheStrategy.EMPTY_TEAM, team.getNomenclaturalTitleCache(), "If person was completely empty we expect nom. title to be the empty team constant");
+        assertEquals(TeamDefaultCacheStrategy.EMPTY_TEAM, team.getCollectorTitleCache(), "If person was completely empty we expect collector title to be the empty team constant");
 
         try {
             service.convertPerson2Team(person2.getUuid());
-            Assert.fail("Non-existing person should throw an exception");
+            fail("Non-existing person should throw an exception");
         } catch (MergeException e) {
-            Assert.fail("No Merge exception should be thrown, but was: " + e.getMessage());
+            fail("No Merge exception should be thrown, but was: " + e.getMessage());
         } catch (IllegalArgumentException e) {
             //nothing to do
         }
@@ -156,17 +157,17 @@ public class AgentServiceImplTest extends CdmServicesTransactionalSpringIntegrat
             result = service.convertTeam2Person(team);
             person = (Person) result.getCdmEntity();
         } catch (IllegalArgumentException e) {
-            Assert.fail("No IllegalArgumentException should be thrown");
+            fail("No IllegalArgumentException should be thrown");
         } catch (MergeException e) {
-            Assert.fail("No Merge exception should be thrown");
+            fail("No Merge exception should be thrown");
         }
-        Assert.assertNotNull(person);
-        Assert.assertEquals("Title cache must be equal", fullAuthor, person.getTitleCache());
-        Assert.assertEquals("Nom. title must be equal to protected team nom. title cache", nomTitle, person.getNomenclaturalTitle());
-        Assert.assertEquals("Collector title must be equal to protected team collector title cache", collectorTitle, person.getCollectorTitle());
+        assertNotNull(person);
+        assertEquals(fullAuthor, person.getTitleCache(), "Title cache must be equal");
+        assertEquals(nomTitle, person.getNomenclaturalTitle(), "Nom. title must be equal to protected team nom. title cache");
+        assertEquals(collectorTitle, person.getCollectorTitle(), "Collector title must be equal to protected team collector title cache");
 
-        Assert.assertEquals("Annotations should be moved", 1, person.getAnnotations().size());
-        Assert.assertEquals("person must be combination author now", person, name.getCombinationAuthorship());
+        assertEquals(1, person.getAnnotations().size(), "Annotations should be moved");
+        assertEquals(person, name.getCombinationAuthorship(), "person must be combination author now");
 
         //no protected nom. and collector cache
         team = Team.NewTitledInstance(fullAuthor, nomTitle, collectorTitle);
@@ -176,12 +177,12 @@ public class AgentServiceImplTest extends CdmServicesTransactionalSpringIntegrat
             result = service.convertTeam2Person(team);
             person = (Person) result.getCdmEntity();
         } catch (Exception e) {
-            Assert.fail("No Exception should be thrown");
+            fail("No Exception should be thrown");
         }
-        Assert.assertNotNull(person);
-        Assert.assertEquals("Title cache must be equal", fullAuthor, person.getTitleCache());
-        Assert.assertNull("Nom. title must be empty as team nom. title cache is not protected", person.getNomenclaturalTitle());
-        Assert.assertNull("Collector title must be empty as team collector title cache is not protected", person.getCollectorTitle());
+        assertNotNull(person);
+        assertEquals(fullAuthor, person.getTitleCache(), "Title cache must be equal");
+        assertNull(person.getNomenclaturalTitle(), "Nom. title must be empty as team nom. title cache is not protected");
+        assertNull(person.getCollectorTitle(), "Collector title must be empty as team collector title cache is not protected");
 
     }
 
@@ -216,21 +217,21 @@ public class AgentServiceImplTest extends CdmServicesTransactionalSpringIntegrat
             result = service.convertTeam2Person(team);
             person = (Person) result.getCdmEntity();
         } catch (IllegalArgumentException e) {
-            Assert.fail("No IllegalArgumentException should be thrown");
+            fail("No IllegalArgumentException should be thrown");
         } catch (MergeException e) {
-            Assert.fail("No Merge exception should be thrown");
+            fail("No Merge exception should be thrown");
         }
-        Assert.assertNotNull(person);
-        Assert.assertEquals("Convert result and 'member' must be equal'", member, person);
-        Assert.assertEquals("Title cache must be equal", "Member person", person.getTitleCache());
-        Assert.assertEquals("Nom. title must be equal", "Memb. pers.", person.getNomenclaturalTitleCache());
+        assertNotNull(person);
+        assertEquals(member, person, "Convert result and 'member' must be equal'");
+        assertEquals("Member person", person.getTitleCache(), "Title cache must be equal");
+        assertEquals("Memb. pers.", person.getNomenclaturalTitleCache(), "Nom. title must be equal");
         //FIXME should annotations be taken only from member ??
-//      Assert.assertEquals("Annotations should be moved", 1, person.getAnnotations().size());
+//      assertEquals(1, person.getAnnotations().size(), "Annotations should be moved");
         String annotationText = person.getAnnotations().iterator().next().getText();
-//      Assert.assertEquals("The only annotation should be annotation 3", annotation3.getText(), annotationText);
+//      assertEquals(annotation3.getText(), annotationText, "The only annotation should be annotation 3");
         //FIXME currently merge mode is still MERGE for user defined fields
-//      Assert.assertNull("Contact must not be copied", person.getContact());
-        Assert.assertEquals("person must be combination author now", person, name.getCombinationAuthorship());
+//      assertNull(person.getContact(), "Contact must not be copied");
+        assertEquals(person, name.getCombinationAuthorship(), "person must be combination author now");
     }
 
     @Test  //7874 //8030
@@ -271,16 +272,16 @@ public class AgentServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         turland_monro = CdmBase.deproxy(service.load(UUID.fromString("30ca93d6-b543-4bb9-b6ff-e9ededa65af7")), Team.class);
         ehrenberg = (Person) service.load(UUID_EHRENBERG);
 
-        assertNull("Expecting nomenclaturalTitle to be still NULL", nomenclaturalTitleField.get(turland));
-        assertEquals("Expecting nomenclaturalTitleCache to be set since it was NULL", "Turland, N.J.", nomenclaturalTitleCacheField.get(turland));
-        assertNull("Expecting nomenclaturalTitle to be still NULL", nomenclaturalTitleField.get(ehrenberg));
-        assertEquals("Expecting nomenclaturalTitleCache to be set since it was NULL", "Ehrenb.", nomenclaturalTitleCacheField.get(ehrenberg));
-        assertEquals("Expecting titleChache to be unchaged since it was protecetd", "Ehrenb.", ehrenberg.getTitleCache());
-        assertEquals("Expecting nomenclaturalTitleCache to be unchanged", "A.M. Monro", nomenclaturalTitleCacheField.get(monro).toString());
+        assertNull(nomenclaturalTitleField.get(turland), "Expecting nomenclaturalTitle to be still NULL");
+        assertEquals("Turland, N.J.", nomenclaturalTitleCacheField.get(turland), "Expecting nomenclaturalTitleCache to be set since it was NULL");
+        assertNull(nomenclaturalTitleField.get(ehrenberg), "Expecting nomenclaturalTitle to be still NULL");
+        assertEquals("Ehrenb.", nomenclaturalTitleCacheField.get(ehrenberg), "Expecting nomenclaturalTitleCache to be set since it was NULL");
+        assertEquals("Ehrenb.", ehrenberg.getTitleCache(), "Expecting titleChache to be unchaged since it was protecetd");
+        assertEquals("A.M. Monro", nomenclaturalTitleCacheField.get(monro).toString(), "Expecting nomenclaturalTitleCache to be unchanged");
 
         assertEquals("Turland, Monro", nomenclaturalTitleCacheField.get(turland_monro_protected));
         assertEquals("Turland, N.J. & A.M. Monro", nomenclaturalTitleCacheField.get(turland_monro).toString());
-        assertEquals("Expecting nomenclaturalTitle to be set since it was NULL", "Turland, N.J. & A.M. Monro", nomenclaturalTitleCacheField.get(turland_monro_null).toString());
+        assertEquals("Turland, N.J. & A.M. Monro", nomenclaturalTitleCacheField.get(turland_monro_null).toString(), "Expecting nomenclaturalTitle to be set since it was NULL");
     }
 
     @Override

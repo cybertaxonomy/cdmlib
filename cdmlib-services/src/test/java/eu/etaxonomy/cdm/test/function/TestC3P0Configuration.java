@@ -10,9 +10,9 @@ package eu.etaxonomy.cdm.test.function;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.CdmDataSource;
@@ -22,13 +22,13 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
  * <h2>NOTE</h2>
  * This is a test for sole development purposes, it is not
  * touched my mvn test since it is not matching the "\/**\/*Test" pattern,
- * but it should be annotate with @Ignore when running the project a s junit suite in eclipse
+ * but it should be annotate with @Disabled when running the project a s junit suite in eclipse
  *
  *
  * @author n.hoffmann
  * @since Sep 25, 2009
  */
-@Ignore /* IGNORE in Suite */
+@Disabled /* IGNORE in Suite */
 public class TestC3P0Configuration{
 
     @SuppressWarnings("unused")
@@ -36,7 +36,7 @@ public class TestC3P0Configuration{
 
 	private CdmApplicationController appController;
 
-	@Before
+	@BeforeEach
 	public void setup(){
 		CdmDataSource dataSource = CdmDataSource.NewMySqlInstance("localhost", "test", -1, "edit", "wp5");
 		appController = CdmApplicationController.NewInstance(dataSource, DbSchemaValidation.CREATE);

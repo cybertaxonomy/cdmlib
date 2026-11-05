@@ -8,10 +8,10 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Dummy class. Original class has been moved to model.strategy.
@@ -22,15 +22,14 @@ import org.junit.Test;
  * @author muellera
  * @since 16.03.2013
  */
-@Ignore
+@Disabled
 public class IdentificationKeyGeneratorTTT {
 
 //*************************** TESTS *********************** /
 
-
 	@Test
 	public void testInvoke() {
-		assertNotNull("Key should exist.","");
+		assertNotNull("Key should exist.", "");
 	}
 
 

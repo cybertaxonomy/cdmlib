@@ -8,11 +8,12 @@
  */
 package eu.etaxonomy.cdm.api.cache;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.FileNotFoundException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,11 +48,11 @@ public class CdmPermanentCacheBaseTest extends CdmServicesSpringIntegrationTest 
 		Language defaultLanguage = Language.getDefaultLanguage();
 
 		Language defaultLanguageInCache = (Language)cdmCacherBase.getFromCache(defaultLanguage.getUuid());
-		Assert.assertEquals("Loaded Language Term should match Language Term in Cache",defaultLanguage,defaultLanguageInCache);
+		assertEquals(defaultLanguage, defaultLanguageInCache, "Loaded Language Term should match Language Term in Cache");
 
 		Language language = Language.getLanguageFromUuid(Language.uuidFrench);
 		Language languageInCache = (Language)cdmCacherBase.getFromCache(language.getUuid());
-		Assert.assertEquals("Loaded Language Term should match Language Term in Cache",language,languageInCache);
+		assertEquals(language, languageInCache, "Loaded Language Term should match Language Term in Cache");
 
 		// Following test is just to make sure no exception is raised when saving a taxon corresponding
 		// to a taxon name with no name cache to begin with

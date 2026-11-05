@@ -8,8 +8,8 @@
  */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -18,7 +18,6 @@ import java.util.UUID;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,8 +100,8 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmServicesTransactional
     @Test
     public void testDbUnitUsageTest() throws Exception {
 
-        assertNotNull("taxonService should exist", taxonService);
-        assertNotNull("nameService should exist", nameService);
+        assertNotNull(taxonService, "taxonService should exist");
+        assertNotNull(nameService, "nameService should exist");
     }
 
     /**
@@ -152,7 +151,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmServicesTransactional
 
         setTaxaAndNamesModes(conf, false, true, false, true, true);
         pager = taxonService.findTaxaAndNames(conf);
-        assertEquals("one synonym, two names without taxa and a misapplied name", 4, pager.getRecords().size());
+        assertEquals(4, pager.getRecords().size(), "one synonym, two names without taxa and a misapplied name");
 
         setTaxaAndNamesModes(conf, true, false, false, true, true);
         pager = taxonService.findTaxaAndNames(conf);
@@ -219,7 +218,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmServicesTransactional
         setTaxaAndNamesModes(conf, false, true, true, true, false);
         pager = taxonService.findTaxaAndNames(conf);
         logSearchResults(pager, Level.DEBUG);
-        assertEquals("one synonym and a misapplied name", 2, pager.getRecords().size());
+        assertEquals(2, pager.getRecords().size(), "one synonym and a misapplied name");
 
         setTaxaAndNamesModes(conf, true, false, true, true, false);
         pager = taxonService.findTaxaAndNames(conf);
@@ -542,7 +541,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmServicesTransactional
 
         @SuppressWarnings("rawtypes")
         Pager<IdentifiableEntity> pager = taxonService.findTaxaAndNames(configurator);
-    //    Assert.assertEquals("Expecting one taxon",1,pager.getRecords().size());
+    //    assertEquals(1, pager.getRecords().size(), "Expecting one taxon");
 
     }
 
@@ -565,7 +564,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmServicesTransactional
         @SuppressWarnings("rawtypes")
         List<UuidAndTitleCache<? extends IdentifiableEntity>> list = taxonService.findTaxaAndNamesForEditor(configurator);
 
-         Assert.assertEquals("Expecting one entity", 1, list.size());
+         assertEquals(1, list.size(), "Expecting one entity");
 
          configurator.setTitleSearchString("silver fir");
          configurator.setMatchMode(MatchMode.BEGINNING);
@@ -576,7 +575,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmServicesTransactional
 
          list = taxonService.findTaxaAndNamesForEditor(configurator);
 
-         Assert.assertEquals("Expecting one entity", 1, list.size());
+         assertEquals(1, list.size(), "Expecting one entity");
 
     }
 

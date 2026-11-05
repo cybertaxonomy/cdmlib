@@ -9,7 +9,7 @@
 package eu.etaxonomy.cdm.api.service.lsid;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.FileNotFoundException;
@@ -54,7 +54,7 @@ public class LSIDAuthorityServiceTest extends CdmServicesSpringIntegrationTest {
 
 	@Test
 	public void testInit()	{
-		assertNotNull("lsidAuthorityService should exist",lsidAuthorityService);
+		assertNotNull(lsidAuthorityService, "lsidAuthorityService should exist");
 	}
 
 	@Test

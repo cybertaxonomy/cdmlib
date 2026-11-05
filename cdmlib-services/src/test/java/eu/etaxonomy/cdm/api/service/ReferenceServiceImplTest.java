@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
@@ -59,29 +59,29 @@ public class ReferenceServiceImplTest extends CdmServicesTransactionalSpringInte
         Reference ref3 = service.load(REFERENCE3_UUID);
         Reference ref4 = service.load(REFERENCE4_UUID);
 
-        assertEquals("TitleCache should be the persisted one", "--needs update--", titleCacheField.get(ref1));
-        assertEquals("AbbrevCache should be the persisted one", "-still wrong-", abbrevCacheField.get(ref1));
+        assertEquals("--needs update--", titleCacheField.get(ref1), "TitleCache should be the persisted one");
+        assertEquals("-still wrong-", abbrevCacheField.get(ref1), "AbbrevCache should be the persisted one");
 
-        assertEquals("TitleCache should be the persisted one", "Reference2", titleCacheField.get(ref2));
-        assertEquals("AbbrevCache should be the persisted one", "-needs update-", abbrevCacheField.get(ref2));
+        assertEquals("Reference2", titleCacheField.get(ref2), "TitleCache should be the persisted one");
+        assertEquals("-needs update-", abbrevCacheField.get(ref2), "AbbrevCache should be the persisted one");
 
-        assertEquals("TitleCache should be the persisted one", "-wrong-", titleCacheField.get(ref3));
-        assertEquals("AbbrevCache should be the persisted one", "Protec. ref.", abbrevCacheField.get(ref3));
+        assertEquals("-wrong-", titleCacheField.get(ref3), "TitleCache should be the persisted one");
+        assertEquals("Protec. ref.", abbrevCacheField.get(ref3), "AbbrevCache should be the persisted one");
 
-        assertEquals("TitleCache should be the persisted one", "Inref", titleCacheField.get(ref4));
+        assertEquals("Inref", titleCacheField.get(ref4), "TitleCache should be the persisted one");
 
         service.updateCaches();
 
-        assertEquals("Expecting titleCache to be updated", "Species plantarum", titleCacheField.get(ref1));
-        assertEquals("Expecting nameCache to be updated", "Sp. Pl.", abbrevCacheField.get(ref1));
+        assertEquals("Species plantarum", titleCacheField.get(ref1), "Expecting titleCache to be updated");
+        assertEquals("Sp. Pl.", abbrevCacheField.get(ref1), "Expecting nameCache to be updated");
 
-        assertEquals("Expecting titleCache to be updated", "Reference2", titleCacheField.get(ref2));
-        assertEquals("Expecting nameCache to not be updated", "L., ref. 2", abbrevCacheField.get(ref2));
+        assertEquals("Reference2", titleCacheField.get(ref2), "Expecting titleCache to be updated");
+        assertEquals("L., ref. 2", abbrevCacheField.get(ref2), "Expecting nameCache to not be updated");
 
-        assertEquals("Expecting titleCache to be updated", "Linnaeus, C.: Reference three", titleCacheField.get(ref3));
-        assertEquals("Expecting nameCache to be updated", "Protec. ref.", abbrevCacheField.get(ref3));
+        assertEquals("Linnaeus, C.: Reference three", titleCacheField.get(ref3), "Expecting titleCache to be updated");
+        assertEquals("Protec. ref.", abbrevCacheField.get(ref3), "Expecting nameCache to be updated");
 
-        assertEquals("Expecting error message for self-referencing in-refererence", "-- invalid inreference (self-referencing) --", titleCacheField.get(ref4));
+        assertEquals("-- invalid inreference (self-referencing) --", titleCacheField.get(ref4), "Expecting error message for self-referencing in-refererence");
     }
 
     @Test  //7874 //8030

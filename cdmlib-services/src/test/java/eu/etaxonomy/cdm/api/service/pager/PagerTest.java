@@ -8,12 +8,16 @@
 */
 package eu.etaxonomy.cdm.api.service.pager;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -22,7 +26,7 @@ public class PagerTest {
 
     private List<Taxon> taxa;
 
-    @Before
+    @BeforeEach
     public void setUp() {
                 taxa = new ArrayList<>();
         for(int i = 0; i < 30; i++) {
@@ -37,7 +41,7 @@ public class PagerTest {
     @Test
     public void testPagerWithNullPageNumber() {
         Pager<Taxon> pager = new DefaultPagerImpl<>(null, Long.valueOf(1), 30, taxa);
-        Assert.assertNotNull(pager);
+        assertNotNull(pager);
     }
 
     /**
@@ -46,7 +50,7 @@ public class PagerTest {
     @Test
     public void testPagerWithNoResults() {
     	Pager<Taxon> pager = new DefaultPagerImpl<>(null, Long.valueOf(0), null, new ArrayList<>());
-        Assert.assertNotNull(pager);
+        assertNotNull(pager);
     }
 
     /**
@@ -55,57 +59,57 @@ public class PagerTest {
     @Test
     public void testPagerWithInvalidPageSize() {
     	Pager<Taxon> pager = new DefaultPagerImpl<>(null, Long.valueOf(0), 0, new ArrayList<>());
-        Assert.assertNotNull(pager);
+        assertNotNull(pager);
     }
 
     @Test
     public void testPagerWithDivisibleNumberOfPages() {
         Pager<Taxon> pager = new DefaultPagerImpl<>(0, Long.valueOf(60), 30, taxa);
 
-        Assert.assertEquals(60l, pager.getCount().longValue());
-        Assert.assertEquals(0, pager.getCurrentIndex().intValue());
-        Assert.assertEquals(1, pager.getFirstRecord().intValue());
-        Assert.assertEquals(30, pager.getLastRecord().intValue());
-        Assert.assertArrayEquals(new Integer[] {0,1}, pager.getIndices().toArray(new Integer[pager.getIndices().size()]));
-        Assert.assertNull(pager.getPrevIndex());
-        Assert.assertEquals(1,pager.getNextIndex().intValue());
-        Assert.assertEquals("1 - 30", pager.getPageNumber(0));
-        Assert.assertEquals("31 - 60", pager.getPageNumber(1));
+        assertEquals(60l, pager.getCount().longValue());
+        assertEquals(0, pager.getCurrentIndex().intValue());
+        assertEquals(1, pager.getFirstRecord().intValue());
+        assertEquals(30, pager.getLastRecord().intValue());
+        assertArrayEquals(new Integer[] {0,1}, pager.getIndices().toArray(new Integer[pager.getIndices().size()]));
+        assertNull(pager.getPrevIndex());
+        assertEquals(1,pager.getNextIndex().intValue());
+        assertEquals("1 - 30", pager.getPageNumber(0));
+        assertEquals("31 - 60", pager.getPageNumber(1));
     }
 
     @Test
     public void testPagerWithNonDivisibleNumberOfPages() {
         Pager<Taxon> pager = new DefaultPagerImpl<>(0, Long.valueOf(68), 30, taxa);
 
-        Assert.assertEquals(68l, pager.getCount().longValue());
-        Assert.assertEquals(0, pager.getCurrentIndex().intValue());
-        Assert.assertEquals(1, pager.getFirstRecord().intValue());
-        Assert.assertEquals(30, pager.getLastRecord().intValue());
-        Assert.assertArrayEquals(new Integer[] {0,1,2}, pager.getIndices().toArray(new Integer[pager.getIndices().size()]));
-        Assert.assertNull(pager.getPrevIndex());
-        Assert.assertEquals(1,pager.getNextIndex().intValue());
-        Assert.assertEquals("1 - 30", pager.getPageNumber(0));
-        Assert.assertEquals("31 - 60", pager.getPageNumber(1));
-        Assert.assertEquals("61 - 68", pager.getPageNumber(2));
+        assertEquals(68l, pager.getCount().longValue());
+        assertEquals(0, pager.getCurrentIndex().intValue());
+        assertEquals(1, pager.getFirstRecord().intValue());
+        assertEquals(30, pager.getLastRecord().intValue());
+        assertArrayEquals(new Integer[] {0,1,2}, pager.getIndices().toArray(new Integer[pager.getIndices().size()]));
+        assertNull(pager.getPrevIndex());
+        assertEquals(1,pager.getNextIndex().intValue());
+        assertEquals("1 - 30", pager.getPageNumber(0));
+        assertEquals("31 - 60", pager.getPageNumber(1));
+        assertEquals("61 - 68", pager.getPageNumber(2));
     }
 
     @Test
     public void testPagerWithLargeNumberAndNonDivisibleNumberOfPages() {
         Pager<Taxon> pager = new DefaultPagerImpl<>(4, Long.valueOf(256), 30, taxa);
 
-        Assert.assertEquals(256l, pager.getCount().longValue());
-        Assert.assertEquals(4, pager.getCurrentIndex().intValue());
-        Assert.assertEquals(121, pager.getFirstRecord().intValue());
-        Assert.assertEquals(150, pager.getLastRecord().intValue());
-        Assert.assertArrayEquals(new Integer[] {1,2,3,4,5,6}, pager.getIndices().toArray(new Integer[pager.getIndices().size()]));
-        Assert.assertEquals(3,pager.getPrevIndex().intValue());
-        Assert.assertEquals(5,pager.getNextIndex().intValue());
+        assertEquals(256l, pager.getCount().longValue());
+        assertEquals(4, pager.getCurrentIndex().intValue());
+        assertEquals(121, pager.getFirstRecord().intValue());
+        assertEquals(150, pager.getLastRecord().intValue());
+        assertArrayEquals(new Integer[] {1,2,3,4,5,6}, pager.getIndices().toArray(new Integer[pager.getIndices().size()]));
+        assertEquals(3,pager.getPrevIndex().intValue());
+        assertEquals(5,pager.getNextIndex().intValue());
 
-        Assert.assertEquals("31 - 60", pager.getPageNumber(1));
-        Assert.assertEquals("61 - 90", pager.getPageNumber(2));
-        Assert.assertEquals("91 - 120", pager.getPageNumber(3));
-        Assert.assertEquals("121 - 150", pager.getPageNumber(4));
-        Assert.assertEquals("151 - 180", pager.getPageNumber(5));
-        Assert.assertEquals("181 - 210", pager.getPageNumber(6));
+        assertEquals("31 - 60", pager.getPageNumber(1));
+        assertEquals("61 - 90", pager.getPageNumber(2));
+        assertEquals("91 - 120", pager.getPageNumber(3));
+        assertEquals("121 - 150", pager.getPageNumber(4));
+        assertEquals("151 - 180", pager.getPageNumber(5));
+        assertEquals("181 - 210", pager.getPageNumber(6));
     }
 }

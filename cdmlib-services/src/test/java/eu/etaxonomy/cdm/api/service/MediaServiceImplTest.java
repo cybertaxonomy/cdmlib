@@ -8,9 +8,9 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -37,8 +37,8 @@ public class MediaServiceImplTest extends CdmServicesTransactionalSpringIntegrat
     @Autowired
     private IMediaService mediaService;
 
-    static final private String imageFileName1 = "IPTC-PhotometadataRef-Std2019.1.jpg";
-    static private MediaRepresentation repr1;
+    private static final String imageFileName1 = "IPTC-PhotometadataRef-Std2019.1.jpg";
+    private static MediaRepresentation repr1;
 
     @BeforeAll
     static public void makeMedia() throws URISyntaxException {
@@ -54,9 +54,9 @@ public class MediaServiceImplTest extends CdmServicesTransactionalSpringIntegrat
          //LogUtils.setLevel(IdentifiableServiceBase.class, Level.DEBUG);
         Map<String, String> mediaData = mediaService.readResourceMetadataFiltered(repr1);
         assertNotNull(mediaData);
-        assertTrue("IPCT data in the positive list of the includes", mediaData.containsKey("Copyright"));
-        assertTrue("IPCT data in the positive list of the includes", mediaData.containsKey("Photographer"));
-        assertTrue("IPCT data not in includes", !mediaData.containsKey("Writer"));
+        assertTrue(mediaData.containsKey("Copyright"), "IPCT data in the positive list of the includes");
+        assertTrue(mediaData.containsKey("Photographer"), "IPCT data in the positive list of the includes");
+        assertTrue(!mediaData.containsKey("Writer"), "IPCT data not in includes");
         assertEquals("Copyright (Notice) 2019.1 IPTC - www.iptc.org  (ref2019.1)", mediaData.get("Copyright"));
         //This need to be adapted, if we decided which field should be used
         assertEquals("Creator1 (ref2019.1); Credit Line (ref2019.1)", mediaData.get("Photographer"));

@@ -8,9 +8,9 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.UUID;
@@ -92,27 +92,27 @@ public class OccurrenceServiceDeepDeleteTest extends CdmServicesTransactionalSpr
         DnaSample dnaSample = (DnaSample) occurrenceService.load(DNA_SAMPLE_UUID);
 
         //check initial state
-        assertEquals(assertMessage, 6, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 4, commonService.count(DerivationEvent.class));
-        assertEquals(assertMessage, 2, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 4, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 2, occurrenceService.count(DnaSample.class));
-        assertEquals("incorrect number of amplification results", 1, dnaSample.getAmplificationResults().size());
-        assertEquals("number of sequences incorrect", 1, dnaSample.getSequences().size());
-        assertEquals("incorrect number of single reads", 1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
-        assertEquals("incorrect number of gathering events", 1, commonService.count(GatheringEvent.class));
+        assertEquals(6, occurrenceService.count(SpecimenOrObservationBase.class), assertMessage);
+        assertEquals(4, commonService.count(DerivationEvent.class), assertMessage);
+        assertEquals(2, occurrenceService.count(FieldUnit.class), assertMessage);
+        assertEquals(4, occurrenceService.count(DerivedUnit.class), assertMessage);
+        assertEquals(2, occurrenceService.count(DnaSample.class), assertMessage);
+        assertEquals(1, dnaSample.getAmplificationResults().size(), "incorrect number of amplification results");
+        assertEquals(1, dnaSample.getSequences().size(), "number of sequences incorrect");
+        assertEquals(1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size(), "incorrect number of single reads");
+        assertEquals(1, commonService.count(GatheringEvent.class), "incorrect number of gathering events");
         //delete field unit
         deleteResult = occurrenceService.delete(fieldUnit, config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals(assertMessage, 2, commonService.count(DerivationEvent.class));
-        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
-        assertEquals("incorrect number of gathering events", 1, commonService.count(GatheringEvent.class));
+        assertTrue(deleteResult.isOk(), deleteResult.toString());
+        assertEquals(2, commonService.count(DerivationEvent.class), assertMessage);
+        assertEquals(3, occurrenceService.count(SpecimenOrObservationBase.class), assertMessage);
+        assertEquals(1, occurrenceService.count(FieldUnit.class), assertMessage);
+        assertEquals(2, occurrenceService.count(DerivedUnit.class), assertMessage);
+        assertEquals(1, occurrenceService.count(DnaSample.class), assertMessage);
+        assertEquals(1, commonService.count(GatheringEvent.class), "incorrect number of gathering events");
 
         deleteResult = occurrenceService.delete(fieldUnit2, config);
-        assertEquals(assertMessage, 0, commonService.count(GatheringEvent.class));
+        assertEquals(0, commonService.count(GatheringEvent.class), assertMessage);
     }
 
     @Test
@@ -137,23 +137,23 @@ public class OccurrenceServiceDeepDeleteTest extends CdmServicesTransactionalSpr
         Pager<TypeDesignationBase> typeDesignations = nameService.getTypeDesignations(name, null, 100, 0);
         Long oldCount= typeDesignations.getCount();
         //check initial state
-        assertEquals(assertMessage, 6, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 4, commonService.count(DerivationEvent.class));
-        assertEquals(assertMessage, 2, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 4, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 2, occurrenceService.count(DnaSample.class));
-        assertEquals("incorrect number of amplification results", 1, dnaSample.getAmplificationResults().size());
-        assertEquals("number of sequences incorrect", 1, dnaSample.getSequences().size());
-        assertEquals("incorrect number of single reads", 1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
+        assertEquals(6, occurrenceService.count(SpecimenOrObservationBase.class), assertMessage);
+        assertEquals(4, commonService.count(DerivationEvent.class), assertMessage);
+        assertEquals(2, occurrenceService.count(FieldUnit.class), assertMessage);
+        assertEquals(4, occurrenceService.count(DerivedUnit.class), assertMessage);
+        assertEquals(2, occurrenceService.count(DnaSample.class), assertMessage);
+        assertEquals(1, dnaSample.getAmplificationResults().size(), "incorrect number of amplification results");
+        assertEquals(1, dnaSample.getSequences().size(), "number of sequences incorrect");
+        assertEquals(1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size(), "incorrect number of single reads");
 
         //delete field unit
         deleteResult = occurrenceService.delete(fieldUnit, config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals(assertMessage, 2, commonService.count(DerivationEvent.class));
-        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
+        assertTrue(deleteResult.isOk(), deleteResult.toString());
+        assertEquals(2, commonService.count(DerivationEvent.class), assertMessage);
+        assertEquals(3, occurrenceService.count(SpecimenOrObservationBase.class), assertMessage);
+        assertEquals(1, occurrenceService.count(FieldUnit.class), assertMessage);
+        assertEquals(2, occurrenceService.count(DerivedUnit.class), assertMessage);
+        assertEquals(1, occurrenceService.count(DnaSample.class), assertMessage);
         typeDesignations = nameService.getTypeDesignations(name, null, 100, 0);
         Long afterDeleteCount= typeDesignations.getCount();
         assertTrue(oldCount > afterDeleteCount);
@@ -172,21 +172,21 @@ public class OccurrenceServiceDeepDeleteTest extends CdmServicesTransactionalSpr
         DnaSample dnaSample = (DnaSample) occurrenceService.load(DNA_SAMPLE_UUID);
 
         //check initial state
-        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
-        assertEquals("incorrect number of amplification results", 1, dnaSample.getAmplificationResults().size());
-        assertEquals("number of sequences incorrect", 1, dnaSample.getSequences().size());
-        assertEquals("incorrect number of single reads", 1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
+        assertEquals(3, occurrenceService.count(SpecimenOrObservationBase.class), assertMessage);
+        assertEquals(1, occurrenceService.count(FieldUnit.class), assertMessage);
+        assertEquals(2, occurrenceService.count(DerivedUnit.class), assertMessage);
+        assertEquals(1, occurrenceService.count(DnaSample.class), assertMessage);
+        assertEquals(1, dnaSample.getAmplificationResults().size(), "incorrect number of amplification results");
+        assertEquals(1, dnaSample.getSequences().size(), "number of sequences incorrect");
+        assertEquals(1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size(), "incorrect number of single reads");
 
         //delete derived unit
         deleteResult = occurrenceService.delete(derivedUnit, config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals(assertMessage, 1, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
+        assertTrue(deleteResult.isOk(), deleteResult.toString());
+        assertEquals(1, occurrenceService.count(SpecimenOrObservationBase.class), assertMessage);
+        assertEquals(1, occurrenceService.count(FieldUnit.class), assertMessage);
+        assertEquals(0, occurrenceService.count(DerivedUnit.class), assertMessage);
+        assertEquals(0, occurrenceService.count(DnaSample.class), assertMessage);
     }
 
     @Test
@@ -201,21 +201,21 @@ public class OccurrenceServiceDeepDeleteTest extends CdmServicesTransactionalSpr
         DnaSample dnaSample = (DnaSample) occurrenceService.load(DNA_SAMPLE_UUID);
 
         //check initial state
-        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
-        assertEquals("incorrect number of amplification results", 1, dnaSample.getAmplificationResults().size());
-        assertEquals("number of sequences incorrect", 1, dnaSample.getSequences().size());
-        assertEquals("incorrect number of single reads", 1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
+        assertEquals(3, occurrenceService.count(SpecimenOrObservationBase.class), assertMessage);
+        assertEquals(1, occurrenceService.count(FieldUnit.class), assertMessage);
+        assertEquals(2, occurrenceService.count(DerivedUnit.class), assertMessage);
+        assertEquals(1, occurrenceService.count(DnaSample.class), assertMessage);
+        assertEquals(1, dnaSample.getAmplificationResults().size(), "incorrect number of amplification results");
+        assertEquals(1, dnaSample.getSequences().size(), "number of sequences incorrect");
+        assertEquals(1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size(), "incorrect number of single reads");
 
         //delete dna sample
         deleteResult = occurrenceService.delete(dnaSample, config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals(assertMessage, 2, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
+        assertTrue(deleteResult.isOk(), deleteResult.toString());
+        assertEquals(2, occurrenceService.count(SpecimenOrObservationBase.class), assertMessage);
+        assertEquals(1, occurrenceService.count(FieldUnit.class), assertMessage);
+        assertEquals(1, occurrenceService.count(DerivedUnit.class), assertMessage);
+        assertEquals(0, occurrenceService.count(DnaSample.class), assertMessage);
     }
 
     @Test
@@ -300,35 +300,35 @@ public class OccurrenceServiceDeepDeleteTest extends CdmServicesTransactionalSpr
         assertNotNull(sequenceB2);
         assertNotNull(singleReadA);
         assertNotNull(singleReadB);
-        assertEquals("number of sequences incorrect", 4, sequenceService.count(Sequence.class));
-        assertEquals("incorrect number of single reads", 2, singleReadDao.count());
+        assertEquals(4, sequenceService.count(Sequence.class), "number of sequences incorrect");
+        assertEquals(2, singleReadDao.count(), "incorrect number of single reads");
 
         //A: delete singleRead
         //delete singleReadA from sequenceA1 (singleReadA should NOT be deleted)
         deleteResult = sequenceService.deleteSingleRead(singleReadA, sequenceA1);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals("incorrect number of single reads", 2, singleReadDao.count());
+        assertTrue(deleteResult.isOk(), deleteResult.toString());
+        assertEquals(2, singleReadDao.count(), "incorrect number of single reads");
         assertEquals(0, sequenceA1.getSingleReadAlignments().size());
         assertNotNull(singleReadDao.load(singleReadAUuid));
 
         //delete singleReadA from sequenceA2 (singleReadA should be deleted)
         deleteResult = sequenceService.deleteSingleRead(singleReadA, sequenceA2);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals("incorrect number of single reads", 1, singleReadDao.count());
+        assertTrue(deleteResult.isOk(), deleteResult.toString());
+        assertEquals(1, singleReadDao.count(), "incorrect number of single reads");
         assertEquals(0, sequenceA2.getSingleReadAlignments().size());
         assertTrue(singleReadDao.load(singleReadAUuid)==null);
 
         //B: delete sequence
         //delete sequenceB1 (singleReadB should NOT be deleted)
         deleteResult = sequenceService.delete(sequenceB1Uuid);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals("incorrect number of single reads", 1, singleReadDao.count());
+        assertTrue(deleteResult.isOk(), deleteResult.toString());
+        assertEquals(1, singleReadDao.count(), "incorrect number of single reads");
         assertNotNull(singleReadDao.load(singleReadBUuid));
 
         //delete sequenceB1 (singleReadB should be deleted)
         deleteResult = sequenceService.delete(sequenceB2Uuid);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals("incorrect number of single reads", 0, singleReadDao.count());
+        assertTrue(deleteResult.isOk(), deleteResult.toString());
+        assertEquals(0, singleReadDao.count(), "incorrect number of single reads");
         assertTrue(singleReadDao.load(singleReadBUuid)==null);
     }
 
@@ -343,18 +343,18 @@ public class OccurrenceServiceDeepDeleteTest extends CdmServicesTransactionalSpr
         FieldUnit fieldUnit = (FieldUnit) occurrenceService.load(FIELD_UNIT_UUID);
 
         //check initial state
-        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
+        assertEquals(3, occurrenceService.count(SpecimenOrObservationBase.class), assertMessage);
+        assertEquals(1, occurrenceService.count(FieldUnit.class), assertMessage);
+        assertEquals(2, occurrenceService.count(DerivedUnit.class), assertMessage);
+        assertEquals(1, occurrenceService.count(DnaSample.class), assertMessage);
 
         //delete field unit
         deleteResult = occurrenceService.delete(fieldUnit, config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals(assertMessage, 0, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
+        assertTrue(deleteResult.isOk(), deleteResult.toString());
+        assertEquals(0, occurrenceService.count(SpecimenOrObservationBase.class), assertMessage);
+        assertEquals(0, occurrenceService.count(FieldUnit.class), assertMessage);
+        assertEquals(0, occurrenceService.count(DerivedUnit.class), assertMessage);
+        assertEquals(0, occurrenceService.count(DnaSample.class), assertMessage);
     }
 
     @Test
@@ -383,14 +383,14 @@ public class OccurrenceServiceDeepDeleteTest extends CdmServicesTransactionalSpr
         assertNotNull(dnaSample);
         assertNotNull(consensusSequence);
 
-        assertEquals(assertMessage, 4, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 3, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
-        assertEquals("incorrect number of amplification results", 1, dnaSample.getAmplificationResults().size());
-        assertEquals("number of sequences incorrect", 1, dnaSample.getSequences().size());
-        assertEquals("incorrect number of single reads", 1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
-        assertEquals("incorrect number of single reads", 1, consensusSequence.getSingleReads().size());
+        assertEquals(4, occurrenceService.count(SpecimenOrObservationBase.class), assertMessage);
+        assertEquals(1, occurrenceService.count(FieldUnit.class), assertMessage);
+        assertEquals(3, occurrenceService.count(DerivedUnit.class), assertMessage);
+        assertEquals(1, occurrenceService.count(DnaSample.class), assertMessage);
+        assertEquals(1, dnaSample.getAmplificationResults().size(), "incorrect number of amplification results");
+        assertEquals(1, dnaSample.getSequences().size(), "number of sequences incorrect");
+        assertEquals(1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size(), "incorrect number of single reads");
+        assertEquals(1, consensusSequence.getSingleReads().size(), "incorrect number of single reads");
         assertEquals(consensusSequence.getSingleReads().iterator().next(), dnaSample.getAmplificationResults().iterator().next().getSingleReads().iterator().next());
 
         //allow deletion of molecular data
@@ -398,48 +398,48 @@ public class OccurrenceServiceDeepDeleteTest extends CdmServicesTransactionalSpr
 
         SingleRead singleRead = dnaSample.getAmplificationResults().iterator().next().getSingleReads().iterator().next();
         deleteResult = sequenceService.deleteSingleRead(singleRead, consensusSequence);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals("incorrect number of single reads", 0, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
-        assertEquals("incorrect number of single reads", 0, consensusSequence.getSingleReads().size());
-        assertEquals("incorrect number of single reads", 0, singleReadDao.count());
+        assertTrue(deleteResult.isOk(), deleteResult.toString());
+        assertEquals(0, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size(), "incorrect number of single reads");
+        assertEquals(0, consensusSequence.getSingleReads().size(), "incorrect number of single reads");
+        assertEquals(0, singleReadDao.count(), "incorrect number of single reads");
 
         //delete sequence
         deleteResult = sequenceService.delete(consensusSequence);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals("number of sequences incorrect", 0, dnaSample.getSequences().size());
+        assertTrue(deleteResult.isOk(), deleteResult.toString());
+        assertEquals(0, dnaSample.getSequences().size(), "number of sequences incorrect");
 
         //delete dna sample
         deleteResult = occurrenceService.delete(dnaSample, config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
+        assertTrue(deleteResult.isOk(), deleteResult.toString());
+        assertEquals(3, occurrenceService.count(SpecimenOrObservationBase.class), assertMessage);
+        assertEquals(1, occurrenceService.count(FieldUnit.class), assertMessage);
+        assertEquals(2, occurrenceService.count(DerivedUnit.class), assertMessage);
+        assertEquals(0, occurrenceService.count(DnaSample.class), assertMessage);
 
         //delete tissue sample
         deleteResult = occurrenceService.delete(tissueSample, config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals(assertMessage, 2, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
+        assertTrue(deleteResult.isOk(), deleteResult.toString());
+        assertEquals(2, occurrenceService.count(SpecimenOrObservationBase.class), assertMessage);
+        assertEquals(1, occurrenceService.count(FieldUnit.class), assertMessage);
+        assertEquals(1, occurrenceService.count(DerivedUnit.class), assertMessage);
+        assertEquals(0, occurrenceService.count(DnaSample.class), assertMessage);
 
         //delete derived unit
         deleteResult = occurrenceService.delete(derivedUnit, config);
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals(assertMessage, 1, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
+        assertTrue(deleteResult.isOk(), deleteResult.toString());
+        assertEquals(1, occurrenceService.count(SpecimenOrObservationBase.class), assertMessage);
+        assertEquals(1, occurrenceService.count(FieldUnit.class), assertMessage);
+        assertEquals(0, occurrenceService.count(DerivedUnit.class), assertMessage);
+        assertEquals(0, occurrenceService.count(DnaSample.class), assertMessage);
 
         //delete field unit
         deleteResult = occurrenceService.delete(fieldUnit, config);
 
-        assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals(assertMessage, 0, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(FieldUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DerivedUnit.class));
-        assertEquals(assertMessage, 0, occurrenceService.count(DnaSample.class));
+        assertTrue(deleteResult.isOk(), deleteResult.toString());
+        assertEquals(0, occurrenceService.count(SpecimenOrObservationBase.class), assertMessage);
+        assertEquals(0, occurrenceService.count(FieldUnit.class), assertMessage);
+        assertEquals(0, occurrenceService.count(DerivedUnit.class), assertMessage);
+        assertEquals(0, occurrenceService.count(DnaSample.class), assertMessage);
     }
 
     @Override

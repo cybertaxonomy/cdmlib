@@ -8,7 +8,9 @@
 */
 package eu.etaxonomy.cdm.api.service.media;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.net.URL;
@@ -17,9 +19,8 @@ import java.util.Map;
 import org.apache.hc.core5.http.HttpException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -43,7 +44,7 @@ public class MediaInfoFileReaderTest {
     private URI remotePngUri;
     private CdmImageInfo pngInstance;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         URL jpegUrl = MediaInfoFileReaderTest.class.getResource("./images/OregonScientificDS6639-DSC_0307-small-1.jpg");
         jpegUri = new URI(jpegUrl);
@@ -85,11 +86,11 @@ public class MediaInfoFileReaderTest {
         }
     }
 
-    @Test(expected=IOException.class)
+    @Test
     public void testNewInstanceFileDoesNotExist() throws HttpException, IOException {
         URI nonExistentUri = URI.create("file:///nonExistentImage.jpg");
 
-        new MediaInfoFileReader(nonExistentUri).readBaseInfo();
+        assertThrows(IOException.class, () -> new MediaInfoFileReader(nonExistentUri).readBaseInfo());
     }
 
     private CdmImageInfo getJpegInstance(){
@@ -136,11 +137,11 @@ public class MediaInfoFileReaderTest {
      */
     @Test
     public void testGetWidth() {
-        Assert.assertEquals(300, getJpegInstance().getWidth());
-        Assert.assertEquals(300, getTifInstance().getWidth());
+        assertEquals(300, getJpegInstance().getWidth());
+        assertEquals(300, getTifInstance().getWidth());
 
         try {
-            Assert.assertEquals(93, getRemotePngBaseInfo().getWidth());
+            assertEquals(93, getRemotePngBaseInfo().getWidth());
         } catch (IOException e){
             if(e.getMessage().equals(OFFLINE)){
                 logger.warn("test part skipped, since server is not available.");
@@ -153,11 +154,11 @@ public class MediaInfoFileReaderTest {
      */
     @Test
     public void testGetHeight() {
-        Assert.assertEquals(225, getJpegInstance().getHeight());
-        Assert.assertEquals(225, getTifInstance().getHeight());
+        assertEquals(225, getJpegInstance().getHeight());
+        assertEquals(225, getTifInstance().getHeight());
 
         try {
-            Assert.assertEquals(93, getRemotePngBaseInfo().getHeight());
+            assertEquals(93, getRemotePngBaseInfo().getHeight());
         } catch (IOException e){
             if(e.getMessage().equals(OFFLINE)){
                 logger.warn("test part skipped, since server is not available.");
@@ -170,11 +171,11 @@ public class MediaInfoFileReaderTest {
      */
     @Test
     public void testGetBitPerPixel() {
-        Assert.assertEquals(24, getJpegInstance().getBitPerPixel());
-        Assert.assertEquals(24, getTifInstance().getBitPerPixel());
+        assertEquals(24, getJpegInstance().getBitPerPixel());
+        assertEquals(24, getTifInstance().getBitPerPixel());
 
         try {
-            Assert.assertEquals(32, getRemotePngBaseInfo().getBitPerPixel());
+            assertEquals(32, getRemotePngBaseInfo().getBitPerPixel());
         } catch (IOException e){
             if(e.getMessage().equals(OFFLINE)){
                 logger.warn("test part skipped, since server is not available.");
@@ -187,11 +188,11 @@ public class MediaInfoFileReaderTest {
      */
     @Test
     public void testGetFormatName() {
-        Assert.assertEquals("JPEG (Joint Photographic Experts Group) Format", getJpegInstance().getFormatName());
-        Assert.assertEquals("TIFF Tag-based Image File Format", getTifInstance().getFormatName());
+        assertEquals("JPEG (Joint Photographic Experts Group) Format", getJpegInstance().getFormatName());
+        assertEquals("TIFF Tag-based Image File Format", getTifInstance().getFormatName());
 
         try {
-            Assert.assertEquals("PNG Portable Network Graphics", getRemotePngBaseInfo().getFormatName());
+            assertEquals("PNG Portable Network Graphics", getRemotePngBaseInfo().getFormatName());
         } catch (IOException e){
             if(e.getMessage().equals(OFFLINE)){
                 logger.warn("test part skipped, since server is not available.");
@@ -204,11 +205,11 @@ public class MediaInfoFileReaderTest {
      */
     @Test
     public void testGetMimeType() {
-        Assert.assertEquals(MimeType.JPEG.getMimeType(), getJpegInstance().getMimeType());
-        Assert.assertEquals(MimeType.TIFF.getMimeType(), getTifInstance().getMimeType());
+        assertEquals(MimeType.JPEG.getMimeType(), getJpegInstance().getMimeType());
+        assertEquals(MimeType.TIFF.getMimeType(), getTifInstance().getMimeType());
 
         try {
-            Assert.assertEquals(MimeType.PNG.getMimeType(), getRemotePngBaseInfo().getMimeType());
+            assertEquals(MimeType.PNG.getMimeType(), getRemotePngBaseInfo().getMimeType());
         } catch (IOException e){
             if(e.getMessage().equals(OFFLINE)){
                 logger.warn("test part skipped, since server is not available.");
@@ -218,11 +219,11 @@ public class MediaInfoFileReaderTest {
 
     @Test
     public void testGetLength(){
-        Assert.assertEquals(35339, getJpegInstance().getLength());
-        Assert.assertEquals(202926, getTifInstance().getLength());
+        assertEquals(35339, getJpegInstance().getLength());
+        assertEquals(202926, getTifInstance().getLength());
 
         try {
-            Assert.assertEquals(9143, getRemotePngBaseInfo().getLength());
+            assertEquals(9143, getRemotePngBaseInfo().getLength());
         } catch (IOException e){
             if(e.getMessage().equals(OFFLINE)){
                 logger.warn("test part skipped, since server is not available.");
@@ -232,11 +233,11 @@ public class MediaInfoFileReaderTest {
 
     @Test
     public void testGetSuffix(){
-        Assert.assertEquals("jpg", getJpegInstance().getSuffix());
-        Assert.assertEquals("tif", getTifInstance().getSuffix());
+        assertEquals("jpg", getJpegInstance().getSuffix());
+        assertEquals("tif", getTifInstance().getSuffix());
 
         try {
-            Assert.assertEquals("png", getRemotePngBaseInfo().getSuffix());
+            assertEquals("png", getRemotePngBaseInfo().getSuffix());
         } catch (IOException e){
             if(e.getMessage().equals(OFFLINE)){
                 logger.warn("test part skipped, since server is not available.");
@@ -250,14 +251,14 @@ public class MediaInfoFileReaderTest {
         CdmImageInfo instance = new MediaInfoFileReader(jpegUri).read().getCdmImageInfo();
         Map<String, String> metaData = instance.getMetaData();
         //At this point we do not have the filter/deduplication information
-        Assert.assertEquals(57, metaData.size());
+        assertEquals(57, metaData.size());
 
-        Assert.assertEquals("My taxon", metaData.get("Taxon"));
-        Assert.assertEquals("on the road", metaData.get("Locality"));
-        Assert.assertEquals("15.02.1955", metaData.get("Date Created"));
-        Assert.assertEquals("Any person", metaData.get("Photographer"));
+        assertEquals("My taxon", metaData.get("Taxon"));
+        assertEquals("on the road", metaData.get("Locality"));
+        assertEquals("15.02.1955", metaData.get("Date Created"));
+        assertEquals("Any person", metaData.get("Photographer"));
         //only simple keywords needed
-        Assert.assertEquals("My Keyword; Second Keyword", metaData.get("Keywords"));
+        assertEquals("My Keyword; Second Keyword", metaData.get("Keywords"));
     }
 
 
@@ -265,7 +266,7 @@ public class MediaInfoFileReaderTest {
     public void testReadMetaDataTif() throws IOException, HttpException{
         CdmImageInfo instance = new MediaInfoFileReader(tiffUri).readBaseInfo().read().getCdmImageInfo();
         Map<String, String> metaData = instance.getMetaData();
-        Assert.assertEquals(15, metaData.size());
+        assertEquals(15, metaData.size());
     }
 
     @Test
@@ -274,7 +275,7 @@ public class MediaInfoFileReaderTest {
         try {
             CdmImageInfo instance = new MediaInfoFileReader(remotePngUri).read().getCdmImageInfo();
             Map<String, String> metaData = instance.getMetaData();
-            Assert.assertEquals(1, metaData.size());
+            assertEquals(1, metaData.size());
 
         } catch (IOException e){
             if(e.getMessage().equals(OFFLINE)){

@@ -8,13 +8,14 @@
 */
 package eu.etaxonomy.cdm.api.service.search;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.FileNotFoundException;
 
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.TermQuery;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -34,27 +35,27 @@ public class QueryFactoryTest extends CdmServicesSpringIntegrationTest {
     public void testNewTermQuery_textfield_simple(){
 
         QueryFactory qf = new QueryFactory(luceneIndexToolProvider, Taxon.class);
-        Assert.assertEquals(TermQuery.class, qf.newTermQuery("titleCache", "Lactuca", true).getClass());
-        Assert.assertEquals(BooleanQuery.class, qf.newTermQuery("titleCache", "Lactuca perennis", true).getClass());
-        Assert.assertEquals(PrefixQuery.class, qf.newTermQuery("titleCache", "Lactu*", true).getClass());
-        Assert.assertEquals(PhraseQuery.class, qf.newTermQuery("titleCache", "\"Lactuca perennis\"", true).getClass());
+        assertEquals(TermQuery.class, qf.newTermQuery("titleCache", "Lactuca", true).getClass());
+        assertEquals(BooleanQuery.class, qf.newTermQuery("titleCache", "Lactuca perennis", true).getClass());
+        assertEquals(PrefixQuery.class, qf.newTermQuery("titleCache", "Lactu*", true).getClass());
+        assertEquals(PhraseQuery.class, qf.newTermQuery("titleCache", "\"Lactuca perennis\"", true).getClass());
     }
 
     @Test
     public void testNewTermQuery_textfield_complex(){
 
         QueryFactory qf = new QueryFactory(luceneIndexToolProvider, Taxon.class);
-        Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"Lact* *ennis\"", true).getClass().getSimpleName());
-        Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"Lactuca per*\"", true).getClass().getSimpleName());
-        Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"Lact* perennis\"", true).getClass().getSimpleName());
-        Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"Lact* per*\"", true).getClass().getSimpleName());
-        Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"Lac*ca per*\"", true).getClass().getSimpleName());
-        Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"Lac*ca perennis\"", true).getClass().getSimpleName());
-        Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"Lactuca p*ennis\"", true).getClass().getSimpleName());
-        Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"*ctuca perennis\"", true).getClass().getSimpleName());
-        Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"*ctu* perennis\"", true).getClass().getSimpleName());
-        Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"*ctu* *enn*\"", true).getClass().getSimpleName());
-        Assert.assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"*ctuca per*\"", true).getClass().getSimpleName());
+        assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"Lact* *ennis\"", true).getClass().getSimpleName());
+        assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"Lactuca per*\"", true).getClass().getSimpleName());
+        assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"Lact* perennis\"", true).getClass().getSimpleName());
+        assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"Lact* per*\"", true).getClass().getSimpleName());
+        assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"Lac*ca per*\"", true).getClass().getSimpleName());
+        assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"Lac*ca perennis\"", true).getClass().getSimpleName());
+        assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"Lactuca p*ennis\"", true).getClass().getSimpleName());
+        assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"*ctuca perennis\"", true).getClass().getSimpleName());
+        assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"*ctu* perennis\"", true).getClass().getSimpleName());
+        assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"*ctu* *enn*\"", true).getClass().getSimpleName());
+        assertEquals("ComplexPhraseQuery", qf.newTermQuery("titleCache", "\"*ctuca per*\"", true).getClass().getSimpleName());
     }
 
     /**

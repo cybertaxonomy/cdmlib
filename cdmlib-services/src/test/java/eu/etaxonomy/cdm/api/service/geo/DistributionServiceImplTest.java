@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.service.geo;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.Color;
 import java.io.FileNotFoundException;
@@ -30,7 +31,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.client5.http.ClientProtocolException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -287,8 +287,8 @@ public class DistributionServiceImplTest extends CdmServicesTransactionalSpringI
         String distributions = distributionService.getDistributionServiceRequestParameterString(distributionSet,
                 subAreaPreference, statusOrderPreference, hideMarkedAreas, presenceAbsenceTermColors, langs);
 
-        Assert.assertTrue("Distribution string should contain the non-persisted distribution Germany", distributions.contains("DEU"));
-        Assert.assertFalse("Distribution string should contain France as it has a non-distribution feature", distributions.contains("FRA"));
+        assertTrue(distributions.contains("DEU"), "Distribution string should contain the non-persisted distribution Germany");
+        assertFalse(distributions.contains("FRA"), "Distribution string should contain France as it has a non-distribution feature");
     }
 
     @Override

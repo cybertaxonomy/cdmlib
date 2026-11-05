@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.service.molecular;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 
@@ -43,9 +43,9 @@ public class SequenceServiceTest extends CdmServicesTransactionalSpringIntegrati
         sequenceA.addSingleRead(singleRead);
         sequenceService.moveSingleRead(sequenceA, sequenceB, singleRead);
 
-        assertTrue("SingleRead was not correctly removed from origin", sequenceA.getSingleReads().isEmpty());
-        assertEquals("SingleRead was not correctly moved to target", 1, sequenceB.getSingleReads().size());
-        assertEquals("Moved SingleRead is not equal to origin SingleRead", singleRead, sequenceB.getSingleReads().iterator().next());
+        assertTrue(sequenceA.getSingleReads().isEmpty(), "SingleRead was not correctly removed from origin");
+        assertEquals(1, sequenceB.getSingleReads().size(), "SingleRead was not correctly moved to target");
+        assertEquals(singleRead, sequenceB.getSingleReads().iterator().next(), "Moved SingleRead is not equal to origin SingleRead");
     }
 
     @Override

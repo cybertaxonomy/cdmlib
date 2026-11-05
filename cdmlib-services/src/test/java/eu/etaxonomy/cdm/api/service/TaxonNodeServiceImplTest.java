@@ -8,11 +8,13 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
 import java.time.ZonedDateTime;
@@ -25,7 +27,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -175,8 +176,8 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 		TaxonName nameT1 = t1.getName();
 		t2 = node2.getTaxon();
 		assertEquals(2, t1.getDescriptions().size());
-		Assert.assertTrue(t2.getSynonyms().isEmpty());
-		Assert.assertTrue(t2.getDescriptions().size() == 0);
+		assertTrue(t2.getSynonyms().isEmpty());
+		assertTrue(t2.getDescriptions().size() == 0);
 		assertEquals(2,t1.getSynonyms().size());
 		DeleteResult result;
 
@@ -186,7 +187,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         TaxonName name4 = nameService.find(t4.getName().getUuid());
         result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node4, node2, synonymType, reference, referenceDetail, null, true);
         if (result.isError() || result.isAbort()){
-            Assert.fail();
+            fail();
         }
         t4 = (Taxon)taxonService.find(uuidT4);
         assertNull(t4);
@@ -194,7 +195,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 		//Taxon can't be deleted because of the polytomous key node
 		result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymType, reference, referenceDetail,null, true);
 		if (result.isError() || result.isAbort()){
-			Assert.fail();
+			fail();
 		}
 		commitAndStartNewTransaction(new String[]{/*"TaxonNode"*/});
 		t1 = (Taxon)taxonService.find(t1Uuid);
@@ -263,10 +264,10 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 		t1.addHomotypicSynonym(t1HomotypSynonym);
 		TaxonName nameT1 = t1.getName();
 		t2 = node2.getTaxon();
-		assertEquals("taxon 1 must have 2 descriptions", 2, t1.getDescriptions().size());
-		assertEquals("taxon 1 must have 2 synonyms", 2, t1.getSynonyms().size());
-		Assert.assertTrue("taxon 2 must have no synonyms", t2.getSynonyms().isEmpty());
-		Assert.assertTrue("taxon 2 must have no descriptions", t2.getDescriptions().size() == 0);
+		assertEquals(2, t1.getDescriptions().size(), "taxon 1 must have 2 descriptions");
+		assertEquals(2, t1.getSynonyms().size(), "taxon 1 must have 2 synonyms");
+		assertTrue(t2.getSynonyms().isEmpty(), "taxon 2 must have no synonyms");
+		assertTrue(t2.getDescriptions().size() == 0, "taxon 2 must have no descriptions");
 
 		//save
 		taxonService.save(t1HomotypSynonym);
@@ -279,11 +280,11 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 
 		//post conditions
 		if (!result.getUpdatedObjects().iterator().hasNext()){
-			Assert.fail("Some updates must have taken place");
+			fail("Some updates must have taken place");
 		}
 		assertEquals(3, result.getUpdatedObjects().size());
-		assertNotNull("Old taxon should not have been deleted as it is referenced by key node", taxonService.find(t1Uuid));
-		assertNull("Old taxon node should not exist anymore", taxonNodeService.find(node1Uuid));
+		assertNotNull(taxonService.find(t1Uuid), "Old taxon should not have been deleted as it is referenced by key node");
+		assertNull(taxonNodeService.find(node1Uuid), "Old taxon node should not exist anymore");
 
 		t1HomotypSynonym = (Synonym)taxonService.find(t1HomotypSynonym.getUuid());
 		assertNotNull(t1HomotypSynonym);
@@ -294,30 +295,30 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 		HibernateProxyHelper.deproxy(t2.getHomotypicGroup());
 		t2.setName(HibernateProxyHelper.deproxy(t2.getName()));
 
-		assertFalse("taxon 2 must have a synonym now", t2.getSynonyms().isEmpty());
-		assertEquals("taxon 2 must have 3 synonyms now, the old taxon 1 and it's 2 synonyms", 3, t2.getSynonyms().size());
-		assertEquals("taxon 2 must have 2 descriptions now, taken form taxon 1", 2, t2.getDescriptions().size());
+		assertFalse(t2.getSynonyms().isEmpty(), "taxon 2 must have a synonym now");
+		assertEquals(3, t2.getSynonyms().size(), "taxon 2 must have 3 synonyms now, the old taxon 1 and it's 2 synonyms");
+		assertEquals(2, t2.getDescriptions().size(), "taxon 2 must have 2 descriptions now, taken form taxon 1");
 
 		result = taxonService.deleteTaxon(t1.getUuid(), null, null);
 		if (result.isAbort() || result.isError()){
-			Assert.fail();
+			fail();
 		}
 		assertNull(taxonService.find(t1Uuid));
 		assertNull(taxonNodeService.find(node1Uuid));
 		name1 = nameService.find(name1UUID);
-		assertNotNull("taxon name 1 should still exist", name1);
-		assertEquals("... but being used for the new synonym only as taxon 1 is deleted", 1, name1.getTaxonBases().size());
+		assertNotNull(name1, "taxon name 1 should still exist");
+		assertEquals(1, name1.getTaxonBases().size(), "... but being used for the new synonym only as taxon 1 is deleted");
 		t1HomotypSynonym = (Synonym)taxonService.find(t1HomotypSynonym.getUuid());
 		assertNotNull(t1HomotypSynonym);
 
 		Synonym newSynonym =(Synonym) name1.getTaxonBases().iterator().next();
 
 		Taxon newAcceptedTaxon = CdmBase.deproxy(taxonService.find(t2.getUuid()), Taxon.class);
-		assertEquals("The new synonym (old accepted taxon) and it's homotypic synonym should still be homotypic", newSynonym.getHomotypicGroup(), t1HomotypSynonym.getName().getHomotypicalGroup());
-		assertFalse("The new accepted taxon must not be homotypic to ", newAcceptedTaxon.getHomotypicGroup().equals(newSynonym.getName().getHomotypicalGroup()));
+		assertEquals(newSynonym.getHomotypicGroup(), t1HomotypSynonym.getName().getHomotypicalGroup(), "The new synonym (old accepted taxon) and it's homotypic synonym should still be homotypic");
+		assertFalse(newAcceptedTaxon.getHomotypicGroup().equals(newSynonym.getName().getHomotypicalGroup()), "The new accepted taxon must not be homotypic to ");
 
-		assertEquals("The new accepted taxon is taxon 2", newAcceptedTaxon, t2);
-		assertEquals("The new synonyms name must be the same as the old accepted taxon's name", newSynonym.getName(), nameT1);
+		assertEquals(newAcceptedTaxon, t2, "The new accepted taxon is taxon 2");
+		assertEquals(newSynonym.getName(), nameT1, "The new synonyms name must be the same as the old accepted taxon's name");
 	}
 
 	@Test
@@ -332,7 +333,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 		taxonNodeService.saveOrUpdate(newNode);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		newNode = taxonNodeService.load(newNode.getUuid());
-		Assert.assertEquals("", oldTreeIndex + newNode.getId() + "#", newNode.treeIndex());
+		assertEquals(oldTreeIndex + newNode.getId() + "#", newNode.treeIndex(), "");
 	}
 
 	@Test
@@ -346,7 +347,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 		taxonNodeService.saveOrUpdate(node1);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		TaxonNode node6 = taxonNodeService.load(node6Uuid);
-		Assert.assertEquals("Node6 treeindex is not correct", node2.treeIndex() + "2#4#6#", node6.treeIndex());
+		assertEquals(node2.treeIndex() + "2#4#6#", node6.treeIndex(), "Node6 treeindex is not correct");
 
 		//root of new classification
 		Classification classification2 = classificationService.load(classification2Uuid);
@@ -356,9 +357,9 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 		taxonNodeService.saveOrUpdate(node1);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		node1 = taxonNodeService.load(node1Uuid);
-		Assert.assertEquals("Node1 treeindex is not correct", "#t2#8#2#", node1.treeIndex());
+		assertEquals("#t2#8#2#", node1.treeIndex(), "Node1 treeindex is not correct");
 		node6 = taxonNodeService.load(node6Uuid);
-		Assert.assertEquals("Node6 treeindex is not correct", "#t2#8#2#4#6#", node6.treeIndex());
+		assertEquals("#t2#8#2#4#6#", node6.treeIndex(), "Node6 treeindex is not correct");
 
 		//into new classification
 		node2 = taxonNodeService.load(node2Uuid);
@@ -367,7 +368,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 		taxonNodeService.saveOrUpdate(node2);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		node2 = taxonNodeService.load(node2Uuid);
-		Assert.assertEquals("Node3 treeindex is not correct", "#t2#8#2#5#3#", node2.treeIndex());
+		assertEquals("#t2#8#2#5#3#", node2.treeIndex(), "Node3 treeindex is not correct");
 
 }
 
@@ -401,8 +402,8 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 		List<TaxonNode> children =  node5.getChildNodes();
 		TaxonNode node = children.get(0);
 		int id = node.getId();
-		Assert.assertEquals("Node6 treeindex is not correct", "#t1#1#2#6#", treeIndex);
-		Assert.assertEquals("new node treeindex is not correct", node5TreeIndex + id +"#", node.treeIndex());
+		assertEquals("#t1#1#2#6#", treeIndex, "Node6 treeindex is not correct");
+		assertEquals(node5TreeIndex + id +"#", node.treeIndex(), "new node treeindex is not correct");
 	}
 
 	@Test
@@ -421,7 +422,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 
 		DeleteResult result = taxonNodeService.deleteTaxonNode(node1, null);
 		if (!result.isOk()){
-			Assert.fail();
+			fail();
 		}
 		newNode = taxonNodeService.load(uuidNewNode);
 		node1 = taxonNodeService.load(node1Uuid);
@@ -463,7 +464,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 
         DeleteResult result = taxonNodeService.deleteTaxonNode(node1, null);
         if (!result.isOk()){
-            Assert.fail();
+            fail();
         }
         //taxonService.getSession().flush();
         newNode = taxonNodeService.load(uuidNewNode);
@@ -572,9 +573,9 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
     	List<TaxonNode> allNodes = new ArrayList<>(classification.getAllNodes());
     	Collections.sort(allNodes, comparator);
 
-    	Assert.assertEquals(allNodes.get(0).getTaxon(), abies );
-    	Assert.assertEquals(allNodes.get(2).getTaxon(), abiesBalsamea );
-    	Assert.assertEquals(allNodes.get(1).getTaxon(), abiesAlba );
+    	assertEquals(allNodes.get(0).getTaxon(), abies );
+    	assertEquals(allNodes.get(2).getTaxon(), abiesBalsamea );
+    	assertEquals(allNodes.get(1).getTaxon(), abiesAlba );
 
     	taxonNodeService.moveTaxonNode(balsameaNode.getUuid(), abiesAlbaNode.getUuid(),1, SecReferenceHandlingEnum.KeepOrWarn, null, PublishEnumForMoving.Keep);
     	commitAndStartNewTransaction();
@@ -583,9 +584,9 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
     	allNodes = new ArrayList<>(classification.getAllNodes());
         Collections.sort(allNodes, comparator);
 
-        Assert.assertEquals(abies, allNodes.get(0).getTaxon());
-        Assert.assertEquals(abiesBalsamea, allNodes.get(1).getTaxon());
-        Assert.assertEquals(abiesAlba, allNodes.get(2).getTaxon());
+        assertEquals(abies, allNodes.get(0).getTaxon());
+        assertEquals(abiesBalsamea, allNodes.get(1).getTaxon());
+        assertEquals(abiesAlba, allNodes.get(2).getTaxon());
     }
 
     @Test
@@ -656,7 +657,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 
         List<TaxonNode> expectedChildTaxonNodes = classification.getChildNodes();
         List<TaxonNodeDto> childNodesUuidAndTitleCache = taxonNodeService.listChildNodesAsTaxonNodeDto(classification.getRootNode());
-        assertNotNull("child UuidAndTitleCache list is null", childNodesUuidAndTitleCache);
+        assertNotNull(childNodesUuidAndTitleCache, "child UuidAndTitleCache list is null");
 
         compareChildren(expectedChildTaxonNodes, childNodesUuidAndTitleCache);
 
@@ -665,24 +666,24 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         TaxonNode abiesAlbaSubBrotaNode = abiesAlbaSubBrota.getTaxonNodes().iterator().next();
         TaxonNode expectedTaxonParent = HibernateProxyHelper.deproxy(abiesAlbaSubBrotaNode.getParent(), TaxonNode.class);
         TaxonNodeDto taxonParent = taxonNodeService.getParentUuidAndTitleCache(abiesAlbaSubBrotaNode);
-        assertEquals("Taxon Nodes do not match. ", expectedTaxonParent.getUuid(), taxonParent.getUuid());
-        assertEquals("Taxon Nodes do not match. ", (Integer)expectedTaxonParent.getId(), taxonParent.getId());
-        assertEquals("Taxon Nodes do not match. ", expectedTaxonParent.getTaxon().getTitleCache(), taxonParent.getTitleCache());
-        assertEquals("Taxon Nodes do not match. ", expectedTaxonParent, taxonNodeService.load(taxonParent.getUuid()));
+        assertEquals(expectedTaxonParent.getUuid(), taxonParent.getUuid(), "Taxon Nodes do not match. ");
+        assertEquals((Integer)expectedTaxonParent.getId(), taxonParent.getId(), "Taxon Nodes do not match. ");
+        assertEquals(expectedTaxonParent.getTaxon().getTitleCache(), taxonParent.getTitleCache(), "Taxon Nodes do not match. ");
+        assertEquals(expectedTaxonParent, taxonNodeService.load(taxonParent.getUuid()), "Taxon Nodes do not match. ");
 
         //test classification parent
         Taxon abies = HibernateProxyHelper.deproxy(taxonService.load(abiesUuid), Taxon.class);
         TaxonNode abiesNode = abies.getTaxonNodes().iterator().next();
         TaxonNode expectedClassificationParent = HibernateProxyHelper.deproxy(abiesNode.getParent(), TaxonNode.class);
         TaxonNodeDto classificationParent= taxonNodeService.getParentUuidAndTitleCache(abiesNode);
-        assertEquals("Taxon Nodes do not match. ", expectedClassificationParent.getUuid(), classificationParent.getUuid());
-        assertEquals("Taxon Nodes do not match. ", (Integer)expectedClassificationParent.getId(), classificationParent.getId());
-        assertEquals("Taxon Nodes do not match. ", expectedClassificationParent.getClassification().getTitleCache(), classificationParent.getTitleCache());
-        assertEquals("Taxon Nodes do not match. ", expectedClassificationParent, taxonNodeService.load(classificationParent.getUuid()));
+        assertEquals(expectedClassificationParent.getUuid(), classificationParent.getUuid(), "Taxon Nodes do not match. ");
+        assertEquals((Integer)expectedClassificationParent.getId(), classificationParent.getId(), "Taxon Nodes do not match. ");
+        assertEquals(expectedClassificationParent.getClassification().getTitleCache(), classificationParent.getTitleCache(), "Taxon Nodes do not match. ");
+        assertEquals(expectedClassificationParent, taxonNodeService.load(classificationParent.getUuid()), "Taxon Nodes do not match. ");
     }
 
     private void compareChildren(List<TaxonNode> expectedChildTaxonNodes, List<TaxonNodeDto> childNodesDto){
-        assertEquals("Number of children does not match", expectedChildTaxonNodes.size(), childNodesDto.size());
+        assertEquals(expectedChildTaxonNodes.size(), childNodesDto.size(), "Number of children does not match");
         TaxonNodeDto foundMatch = null;
         for (TaxonNode taxonNode : expectedChildTaxonNodes) {
             foundMatch = null;
@@ -696,7 +697,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
                     }
                 }
             }
-            assertTrue(String.format("no matching UuidAndTitleCache found for child %s", taxonNode), foundMatch!=null);
+            assertTrue(foundMatch!=null, String.format("no matching UuidAndTitleCache found for child %s", taxonNode));
             compareChildren(taxonNode.getChildNodes(), taxonNodeService.listChildNodesAsTaxonNodeDto(foundMatch));
         }
     }
@@ -722,19 +723,19 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         Reference refSpPl = referenceService.find(referenceUuid);
 
         //assert current state
-        Assert.assertNotNull(newSec);
-        Assert.assertNull(taxonService.find(1).getSec());
-        Assert.assertNull(taxonService.find(2).getSec());
-        Assert.assertNull(taxonService.find(3).getSec());
-        Assert.assertNull(taxonService.find(4).getSec());
+        assertNotNull(newSec);
+        assertNull(taxonService.find(1).getSec());
+        assertNull(taxonService.find(2).getSec());
+        assertNull(taxonService.find(3).getSec());
+        assertNull(taxonService.find(4).getSec());
         Taxon taxon5 = (Taxon)taxonService.find(5);
-        Assert.assertNotNull(taxon5.getSec());
-        Assert.assertNotEquals(newSec, taxon5.getSec());
-        Assert.assertNotNull(taxon5.getSecMicroReference());
-        Assert.assertEquals(1, taxon5.getMisappliedNameRelations().size());
-        Assert.assertEquals(refSpPl, taxon5.getMisappliedNameRelations().iterator().next().getSource().getCitation());
-        Assert.assertEquals(1, taxon5.getProParteAndPartialSynonymRelations().size());
-        Assert.assertNull(taxon5.getProParteAndPartialSynonymRelations().iterator().next().getSource());
+        assertNotNull(taxon5.getSec());
+        assertNotEquals(newSec, taxon5.getSec());
+        assertNotNull(taxon5.getSecMicroReference());
+        assertEquals(1, taxon5.getMisappliedNameRelations().size());
+        assertEquals(refSpPl, taxon5.getMisappliedNameRelations().iterator().next().getSource().getCitation());
+        assertEquals(1, taxon5.getProParteAndPartialSynonymRelations().size());
+        assertNull(taxon5.getProParteAndPartialSynonymRelations().iterator().next().getSource());
 
         //set secundum
         SecundumForSubtreeConfigurator config = new SecundumForSubtreeConfigurator(node1Uuid, null, null, true);
@@ -742,27 +743,27 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         config.setIncludeProParteSynonyms(true);
         config.setNewSecundum(newSec);
         UpdateResult result = taxonNodeService.setSecundumForSubtree(config);
-        Assert.assertTrue(result.getExceptions().isEmpty());
-        Assert.assertTrue(result.isOk());
-        Assert.assertEquals(6, result.getUpdatedObjects().size());  //should be 5 without workaround for #9627,#6359
+        assertTrue(result.getExceptions().isEmpty());
+        assertTrue(result.isOk());
+        assertEquals(6, result.getUpdatedObjects().size());  //should be 5 without workaround for #9627,#6359
 
         commitAndStartNewTransaction(/*new String[]{"TaxonBase","TaxonBase_AUD"}*/);
-        Assert.assertEquals(newSec, taxonService.find(1).getSec());
-        Assert.assertNull(taxonService.find(2).getSec());
-        Assert.assertEquals(newSec, taxonService.find(3).getSec());
-        Assert.assertNull(taxonService.find(4).getSec());
+        assertEquals(newSec, taxonService.find(1).getSec());
+        assertNull(taxonService.find(2).getSec());
+        assertEquals(newSec, taxonService.find(3).getSec());
+        assertNull(taxonService.find(4).getSec());
         taxon5 = (Taxon)taxonService.find(5);
-        Assert.assertEquals(newSec, taxon5.getSec());
-        Assert.assertNull(taxon5.getSecMicroReference());
-        Assert.assertEquals(newSec, taxon5.getMisappliedNameRelations().iterator().next().getSource().getCitation());
-        Assert.assertEquals(newSec, taxon5.getProParteAndPartialSynonymRelations().iterator().next().getSource().getCitation());
+        assertEquals(newSec, taxon5.getSec());
+        assertNull(taxon5.getSecMicroReference());
+        assertEquals(newSec, taxon5.getMisappliedNameRelations().iterator().next().getSource().getCitation());
+        assertEquals(newSec, taxon5.getProParteAndPartialSynonymRelations().iterator().next().getSource().getCitation());
         Taxon taxon2 = (Taxon)taxonService.find(2);
-        Assert.assertEquals(1, taxon2.getProParteAndPartialSynonymRelations().size());
-        Assert.assertNull(taxon2.getProParteAndPartialSynonymRelations().iterator().next().getSource());
+        assertEquals(1, taxon2.getProParteAndPartialSynonymRelations().size());
+        assertNull(taxon2.getProParteAndPartialSynonymRelations().iterator().next().getSource());
 
         result = taxonNodeService.setSecundumForSubtree(config);
-        Assert.assertTrue(result.getExceptions().isEmpty() && result.isOk());
-        Assert.assertEquals(0, result.getUpdatedObjects().size());
+        assertTrue(result.getExceptions().isEmpty() && result.isOk());
+        assertEquals(0, result.getUpdatedObjects().size());
 
     }
 
@@ -773,43 +774,43 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         Reference refSpPl = referenceService.find(referenceUuid);
 
         //assert current state
-        Assert.assertNotNull(newSec);
-        Assert.assertNull(taxonService.find(1).getSec());
-        Assert.assertNull(taxonService.find(2).getSec());
-        Assert.assertNull(taxonService.find(3).getSec());
-        Assert.assertNull(taxonService.find(4).getSec());
+        assertNotNull(newSec);
+        assertNull(taxonService.find(1).getSec());
+        assertNull(taxonService.find(2).getSec());
+        assertNull(taxonService.find(3).getSec());
+        assertNull(taxonService.find(4).getSec());
         Taxon taxon5 = (Taxon)taxonService.find(5);
-        Assert.assertNotNull(taxon5.getSec());
-        Assert.assertNotEquals(newSec, taxon5.getSec());
-        Assert.assertNotNull(taxon5.getSecMicroReference());
-        Assert.assertEquals(1, taxon5.getMisappliedNameRelations().size());
-        Assert.assertEquals(refSpPl, taxon5.getMisappliedNameRelations().iterator().next().getSource().getCitation());
-        Assert.assertEquals(1, taxon5.getProParteAndPartialSynonymRelations().size());
-        Assert.assertNull(taxon5.getProParteAndPartialSynonymRelations().iterator().next().getSource());
+        assertNotNull(taxon5.getSec());
+        assertNotEquals(newSec, taxon5.getSec());
+        assertNotNull(taxon5.getSecMicroReference());
+        assertEquals(1, taxon5.getMisappliedNameRelations().size());
+        assertEquals(refSpPl, taxon5.getMisappliedNameRelations().iterator().next().getSource().getCitation());
+        assertEquals(1, taxon5.getProParteAndPartialSynonymRelations().size());
+        assertNull(taxon5.getProParteAndPartialSynonymRelations().iterator().next().getSource());
 
         //set secundum
         SecundumForSubtreeConfigurator config = new SecundumForSubtreeConfigurator(node1Uuid, newSec, null, true);
         config.setOverwriteExisting(false);
         UpdateResult result = taxonNodeService.setSecundumForSubtree(config);
-        Assert.assertTrue(result.getExceptions().isEmpty());
-        Assert.assertTrue(result.isOk());
-        Assert.assertEquals(4, result.getUpdatedObjects().size()); //should be 3 without workaround for #9627,#6359
+        assertTrue(result.getExceptions().isEmpty());
+        assertTrue(result.isOk());
+        assertEquals(4, result.getUpdatedObjects().size()); //should be 3 without workaround for #9627,#6359
 
         commitAndStartNewTransaction();  //new String[]{"TaxonBase","TaxonBase_AUD"}
-        Assert.assertEquals(newSec, taxonService.find(1).getSec());
-        Assert.assertNull(taxonService.find(2).getSec());
-        Assert.assertEquals(newSec, taxonService.find(3).getSec());
-        Assert.assertNull(taxonService.find(4).getSec());
+        assertEquals(newSec, taxonService.find(1).getSec());
+        assertNull(taxonService.find(2).getSec());
+        assertEquals(newSec, taxonService.find(3).getSec());
+        assertNull(taxonService.find(4).getSec());
         Reference oldTaxon5Sec = taxon5.getSec();
         taxon5 = (Taxon)taxonService.find(5);
-        Assert.assertEquals(oldTaxon5Sec, taxon5.getSec());
-        Assert.assertNotEquals(newSec, taxon5.getSec());
-        Assert.assertNotNull(taxon5.getSecMicroReference());
-        Assert.assertEquals("Should not override MAN source", refSpPl, taxon5.getMisappliedNameRelations().iterator().next().getSource().getCitation());
-        Assert.assertEquals(newSec, taxon5.getProParteAndPartialSynonymRelations().iterator().next().getSource().getCitation());
+        assertEquals(oldTaxon5Sec, taxon5.getSec());
+        assertNotEquals(newSec, taxon5.getSec());
+        assertNotNull(taxon5.getSecMicroReference());
+        assertEquals(refSpPl, taxon5.getMisappliedNameRelations().iterator().next().getSource().getCitation(), "Should not override MAN source");
+        assertEquals(newSec, taxon5.getProParteAndPartialSynonymRelations().iterator().next().getSource().getCitation());
         Taxon taxon2 = (Taxon)taxonService.find(2);
-        Assert.assertEquals("taxon2 is not part of subtree therefore should not be updated", 1, taxon2.getProParteAndPartialSynonymRelations().size());
-        Assert.assertNull(taxon2.getProParteAndPartialSynonymRelations().iterator().next().getSource());
+        assertEquals(1, taxon2.getProParteAndPartialSynonymRelations().size(), "taxon2 is not part of subtree therefore should not be updated");
+        assertNull(taxon2.getProParteAndPartialSynonymRelations().iterator().next().getSource());
     }
 
     @Test
@@ -818,15 +819,15 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         Reference newSec = referenceService.find(uuidRefNewSec);
 
         //assert current state
-        Assert.assertNotNull(newSec);
-        Assert.assertNull(taxonService.find(1).getSec());
-        Assert.assertNull(taxonService.find(2).getSec());
-        Assert.assertNull(taxonService.find(3).getSec());
-        Assert.assertNull(taxonService.find(4).getSec());
+        assertNotNull(newSec);
+        assertNull(taxonService.find(1).getSec());
+        assertNull(taxonService.find(2).getSec());
+        assertNull(taxonService.find(3).getSec());
+        assertNull(taxonService.find(4).getSec());
         TaxonBase taxon5 = taxonService.find(5);
-        Assert.assertNotNull(taxon5.getSec());
-        Assert.assertNotEquals(newSec, taxon5.getSec());
-        Assert.assertNotNull(taxon5.getSecMicroReference());
+        assertNotNull(taxon5.getSec());
+        assertNotEquals(newSec, taxon5.getSec());
+        assertNotNull(taxon5.getSecMicroReference());
 
         //set secundum
         SecundumForSubtreeConfigurator config = new SecundumForSubtreeConfigurator(node1Uuid, newSec, null, false);
@@ -834,13 +835,13 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         taxonNodeService.setSecundumForSubtree(config);
 
 //        commitAndStartNewTransaction(new String[]{"TaxonBase","TaxonBase_AUD"});
-        Assert.assertEquals(newSec, taxonService.find(1).getSec());
-        Assert.assertNull(taxonService.find(2).getSec());
-        Assert.assertNull(taxonService.find(3).getSec());
-        Assert.assertNull(taxonService.find(4).getSec());
+        assertEquals(newSec, taxonService.find(1).getSec());
+        assertNull(taxonService.find(2).getSec());
+        assertNull(taxonService.find(3).getSec());
+        assertNull(taxonService.find(4).getSec());
         taxon5 = taxonService.find(5);
-        Assert.assertEquals(newSec, taxon5.getSec());
-        Assert.assertNull(taxon5.getSecMicroReference());
+        assertEquals(newSec, taxon5.getSec());
+        assertNull(taxon5.getSecMicroReference());
     }
 
     @Test
@@ -849,15 +850,15 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         Reference newSec = referenceService.find(uuidRefNewSec);
 
         //assert current state
-        Assert.assertNotNull(newSec);
-        Assert.assertNull(taxonService.find(1).getSec());
-        Assert.assertNull(taxonService.find(2).getSec());
-        Assert.assertNull(taxonService.find(3).getSec());
-        Assert.assertNull(taxonService.find(4).getSec());
+        assertNotNull(newSec);
+        assertNull(taxonService.find(1).getSec());
+        assertNull(taxonService.find(2).getSec());
+        assertNull(taxonService.find(3).getSec());
+        assertNull(taxonService.find(4).getSec());
         TaxonBase taxon5 = taxonService.find(5);
-        Assert.assertNotNull(taxon5.getSec());
-        Assert.assertNotEquals(newSec, taxon5.getSec());
-        Assert.assertNotNull(taxon5.getSecMicroReference());
+        assertNotNull(taxon5.getSec());
+        assertNotEquals(newSec, taxon5.getSec());
+        assertNotNull(taxon5.getSecMicroReference());
 
         //set secundum
         SecundumForSubtreeConfigurator config = new SecundumForSubtreeConfigurator(node1Uuid, newSec, null, false);
@@ -865,15 +866,15 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         taxonNodeService.setSecundumForSubtree(config);
 
         commitAndStartNewTransaction(new String[]{"TaxonBase","TaxonBase_AUD"});
-        Assert.assertNull(taxonService.find(1).getSec());
-        Assert.assertNull(taxonService.find(2).getSec());
-        Assert.assertEquals("Synonym should be updated", newSec, taxonService.find(3).getSec());
-        Assert.assertNull(taxonService.find(4).getSec());
+        assertNull(taxonService.find(1).getSec());
+        assertNull(taxonService.find(2).getSec());
+        assertEquals(newSec, taxonService.find(3).getSec(), "Synonym should be updated");
+        assertNull(taxonService.find(4).getSec());
         Reference oldTaxon5Sec = taxon5.getSec();
         taxon5 = taxonService.find(5);
-        Assert.assertEquals(oldTaxon5Sec, taxon5.getSec());
-        Assert.assertNotEquals(newSec, taxon5.getSec());
-        Assert.assertNotNull(taxon5.getSecMicroReference());
+        assertEquals(oldTaxon5Sec, taxon5.getSec());
+        assertNotEquals(newSec, taxon5.getSec());
+        assertNotNull(taxon5.getSecMicroReference());
     }
 
     @Test
@@ -882,18 +883,18 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         Reference newSec = referenceService.find(uuidRefNewSec);
 
         //assert current state
-        Assert.assertNotNull(newSec);
-        Assert.assertNull(taxonService.find(1).getSec());
-        Assert.assertNull(taxonService.find(2).getSec());
-        Assert.assertNull(taxonService.find(3).getSec());
-        Assert.assertNull(taxonService.find(4).getSec());
+        assertNotNull(newSec);
+        assertNull(taxonService.find(1).getSec());
+        assertNull(taxonService.find(2).getSec());
+        assertNull(taxonService.find(3).getSec());
+        assertNull(taxonService.find(4).getSec());
         Taxon taxon5 = (Taxon)taxonService.find(5);
-        Assert.assertNotNull(taxon5.getSec());
-        Assert.assertNotEquals(newSec, taxon5.getSec());
-        Assert.assertNotNull(taxon5.getSecMicroReference());
+        assertNotNull(taxon5.getSec());
+        assertNotEquals(newSec, taxon5.getSec());
+        assertNotNull(taxon5.getSecMicroReference());
         Taxon taxon1 = (Taxon)taxonService.find(1);
         taxon1.addMisappliedName(taxon5, null, null);
-        Assert.assertEquals(1, taxon1.getMisappliedNameRelations().size());
+        assertEquals(1, taxon1.getMisappliedNameRelations().size());
         commitAndStartNewTransaction();
 
         //set secundum
@@ -903,18 +904,18 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 
         commitAndStartNewTransaction();  //new String[]{"TaxonBase","TaxonBase_AUD"}
         taxon1 = (Taxon)taxonService.find(1);
-        Assert.assertNull("Shared taxon must not be set", taxonService.find(1).getSec());
-        Assert.assertNull(taxonService.find(2).getSec());
-        Assert.assertNull("Synonym of shared taxon must not be set", taxonService.find(3).getSec());
-        Assert.assertNull(taxonService.find(4).getSec());
+        assertNull(taxonService.find(1).getSec(), "Shared taxon must not be set");
+        assertNull(taxonService.find(2).getSec());
+        assertNull(taxonService.find(3).getSec(), "Synonym of shared taxon must not be set");
+        assertNull(taxonService.find(4).getSec());
         taxon5 = (Taxon)taxonService.find(5);
-        Assert.assertEquals(newSec, taxon5.getSec());
-        Assert.assertNull(taxon5.getSecMicroReference());
-        Assert.assertNull("without share no citation should be set", taxon1.getMisappliedNameRelations().iterator().next().getSource());
+        assertEquals(newSec, taxon5.getSec());
+        assertNull(taxon5.getSecMicroReference());
+        assertNull(taxon1.getMisappliedNameRelations().iterator().next().getSource(), "without share no citation should be set");
         config.setIncludeSharedTaxa(true);
         taxonNodeService.setSecundumForSubtree(config);
         taxon1 = (Taxon)taxonService.find(1);
-        Assert.assertEquals("With shared taxa citation should be set", newSec, taxon1.getMisappliedNameRelations().iterator().next().getSource().getCitation());
+        assertEquals(newSec, taxon1.getMisappliedNameRelations().iterator().next().getSource().getCitation(), "With shared taxa citation should be set");
     }
 
     @Test
@@ -934,21 +935,21 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 
         commitAndStartNewTransaction();
 
-        Assert.assertEquals(publish, taxonService.find(1).isPublish());
-        Assert.assertEquals("Taxon2 is not in subtree", true, taxonService.find(2).isPublish());
-        Assert.assertEquals("Synonym3 not yet updated because it is hybrid", true, taxonService.find(3).isPublish());
-        Assert.assertEquals("Synonym4 is not in subtree", true, taxonService.find(4).isPublish());
-        Assert.assertEquals(true, taxonService.find(5).isPublish());
-        Assert.assertEquals(publish, taxonService.find(6).isPublish());
-        Assert.assertEquals("Synonym7 is not in subtree", true, taxonService.find(7).isPublish());
+        assertEquals(publish, taxonService.find(1).isPublish());
+        assertEquals(true, taxonService.find(2).isPublish(), "Taxon2 is not in subtree");
+        assertEquals(true, taxonService.find(3).isPublish(), "Synonym3 not yet updated because it is hybrid");
+        assertEquals(true, taxonService.find(4).isPublish(), "Synonym4 is not in subtree");
+        assertEquals(true, taxonService.find(5).isPublish());
+        assertEquals(publish, taxonService.find(6).isPublish());
+        assertEquals(true, taxonService.find(7).isPublish(), "Synonym7 is not in subtree");
 
         config.setIncludeHybrids(true);
         taxonNodeService.setPublishForSubtree(config);
 
         commitAndStartNewTransaction();
-        Assert.assertEquals(publish, taxonService.find(3).isPublish());
-        Assert.assertEquals(publish, taxonService.find(5).isPublish());
-        Assert.assertEquals(publish, taxonService.find(7).isPublish());
+        assertEquals(publish, taxonService.find(3).isPublish());
+        assertEquals(publish, taxonService.find(5).isPublish());
+        assertEquals(publish, taxonService.find(7).isPublish());
 
     }
 
@@ -968,30 +969,30 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         taxonNodeService.setPublishForSubtree(config);
 
         commitAndStartNewTransaction();
-        Assert.assertEquals(publish, taxonService.find(1).isPublish());
-        Assert.assertEquals("Taxon2 not in subtree", true, taxonService.find(2).isPublish());
-        Assert.assertEquals("Synonym3 should not be updated", true, taxonService.find(3).isPublish());
-        Assert.assertEquals("Synonym3 should not be updated", true, taxonService.find(4).isPublish());
-        Assert.assertEquals("Accepted in subtree should be udpated", publish, taxonService.find(5).isPublish());
-        Assert.assertEquals("Misapplied should not be updated", true, taxonService.find(6).isPublish());
-        Assert.assertEquals("Pro parte synonym should not be updated", true, taxonService.find(7).isPublish());
+        assertEquals(publish, taxonService.find(1).isPublish());
+        assertEquals(true, taxonService.find(2).isPublish(), "Taxon2 not in subtree");
+        assertEquals(true, taxonService.find(3).isPublish(), "Synonym3 should not be updated");
+        assertEquals(true, taxonService.find(4).isPublish(), "Synonym3 should not be updated");
+        assertEquals(publish, taxonService.find(5).isPublish(), "Accepted in subtree should be udpated");
+        assertEquals(true, taxonService.find(6).isPublish(), "Misapplied should not be updated");
+        assertEquals(true, taxonService.find(7).isPublish(), "Pro parte synonym should not be updated");
 
         config.setIncludeMisapplications(true);
         taxonNodeService.setPublishForSubtree(config);
         commitAndStartNewTransaction();
-        Assert.assertEquals("Misapplied should be updated now", publish, taxonService.find(6).isPublish());
-        Assert.assertEquals("Pro parte synonym should not yet be updated", true, taxonService.find(7).isPublish());
+        assertEquals(publish, taxonService.find(6).isPublish(), "Misapplied should be updated now");
+        assertEquals(true, taxonService.find(7).isPublish(), "Pro parte synonym should not yet be updated");
 
         config.setIncludeProParteSynonyms(true);
         config.setIncludeHybrids(false);
         taxonNodeService.setPublishForSubtree(config);
         commitAndStartNewTransaction();
-        Assert.assertEquals("Pro parte synonym should not yet be updated because it is a hybrid", true, taxonService.find(7).isPublish());
+        assertEquals(true, taxonService.find(7).isPublish(), "Pro parte synonym should not yet be updated because it is a hybrid");
 
         config.setIncludeHybrids(true);
         taxonNodeService.setPublishForSubtree(config);
         commitAndStartNewTransaction();
-        Assert.assertEquals("Pro parte synonym should be updated now", publish, taxonService.find(7).isPublish());
+        assertEquals(publish, taxonService.find(7).isPublish(), "Pro parte synonym should be updated now");
 
     }
 
@@ -1014,36 +1015,36 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         taxonNodeService.setPublishForSubtree(config);
 
         commitAndStartNewTransaction(new String[]{});
-        Assert.assertEquals(true, taxonService.find(1).isPublish());
-        Assert.assertEquals(true, taxonService.find(2).isPublish());
+        assertEquals(true, taxonService.find(1).isPublish());
+        assertEquals(true, taxonService.find(2).isPublish());
         //Synonym should be false
-        Assert.assertEquals(publish, taxonService.find(3).isPublish());
-        Assert.assertEquals(true, taxonService.find(4).isPublish());
-        Assert.assertEquals(true, taxonService.find(5).isPublish());
-        Assert.assertEquals(true, taxonService.find(6).isPublish());
-        Assert.assertEquals(true, taxonService.find(7).isPublish());
+        assertEquals(publish, taxonService.find(3).isPublish());
+        assertEquals(true, taxonService.find(4).isPublish());
+        assertEquals(true, taxonService.find(5).isPublish());
+        assertEquals(true, taxonService.find(6).isPublish());
+        assertEquals(true, taxonService.find(7).isPublish());
 
         config.setIncludeMisapplications(true);
         taxonNodeService.setPublishForSubtree(config);
         commitAndStartNewTransaction();
-        Assert.assertEquals("Misapplied should be updated now", publish, taxonService.find(6).isPublish());
-        Assert.assertEquals("Pro parte synonym should not yet be updated", true, taxonService.find(7).isPublish());
+        assertEquals(publish, taxonService.find(6).isPublish(), "Misapplied should be updated now");
+        assertEquals(true, taxonService.find(7).isPublish(), "Pro parte synonym should not yet be updated");
 
         config.setIncludeProParteSynonyms(true);
         taxonNodeService.setPublishForSubtree(config);
         commitAndStartNewTransaction();
-        Assert.assertEquals("Pro parte synonym should be updated now", publish, taxonService.find(7).isPublish());
+        assertEquals(publish, taxonService.find(7).isPublish(), "Pro parte synonym should be updated now");
 
     }
 
     private void assertStartingStateForSetPublish() {
-        Assert.assertTrue(taxonService.find(1).isPublish());
-        Assert.assertTrue(taxonService.find(2).isPublish());
-        Assert.assertTrue(taxonService.find(3).isPublish());
-        Assert.assertTrue(taxonService.find(4).isPublish());
-        Assert.assertTrue(taxonService.find(5).isPublish());
-        Assert.assertTrue(taxonService.find(6).isPublish());
-        Assert.assertTrue(taxonService.find(7).isPublish());
+        assertTrue(taxonService.find(1).isPublish());
+        assertTrue(taxonService.find(2).isPublish());
+        assertTrue(taxonService.find(3).isPublish());
+        assertTrue(taxonService.find(4).isPublish());
+        assertTrue(taxonService.find(5).isPublish());
+        assertTrue(taxonService.find(6).isPublish());
+        assertTrue(taxonService.find(7).isPublish());
     }
 
     @Test
@@ -1051,32 +1052,32 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
     public void testSetRevisionStatusForSubtree(){
 
         RevisionStatus completed = (RevisionStatus)termService.find(RevisionStatus.uuidCompleted);
-        Assert.assertNotNull(completed);
+        assertNotNull(completed);
         ZonedDateTime changed = ZonedDateTime.parse("2026-10-07T00:00+02:00[Europe/Berlin]");
         RevisionStatusInfo info = RevisionStatusInfo.NewInstance(completed, changed);
 
-        Assert.assertNull(((Taxon)taxonService.find(1)).getRevisionStatus());
-        Assert.assertNull(((Taxon)taxonService.find(2)).getRevisionStatus());
-        Assert.assertNull(((Taxon)taxonService.find(5)).getRevisionStatus());
-        Assert.assertNull(((Taxon)taxonService.find(6)).getRevisionStatus());
+        assertNull(((Taxon)taxonService.find(1)).getRevisionStatus());
+        assertNull(((Taxon)taxonService.find(2)).getRevisionStatus());
+        assertNull(((Taxon)taxonService.find(5)).getRevisionStatus());
+        assertNull(((Taxon)taxonService.find(6)).getRevisionStatus());
 
         RevisionStatusForSubtreeConfigurator config = RevisionStatusForSubtreeConfigurator.NewInstance(
                 node1Uuid, info, null);
         config.setIncludeSharedTaxa(true);
         UpdateResult result = taxonNodeService.setRevisionStatusForSubtree(config);
-        Assert.assertTrue(result.getExceptions().isEmpty());
-        Assert.assertTrue(result.isOk());
+        assertTrue(result.getExceptions().isEmpty());
+        assertTrue(result.isOk());
 
         commitAndStartNewTransaction();
         Taxon taxon1 = (Taxon)taxonService.find(1);
         Taxon taxon2 = (Taxon)taxonService.find(2);
         Taxon taxon5 = (Taxon)taxonService.find(5);
         Taxon taxon6 = (Taxon)taxonService.find(6);
-        Assert.assertEquals(completed, taxon1.getRevisionStatus().getStatus());
-        Assert.assertEquals(changed.toInstant(), taxon1.getRevisionStatus().getChanged().toInstant());
-        Assert.assertNull("Taxon2 is not in subtree", taxon2.getRevisionStatus());
-        Assert.assertEquals(completed, taxon5.getRevisionStatus().getStatus());
-        Assert.assertNull("Related taxon should not be updated by default", taxon6.getRevisionStatus());
+        assertEquals(completed, taxon1.getRevisionStatus().getStatus());
+        assertEquals(changed.toInstant(), taxon1.getRevisionStatus().getChanged().toInstant());
+        assertNull(taxon2.getRevisionStatus(), "Taxon2 is not in subtree");
+        assertEquals(completed, taxon5.getRevisionStatus().getStatus());
+        assertNull(taxon6.getRevisionStatus(), "Related taxon should not be updated by default");
 
         // overwriteExisting=false: already set taxa stay unchanged when another status is requested
         RevisionStatus inProcess = (RevisionStatus)termService.find(RevisionStatus.uuidInProcess);
@@ -1086,15 +1087,14 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         taxonNodeService.setRevisionStatusForSubtree(config);
         commitAndStartNewTransaction();
         taxon1 = (Taxon)taxonService.find(1);
-        Assert.assertEquals("Existing revision status must not be overwritten",
-                completed, taxon1.getRevisionStatus().getStatus());
+        assertEquals(completed, taxon1.getRevisionStatus().getStatus(), "Existing revision status must not be overwritten");
 
         config.setIncludeMisapplications(true);
         config.setOverwriteExisting(true);
         taxonNodeService.setRevisionStatusForSubtree(config);
         commitAndStartNewTransaction();
         taxon6 = (Taxon)taxonService.find(6);
-        Assert.assertEquals(inProcess, taxon6.getRevisionStatus().getStatus());
+        assertEquals(inProcess, taxon6.getRevisionStatus().getStatus());
     }
 
     @Test
@@ -1112,23 +1112,21 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         taxonNodeService.setPublishForSubtree(config);
 
         commitAndStartNewTransaction();
-        Assert.assertEquals("Shared taxon must not be set", true, taxonService.find(1).isPublish());
-        Assert.assertEquals("Taxon2 is not in subtree", true, taxonService.find(2).isPublish());
-        Assert.assertEquals("Synonym of shared taxon must not be set", true, taxonService.find(3).isPublish());
-        Assert.assertEquals("Synonym4 belongs to Taxon2 which is not in subtree", true, taxonService.find(4).isPublish());
-        Assert.assertEquals("Taxon5 is in subtree and not shared => should be set to unpublished", publish, taxonService.find(5).isPublish());
-        Assert.assertEquals("Misapplied exists as taxon in classification 2 and should not be updated"
-                + " though related to taxon 5 which is updated", true, taxonService.find(6).isPublish());
-        Assert.assertEquals("Pro parte synonym7 should not be updated, as it is "
-                + "related to updated taxon5 but also to taxon2 which is not updated because not in subtree",
-                true, taxonService.find(7).isPublish());
+        assertEquals(true, taxonService.find(1).isPublish(), "Shared taxon must not be set");
+        assertEquals(true, taxonService.find(2).isPublish(), "Taxon2 is not in subtree");
+        assertEquals(true, taxonService.find(3).isPublish(), "Synonym of shared taxon must not be set");
+        assertEquals(true, taxonService.find(4).isPublish(), "Synonym4 belongs to Taxon2 which is not in subtree");
+        assertEquals(publish, taxonService.find(5).isPublish(), "Taxon5 is in subtree and not shared => should be set to unpublished");
+        assertEquals(true, taxonService.find(6).isPublish(), "Misapplied exists as taxon in classification 2 and should not be updated"
+                + " though related to taxon 5 which is updated");
+        assertEquals(true, taxonService.find(7).isPublish(), "Pro parte synonym7 should not be updated, as it is "
+                + "related to updated taxon5 but also to taxon2 which is not updated because not in subtree");
 
         taxonService.find(2).setPublish(false);
         taxonNodeService.setPublishForSubtree(config);
         commitAndStartNewTransaction();
-        Assert.assertEquals("Pro parte synonym7 should be updated now, as taxon2 is now unpublished"
-                + " and therefore the noShared function is not relevant anymore",
-                publish, taxonService.find(7).isPublish());
+        assertEquals(publish, taxonService.find(7).isPublish(), "Pro parte synonym7 should be updated now, as taxon2 is now unpublished"
+                + " and therefore the noShared function is not relevant anymore");
     }
 
     @Test
@@ -1136,12 +1134,12 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
     public void testGetTaxonDistributionDTO(){
         List<UUID> uuidList = Arrays.asList(node1Uuid, node2Uuid, node4Uuid);
         List<TaxonDistributionDTO> dtos = this.taxonNodeService.getTaxonDistributionDTO(uuidList, null, true, DistributionDescription.UseAlreadyExisting);
-        Assert.assertEquals("Children should be deduplicated", 3, dtos.size());
+        assertEquals(3, dtos.size(), "Children should be deduplicated");
         //note: the following ordering is not given by definition (as the method does not guarantee a certain order)
         //      but is used as pseudo test here for the correctnes of the algorithm as it is currently expected
-        Assert.assertEquals("First node comes first", node1Uuid, dtos.get(0).getTaxonNodeDto().getUuid());
-        Assert.assertEquals("Child of first node comes second", node4Uuid, dtos.get(1).getTaxonNodeDto().getUuid());
-        Assert.assertEquals("Second node comes third", node2Uuid, dtos.get(2).getTaxonNodeDto().getUuid());
+        assertEquals(node1Uuid, dtos.get(0).getTaxonNodeDto().getUuid(), "First node comes first");
+        assertEquals(node4Uuid, dtos.get(1).getTaxonNodeDto().getUuid(), "Child of first node comes second");
+        assertEquals(node2Uuid, dtos.get(2).getTaxonNodeDto().getUuid(), "Second node comes third");
         //third node is child of firt node and therefore came second already
     }
 
@@ -1338,10 +1336,10 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         //test result
         rootNode = taxonNodeService.find(tree.getRootNode().getUuid());
         rootNode.getChildNodes();
-        Assert.assertEquals(2, rootNode.getChildNodes().size());
-        Assert.assertEquals(child2.getUuid(), rootNode.getChildNodes().get(0).getUuid());
-        Assert.assertEquals(child3.getUuid(), rootNode.getChildNodes().get(1).getUuid());
-        Assert.assertEquals("Should be root + 2 children", 3, taxonNodeService.count(TaxonNode.class));
+        assertEquals(2, rootNode.getChildNodes().size());
+        assertEquals(child2.getUuid(), rootNode.getChildNodes().get(0).getUuid());
+        assertEquals(child3.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        assertEquals(3, taxonNodeService.count(TaxonNode.class), "Should be root + 2 children");
         commitAndStartNewTransaction();
 
 //      System.out.println("NEXT");
@@ -1371,10 +1369,10 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 
         rootNode = taxonNodeService.find(classification.getRootNode().getUuid());
         rootNode.getChildNodes();
-        Assert.assertEquals(2, rootNode.getChildNodes().size());
-        Assert.assertEquals(child3.getUuid(), rootNode.getChildNodes().get(0).getUuid());
-        Assert.assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
-        Assert.assertEquals("Should be root + 2 children", 3, taxonNodeService.count(TaxonNode.class));
+        assertEquals(2, rootNode.getChildNodes().size());
+        assertEquals(child3.getUuid(), rootNode.getChildNodes().get(0).getUuid());
+        assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        assertEquals(3, taxonNodeService.count(TaxonNode.class), "Should be root + 2 children");
     }
 
     @Test   //#10101
@@ -1413,13 +1411,13 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 
         rootNode = taxonNodeService.find(tree.getRootNode().getUuid());
         rootNode.getChildNodes();
-        Assert.assertEquals(2, rootNode.getChildNodes().size());
+        assertEquals(2, rootNode.getChildNodes().size());
         TaxonNode firstChild = rootNode.getChildNodes().get(0);
-        Assert.assertEquals(child2.getUuid(), firstChild.getUuid());
-        Assert.assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
-        Assert.assertEquals(1, firstChild.getChildNodes().size());
-        Assert.assertEquals(child1.getUuid(), firstChild.getChildNodes().get(0).getUuid());
-        Assert.assertEquals("Should be root + 2 children + 1 grandchild", 4, taxonNodeService.count(TaxonNode.class));
+        assertEquals(child2.getUuid(), firstChild.getUuid());
+        assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        assertEquals(1, firstChild.getChildNodes().size());
+        assertEquals(child1.getUuid(), firstChild.getChildNodes().get(0).getUuid());
+        assertEquals(4, taxonNodeService.count(TaxonNode.class), "Should be root + 2 children + 1 grandchild");
     }
 
     @Test //#10101
@@ -1453,10 +1451,10 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         //test result
         rootNode = taxonNodeService.find(tree.getRootNode().getUuid());
         rootNode.getChildNodes();
-        Assert.assertEquals(2, rootNode.getChildNodes().size());
-        Assert.assertEquals(child2.getUuid(), rootNode.getChildNodes().get(0).getUuid());
-        Assert.assertEquals(child3.getUuid(), rootNode.getChildNodes().get(1).getUuid());
-        Assert.assertEquals("Should be root + 2 children", 3, taxonNodeService.count(TaxonNode.class));
+        assertEquals(2, rootNode.getChildNodes().size());
+        assertEquals(child2.getUuid(), rootNode.getChildNodes().get(0).getUuid());
+        assertEquals(child3.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        assertEquals(3, taxonNodeService.count(TaxonNode.class), "Should be root + 2 children");
         commitAndStartNewTransaction();
 
 //      System.out.println("NEXT");
@@ -1480,10 +1478,10 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 
         rootNode = taxonNodeService.find(classification.getRootNode().getUuid());
         rootNode.getChildNodes();
-        Assert.assertEquals(2, rootNode.getChildNodes().size());
-        Assert.assertEquals(child3.getUuid(), rootNode.getChildNodes().get(0).getUuid());
-        Assert.assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
-        Assert.assertEquals("Should be root + 2 children", 3, taxonNodeService.count(TaxonNode.class));
+        assertEquals(2, rootNode.getChildNodes().size());
+        assertEquals(child3.getUuid(), rootNode.getChildNodes().get(0).getUuid());
+        assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        assertEquals(3, taxonNodeService.count(TaxonNode.class), "Should be root + 2 children");
 
         //TODO implement testSaveDetachedWithMove like in TermNode and PolytomousKeyNode service tests
     }
@@ -1499,8 +1497,8 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 
         Classification classificationClone = (Classification) taxonNodeService.cloneSubtree(config).getCdmEntity();
 
-        assertEquals("# of direct children does not match", originalClassification.getChildNodes().size(), classificationClone.getChildNodes().size());
-        assertEquals("# of all nodes does not match", originalClassification.getAllNodes().size(), classificationClone.getAllNodes().size());
+        assertEquals(originalClassification.getChildNodes().size(), classificationClone.getChildNodes().size(), "# of direct children does not match");
+        assertEquals(originalClassification.getAllNodes().size(), classificationClone.getAllNodes().size(), "# of all nodes does not match");
 
         Set<UUID> originalTaxonSecUuids = originalClassification.getAllNodes().stream().map(tn -> tn.getTaxon().getSec().getUuid()).collect(Collectors.toSet());
         for (TaxonNode clonedTaxonNode : classificationClone.getChildNodes()) {
@@ -1520,7 +1518,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         //test reuse taxon
         config.setReuseTaxa(true);
         classificationClone = (Classification) taxonNodeService.cloneSubtree(config).getCdmEntity();
-        assertEquals("# of direct children does not match", originalClassification.getChildNodes().size(), classificationClone.getChildNodes().size());
+        assertEquals(originalClassification.getChildNodes().size(), classificationClone.getChildNodes().size(), "# of direct children does not match");
         originalTaxonSecUuids = originalClassification.getAllNodes().stream().map(tn -> tn.getTaxon().getSec().getUuid()).collect(Collectors.toSet());
         for (TaxonNode taxonNode : classificationClone.getChildNodes()) {
             //test no reuse of taxon
@@ -1567,7 +1565,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
                 originalClassification.getRootNode().getUuid(), "Cloned classification");
         config.setDoRecursive(false);
         classificationClone = (Classification) taxonNodeService.cloneSubtree(config).getCdmEntity();
-        Assert.assertTrue(classificationClone.getRootNode().getChildNodes().isEmpty());
+        assertTrue(classificationClone.getRootNode().getChildNodes().isEmpty());
 
         //no recursive for root
         config = SubtreeCloneConfigurator.NewBaseInstance(
@@ -1575,10 +1573,10 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         config.setDoRecursive(false);
         classificationClone = (Classification) taxonNodeService.cloneSubtree(config).getCdmEntity();
         List<TaxonNode> nodes = classificationClone.getRootNode().getChildNodes();
-        Assert.assertEquals(1, nodes.size());
+        assertEquals(1, nodes.size());
         Taxon clonedTaxon = nodes.iterator().next().getTaxon();
-        Assert.assertEquals("Name should be the same as for the original taxon", UUID.fromString("301e2bf0-85a4-442a-93f6-63d3b9ee8c3d"), clonedTaxon.getName().getUuid());
-        Assert.assertTrue(nodes.iterator().next().getChildNodes().isEmpty());
+        assertEquals(UUID.fromString("301e2bf0-85a4-442a-93f6-63d3b9ee8c3d"), clonedTaxon.getName().getUuid(), "Name should be the same as for the original taxon");
+        assertTrue(nodes.iterator().next().getChildNodes().isEmpty());
     }
 
     @Override

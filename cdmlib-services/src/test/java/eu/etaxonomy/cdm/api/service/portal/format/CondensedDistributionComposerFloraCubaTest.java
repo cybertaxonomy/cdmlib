@@ -8,14 +8,15 @@
 */
 package eu.etaxonomy.cdm.api.service.portal.format;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistribution;
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
@@ -66,7 +67,7 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
     private static UUID uuidStatusDoubtfullyNativeError = UUID.fromString("71b72e24-c2b6-44a5-bdab-39f083bf0f06");
 
     @SuppressWarnings("unchecked")
-    @BeforeClass
+    @BeforeAll
     public static void setUpBeforeClass() throws Exception {
 
         defineSymbolsForExistingTerms();
@@ -116,7 +117,7 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
 //      statusSymbols.put(UUID.fromString("71b72e24-c2b6-44a5-bdab-39f083bf0f06"), "-d");
     }
 
-    @Before
+    @BeforeEach
     public void setUp(){
         config = CondensedDistributionConfiguration.NewCubaInstance();
     }
@@ -140,9 +141,7 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
                 filteredDistributions, areaTree, null, config);
         String condensedString = condensedDistribution.toString();
 
-        Assert.assertEquals("Condensed string for Cuba differs",
-                "n<b>Cu</b>(-d<b>CuW</b>(-c<b>PR*</b>) (c)<b>CuE</b>(n<b>Ho</b>))" + config.outOfScopeAreasSeperator + "<b>Bah</b> ?<b>VM</b>",
-                condensedString);
+        assertEquals("n<b>Cu</b>(-d<b>CuW</b>(-c<b>PR*</b>) (c)<b>CuE</b>(n<b>Ho</b>))" + config.outOfScopeAreasSeperator + "<b>Bah</b> ?<b>VM</b>", condensedString, "Condensed string for Cuba differs");
 
         //TODO work in progress
     }
@@ -174,9 +173,7 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
         CondensedDistribution condensedDistribution = composer.createCondensedDistribution(
                 filteredDistributions, areaTree, null, config);
 
-        Assert.assertEquals("Condensed string for Cuba differs",
-                "nCu(-dCuW(PR* Art Hab* May Mat IJ) (c)CuE(nHo -cGu))" + config.outOfScopeAreasSeperator + "Bah ?VM",
-                condensedDistribution.toString());
+        assertEquals("nCu(-dCuW(PR* Art Hab* May Mat IJ) (c)CuE(nHo -cGu))" + config.outOfScopeAreasSeperator + "Bah ?VM", condensedDistribution.toString(), "Condensed string for Cuba differs");
 
         //TODO work in progress
 
@@ -185,9 +182,7 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
         config = CondensedDistributionConfiguration.NewDefaultInstance();
         config.statusSymbolField = SymbolUsage.Symbol1;
         condensedDistribution = composer.createCondensedDistribution(filteredDistributions, areaTree, null, config);
-        Assert.assertEquals("Condensed string for Cuba differs",
-                "n (c)CuE -dCuW(<b>Art Hab* IJ Mat May PR*</b>) [(c)CuE(-cGu nHo)]" + config.outOfScopeAreasSeperator + "<b>Bah</b> ?VM",
-                condensedDistribution.toString());
+        assertEquals("n (c)CuE -dCuW(<b>Art Hab* IJ Mat May PR*</b>) [(c)CuE(-cGu nHo)]" + config.outOfScopeAreasSeperator + "<b>Bah</b> ?VM", condensedDistribution.toString(), "Condensed string for Cuba differs");
         //Note: CuE is handled as both native and introduced as (c) is not yet defined as "introduced" status. Currently
         //      introduced status are hardcoded in PresenceAbsence term. This will probably change in future by becoming an own attribute like "isPresent"
     }

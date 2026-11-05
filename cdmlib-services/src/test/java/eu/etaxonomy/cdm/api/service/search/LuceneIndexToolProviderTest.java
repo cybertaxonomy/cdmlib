@@ -8,11 +8,12 @@
 */
 package eu.etaxonomy.cdm.api.service.search;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.FileNotFoundException;
 
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.queryparser.complexPhrase.ComplexPhraseQueryParser;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,8 +31,8 @@ public class LuceneIndexToolProviderTest extends CdmServicesSpringIntegrationTes
 
     @Test
     public void testgetQueryParserFor_1(){
-        Assert.assertEquals(QueryParser.class, luceneIndexToolProvider.getQueryParserFor(Taxon.class, false).getClass());
-        Assert.assertEquals(ComplexPhraseQueryParser.class, luceneIndexToolProvider.getQueryParserFor(Taxon.class, true).getClass());
+        assertEquals(QueryParser.class, luceneIndexToolProvider.getQueryParserFor(Taxon.class, false).getClass());
+        assertEquals(ComplexPhraseQueryParser.class, luceneIndexToolProvider.getQueryParserFor(Taxon.class, true).getClass());
     }
 
     @Override

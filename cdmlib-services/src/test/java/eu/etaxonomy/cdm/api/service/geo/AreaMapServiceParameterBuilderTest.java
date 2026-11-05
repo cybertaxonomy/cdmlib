@@ -8,8 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.geo;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.Color;
 import java.io.FileNotFoundException;
@@ -30,7 +29,6 @@ import java.util.UUID;
 import org.apache.hc.client5.http.ClientProtocolException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -110,8 +108,7 @@ public class AreaMapServiceParameterBuilderTest extends CdmServicesTransactional
                 config, distributions, areaTree, statusTree, presenceAbsenceColorMap,
                 mapping).getMapUriParams();
         logger.warn(result);
-        Assert.assertTrue("WebServiceUrl must contain country part for Germany, but was " + result,
-                result.matches(".*ad=country_earth(%3A|:)gmi_cntry:.:DEU.*"));
+        assertTrue(result.matches(".*ad=country_earth(%3A|:)gmi_cntry:.:DEU.*"), "WebServiceUrl must contain country part for Germany, but was " + result);
     }
     
 
@@ -149,18 +146,18 @@ public class AreaMapServiceParameterBuilderTest extends CdmServicesTransactional
         //TODO Set semantics is not determined
         //String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
         logger.debug(result);
-        assertTrue("but is: " + result, result.matches(".*ad=tdwg[1-4].*"));
-        assertTrue("but is: " + result, result.matches(".*tdwg2:[a-d]:14[\\|&].*") );
-        assertTrue("but is: " + result, result.matches(".*[a-d]:FRA,BGM[\\|&].*") || result.matches(".*[a-d]:BGM,FRA[\\|&].*") );
-        assertTrue("but is: " + result, result.matches(".*[a-d]:GER[\\|&].*") );
-        assertTrue("but is: " + result, result.matches(".*[a-d]:SPA[\\|&].*") );
-        assertTrue("but is: " + result, result.matches(".*tdwg4:[a-d]:INDAP[\\|&].*") );
+        assertTrue(result.matches(".*ad=tdwg[1-4].*"), "but is: " + result);
+        assertTrue(result.matches(".*tdwg2:[a-d]:14[\\|&].*"), "but is: " + result);
+        assertTrue(result.matches(".*[a-d]:FRA,BGM[\\|&].*") || result.matches(".*[a-d]:BGM,FRA[\\|&].*"), "but is: " + result);
+        assertTrue(result.matches(".*[a-d]:GER[\\|&].*"), "but is: " + result);
+        assertTrue(result.matches(".*[a-d]:SPA[\\|&].*"), "but is: " + result);
+        assertTrue(result.matches(".*tdwg4:[a-d]:INDAP[\\|&].*"), "but is: " + result);
 
         //colors
-        assertTrue("should include #ffff00 (yellow) for cultivated. But was: " + result, result.matches(".*[a-d]:ffff00,,0\\.1,.*"));
-        assertTrue("should include #404040 (dark grey) for absent. But was: " + result, result.matches(".*[a-d]:404040,,0\\.1,.*"));
-        assertTrue("should include #ff7f00 (flush orange) for introduced. But was: " + result, result.matches(".*[a-d]:ff7f00,,0\\.1,.*"));
-        assertTrue("should include #0000ff (blue) for present. But was: " + result, result.matches(".*[a-d]:0000ff,,0\\.1,.*"));
+        assertTrue(result.matches(".*[a-d]:ffff00,,0\\.1,.*"), "should include #ffff00 (yellow) for cultivated. But was: " + result);
+        assertTrue(result.matches(".*[a-d]:404040,,0\\.1,.*"), "should include #404040 (dark grey) for absent. But was: " + result);
+        assertTrue(result.matches(".*[a-d]:ff7f00,,0\\.1,.*"), "should include #ff7f00 (flush orange) for introduced. But was: " + result);
+        assertTrue(result.matches(".*[a-d]:0000ff,,0\\.1,.*"), "should include #0000ff (blue) for present. But was: " + result);
 
         //assertTrue(result.matches("0000ff"));
         //TODO continue
@@ -224,9 +221,9 @@ public class AreaMapServiceParameterBuilderTest extends CdmServicesTransactional
         //String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
 
         logger.debug(result);
-        assertTrue("but is: " + result, result.matches(".*ad=vmap0_as_bnd_political_boundary_a%3Anam:.*"));
-        assertTrue("but is: " + result, result.matches(".*(PULAU\\+BANGKA%23SUMATERA\\+SELATAN).*") );
-        assertTrue("but is: " + result, result.matches(".*(BALI).*") );
+        assertTrue(result.matches(".*ad=vmap0_as_bnd_political_boundary_a%3Anam:.*"), "but is: " + result);
+        assertTrue(result.matches(".*(PULAU\\+BANGKA%23SUMATERA\\+SELATAN).*"), "but is: " + result);
+        assertTrue(result.matches(".*(BALI).*"), "but is: " + result);
 
         // request map image from webservice
         subTestWithEditMapService(result);

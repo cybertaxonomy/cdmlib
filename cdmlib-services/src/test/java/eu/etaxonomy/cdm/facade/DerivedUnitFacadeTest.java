@@ -8,14 +8,14 @@
  */
 package eu.etaxonomy.cdm.facade;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
@@ -284,19 +284,16 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
     public void testGetFieldObjectImageGalleryBooleanPersisted() {
         UUID specimenUUID = UUID.fromString("25383fc8-789b-4eff-92d3-a770d0622351");
         DerivedUnit specimen = (DerivedUnit) service.load(specimenUUID);
-        assertNotNull("Specimen should exist (persisted)", specimen);
+        assertNotNull(specimen, "Specimen should exist (persisted)");
         try {
             DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(specimen);
             SpecimenDescription imageGallery = facade.getFieldObjectImageGallery(true);
-            assertNotNull("Image gallery should exist", imageGallery);
-            assertEquals("UUID should be equal to the persisted uuid",
-                    UUID.fromString("8cb772e9-1577-45c6-91ab-dbec1413c060"),
-                    imageGallery.getUuid());
-            assertEquals("The image gallery should be flagged as such",true, imageGallery.isImageGallery());
-            assertEquals("There should be one TextData in image gallery", 1,
-                    imageGallery.getElements().size());
+            assertNotNull(imageGallery, "Image gallery should exist");
+            assertEquals(UUID.fromString("8cb772e9-1577-45c6-91ab-dbec1413c060"), imageGallery.getUuid(), "UUID should be equal to the persisted uuid");
+            assertEquals(true, imageGallery.isImageGallery(), "The image gallery should be flagged as such");
+            assertEquals(1, imageGallery.getElements().size(), "There should be one TextData in image gallery");
             List<Media> media = imageGallery.getElements().iterator().next().getMedia();
-            assertEquals("There should be 1 media", 1, media.size());
+            assertEquals(1, media.size(), "There should be 1 media");
         } catch (DerivedUnitFacadeNotSupportedException e) {
             e.printStackTrace();
             fail();
@@ -309,21 +306,16 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
 	public void testGetDerivedUnitImageGalleryBooleanPersisted() {
 		UUID specimenUUID = UUID.fromString("25383fc8-789b-4eff-92d3-a770d0622351");
 		DerivedUnit specimen = (DerivedUnit) service.load(specimenUUID);
-		assertNotNull("Specimen should exist (persisted)", specimen);
+		assertNotNull(specimen, "Specimen should exist (persisted)");
 		try {
 			DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(specimen);
 			SpecimenDescription imageGallery = facade.getDerivedUnitImageGallery(true);
-			assertNotNull("Image gallery should exist", imageGallery);
-			assertEquals("UUID should be equal to the persisted uuid",
-					UUID.fromString("cb03acc4-8363-4020-aeef-ea8a8bcc0fe9"),
-					imageGallery.getUuid());
-			assertEquals("The image gallery should be flagged as such",
-					true, imageGallery.isImageGallery());
-			assertEquals(
-					"There should be one TextData in image gallery", 1,
-					imageGallery.getElements().size());
+			assertNotNull(imageGallery, "Image gallery should exist");
+			assertEquals(UUID.fromString("cb03acc4-8363-4020-aeef-ea8a8bcc0fe9"), imageGallery.getUuid(), "UUID should be equal to the persisted uuid");
+			assertEquals(true, imageGallery.isImageGallery(), "The image gallery should be flagged as such");
+			assertEquals(1, imageGallery.getElements().size(), "There should be one TextData in image gallery");
 			List<Media> media = imageGallery.getElements().iterator().next().getMedia();
-			assertEquals("There should be 1 media", 1, media.size());
+			assertEquals(1, media.size(), "There should be 1 media");
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			e.printStackTrace();
 			fail();
@@ -336,8 +328,8 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
 		try {
 			DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(specimen);
 			SpecimenDescription imageGallery = facade.getDerivedUnitImageGallery(true);
-			assertNotNull("Image Gallery should have been created",imageGallery);
-			assertEquals("The image gallery should be flagged as such",true, imageGallery.isImageGallery());
+			assertNotNull(imageGallery, "Image Gallery should have been created");
+			assertEquals(true, imageGallery.isImageGallery(), "The image gallery should be flagged as such");
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			e.printStackTrace();
 			fail();
@@ -351,15 +343,11 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testNewInstanceGatheringEventCreated() {
-        assertNotNull("The specimen should have been created",
-                specimenFacade.innerDerivedUnit());
+        assertNotNull(specimenFacade.innerDerivedUnit(), "The specimen should have been created");
         // ???
-         assertNotNull("The derivation event should have been created",
-        		 specimenFacade.innerDerivedUnit().getDerivedFrom());
-         assertNotNull("The field unit should have been created",
-        		 specimenFacade.innerFieldUnit());
-         assertNotNull("The gathering event should have been created",
-        		 specimenFacade.innerGatheringEvent());
+         assertNotNull(specimenFacade.innerDerivedUnit().getDerivedFrom(), "The derivation event should have been created");
+         assertNotNull(specimenFacade.innerFieldUnit(), "The field unit should have been created");
+         assertNotNull(specimenFacade.innerGatheringEvent(), "The gathering event should have been created");
     }
 
     /**
@@ -369,14 +357,10 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testNewInstanceSpecimen() {
-        assertSame("Specimen should be same", specimen,
-                specimenFacade.innerDerivedUnit());
-        assertSame("Derivation event should be same", derivationEvent,
-                specimenFacade.innerDerivedUnit().getDerivedFrom());
-        assertSame("Field unit should be same", fieldUnit,
-                specimenFacade.innerFieldUnit());
-        assertSame("Gathering event should be same", gatheringEvent,
-                specimenFacade.innerGatheringEvent());
+        assertSame(specimen, specimenFacade.innerDerivedUnit(), "Specimen should be same");
+        assertSame(derivationEvent, specimenFacade.innerDerivedUnit().getDerivedFrom(), "Derivation event should be same");
+        assertSame(fieldUnit, specimenFacade.innerFieldUnit(), "Field unit should be same");
+        assertSame(gatheringEvent, specimenFacade.innerGatheringEvent(), "Gathering event should be same");
     }
 
     @Test
@@ -407,10 +391,7 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
             specimenFacade = DerivedUnitFacade.NewInstance(specimen);
             specimenFacade.setDistanceToGround(2.0);
             FieldUnit specimenFieldUnit = (FieldUnit) specimen.getDerivedFrom().getOriginals().iterator().next();
-            assertSame(
-                    "Facade gathering event and specimen gathering event should be the same",
-                    specimenFacade.innerGatheringEvent(),
-                    specimenFieldUnit.getGatheringEvent());
+            assertSame(specimenFacade.innerGatheringEvent(), specimenFieldUnit.getGatheringEvent(), "Facade gathering event and specimen gathering event should be the same");
         } catch (DerivedUnitFacadeNotSupportedException e) {
             fail("An error should not occur in NewInstance()");
         }
@@ -422,8 +403,7 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
         DerivedUnitFacade specimenFacade;
         try {
             specimenFacade = DerivedUnitFacade.NewInstance(specimen);
-            assertNull("No field unit should exists",
-                    specimenFacade.innerFieldUnit());
+            assertNull(specimenFacade.innerFieldUnit(), "No field unit should exists");
         } catch (DerivedUnitFacadeNotSupportedException e) {
             fail("An error should not occur in NewInstance()");
         }
@@ -438,9 +418,7 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
             specimenFacade = DerivedUnitFacade.NewInstance(specimen);
             specimenFacade.setEcology("Ecology");
             String plantDescription = specimenFacade.getPlantDescription();
-            assertNull(
-                    "No plantDescription should exist yet and no NPE should be thrown until now",
-                    plantDescription);
+            assertNull(plantDescription, "No plantDescription should exist yet and no NPE should be thrown until now");
         } catch (DerivedUnitFacadeNotSupportedException e) {
             fail("An error should not occur in NewInstance()");
         }
@@ -448,19 +426,19 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
 
     @Test
     public void testGetSetType() {
-        assertEquals("Type must be same", SpecimenOrObservationType.PreservedSpecimen, specimenFacade.getType());
+        assertEquals(SpecimenOrObservationType.PreservedSpecimen, specimenFacade.getType(), "Type must be same");
         SpecimenOrObservationType newType = SpecimenOrObservationType.Fossil;
         specimenFacade.setType(newType);
-        assertEquals("New type must be Fossil", newType, specimenFacade.getType());
-        assertEquals("DerivedUnit recordBasis must be set to Fossil", newType, specimenFacade.innerDerivedUnit().getRecordBasis());
+        assertEquals(newType, specimenFacade.getType(), "New type must be Fossil");
+        assertEquals(newType, specimenFacade.innerDerivedUnit().getRecordBasis(), "DerivedUnit recordBasis must be set to Fossil");
 
     }
 
     @Test
     public void testGetSetCountry() {
-        assertEquals("Country must be same", Country.GERMANY(), specimenFacade.getCountry());
+        assertEquals(Country.GERMANY(), specimenFacade.getCountry(), "Country must be same");
         specimenFacade.setCountry(Country.FRANCE());
-        assertEquals("New country must be France", Country.FRANCE(), specimenFacade.getCountry());
+        assertEquals(Country.FRANCE(), specimenFacade.getCountry(), "New country must be France");
     }
 
     /**
@@ -475,23 +453,22 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
         NamedArea newCollectingArea = NamedArea.NewInstance("A nice area",
                 "nice", "n");
         specimenFacade.addCollectingArea(newCollectingArea);
-        assertEquals("Exactly 1 area must exist", 1, specimenFacade
-                .getCollectingAreas().size());
-        assertSame("Areas should be same", newCollectingArea,
-                specimenFacade.innerFieldUnit().getGatheringEvent()
-                        .getCollectingAreas().iterator().next());
+        assertEquals(1, specimenFacade
+                .getCollectingAreas().size(), "Exactly 1 area must exist");
+        assertSame(newCollectingArea, specimenFacade.innerFieldUnit().getGatheringEvent()
+                        .getCollectingAreas().iterator().next(), "Areas should be same");
         specimenFacade.addCollectingArea(tdwgArea);
-        assertEquals("Exactly 2 areas must exist", 2, specimenFacade
-                .getCollectingAreas().size());
+        assertEquals(2, specimenFacade
+                .getCollectingAreas().size(), "Exactly 2 areas must exist");
         specimenFacade.removeCollectingArea(newCollectingArea);
-        assertEquals("Exactly 1 area must exist", 1, specimenFacade
-                .getCollectingAreas().size());
+        assertEquals(1, specimenFacade
+                .getCollectingAreas().size(), "Exactly 1 area must exist");
         NamedArea remainingArea = specimenFacade.getCollectingAreas()
                 .iterator().next();
-        assertEquals("Areas should be same", tdwgArea, remainingArea);
+        assertEquals(tdwgArea, remainingArea, "Areas should be same");
         specimenFacade.removeCollectingArea(tdwgArea);
-        assertEquals("No area should remain", 0, specimenFacade
-                .getCollectingAreas().size());
+        assertEquals(0, specimenFacade
+                .getCollectingAreas().size(), "No area should remain");
     }
 
     /**
@@ -502,9 +479,9 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
     @Test
     public void testAddCollectingAreas() {
         NamedArea firstArea = NamedArea.NewInstance("A nice area", "nice", "n");
-        assertEquals("No area must exist", 0, specimenFacade.getCollectingAreas().size());
+        assertEquals(0, specimenFacade.getCollectingAreas().size(), "No area must exist");
         specimenFacade.addCollectingArea(firstArea);
-        assertEquals("Exactly 1 area must exist", 1, specimenFacade.getCollectingAreas().size());
+        assertEquals(1, specimenFacade.getCollectingAreas().size(), "Exactly 1 area must exist");
 
         String tdwgLabel = "GER";
         NamedArea tdwgArea = termService.getAreaByTdwgAbbreviation(tdwgLabel);
@@ -514,8 +491,8 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
         areaCollection.add(secondArea);
         areaCollection.add(tdwgArea);
         specimenFacade.addCollectingAreas(areaCollection);
-        assertEquals("Exactly 3 areas must exist", 3, specimenFacade
-                .getCollectingAreas().size());
+        assertEquals(3, specimenFacade
+                .getCollectingAreas().size(), "Exactly 3 areas must exist");
 
     }
 
@@ -526,9 +503,9 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetSetAbsoluteElevation() {
-        assertEquals("Absolute elevation must be same",absoluteElevation, specimenFacade.getAbsoluteElevation());
+        assertEquals(absoluteElevation, specimenFacade.getAbsoluteElevation(), "Absolute elevation must be same");
         specimenFacade.setAbsoluteElevation(400);
-        assertEquals("Absolute elevation must be 400",Integer.valueOf(400), specimenFacade.getAbsoluteElevation());
+        assertEquals(Integer.valueOf(400), specimenFacade.getAbsoluteElevation(), "Absolute elevation must be 400");
     }
 
     /**
@@ -538,83 +515,79 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetSetAbsoluteElevationMaximum() {
-        assertEquals("Absolute elevation must be same",absoluteElevation, specimenFacade.getAbsoluteElevation());
-        assertEquals("Absolute elevation maximum must be same",absoluteElevationMaximum, specimenFacade.getAbsoluteElevationMaximum());
+        assertEquals(absoluteElevation, specimenFacade.getAbsoluteElevation(), "Absolute elevation must be same");
+        assertEquals(absoluteElevationMaximum, specimenFacade.getAbsoluteElevationMaximum(), "Absolute elevation maximum must be same");
         specimenFacade.setAbsoluteElevationMax(4);
-        assertEquals("Absolute elevation maximum must be 4", Integer.valueOf(4), specimenFacade.getAbsoluteElevationMaximum());
-        assertEquals("Absolute elevation must be same",absoluteElevation, specimenFacade.getAbsoluteElevation());
+        assertEquals(Integer.valueOf(4), specimenFacade.getAbsoluteElevationMaximum(), "Absolute elevation maximum must be 4");
+        assertEquals(absoluteElevation, specimenFacade.getAbsoluteElevation(), "Absolute elevation must be same");
 
     }
 
     @Test
     public void testGetSetAbsoluteElevationRange() {
-        assertEquals("", absoluteElevation, specimenFacade.getAbsoluteElevation());
-        assertEquals("", absoluteElevationMaximum,specimenFacade.getAbsoluteElevationMaximum());
+        assertEquals(absoluteElevation, specimenFacade.getAbsoluteElevation(), "");
+        assertEquals(absoluteElevationMaximum, specimenFacade.getAbsoluteElevationMaximum(), "");
 
         specimenFacade.setAbsoluteElevationRange(30, 36);
-        assertEquals("", Integer.valueOf(36),specimenFacade.getAbsoluteElevationMaximum());
-        assertEquals("", Integer.valueOf(30),specimenFacade.getAbsoluteElevation());
-        assertEquals("", "30" + UTF8.EN_DASH_SPATIUM + "36 m",specimenFacade.absoluteElevationToString());
-        assertEquals("", null,specimenFacade.getAbsoluteElevationText());
+        assertEquals(Integer.valueOf(36), specimenFacade.getAbsoluteElevationMaximum(), "");
+        assertEquals(Integer.valueOf(30), specimenFacade.getAbsoluteElevation(), "");
+        assertEquals("30" + UTF8.EN_DASH_SPATIUM + "36 m", specimenFacade.absoluteElevationToString(), "");
+        assertEquals(null, specimenFacade.getAbsoluteElevationText(), "");
 
         specimenFacade.setAbsoluteElevationRange(30, 35);
-        assertEquals("Odd range should not throw an exception anymore",
-        		String.format("30%s35 m", UTF8.EN_DASH_SPATIUM),specimenFacade.absoluteElevationToString());
+        assertEquals(String.format("30%s35 m", UTF8.EN_DASH_SPATIUM), specimenFacade.absoluteElevationToString(), "Odd range should not throw an exception anymore");
 
         specimenFacade.setAbsoluteElevationRange(41, null);
-        assertEquals("", null,specimenFacade.getAbsoluteElevationMaximum());
-        assertEquals("", Integer.valueOf(41),specimenFacade.getAbsoluteElevation());
-        assertEquals("", Integer.valueOf(41),specimenFacade.getAbsoluteElevation());
-        assertNull("", specimenFacade.getAbsoluteElevationText());
-        assertEquals("", "41 m",specimenFacade.absoluteElevationToString());
+        assertEquals(null, specimenFacade.getAbsoluteElevationMaximum(), "");
+        assertEquals(Integer.valueOf(41), specimenFacade.getAbsoluteElevation(), "");
+        assertEquals(Integer.valueOf(41), specimenFacade.getAbsoluteElevation(), "");
+        assertNull(specimenFacade.getAbsoluteElevationText(), "");
+        assertEquals("41 m", specimenFacade.absoluteElevationToString(), "");
 
         specimenFacade.setAbsoluteElevationRange(null, null);
-        assertNull("", specimenFacade.getAbsoluteElevation());
-        assertNull("", specimenFacade.getAbsoluteElevationMaximum());
-        assertNull("", specimenFacade.absoluteElevationToString());
+        assertNull(specimenFacade.getAbsoluteElevation(), "");
+        assertNull(specimenFacade.getAbsoluteElevationMaximum(), "");
+        assertNull(specimenFacade.absoluteElevationToString(), "");
 
     }
 
     @Test
     public void testGetSetAbsoluteElevationText() {
-        assertEquals("", absoluteElevation, specimenFacade.getAbsoluteElevation());
-        assertEquals("", absoluteElevationMaximum,specimenFacade.getAbsoluteElevationMaximum());
-        assertEquals("", null,specimenFacade.getAbsoluteElevationText());
+        assertEquals(absoluteElevation, specimenFacade.getAbsoluteElevation(), "");
+        assertEquals(absoluteElevationMaximum, specimenFacade.getAbsoluteElevationMaximum(), "");
+        assertEquals(null, specimenFacade.getAbsoluteElevationText(), "");
 
         String elevText = "approx. 30 - 35";
         specimenFacade.setAbsoluteElevationText(elevText);
-        assertEquals("", absoluteElevation, specimenFacade.getAbsoluteElevation());
-        assertEquals("", absoluteElevationMaximum,specimenFacade.getAbsoluteElevationMaximum());
-        assertEquals("", elevText,specimenFacade.absoluteElevationToString());
+        assertEquals(absoluteElevation, specimenFacade.getAbsoluteElevation(), "");
+        assertEquals(absoluteElevationMaximum, specimenFacade.getAbsoluteElevationMaximum(), "");
+        assertEquals(elevText, specimenFacade.absoluteElevationToString(), "");
 
         specimenFacade.setAbsoluteElevationRange(30, 35);
-        assertEquals("ToString should not change by setting range if text is set", elevText,specimenFacade.absoluteElevationToString());
-        assertEquals("", Integer.valueOf(30), specimenFacade.getAbsoluteElevation());
-        assertEquals("", Integer.valueOf(35),specimenFacade.getAbsoluteElevationMaximum());
+        assertEquals(elevText, specimenFacade.absoluteElevationToString(), "ToString should not change by setting range if text is set");
+        assertEquals(Integer.valueOf(30), specimenFacade.getAbsoluteElevation(), "");
+        assertEquals(Integer.valueOf(35), specimenFacade.getAbsoluteElevationMaximum(), "");
 
         specimenFacade.setAbsoluteElevationRange(41, null);
-        assertEquals("ToString should not change by setting range if text is set", elevText,specimenFacade.absoluteElevationToString());
-        assertEquals("", Integer.valueOf(41), specimenFacade.getAbsoluteElevation());
-        assertEquals("", null,specimenFacade.getAbsoluteElevationMaximum());
+        assertEquals(elevText, specimenFacade.absoluteElevationToString(), "ToString should not change by setting range if text is set");
+        assertEquals(Integer.valueOf(41), specimenFacade.getAbsoluteElevation(), "");
+        assertEquals(null, specimenFacade.getAbsoluteElevationMaximum(), "");
 
         specimenFacade.setAbsoluteElevationText(null);
-        assertNull("", specimenFacade.getAbsoluteElevationText());
-        assertEquals("ToString should change by setting text to null", "41 m",specimenFacade.absoluteElevationToString());
-        assertEquals("", Integer.valueOf(41), specimenFacade.getAbsoluteElevation());
-        assertEquals("", null,specimenFacade.getAbsoluteElevationMaximum());
+        assertNull(specimenFacade.getAbsoluteElevationText(), "");
+        assertEquals("41 m", specimenFacade.absoluteElevationToString(), "ToString should change by setting text to null");
+        assertEquals(Integer.valueOf(41), specimenFacade.getAbsoluteElevation(), "");
+        assertEquals(null, specimenFacade.getAbsoluteElevationMaximum(), "");
     }
 
     /**
      */
     @Test
     public void testGetSetCollector() {
-        assertNotNull("Collector must not be null",
-                specimenFacade.getCollector());
-        assertEquals("Collector must be same", collector,
-                specimenFacade.getCollector());
+        assertNotNull(specimenFacade.getCollector(), "Collector must not be null");
+        assertEquals(collector, specimenFacade.getCollector(), "Collector must be same");
         specimenFacade.setCollector(null);
-        assertNull("Collector must be null",
-                specimenFacade.getCollector());
+        assertNull(specimenFacade.getCollector(), "Collector must be null");
     }
 
     /**
@@ -624,11 +597,9 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetSetCollectingMethod() {
-        assertEquals("Collecting method must be same", collectingMethod,
-                specimenFacade.getCollectingMethod());
+        assertEquals(collectingMethod, specimenFacade.getCollectingMethod(), "Collecting method must be same");
         specimenFacade.setCollectingMethod("new method");
-        assertEquals("Collecting method must be 'new method'",
-                "new method", specimenFacade.getCollectingMethod());
+        assertEquals("new method", specimenFacade.getCollectingMethod(), "Collecting method must be 'new method'");
     }
 
     /**
@@ -638,9 +609,9 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetSetDistanceToGround() {
-        assertEquals("Distance to ground must be same",distanceToGround, specimenFacade.getDistanceToGround());
+        assertEquals(distanceToGround, specimenFacade.getDistanceToGround(), "Distance to ground must be same");
         specimenFacade.setDistanceToGround(5.0);
-        assertEquals("Distance to ground must be 5", Double.valueOf(5), specimenFacade.getDistanceToGround());
+        assertEquals(Double.valueOf(5), specimenFacade.getDistanceToGround(), "Distance to ground must be 5");
     }
 
     /**
@@ -650,47 +621,46 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetDistanceToWaterSurface() {
-        assertEquals("Distance to surface must be same", distanceToSurface, specimenFacade.getDistanceToWaterSurface());
+        assertEquals(distanceToSurface, specimenFacade.getDistanceToWaterSurface(), "Distance to surface must be same");
         specimenFacade.setDistanceToWaterSurface(6.0);
-        assertEquals("Distance to surface must be 6", Double.valueOf(6), specimenFacade.getDistanceToWaterSurface());
+        assertEquals(Double.valueOf(6), specimenFacade.getDistanceToWaterSurface(), "Distance to surface must be 6");
         // empty facade tests
-        assertNull("Empty facace must not have any gathering values", emptyFacade.getDistanceToWaterSurface());
+        assertNull(emptyFacade.getDistanceToWaterSurface(), "Empty facace must not have any gathering values");
         emptyFacade.setDistanceToWaterSurface(13.0);
-        assertNotNull("Field unit must exist if distance to water exists", emptyFacade.getFieldUnit(false));
-        assertNotNull("Gathering event must exist if distance to water exists", emptyFacade.getGatheringEvent(false));
+        assertNotNull(emptyFacade.getFieldUnit(false), "Field unit must exist if distance to water exists");
+        assertNotNull(emptyFacade.getGatheringEvent(false), "Gathering event must exist if distance to water exists");
         FieldUnit specimenFieldUnit = (FieldUnit) emptyFacade
                 .innerDerivedUnit().getDerivedFrom().getOriginals().iterator().next();
-        assertSame("Gathering event of facade and of specimen must be the same",
-                specimenFieldUnit.getGatheringEvent(), emptyFacade.getGatheringEvent(false));
+        assertSame(specimenFieldUnit.getGatheringEvent(), emptyFacade.getGatheringEvent(false), "Gathering event of facade and of specimen must be the same");
     }
 
     @Test
     public void testGetSetDistanceToWaterText() {
-        assertEquals("", distanceToSurface, specimenFacade.getDistanceToWaterSurface());
-        assertEquals("", distanceToSurfaceMax ,specimenFacade.getDistanceToWaterSurfaceMax());
-        assertEquals("", null,specimenFacade.getDistanceToWaterSurfaceText());
+        assertEquals(distanceToSurface, specimenFacade.getDistanceToWaterSurface(), "");
+        assertEquals(distanceToSurfaceMax, specimenFacade.getDistanceToWaterSurfaceMax(), "");
+        assertEquals(null, specimenFacade.getDistanceToWaterSurfaceText(), "");
 
         String distText = "approx. 0.3 - 0.6";
         specimenFacade.setDistanceToWaterSurfaceText(distText);
-        assertEquals("", distanceToSurface, specimenFacade.getDistanceToWaterSurface());
-        assertEquals("", distanceToSurfaceMax,specimenFacade.getDistanceToWaterSurfaceMax());
-        assertEquals("", distText,specimenFacade.distanceToWaterSurfaceToString());
+        assertEquals(distanceToSurface, specimenFacade.getDistanceToWaterSurface(), "");
+        assertEquals(distanceToSurfaceMax, specimenFacade.getDistanceToWaterSurfaceMax(), "");
+        assertEquals(distText, specimenFacade.distanceToWaterSurfaceToString(), "");
 
         specimenFacade.setDistanceToWaterSurfaceRange(0.6, 1.4);
-        assertEquals("ToString should not change by setting range if text is set", distText,specimenFacade.distanceToWaterSurfaceToString());
-        assertEquals("", Double.valueOf(0.6), specimenFacade.getDistanceToWaterSurface());
-        assertEquals("", Double.valueOf(1.4),specimenFacade.getDistanceToWaterSurfaceMax());
+        assertEquals(distText, specimenFacade.distanceToWaterSurfaceToString(), "ToString should not change by setting range if text is set");
+        assertEquals(Double.valueOf(0.6), specimenFacade.getDistanceToWaterSurface(), "");
+        assertEquals(Double.valueOf(1.4), specimenFacade.getDistanceToWaterSurfaceMax(), "");
 
         specimenFacade.setDistanceToWaterSurfaceRange(41.2, null);
-        assertEquals("ToString should not change by setting range if text is set", distText,specimenFacade.distanceToWaterSurfaceToString());
-        assertEquals("", Double.valueOf(41.2), specimenFacade.getDistanceToWaterSurface());
-        assertEquals("", null,specimenFacade.getDistanceToWaterSurfaceMax());
+        assertEquals(distText, specimenFacade.distanceToWaterSurfaceToString(), "ToString should not change by setting range if text is set");
+        assertEquals(Double.valueOf(41.2), specimenFacade.getDistanceToWaterSurface(), "");
+        assertEquals(null, specimenFacade.getDistanceToWaterSurfaceMax(), "");
 
         specimenFacade.setDistanceToWaterSurfaceText(null);
-        assertNull("", specimenFacade.getDistanceToWaterSurfaceText());
-        assertEquals("ToString should change by setting text to null", "41.2 m",specimenFacade.distanceToWaterSurfaceToString());
-        assertEquals("", Double.valueOf(41.2), specimenFacade.getDistanceToWaterSurface());
-        assertEquals("", null,specimenFacade.getDistanceToWaterSurfaceMax());
+        assertNull(specimenFacade.getDistanceToWaterSurfaceText(), "");
+        assertEquals("41.2 m", specimenFacade.distanceToWaterSurfaceToString(), "ToString should change by setting text to null");
+        assertEquals(Double.valueOf(41.2), specimenFacade.getDistanceToWaterSurface(), "");
+        assertEquals(null, specimenFacade.getDistanceToWaterSurfaceMax(), "");
     }
 
     /**
@@ -699,13 +669,10 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetSetExactLocation() {
-        assertNotNull("Exact location must not be null",
-                specimenFacade.getExactLocation());
-        assertEquals("Exact location must be same", exactLocation,
-                specimenFacade.getExactLocation());
+        assertNotNull(specimenFacade.getExactLocation(), "Exact location must not be null");
+        assertEquals(exactLocation, specimenFacade.getExactLocation(), "Exact location must be same");
         specimenFacade.setExactLocation(null);
-        assertNull("Exact location must be null",
-                specimenFacade.getExactLocation());
+        assertNull(specimenFacade.getExactLocation(), "Exact location must be null");
     }
 
     @Test
@@ -715,13 +682,11 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
             specimenFacade.setExactLocationByParsing("112\u00B034'20\"W",
                     "34\u00B030,34'N", null, null);
             point1 = specimenFacade.getExactLocation();
-            assertNotNull("", point1.getLatitude());
+            assertNotNull(point1.getLatitude(), "");
             System.out.println(point1.getLatitude().toString());
-            assertTrue("",
-                    point1.getLatitude().toString().startsWith("34.505"));
+            assertTrue(point1.getLatitude().toString().startsWith("34.505"), "");
             System.out.println(point1.getLongitude().toString());
-            assertTrue("",
-                    point1.getLongitude().toString().startsWith("-112.5722"));
+            assertTrue(point1.getLongitude().toString().startsWith("-112.5722"), "");
 
         } catch (ParseException e) {
             fail("No parsing error should occur");
@@ -735,14 +700,9 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetSetGatheringEventDescription() {
-        assertEquals("Gathering event description must be same",
-                gatheringEventDescription,
-                specimenFacade.getGatheringEventDescription());
+        assertEquals(gatheringEventDescription, specimenFacade.getGatheringEventDescription(), "Gathering event description must be same");
         specimenFacade.setGatheringEventDescription("new description");
-        assertEquals(
-                "Gathering event description must be 'new description' now",
-                "new description",
-                specimenFacade.getGatheringEventDescription());
+        assertEquals("new description", specimenFacade.getGatheringEventDescription(), "Gathering event description must be 'new description' now");
     }
 
     /**
@@ -751,11 +711,11 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetTimeperiod() {
-        assertNotNull("Gathering period must not be null", specimenFacade.getGatheringPeriod());
-        assertFalse("Gathering period must not be empty", specimenFacade.getGatheringPeriod().isEmpty());
-        assertEquals("Gathering period must be same", gatheringPeriod, specimenFacade.getGatheringPeriod());
+        assertNotNull(specimenFacade.getGatheringPeriod(), "Gathering period must not be null");
+        assertFalse(specimenFacade.getGatheringPeriod().isEmpty(), "Gathering period must not be empty");
+        assertEquals(gatheringPeriod, specimenFacade.getGatheringPeriod(), "Gathering period must be same");
         specimenFacade.setGatheringPeriod(null);
-        assertTrue("Gathering period must be null", specimenFacade.getGatheringPeriod().isEmpty());
+        assertTrue(specimenFacade.getGatheringPeriod().isEmpty(), "Gathering period must be null");
     }
 
     @Test
@@ -767,19 +727,15 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
         // field unit may not be initialized from the beginning. Than the
         // following
         // assert should be set to assertNull
-        assertTrue("field object should not be null (depends on specimen facade initialization !!)",
-                specimenFacade.hasFieldObject());
+        assertTrue(specimenFacade.hasFieldObject(), "field object should not be null (depends on specimen facade initialization !!)");
 
         Field fieldUnitField = DerivedUnitFacade.class.getDeclaredField("fieldUnit");
         fieldUnitField.setAccessible(true);
         fieldUnitField.set(specimenFacade, null);
-        assertFalse("The field unit should be null now",
-                specimenFacade.hasFieldObject());
+        assertFalse(specimenFacade.hasFieldObject(), "The field unit should be null now");
 
         specimenFacade.setDistanceToGround(33.0);
-        assertTrue(
-                "The field unit should have been created again",
-                specimenFacade.hasFieldObject());
+        assertTrue(specimenFacade.hasFieldObject(), "The field unit should have been created again");
     }
 
     /**
@@ -789,34 +745,21 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testAddGetRemoveFieldObjectDefinition() {
-        assertEquals("There should be no definition yet", 0,
-                specimenFacade.getFieldObjectDefinition().size());
+        assertEquals(0, specimenFacade.getFieldObjectDefinition().size(), "There should be no definition yet");
         specimenFacade.addFieldObjectDefinition("Tres interesant",
                 Language.FRENCH());
-        assertEquals("There should be exactly one definition", 1,
-                specimenFacade.getFieldObjectDefinition().size());
-        assertEquals(
-                "The French definition should be 'Tres interesant'",
-                "Tres interesant", specimenFacade.getFieldObjectDefinition()
-                        .get(Language.FRENCH()).getText());
-        assertEquals(
-                "The French definition should be 'Tres interesant'",
-                "Tres interesant",
-                specimenFacade.getFieldObjectDefinition(Language.FRENCH()));
+        assertEquals(1, specimenFacade.getFieldObjectDefinition().size(), "There should be exactly one definition");
+        assertEquals("Tres interesant", specimenFacade.getFieldObjectDefinition()
+                        .get(Language.FRENCH()).getText(), "The French definition should be 'Tres interesant'");
+        assertEquals("Tres interesant", specimenFacade.getFieldObjectDefinition(Language.FRENCH()), "The French definition should be 'Tres interesant'");
         specimenFacade.addFieldObjectDefinition("Sehr interessant",
                 Language.GERMAN());
-        assertEquals("There should be exactly 2 definition", 2,
-                specimenFacade.getFieldObjectDefinition().size());
+        assertEquals(2, specimenFacade.getFieldObjectDefinition().size(), "There should be exactly 2 definition");
         specimenFacade.removeFieldObjectDefinition(Language.FRENCH());
-        assertEquals("There should remain exactly 1 definition", 1,
-                specimenFacade.getFieldObjectDefinition().size());
-        assertEquals(
-                "The remaining German definition should be 'Sehr interessant'",
-                "Sehr interessant",
-                specimenFacade.getFieldObjectDefinition(Language.GERMAN()));
+        assertEquals(1, specimenFacade.getFieldObjectDefinition().size(), "There should remain exactly 1 definition");
+        assertEquals("Sehr interessant", specimenFacade.getFieldObjectDefinition(Language.GERMAN()), "The remaining German definition should be 'Sehr interessant'");
         specimenFacade.removeFieldObjectDefinition(Language.GERMAN());
-        assertEquals("There should remain no definition", 0,
-                specimenFacade.getFieldObjectDefinition().size());
+        assertEquals(0, specimenFacade.getFieldObjectDefinition().size(), "There should remain no definition");
     }
 
     /**
@@ -826,49 +769,34 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testAddGetHasRemoveFieldObjectMedia() {
-        assertFalse("There should be no image gallery yet",
-                specimenFacade.hasFieldObjectImageGallery());
-        assertFalse("There should be no specimen image gallery either",
-                specimenFacade.hasDerivedUnitImageGallery());
+        assertFalse(specimenFacade.hasFieldObjectImageGallery(), "There should be no image gallery yet");
+        assertFalse(specimenFacade.hasDerivedUnitImageGallery(), "There should be no specimen image gallery either");
 
         List<Media> media = specimenFacade.getFieldObjectMedia();
-        assertFalse("There should still not be an image gallery now",
-                specimenFacade.hasFieldObjectImageGallery());
-        assertEquals("There should be no media yet in the gallery", 0,
-                media.size());
+        assertFalse(specimenFacade.hasFieldObjectImageGallery(), "There should still not be an image gallery now");
+        assertEquals(0, media.size(), "There should be no media yet in the gallery");
 
         Media media1 = Media.NewInstance();
         specimenFacade.addFieldObjectMedia(media1);
-        assertEquals("There should be exactly one specimen media", 1,
-                specimenFacade.getFieldObjectMedia().size());
-        assertEquals("The only media should be media 1", media1,
-                specimenFacade.getFieldObjectMedia().get(0));
-        assertFalse(
-                "There should still no specimen image gallery exist",
-                specimenFacade.hasDerivedUnitImageGallery());
+        assertEquals(1, specimenFacade.getFieldObjectMedia().size(), "There should be exactly one specimen media");
+        assertEquals(media1, specimenFacade.getFieldObjectMedia().get(0), "The only media should be media 1");
+        assertFalse(specimenFacade.hasDerivedUnitImageGallery(), "There should still no specimen image gallery exist");
 
         Media media2 = Media.NewInstance();
         specimenFacade.addFieldObjectMedia(media2);
-        assertEquals("There should be exactly 2 specimen media", 2,
-                specimenFacade.getFieldObjectMedia().size());
-        assertEquals("The first media should be media1", media1,
-                specimenFacade.getFieldObjectMedia().get(0));
-        assertEquals("The second media should be media2", media2,
-                specimenFacade.getFieldObjectMedia().get(1));
+        assertEquals(2, specimenFacade.getFieldObjectMedia().size(), "There should be exactly 2 specimen media");
+        assertEquals(media1, specimenFacade.getFieldObjectMedia().get(0), "The first media should be media1");
+        assertEquals(media2, specimenFacade.getFieldObjectMedia().get(1), "The second media should be media2");
 
         specimenFacade.removeFieldObjectMedia(media1);
-        assertEquals("There should be exactly one specimen media", 1,
-                specimenFacade.getFieldObjectMedia().size());
-        assertEquals("The only media should be media2", media2,
-                specimenFacade.getFieldObjectMedia().get(0));
+        assertEquals(1, specimenFacade.getFieldObjectMedia().size(), "There should be exactly one specimen media");
+        assertEquals(media2, specimenFacade.getFieldObjectMedia().get(0), "The only media should be media2");
 
         specimenFacade.removeFieldObjectMedia(media1);
-        assertEquals("There should still be exactly one specimen media",
-                1, specimenFacade.getFieldObjectMedia().size());
+        assertEquals(1, specimenFacade.getFieldObjectMedia().size(), "There should still be exactly one specimen media");
 
         specimenFacade.removeFieldObjectMedia(media2);
-        assertEquals("There should remain no media in the gallery", 0,
-                media.size());
+        assertEquals(0, media.size(), "There should remain no media in the gallery");
 
     }
 
@@ -879,55 +807,31 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetSetEcology() {
-        assertNotNull(
-                "An empty ecology data should be created when calling getEcology()",
-                specimenFacade.getEcologyAll());
-        assertEquals(
-                "An empty ecology data should be created when calling getEcology()",
-                0, specimenFacade.getEcologyAll().size());
+        assertNotNull(specimenFacade.getEcologyAll(), "An empty ecology data should be created when calling getEcology()");
+        assertEquals(0, specimenFacade.getEcologyAll().size(), "An empty ecology data should be created when calling getEcology()");
         specimenFacade.setEcology("Tres jolie ici", Language.FRENCH());
-        assertEquals("Ecology data should exist for 1 language", 1,
-                specimenFacade.getEcologyAll().size());
-        assertEquals(
-                "Ecology data should be 'Tres jolie ici' for French",
-                "Tres jolie ici", specimenFacade.getEcology(Language.FRENCH()));
-        assertNull(
-                "Ecology data should be null for the default language",
-                specimenFacade.getEcology());
+        assertEquals(1, specimenFacade.getEcologyAll().size(), "Ecology data should exist for 1 language");
+        assertEquals("Tres jolie ici", specimenFacade.getEcology(Language.FRENCH()), "Ecology data should be 'Tres jolie ici' for French");
+        assertNull(specimenFacade.getEcology(), "Ecology data should be null for the default language");
         specimenFacade.setEcology("Nice here");
-        assertEquals("Ecology data should exist for 2 languages", 2,
-                specimenFacade.getEcologyAll().size());
-        assertEquals("Ecology data should be 'Tres jolie ici'",
-                "Tres jolie ici", specimenFacade.getEcology(Language.FRENCH()));
-        assertEquals(
-                "Ecology data should be 'Nice here' for the default language",
-                "Nice here", specimenFacade.getEcology());
-        assertEquals("Ecology data should be 'Nice here' for english",
-                "Nice here", specimenFacade.getEcology());
+        assertEquals(2, specimenFacade.getEcologyAll().size(), "Ecology data should exist for 2 languages");
+        assertEquals("Tres jolie ici", specimenFacade.getEcology(Language.FRENCH()), "Ecology data should be 'Tres jolie ici'");
+        assertEquals("Nice here", specimenFacade.getEcology(), "Ecology data should be 'Nice here' for the default language");
+        assertEquals("Nice here", specimenFacade.getEcology(), "Ecology data should be 'Nice here' for english");
 
         specimenFacade.setEcology("Vert et rouge", Language.FRENCH());
-        assertEquals("Ecology data should exist for 2 languages", 2,
-                specimenFacade.getEcologyAll().size());
-        assertEquals("Ecology data should be 'Vert et rouge'",
-                "Vert et rouge", specimenFacade.getEcology(Language.FRENCH()));
-        assertEquals(
-                "Ecology data should be 'Nice here' for the default language",
-                "Nice here", specimenFacade.getEcology());
+        assertEquals(2, specimenFacade.getEcologyAll().size(), "Ecology data should exist for 2 languages");
+        assertEquals("Vert et rouge", specimenFacade.getEcology(Language.FRENCH()), "Ecology data should be 'Vert et rouge'");
+        assertEquals("Nice here", specimenFacade.getEcology(), "Ecology data should be 'Nice here' for the default language");
 
         specimenFacade.setEcology(null, Language.FRENCH());
-        assertEquals("Ecology data should exist for 1 languages", 1,
-                specimenFacade.getEcologyAll().size());
-        assertEquals(
-                "Ecology data should be 'Nice here' for the default language",
-                "Nice here", specimenFacade.getEcology());
-        assertNull("Ecology data should be 'null' for French",
-                specimenFacade.getEcology(Language.FRENCH()));
+        assertEquals(1, specimenFacade.getEcologyAll().size(), "Ecology data should exist for 1 languages");
+        assertEquals("Nice here", specimenFacade.getEcology(), "Ecology data should be 'Nice here' for the default language");
+        assertNull(specimenFacade.getEcology(Language.FRENCH()), "Ecology data should be 'null' for French");
 
         specimenFacade.removeEcology(null);
-        assertEquals("There should be no ecology left", 0,
-                specimenFacade.getEcologyAll().size());
-        assertNull("Ecology data should be 'null' for default language",
-                specimenFacade.getEcology());
+        assertEquals(0, specimenFacade.getEcologyAll().size(), "There should be no ecology left");
+        assertNull(specimenFacade.getEcology(), "Ecology data should be 'null' for default language");
 
     }
 
@@ -938,83 +842,42 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetSetPlantDescription() {
-        assertNotNull(
-                "An empty plant description data should be created when calling getPlantDescriptionAll()",
-                specimenFacade.getPlantDescriptionAll());
-        assertEquals(
-                "An empty plant description data should be created when calling getPlantDescription()",
-                0, specimenFacade.getPlantDescriptionAll().size());
+        assertNotNull(specimenFacade.getPlantDescriptionAll(), "An empty plant description data should be created when calling getPlantDescriptionAll()");
+        assertEquals(0, specimenFacade.getPlantDescriptionAll().size(), "An empty plant description data should be created when calling getPlantDescription()");
         specimenFacade.setPlantDescription("bleu", Language.FRENCH());
-        assertEquals(
-                "Plant description data should exist for 1 language", 1,
-                specimenFacade.getPlantDescriptionAll().size());
-        assertEquals(
-                "Plant description data should be 'bleu' for French", "bleu",
-                specimenFacade.getPlantDescription(Language.FRENCH()));
-        assertNull(
-                "Plant description data should be null for the default language",
-                specimenFacade.getPlantDescription());
+        assertEquals(1, specimenFacade.getPlantDescriptionAll().size(), "Plant description data should exist for 1 language");
+        assertEquals("bleu", specimenFacade.getPlantDescription(Language.FRENCH()), "Plant description data should be 'bleu' for French");
+        assertNull(specimenFacade.getPlantDescription(), "Plant description data should be null for the default language");
         specimenFacade.setPlantDescription("Nice here");
-        assertEquals(
-                "Plant description data should exist for 2 languages", 2,
-                specimenFacade.getPlantDescriptionAll().size());
-        assertEquals("Plant description data should be 'bleu'", "bleu",
-                specimenFacade.getPlantDescription(Language.FRENCH()));
-        assertEquals(
-                "Plant description data should be 'Nice here' for the default language",
-                "Nice here", specimenFacade.getPlantDescription());
-        assertEquals(
-                "Plant description data should be 'Nice here' for english",
-                "Nice here", specimenFacade.getPlantDescription());
+        assertEquals(2, specimenFacade.getPlantDescriptionAll().size(), "Plant description data should exist for 2 languages");
+        assertEquals("bleu", specimenFacade.getPlantDescription(Language.FRENCH()), "Plant description data should be 'bleu'");
+        assertEquals("Nice here", specimenFacade.getPlantDescription(), "Plant description data should be 'Nice here' for the default language");
+        assertEquals("Nice here", specimenFacade.getPlantDescription(), "Plant description data should be 'Nice here' for english");
 
         specimenFacade.setPlantDescription("Vert et rouge", Language.FRENCH());
-        assertEquals(
-                "Plant description data should exist for 2 languages", 2,
-                specimenFacade.getPlantDescriptionAll().size());
-        assertEquals("Plant description data should be 'Vert et rouge'",
-                "Vert et rouge",
-                specimenFacade.getPlantDescription(Language.FRENCH()));
-        assertEquals(
-                "Plant description data should be 'Nice here' for the default language",
-                "Nice here", specimenFacade.getPlantDescription());
+        assertEquals(2, specimenFacade.getPlantDescriptionAll().size(), "Plant description data should exist for 2 languages");
+        assertEquals("Vert et rouge", specimenFacade.getPlantDescription(Language.FRENCH()), "Plant description data should be 'Vert et rouge'");
+        assertEquals("Nice here", specimenFacade.getPlantDescription(), "Plant description data should be 'Nice here' for the default language");
 
         specimenFacade.setPlantDescription(null, Language.FRENCH());
-        assertEquals(
-                "Plant description data should exist for 1 languages", 1,
-                specimenFacade.getPlantDescriptionAll().size());
-        assertEquals(
-                "Plant description data should be 'Nice here' for the default language",
-                "Nice here", specimenFacade.getPlantDescription());
-        assertNull("Plant description data should be 'null' for French",
-                specimenFacade.getPlantDescription(Language.FRENCH()));
+        assertEquals(1, specimenFacade.getPlantDescriptionAll().size(), "Plant description data should exist for 1 languages");
+        assertEquals("Nice here", specimenFacade.getPlantDescription(), "Plant description data should be 'Nice here' for the default language");
+        assertNull(specimenFacade.getPlantDescription(Language.FRENCH()), "Plant description data should be 'null' for French");
 
         // test interference with ecology
         specimenFacade.setEcology("Tres jolie ici", Language.FRENCH());
-        assertEquals("Ecology data should exist for 1 language", 1,
-                specimenFacade.getEcologyAll().size());
-        assertEquals(
-                "Ecology data should be 'Tres jolie ici' for French",
-                "Tres jolie ici", specimenFacade.getEcology(Language.FRENCH()));
-        assertNull(
-                "Ecology data should be null for the default language",
-                specimenFacade.getEcology());
+        assertEquals(1, specimenFacade.getEcologyAll().size(), "Ecology data should exist for 1 language");
+        assertEquals("Tres jolie ici", specimenFacade.getEcology(Language.FRENCH()), "Ecology data should be 'Tres jolie ici' for French");
+        assertNull(specimenFacade.getEcology(), "Ecology data should be null for the default language");
 
         // repeat above test
-        assertEquals(
-                "Plant description data should exist for 1 languages", 1,
-                specimenFacade.getPlantDescriptionAll().size());
-        assertEquals(
-                "Plant description data should be 'Nice here' for the default language",
-                "Nice here", specimenFacade.getPlantDescription());
-        assertNull("Plant description data should be 'null' for French",
-                specimenFacade.getPlantDescription(Language.FRENCH()));
+        assertEquals(1, specimenFacade.getPlantDescriptionAll().size(), "Plant description data should exist for 1 languages");
+        assertEquals("Nice here", specimenFacade.getPlantDescription(), "Plant description data should be 'Nice here' for the default language");
+        assertNull(specimenFacade.getPlantDescription(Language.FRENCH()), "Plant description data should be 'null' for French");
 
         specimenFacade.removePlantDescription(null);
-        assertEquals("There should be no plant description left", 0,
-                specimenFacade.getPlantDescriptionAll().size());
-        assertNull(
-                "Plant description data should be 'null' for default language",
-                specimenFacade.getPlantDescription());
+        assertEquals(0, specimenFacade.getPlantDescriptionAll().size(), "There should be no plant description left");
+        assertNull(specimenFacade.getPlantDescription(), "Plant description data should be 'null' for default language");
 
     }
 
@@ -1026,84 +889,43 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
     @Test
     public void testGetSetLifeform() {
         Feature lifeform = Feature.LIFEFORM();
-        assertNotNull("Lifeform must exist in testdata",lifeform);
-        assertNotNull(
-                "An empty life-form data should be created when calling getLifeformAll()",
-                specimenFacade.getLifeformAll());
-        assertEquals(
-                "An empty life-form data should be created when calling getLifeform()",
-                0, specimenFacade.getLifeformAll().size());
+        assertNotNull(lifeform, "Lifeform must exist in testdata");
+        assertNotNull(specimenFacade.getLifeformAll(), "An empty life-form data should be created when calling getLifeformAll()");
+        assertEquals(0, specimenFacade.getLifeformAll().size(), "An empty life-form data should be created when calling getLifeform()");
         specimenFacade.setLifeform("grande", Language.FRENCH());
-        assertEquals(
-                "Life-form data should exist for 1 language", 1,
-                specimenFacade.getLifeformAll().size());
-        assertEquals(
-                "Life-form data should be 'grande' for French", "grande",
-                specimenFacade.getLifeform(Language.FRENCH()));
-        assertNull(
-                "Lifeform data should be null for the default language",
-                specimenFacade.getLifeform());
+        assertEquals(1, specimenFacade.getLifeformAll().size(), "Life-form data should exist for 1 language");
+        assertEquals("grande", specimenFacade.getLifeform(Language.FRENCH()), "Life-form data should be 'grande' for French");
+        assertNull(specimenFacade.getLifeform(), "Lifeform data should be null for the default language");
         specimenFacade.setLifeform("Very big");
-        assertEquals(
-                "Life-form data should exist for 2 languages", 2,
-                specimenFacade.getLifeformAll().size());
-        assertEquals("French life-form data should be 'grande'", "grande",
-                specimenFacade.getLifeform(Language.FRENCH()));
-        assertEquals(
-                "Default language life-form data should be 'Very big' for the default language",
-                "Very big", specimenFacade.getLifeform());
-        assertEquals(
-                "Life-form data should be 'Very big' for English",
-                "Very big", specimenFacade.getLifeform());
+        assertEquals(2, specimenFacade.getLifeformAll().size(), "Life-form data should exist for 2 languages");
+        assertEquals("grande", specimenFacade.getLifeform(Language.FRENCH()), "French life-form data should be 'grande'");
+        assertEquals("Very big", specimenFacade.getLifeform(), "Default language life-form data should be 'Very big' for the default language");
+        assertEquals("Very big", specimenFacade.getLifeform(), "Life-form data should be 'Very big' for English");
 
         specimenFacade.setLifeform("Petite", Language.FRENCH());
-        assertEquals(
-                "Plant description data should exist for 2 languages", 2,
-                specimenFacade.getLifeformAll().size());
-        assertEquals("Life-form data should be 'Petite'",
-                "Petite",
-                specimenFacade.getLifeform(Language.FRENCH()));
-        assertEquals(
-                "Plant description data should be 'Very big' for the default language",
-                "Very big", specimenFacade.getLifeform());
+        assertEquals(2, specimenFacade.getLifeformAll().size(), "Plant description data should exist for 2 languages");
+        assertEquals("Petite", specimenFacade.getLifeform(Language.FRENCH()), "Life-form data should be 'Petite'");
+        assertEquals("Very big", specimenFacade.getLifeform(), "Plant description data should be 'Very big' for the default language");
 
         specimenFacade.setLifeform(null, Language.FRENCH());
-        assertEquals(
-                "Life-form data should exist for 1 languages", 1,
-                specimenFacade.getLifeformAll().size());
-        assertEquals(
-                "Life-form data should be 'Very big' for the default language",
-                "Very big", specimenFacade.getLifeform());
-        assertNull("Life-form data should be 'null' for French",
-                specimenFacade.getLifeform(Language.FRENCH()));
+        assertEquals(1, specimenFacade.getLifeformAll().size(), "Life-form data should exist for 1 languages");
+        assertEquals("Very big", specimenFacade.getLifeform(), "Life-form data should be 'Very big' for the default language");
+        assertNull(specimenFacade.getLifeform(Language.FRENCH()), "Life-form data should be 'null' for French");
 
         // test interference with ecology
         specimenFacade.setEcology("Tres jolie ici", Language.FRENCH());
-        assertEquals("Ecology data should exist for 1 language", 1,
-                specimenFacade.getEcologyAll().size());
-        assertEquals(
-                "Ecology data should be 'Tres jolie ici' for French",
-                "Tres jolie ici", specimenFacade.getEcology(Language.FRENCH()));
-        assertNull(
-                "Ecology data should be null for the default language",
-                specimenFacade.getEcology());
+        assertEquals(1, specimenFacade.getEcologyAll().size(), "Ecology data should exist for 1 language");
+        assertEquals("Tres jolie ici", specimenFacade.getEcology(Language.FRENCH()), "Ecology data should be 'Tres jolie ici' for French");
+        assertNull(specimenFacade.getEcology(), "Ecology data should be null for the default language");
 
         // repeat above test
-        assertEquals(
-                "Life-form data should exist for 1 languages", 1,
-                specimenFacade.getLifeformAll().size());
-        assertEquals(
-                "Lifeform data should be 'Very big' for the default language",
-                "Very big", specimenFacade.getLifeform());
-        assertNull("Life-form data should be 'null' for French",
-                specimenFacade.getLifeform(Language.FRENCH()));
+        assertEquals(1, specimenFacade.getLifeformAll().size(), "Life-form data should exist for 1 languages");
+        assertEquals("Very big", specimenFacade.getLifeform(), "Lifeform data should be 'Very big' for the default language");
+        assertNull(specimenFacade.getLifeform(Language.FRENCH()), "Life-form data should be 'null' for French");
 
         specimenFacade.removeLifeform(null);
-        assertEquals("There should be no life-form left", 0,
-                specimenFacade.getLifeformAll().size());
-        assertNull(
-                "Life-form data should be 'null' for default language",
-                specimenFacade.getLifeform());
+        assertEquals(0, specimenFacade.getLifeformAll().size(), "There should be no life-form left");
+        assertNull(specimenFacade.getLifeform(), "Life-form data should be 'null' for default language");
     }
 
     /**
@@ -1112,25 +934,17 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetSetFieldNumber() {
-        assertEquals("Field number must be same", fieldNumber,
-                specimenFacade.getFieldNumber());
+        assertEquals(fieldNumber, specimenFacade.getFieldNumber(), "Field number must be same");
         specimenFacade.setFieldNumber("564AB");
-        assertEquals("New field number must be '564AB'", "564AB",
-                specimenFacade.getFieldNumber());
+        assertEquals("564AB", specimenFacade.getFieldNumber(), "New field number must be '564AB'");
         // empty facade tests
-        assertNull("Empty facace must not have any field value",
-                emptyFacade.getFieldNumber());
+        assertNull(emptyFacade.getFieldNumber(), "Empty facace must not have any field value");
         emptyFacade.setFieldNumber("1256A");
-        assertNotNull(
-                "Field unit must exist if field number exists",
-                emptyFacade.getFieldUnit(false));
+        assertNotNull(emptyFacade.getFieldUnit(false), "Field unit must exist if field number exists");
         FieldUnit specimenFieldUnit = (FieldUnit) emptyFacade
                 .innerDerivedUnit().getDerivedFrom().getOriginals().iterator()
                 .next();
-        assertSame(
-                "Field unit of facade and of specimen must be the same",
-                specimenFieldUnit,
-                emptyFacade.getFieldUnit(false));
+        assertSame(specimenFieldUnit, emptyFacade.getFieldUnit(false), "Field unit of facade and of specimen must be the same");
         assertEquals("1256A", emptyFacade.getFieldNumber());
     }
 
@@ -1140,11 +954,9 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetSetFieldNotes() {
-        assertEquals("Field notes must be same", fieldNotes,
-                specimenFacade.getFieldNotes());
+        assertEquals(fieldNotes, specimenFacade.getFieldNotes(), "Field notes must be same");
         specimenFacade.setFieldNotes("A completely new info");
-        assertEquals("New field note must be 'A completely new info'",
-                "A completely new info", specimenFacade.getFieldNotes());
+        assertEquals("A completely new info", specimenFacade.getFieldNotes(), "New field note must be 'A completely new info'");
     }
 
     /**
@@ -1157,14 +969,10 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
     public void testSetGatheringEvent() {
         GatheringEvent newGatheringEvent = GatheringEvent.NewInstance();
         newGatheringEvent.setDistanceToGround(43.0);
-        assertFalse("The initial distance to ground should not be 43",
-                specimenFacade.getDistanceToGround() == 43.0);
+        assertFalse(specimenFacade.getDistanceToGround() == 43.0, "The initial distance to ground should not be 43");
         specimenFacade.setGatheringEvent(newGatheringEvent);
-        assertTrue("The final distance to ground should be 43",
-                specimenFacade.getDistanceToGround() == 43.0);
-        assertSame(
-                "The new gathering event should be 'newGatheringEvent'",
-                newGatheringEvent, specimenFacade.innerGatheringEvent());
+        assertTrue(specimenFacade.getDistanceToGround() == 43.0, "The final distance to ground should be 43");
+        assertSame(newGatheringEvent, specimenFacade.innerGatheringEvent(), "The new gathering event should be 'newGatheringEvent'");
     }
 
     /**
@@ -1174,12 +982,8 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetGatheringEvent() {
-        assertNotNull("Gathering event must not be null",
-                specimenFacade.innerGatheringEvent());
-        assertEquals(
-                "Gathering event must be field unit's gathering event",
-                specimenFacade.innerFieldUnit().getGatheringEvent(),
-                specimenFacade.innerGatheringEvent());
+        assertNotNull(specimenFacade.innerGatheringEvent(), "Gathering event must not be null");
+        assertEquals(specimenFacade.innerFieldUnit().getGatheringEvent(), specimenFacade.innerGatheringEvent(), "Gathering event must be field unit's gathering event");
     }
 
     /**
@@ -1189,10 +993,9 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetSetIndividualCount() {
-        assertEquals("Individual count must be same", individualCount,
-                specimenFacade.getIndividualCount());
+        assertEquals(individualCount, specimenFacade.getIndividualCount(), "Individual count must be same");
         specimenFacade.setIndividualCount("4");
-        assertEquals("New individual count must be '4'", "4", specimenFacade.getIndividualCount());
+        assertEquals("4", specimenFacade.getIndividualCount(), "New individual count must be '4'");
     }
 
     /**
@@ -1201,10 +1004,10 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetSetLifeStage() {
-        assertNotNull("Life stage must not be null", specimenFacade.getFieldUnitLifeStage());
-        assertEquals("Life stage must be same", lifeStage, specimenFacade.getFieldUnitLifeStage());
+        assertNotNull(specimenFacade.getFieldUnitLifeStage(), "Life stage must not be null");
+        assertEquals(lifeStage, specimenFacade.getFieldUnitLifeStage(), "Life stage must be same");
         specimenFacade.setFieldUnitLifeStage(null);
-        assertNull("Life stage must be null", specimenFacade.getFieldUnitLifeStage());
+        assertNull(specimenFacade.getFieldUnitLifeStage(), "Life stage must be null");
         //don't create if null
         DerivedUnitFacade facade = emptyFacade();
         emptyFacade().setFieldUnitLifeStage(null);
@@ -1217,10 +1020,10 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetSetSex() {
-        assertNotNull("Sex must not be null", specimenFacade.getFieldUnitSex());
-        assertEquals("Sex must be same", sex, specimenFacade.getFieldUnitSex());
+        assertNotNull(specimenFacade.getFieldUnitSex(), "Sex must not be null");
+        assertEquals(sex, specimenFacade.getFieldUnitSex(), "Sex must be same");
         specimenFacade.setFieldUnitSex(null);
-        assertNull("Sex must be null", specimenFacade.getFieldUnitSex());
+        assertNull(specimenFacade.getFieldUnitSex(), "Sex must be null");
         //don't create if null
         DerivedUnitFacade facade = emptyFacade();
         emptyFacade().setFieldUnitSex(null);
@@ -1233,10 +1036,10 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetSetKindOfUnit() {
-        assertNotNull("Kind-of-unit must not be null", specimenFacade.getFieldUnitKindOfUnit());
-        assertEquals("Kind-of-unit must be same", kindOfUnit, specimenFacade.getFieldUnitKindOfUnit());
+        assertNotNull(specimenFacade.getFieldUnitKindOfUnit(), "Kind-of-unit must not be null");
+        assertEquals(kindOfUnit, specimenFacade.getFieldUnitKindOfUnit(), "Kind-of-unit must be same");
         specimenFacade.setFieldUnitKindOfUnit(null);
-        assertNull("Kind-of-unit must be null", specimenFacade.getFieldUnitKindOfUnit());
+        assertNull(specimenFacade.getFieldUnitKindOfUnit(), "Kind-of-unit must be null");
         DerivedUnitFacade facade = emptyFacade();
         facade.setFieldUnitKindOfUnit(null);
         assertNull(facade.innerFieldUnit());
@@ -1248,18 +1051,13 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetSetLocality() {
-        assertEquals("Locality must be same", locality,
-                specimenFacade.getLocality());
+        assertEquals(locality, specimenFacade.getLocality(), "Locality must be same");
         specimenFacade.setLocality("A completely new place", Language.FRENCH());
-        assertEquals("New locality must be 'A completely new place'",
-                "A completely new place", specimenFacade.getLocalityText());
-        assertEquals("New locality language must be French",
-                Language.FRENCH(), specimenFacade.getLocalityLanguage());
+        assertEquals("A completely new place", specimenFacade.getLocalityText(), "New locality must be 'A completely new place'");
+        assertEquals(Language.FRENCH(), specimenFacade.getLocalityLanguage(), "New locality language must be French");
         specimenFacade.setLocality("Another place");
-        assertEquals("New locality must be 'Another place'",
-                "Another place", specimenFacade.getLocalityText());
-        assertEquals("New locality language must be default",
-                Language.DEFAULT(), specimenFacade.getLocalityLanguage());
+        assertEquals("Another place", specimenFacade.getLocalityText(), "New locality must be 'Another place'");
+        assertEquals(Language.DEFAULT(), specimenFacade.getLocalityLanguage(), "New locality language must be default");
     }
 
     /**
@@ -1269,34 +1067,21 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testAddGetRemoveSpecimenDefinition() {
-        assertEquals("There should be no definition yet", 0,
-                specimenFacade.getDerivedUnitDefinitions().size());
+        assertEquals(0, specimenFacade.getDerivedUnitDefinitions().size(), "There should be no definition yet");
         specimenFacade.addDerivedUnitDefinition("Tres interesant",
                 Language.FRENCH());
-        assertEquals("There should be exactly one definition", 1,
-                specimenFacade.getDerivedUnitDefinitions().size());
-        assertEquals(
-                "The French definition should be 'Tres interesant'",
-                "Tres interesant", specimenFacade.getDerivedUnitDefinitions()
-                        .get(Language.FRENCH()).getText());
-        assertEquals(
-                "The French definition should be 'Tres interesant'",
-                "Tres interesant",
-                specimenFacade.getDerivedUnitDefinition(Language.FRENCH()));
+        assertEquals(1, specimenFacade.getDerivedUnitDefinitions().size(), "There should be exactly one definition");
+        assertEquals("Tres interesant", specimenFacade.getDerivedUnitDefinitions()
+                        .get(Language.FRENCH()).getText(), "The French definition should be 'Tres interesant'");
+        assertEquals("Tres interesant", specimenFacade.getDerivedUnitDefinition(Language.FRENCH()), "The French definition should be 'Tres interesant'");
         specimenFacade.addDerivedUnitDefinition("Sehr interessant",
                 Language.GERMAN());
-        assertEquals("There should be exactly 2 definition", 2,
-                specimenFacade.getDerivedUnitDefinitions().size());
+        assertEquals(2, specimenFacade.getDerivedUnitDefinitions().size(), "There should be exactly 2 definition");
         specimenFacade.removeDerivedUnitDefinition(Language.FRENCH());
-		assertEquals("There should remain exactly 1 definition", 1,
-                specimenFacade.getDerivedUnitDefinitions().size());
-        assertEquals(
-                "The remaining German definition should be 'Sehr interessant'",
-                "Sehr interessant",
-		        specimenFacade.getDerivedUnitDefinition(Language.GERMAN()));
+		assertEquals(1, specimenFacade.getDerivedUnitDefinitions().size(), "There should remain exactly 1 definition");
+        assertEquals("Sehr interessant", specimenFacade.getDerivedUnitDefinition(Language.GERMAN()), "The remaining German definition should be 'Sehr interessant'");
 		specimenFacade.removeDerivedUnitDefinition(Language.GERMAN());
-		assertEquals("There should remain no definition", 0,
-                specimenFacade.getDerivedUnitDefinitions().size());
+		assertEquals(0, specimenFacade.getDerivedUnitDefinitions().size(), "There should remain no definition");
     }
 
     /**
@@ -1306,38 +1091,29 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testAddGetRemoveDetermination() {
-        assertEquals("There should be no determination yet", 0,
-                specimenFacade.getDeterminations().size());
+        assertEquals(0, specimenFacade.getDeterminations().size(), "There should be no determination yet");
         DeterminationEvent determinationEvent1 = DeterminationEvent
                 .NewInstance();
         specimenFacade.addDetermination(determinationEvent1);
-        assertEquals("There should be exactly one determination", 1,
-                specimenFacade.getDeterminations().size());
-        assertEquals("The only determination should be determination 1",
-                determinationEvent1, specimenFacade.getDeterminations()
-                        .iterator().next());
+        assertEquals(1, specimenFacade.getDeterminations().size(), "There should be exactly one determination");
+        assertEquals(determinationEvent1, specimenFacade.getDeterminations()
+                        .iterator().next(), "The only determination should be determination 1");
 
         DeterminationEvent determinationEvent2 = DeterminationEvent
                 .NewInstance();
         specimenFacade.addDetermination(determinationEvent2);
-        assertEquals("There should be exactly 2 determinations", 2,
-                specimenFacade.getDeterminations().size());
+        assertEquals(2, specimenFacade.getDeterminations().size(), "There should be exactly 2 determinations");
         specimenFacade.removeDetermination(determinationEvent1);
 
-        assertEquals("There should remain exactly 1 determination", 1,
-                specimenFacade.getDeterminations().size());
-        assertEquals(
-                "The remaining determinations should be determination 2",
-                determinationEvent2, specimenFacade.getDeterminations()
-                        .iterator().next());
+        assertEquals(1, specimenFacade.getDeterminations().size(), "There should remain exactly 1 determination");
+        assertEquals(determinationEvent2, specimenFacade.getDeterminations()
+                        .iterator().next(), "The remaining determinations should be determination 2");
 
         specimenFacade.removeDetermination(determinationEvent1);
-        assertEquals("There should remain exactly 1 determination", 1,
-                specimenFacade.getDeterminations().size());
+        assertEquals(1, specimenFacade.getDeterminations().size(), "There should remain exactly 1 determination");
 
         specimenFacade.removeDetermination(determinationEvent2);
-        assertEquals("There should remain no definition", 0,
-                specimenFacade.getDerivedUnitDefinitions().size());
+        assertEquals(0, specimenFacade.getDerivedUnitDefinitions().size(), "There should remain no definition");
 
     }
 
@@ -1348,44 +1124,30 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testPreferredOtherDeterminations() {
-        assertEquals("There should be no determination yet", 0,
-                specimenFacade.getDeterminations().size());
+        assertEquals(0, specimenFacade.getDeterminations().size(), "There should be no determination yet");
         DeterminationEvent determinationEvent1 = DeterminationEvent.NewInstance();
         specimenFacade.setPreferredDetermination(determinationEvent1);
 
-        assertEquals("There should be exactly one determination", 1,
-                specimenFacade.getDeterminations().size());
-        assertEquals("The only determination should be determination 1",
-                determinationEvent1, specimenFacade.getDeterminations()
-                        .iterator().next());
-        assertEquals("determination 1 should be the preferred determination",
-                determinationEvent1, specimenFacade.getPreferredDetermination());
-        assertEquals("There should be no 'non preferred' determination", 0,
-                specimenFacade.getOtherDeterminations().size());
+        assertEquals(1, specimenFacade.getDeterminations().size(), "There should be exactly one determination");
+        assertEquals(determinationEvent1, specimenFacade.getDeterminations()
+                        .iterator().next(), "The only determination should be determination 1");
+        assertEquals(determinationEvent1, specimenFacade.getPreferredDetermination(), "determination 1 should be the preferred determination");
+        assertEquals(0, specimenFacade.getOtherDeterminations().size(), "There should be no 'non preferred' determination");
 
         DeterminationEvent determinationEvent2 = DeterminationEvent.NewInstance();
         specimenFacade.addDetermination(determinationEvent2);
-        assertEquals("There should be exactly 2 determinations", 2,
-                specimenFacade.getDeterminations().size());
-        assertEquals("determination 1 should be the preferred determination",
-                determinationEvent1, specimenFacade.getPreferredDetermination());
-        assertEquals("There should be one 'non preferred' determination", 1,
-                specimenFacade.getOtherDeterminations().size());
-        assertEquals("The only 'non preferred' determination should be determination 2",
-                determinationEvent2, specimenFacade.getOtherDeterminations().iterator().next());
+        assertEquals(2, specimenFacade.getDeterminations().size(), "There should be exactly 2 determinations");
+        assertEquals(determinationEvent1, specimenFacade.getPreferredDetermination(), "determination 1 should be the preferred determination");
+        assertEquals(1, specimenFacade.getOtherDeterminations().size(), "There should be one 'non preferred' determination");
+        assertEquals(determinationEvent2, specimenFacade.getOtherDeterminations().iterator().next(), "The only 'non preferred' determination should be determination 2");
 
         DeterminationEvent determinationEvent3 = DeterminationEvent.NewInstance();
         specimenFacade.setPreferredDetermination(determinationEvent3);
-        assertEquals("There should be exactly 3 determinations", 3,
-                specimenFacade.getDeterminations().size());
-        assertEquals("determination 3 should be the preferred determination",
-                determinationEvent3, specimenFacade.getPreferredDetermination());
-        assertEquals("There should be 2 'non preferred' determination", 2,
-                specimenFacade.getOtherDeterminations().size());
-        assertTrue("determination 1 should be contained in the set of 'non preferred' determinations",
-                specimenFacade.getOtherDeterminations().contains(determinationEvent1));
-        assertTrue("determination 2 should be contained in the set of 'non preferred' determinations",
-                specimenFacade.getOtherDeterminations().contains(determinationEvent2));
+        assertEquals(3, specimenFacade.getDeterminations().size(), "There should be exactly 3 determinations");
+        assertEquals(determinationEvent3, specimenFacade.getPreferredDetermination(), "determination 3 should be the preferred determination");
+        assertEquals(2, specimenFacade.getOtherDeterminations().size(), "There should be 2 'non preferred' determination");
+        assertTrue(specimenFacade.getOtherDeterminations().contains(determinationEvent1), "determination 1 should be contained in the set of 'non preferred' determinations");
+        assertTrue(specimenFacade.getOtherDeterminations().contains(determinationEvent2), "determination 2 should be contained in the set of 'non preferred' determinations");
 
     }
 
@@ -1396,51 +1158,34 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testAddGetHasRemoveSpecimenMedia() {
-        assertFalse("There should be no image gallery yet",
-                specimenFacade.hasDerivedUnitImageGallery());
-        assertFalse(
-                "There should be also no field object image gallery yet",
-                specimenFacade.hasFieldObjectImageGallery());
+        assertFalse(specimenFacade.hasDerivedUnitImageGallery(), "There should be no image gallery yet");
+        assertFalse(specimenFacade.hasFieldObjectImageGallery(), "There should be also no field object image gallery yet");
 
         List<Media> media = specimenFacade.getDerivedUnitMedia();
-        assertFalse(
-                "There should still not be an empty image gallery now",
-                specimenFacade.hasDerivedUnitImageGallery());
-        assertEquals("There should be no media yet in the gallery", 0,
-                media.size());
+        assertFalse(specimenFacade.hasDerivedUnitImageGallery(), "There should still not be an empty image gallery now");
+        assertEquals(0, media.size(), "There should be no media yet in the gallery");
 
         Media media1 = Media.NewInstance();
         specimenFacade.addDerivedUnitMedia(media1);
-		assertEquals("There should be exactly one specimen media", 1,
-                specimenFacade.getDerivedUnitMedia().size());
-        assertEquals("The only media should be media 1", media1,
-                specimenFacade.getDerivedUnitMedia().get(0));
-        assertFalse(
-                "There should be still no field object image gallery",
-                specimenFacade.hasFieldObjectImageGallery());
+		assertEquals(1, specimenFacade.getDerivedUnitMedia().size(), "There should be exactly one specimen media");
+        assertEquals(media1, specimenFacade.getDerivedUnitMedia().get(0), "The only media should be media 1");
+        assertFalse(specimenFacade.hasFieldObjectImageGallery(), "There should be still no field object image gallery");
 
         Media media2 = Media.NewInstance();
         specimenFacade.addDerivedUnitMedia(media2);
-		assertEquals("There should be exactly 2 specimen media", 2,
-                specimenFacade.getDerivedUnitMedia().size());
-        assertEquals("The first media should be media1", media1,
-                specimenFacade.getDerivedUnitMedia().get(0));
-        assertEquals("The second media should be media2", media2,
-                specimenFacade.getDerivedUnitMedia().get(1));
+		assertEquals(2, specimenFacade.getDerivedUnitMedia().size(), "There should be exactly 2 specimen media");
+        assertEquals(media1, specimenFacade.getDerivedUnitMedia().get(0), "The first media should be media1");
+        assertEquals(media2, specimenFacade.getDerivedUnitMedia().get(1), "The second media should be media2");
 
         specimenFacade.removeDerivedUnitMedia(media1);
-        assertEquals("There should be exactly one specimen media", 1,
-                specimenFacade.getDerivedUnitMedia().size());
-        assertEquals("The only media should be media2", media2,
-                specimenFacade.getDerivedUnitMedia().get(0));
+        assertEquals(1, specimenFacade.getDerivedUnitMedia().size(), "There should be exactly one specimen media");
+        assertEquals(media2, specimenFacade.getDerivedUnitMedia().get(0), "The only media should be media2");
 
         specimenFacade.removeDerivedUnitMedia(media1);
-        assertEquals("There should still be exactly one specimen media",
-                1, specimenFacade.getDerivedUnitMedia().size());
+        assertEquals(1, specimenFacade.getDerivedUnitMedia().size(), "There should still be exactly one specimen media");
 
         specimenFacade.removeDerivedUnitMedia(media2);
-        assertEquals("There should remain no media in the gallery", 0,
-                media.size());
+        assertEquals(0, media.size(), "There should remain no media in the gallery");
     }
 
     /**
@@ -1450,11 +1195,9 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetSetAccessionNumber() {
-        assertEquals("Accession number must be same", accessionNumber,
-                specimenFacade.getAccessionNumber());
+        assertEquals(accessionNumber, specimenFacade.getAccessionNumber(), "Accession number must be same");
         specimenFacade.setAccessionNumber("A12345693");
-		assertEquals("New accession number must be 'A12345693'",
-                "A12345693", specimenFacade.getAccessionNumber());
+		assertEquals("A12345693", specimenFacade.getAccessionNumber(), "New accession number must be 'A12345693'");
     }
 
     /**
@@ -1463,11 +1206,9 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetCatalogNumber() {
-        assertEquals("Catalog number must be same", catalogNumber,
-                specimenFacade.getCatalogNumber());
+        assertEquals(catalogNumber, specimenFacade.getCatalogNumber(), "Catalog number must be same");
         specimenFacade.setCatalogNumber("B12345693");
-		assertEquals("New catalog number must be 'B12345693'",
-                "B12345693", specimenFacade.getCatalogNumber());
+		assertEquals("B12345693", specimenFacade.getCatalogNumber(), "New catalog number must be 'B12345693'");
     }
 
     /**
@@ -1477,13 +1218,10 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
     @Test
     public void testGetPreservation() {
         try {
-            assertNotNull("Preservation method must not be null",
-                    specimenFacade.getPreservationMethod());
-            assertEquals("Preservation method must be same",
-                    preservationMethod, specimenFacade.getPreservationMethod());
+            assertNotNull(specimenFacade.getPreservationMethod(), "Preservation method must not be null");
+            assertEquals(preservationMethod, specimenFacade.getPreservationMethod(), "Preservation method must be same");
             specimenFacade.setPreservationMethod(null);
-            assertNull("Preservation method must be null",
-                    specimenFacade.getPreservationMethod());
+            assertNull(specimenFacade.getPreservationMethod(), "Preservation method must be null");
         } catch (MethodNotSupportedByDerivedUnitTypeException e) {
             fail("Method not supported should not be thrown for a specimen");
         }
@@ -1507,21 +1245,17 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
 
     @Test
     public void testGetSetOriginalLabelInfo() {
-        assertEquals("Original label info must be same", originalLabelInfo,
-                specimenFacade.getOriginalLabelInfo());
+        assertEquals(originalLabelInfo, specimenFacade.getOriginalLabelInfo(), "Original label info must be same");
         specimenFacade.setOriginalLabelInfo("OrigLabel Info xxx");
-        assertEquals("New accession number must be 'OrigLabel Info xxx'",
-                "OrigLabel Info xxx", specimenFacade.getOriginalLabelInfo());
+        assertEquals("OrigLabel Info xxx", specimenFacade.getOriginalLabelInfo(), "New accession number must be 'OrigLabel Info xxx'");
     }
 
     @Test
     public void testGetSetStableUri() {
-        assertEquals("Preferred stable URI must be same", stableUri,
-                specimenFacade.getPreferredStableUri());
+        assertEquals(stableUri, specimenFacade.getPreferredStableUri(), "Preferred stable URI must be same");
         URI newURI = URI.create("http://www.fgh.ij");
         specimenFacade.setPreferredStableUri(newURI);
-        assertEquals("New preferred stable must be '" + newURI.toString() + "'",
-                newURI, specimenFacade.getPreferredStableUri());
+        assertEquals(newURI, specimenFacade.getPreferredStableUri(), "New preferred stable must be '" + newURI.toString() + "'");
     }
 
 //	/**
@@ -1531,11 +1265,9 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
 //	 */
 //	@Test
 //	public void testGetSetCollectorsNumber() {
-//		assertEquals("Collectors number must be same", collectorsNumber,
-//				specimenFacade.getCollectorsNumber());
+//		assertEquals(collectorsNumber, //				specimenFacade.getCollectorsNumber(), "Collectors number must be same");
 //		specimenFacade.setCollectorsNumber("C12345693");
-//		assertEquals("New collectors number must be 'C12345693'",
-//				"C12345693", specimenFacade.getCollectorsNumber());
+//		assertEquals(//				"C12345693", specimenFacade.getCollectorsNumber(), "New collectors number must be 'C12345693'");
 //	}
 
     /**
@@ -1544,13 +1276,9 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetTitleCache() {
-        assertNotNull(
-                "The title cache should never return null if not protected",
-                specimenFacade.getTitleCache());
+        assertNotNull(specimenFacade.getTitleCache(), "The title cache should never return null if not protected");
         specimenFacade.setTitleCache(null, false);
-        assertNotNull(
-                "The title cache should never return null if not protected",
-                specimenFacade.getTitleCache());
+        assertNotNull(specimenFacade.getTitleCache(), "The title cache should never return null if not protected");
     }
 
     /**
@@ -1562,13 +1290,9 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
     public void testSetTitleCache() {
         String testTitle = "Absdwk aksjlf";
         specimenFacade.setTitleCache(testTitle, true);
-        assertEquals(
-                "Protected title cache should returns the test title",
-                testTitle, specimenFacade.getTitleCache());
+        assertEquals(testTitle, specimenFacade.getTitleCache(), "Protected title cache should returns the test title");
         specimenFacade.setTitleCache(testTitle, false);
-        assertFalse(
-                "Unprotected title cache should not return the test title",
-                testTitle.equals(specimenFacade.getTitleCache()));
+        assertFalse(testTitle.equals(specimenFacade.getTitleCache()), "Unprotected title cache should not return the test title");
     }
 
     /**
@@ -1577,8 +1301,7 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetSpecimen() {
-        assertEquals("Specimen must be same", specimen,
-                specimenFacade.innerDerivedUnit());
+        assertEquals(specimen, specimenFacade.innerDerivedUnit(), "Specimen must be same");
     }
 
     /**
@@ -1587,65 +1310,52 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
      */
     @Test
     public void testGetSetCollection() {
-        assertNotNull("Collection must not be null",
-                specimenFacade.getCollection());
-        assertEquals("Collection must be same", collection,
-                specimenFacade.getCollection());
+        assertNotNull(specimenFacade.getCollection(), "Collection must not be null");
+        assertEquals(collection, specimenFacade.getCollection(), "Collection must be same");
         specimenFacade.setCollection(null);
-        assertNull("Collection must be null",
-                specimenFacade.getCollection());
+        assertNull(specimenFacade.getCollection(), "Collection must be null");
     }
 
     @Test
     public void testAddGetRemoveSource() {
-        assertEquals("No sources should exist yet", 0, specimenFacade.getSources().size());
+        assertEquals(0, specimenFacade.getSources().size(), "No sources should exist yet");
 
         Reference reference = ReferenceFactory.newBook();
         IdentifiableSource source1 = specimenFacade.addSource(OriginalSourceType.PrimaryTaxonomicSource, reference, "54", "myName");
-        assertEquals("One source should exist now", 1, specimenFacade.getSources().size());
+        assertEquals(1, specimenFacade.getSources().size(), "One source should exist now");
         IdentifiableSource source2 = IdentifiableSource.NewDataImportInstance("1", "myTable");
         specimenFacade.addSource(source2);
-        assertEquals("One source should exist now", 2, specimenFacade.getSources().size());
+        assertEquals(2, specimenFacade.getSources().size(), "One source should exist now");
         specimenFacade.removeSource(source1);
-        assertEquals("One source should exist now", 1, specimenFacade.getSources().size());
+        assertEquals(1, specimenFacade.getSources().size(), "One source should exist now");
         Reference reference2 = ReferenceFactory.newJournal();
         IdentifiableSource sourceNotUsed = specimenFacade.addSource(OriginalSourceType.PrimaryTaxonomicSource, reference2,null, null);
         specimenFacade.removeSource(sourceNotUsed);
-        assertEquals("One source should still exist", 1, specimenFacade.getSources().size());
+        assertEquals(1, specimenFacade.getSources().size(), "One source should still exist");
         assertEquals("1", specimenFacade.getSources().iterator().next().getIdInSource());
         specimenFacade.removeSource(source2);
-        assertEquals("No sources should exist anymore", 0,specimenFacade.getSources().size());
+        assertEquals(0, specimenFacade.getSources().size(), "No sources should exist anymore");
     }
 
     @Test
     public void testAddGetRemoveDuplicate() {
-        assertEquals("No duplicates should be available yet", 0,specimenFacade.getDuplicates().size());
+        assertEquals(0, specimenFacade.getDuplicates().size(), "No duplicates should be available yet");
         DerivedUnit newSpecimen1 = DerivedUnit.NewPreservedSpecimenInstance();
         specimenFacade.addDuplicate(newSpecimen1);
-        assertEquals("There should be 1 duplicate now", 1,specimenFacade.getDuplicates().size());
+        assertEquals(1, specimenFacade.getDuplicates().size(), "There should be 1 duplicate now");
         DerivedUnit newSpecimen2 = DerivedUnit.NewPreservedSpecimenInstance();
         DerivationEvent newDerivationEvent = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
         newSpecimen2.setDerivedFrom(newDerivationEvent);
-        assertSame(
-                "The derivation event should be 'newDerivationEvent'",
-                newDerivationEvent, newSpecimen2.getDerivedFrom());
+        assertSame(newDerivationEvent, newSpecimen2.getDerivedFrom(), "The derivation event should be 'newDerivationEvent'");
        	specimenFacade.addDuplicate(newSpecimen2);
-        assertEquals("There should be 2 duplicates now", 2, specimenFacade.getDuplicates().size());
-        assertNotSame(
-                "The derivation event should not be 'newDerivationEvent' anymore",
-                newDerivationEvent, newSpecimen2.getDerivedFrom());
-        assertSame(
-                "The derivation event should not be the facades derivation event",
-                derivationEvent, newSpecimen2.getDerivedFrom());
+        assertEquals(2, specimenFacade.getDuplicates().size(), "There should be 2 duplicates now");
+        assertNotSame(newDerivationEvent, newSpecimen2.getDerivedFrom(), "The derivation event should not be 'newDerivationEvent' anymore");
+        assertSame(derivationEvent, newSpecimen2.getDerivedFrom(), "The derivation event should not be the facades derivation event");
         specimenFacade.removeDuplicate(newSpecimen1);
-        assertEquals("There should be 1 duplicate now", 1,
-                specimenFacade.getDuplicates().size());
-        assertSame("The only duplicate should be 'newSpecimen2' now",
-                newSpecimen2, specimenFacade.getDuplicates().iterator().next());
+        assertEquals(1, specimenFacade.getDuplicates().size(), "There should be 1 duplicate now");
+        assertSame(newSpecimen2, specimenFacade.getDuplicates().iterator().next(), "The only duplicate should be 'newSpecimen2' now");
        	specimenFacade.addDuplicate(specimenFacade.innerDerivedUnit());
-        assertEquals(
-                "There should be still 1 duplicate because the facade specimen is not a duplicate",
-                1, specimenFacade.getDuplicates().size());
+        assertEquals(1, specimenFacade.getDuplicates().size(), "There should be still 1 duplicate because the facade specimen is not a duplicate");
 
         Collection newCollection = Collection.NewInstance();
         String catalogNumber = "1234890";
@@ -1653,13 +1363,11 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
         PreservationMethod method = PreservationMethod.NewInstance();
         DerivedUnit duplicateSpecimen = specimenFacade.addDuplicate(newCollection,
 				catalogNumber, accessionNumber, method);
-        assertEquals("There should be 2 duplicates now", 2,
-                specimenFacade.getDuplicates().size());
+        assertEquals(2, specimenFacade.getDuplicates().size(), "There should be 2 duplicates now");
         specimenFacade.removeDuplicate(newSpecimen2);
-		assertEquals("There should be 1 duplicates now", 1,
-                specimenFacade.getDuplicates().size());
+		assertEquals(1, specimenFacade.getDuplicates().size(), "There should be 1 duplicates now");
         Collection sameCollection = specimenFacade.getDuplicates().iterator().next().getCollection();
-        assertSame("Collections should be same", newCollection, sameCollection);
+        assertSame(newCollection, sameCollection, "Collections should be same");
     }
 
     // ************************** Existing Specimen with multiple derivation
@@ -1673,12 +1381,8 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
         } catch (DerivedUnitFacadeNotSupportedException e) {
             fail("Multiple derivation events in line should not throw a not supported exception");
         }
-        assertSame(
-                "Gathering event should derive from the derivation line",
-                existingGatheringEvent, specimenFacade.innerGatheringEvent());
-        assertEquals(
-                "Mediasize should be 0. Only Imagegallery media are supported",
-                0, specimenFacade.getFieldObjectMedia().size());
+        assertSame(existingGatheringEvent, specimenFacade.innerGatheringEvent(), "Gathering event should derive from the derivation line");
+        assertEquals(0, specimenFacade.getFieldObjectMedia().size(), "Mediasize should be 0. Only Imagegallery media are supported");
     }
 
     @Test
@@ -1692,8 +1396,7 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
         } catch (DerivedUnitFacadeNotSupportedException e) {
             // ok
         }
-        assertNull("Specimen facade should not be initialized",
-                specimenFacade);
+        assertNull(specimenFacade, "Specimen facade should not be initialized");
     }
 
 // 	not required anymore #3597
@@ -1707,8 +1410,7 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
 //        } catch (DerivedUnitFacadeNotSupportedException e) {
 //            // ok
 //        }
-//        assertNull("Specimen facade should not be initialized",
-//                specimenFacade);
+//        assertNull(//                specimenFacade, "Specimen facade should not be initialized");
 //    }
 
     @Test // #######DerivationEvent
@@ -1770,14 +1472,14 @@ public class DerivedUnitFacadeTest extends CdmServicesTransactionalSpringIntegra
     @Test
     public void testBaseUnit() throws DerivedUnitFacadeNotSupportedException{
         DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(specimen);
-        assertEquals("baseUnit is incorrect", specimen, facade.baseUnit());
+        assertEquals(specimen, facade.baseUnit(), "baseUnit is incorrect");
 
         facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.FieldUnit, fieldUnit);
-        assertEquals("baseUnit is incorrect", fieldUnit, facade.baseUnit());
+        assertEquals(fieldUnit, facade.baseUnit(), "baseUnit is incorrect");
 
         facade = DerivedUnitFacade.NewInstance(specimen);
         facade.getFieldUnit(true);
-        assertEquals("baseUnit is incorrect", specimen, facade.baseUnit());
+        assertEquals(specimen, facade.baseUnit(), "baseUnit is incorrect");
     }
 
     /**

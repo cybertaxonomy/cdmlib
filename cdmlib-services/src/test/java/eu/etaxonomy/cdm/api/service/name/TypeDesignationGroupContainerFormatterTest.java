@@ -8,13 +8,15 @@
 */
 package eu.etaxonomy.cdm.api.service.name;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.common.UTF8;
@@ -73,7 +75,7 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
     private SpecimenTypeDesignation mtd_IT_unpublished;
     private Reference book;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         Person person1 = Person.NewInstance("DC", "Decandolle", "A.", null);
         Person person2 = Person.NewInstance("Hab.", "Haber", "M.", null);
@@ -189,28 +191,28 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
         TypeDesignationGroupContainer container = TypeDesignationGroupContainer.NewDefaultInstance(tdList);
         TypeDesignationGroupContainerFormatter formatter = new TypeDesignationGroupContainerFormatter();
         String text = formatter.format(container);
-        Assert.assertEquals("Type: \"My second type designation\" [fide Decandolle & al. 1962: 55]; My text type designation", text);
+        assertEquals("Type: \"My second type designation\" [fide Decandolle & al. 1962: 55]; My text type designation", text);
 
         List<TaggedText> tags = formatter.toTaggedText(container);
-        Assert.assertEquals(8, tags.size());
+        assertEquals(8, tags.size());
         int i = 0;
-        Assert.assertEquals(TagEnum.label, tags.get(i).getType());
-        Assert.assertEquals("Type", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.postSeparator, tags.get(i).getType());
-        Assert.assertEquals(": ", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
-        Assert.assertEquals("\"My second type designation\"", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.separator, tags.get(i).getType());
-        Assert.assertEquals(" [fide ", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.reference, tags.get(i).getType());
-        Assert.assertEquals(Reference.class, tags.get(i).getEntityReference().getType());
-        Assert.assertEquals("Decandolle & al. 1962: 55", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.separator, tags.get(i).getType());
-        Assert.assertEquals("]", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.separator, tags.get(i).getType());
-        Assert.assertEquals("; ", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
-        Assert.assertEquals("My text type designation", tags.get(i++).getText());
+        assertEquals(TagEnum.label, tags.get(i).getType());
+        assertEquals("Type", tags.get(i++).getText());
+        assertEquals(TagEnum.postSeparator, tags.get(i).getType());
+        assertEquals(": ", tags.get(i++).getText());
+        assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
+        assertEquals("\"My second type designation\"", tags.get(i++).getText());
+        assertEquals(TagEnum.separator, tags.get(i).getType());
+        assertEquals(" [fide ", tags.get(i++).getText());
+        assertEquals(TagEnum.reference, tags.get(i).getType());
+        assertEquals(Reference.class, tags.get(i).getEntityReference().getType());
+        assertEquals("Decandolle & al. 1962: 55", tags.get(i++).getText());
+        assertEquals(TagEnum.separator, tags.get(i).getType());
+        assertEquals("]", tags.get(i++).getText());
+        assertEquals(TagEnum.separator, tags.get(i).getType());
+        assertEquals("; ", tags.get(i++).getText());
+        assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
+        assertEquals("My text type designation", tags.get(i++).getText());
 
         //test i18n text
         ttd.putText(Language.GERMAN(), "Meine textuelle Typenfestlegung");
@@ -221,12 +223,12 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
         languages.add(Language.GERMAN());
         formatter.withLanguages(languages);
         text = formatter.format(container);
-        Assert.assertEquals("Type: \"My second type designation\" [fide Decandolle & al. 1962: 55]; My text type designation", text);
+        assertEquals("Type: \"My second type designation\" [fide Decandolle & al. 1962: 55]; My text type designation", text);
 
         Collections.reverse(languages);
         formatter.withLanguages(languages);
         text = formatter.format(container);
-        Assert.assertEquals("Type: \"Meine zweite Typenfestlegung\" [fide Decandolle & al. 1962: 55]; Meine textuelle Typenfestlegung", text);
+        assertEquals("Type: \"Meine zweite Typenfestlegung\" [fide Decandolle & al. 1962: 55]; Meine textuelle Typenfestlegung", text);
     }
 
     @Test
@@ -258,26 +260,26 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
                 .withCitation(false);
         String text = formatter.format(container);
         //Type*s* might become Type in future (not defined yet as this is a very rare or even unrealistic combination of specimen and name types, see according comment in formatter
-        Assert.assertEquals("Type: not designated; Type: not designated", text);
+        assertEquals("Type: not designated; Type: not designated", text);
 
         List<TaggedText> tags = formatter.toTaggedText(container);
-        Assert.assertEquals(7, tags.size());
+        assertEquals(7, tags.size());
         int i = 0;
-        Assert.assertEquals(TagEnum.label, tags.get(i).getType());
-        Assert.assertEquals("Type", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.postSeparator, tags.get(i).getType());
-        Assert.assertEquals(": ", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
-        Assert.assertEquals("not designated", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.separator, tags.get(i).getType());
-        Assert.assertEquals("; ", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.label, tags.get(i).getType());
+        assertEquals(TagEnum.label, tags.get(i).getType());
+        assertEquals("Type", tags.get(i++).getText());
+        assertEquals(TagEnum.postSeparator, tags.get(i).getType());
+        assertEquals(": ", tags.get(i++).getText());
+        assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
+        assertEquals("not designated", tags.get(i++).getText());
+        assertEquals(TagEnum.separator, tags.get(i).getType());
+        assertEquals("; ", tags.get(i++).getText());
+        assertEquals(TagEnum.label, tags.get(i).getType());
         //TODO maybe not correct and should be type, not Type
-        Assert.assertEquals("Type", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.postSeparator, tags.get(i).getType());
-        Assert.assertEquals(": ", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
-        Assert.assertEquals("not designated", tags.get(i++).getText());
+        assertEquals("Type", tags.get(i++).getText());
+        assertEquals(TagEnum.postSeparator, tags.get(i).getType());
+        assertEquals(": ", tags.get(i++).getText());
+        assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
+        assertEquals("not designated", tags.get(i++).getText());
 
         //with citation
         formatter = new TypeDesignationGroupContainerFormatter().withCitation(true);
@@ -285,39 +287,39 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
 
         //Note: having 2x 'not designated' does not make sense in reality
         //... or should be deduplicated as there are 2 sources
-        Assert.assertEquals("Type: not designated [fide Decandolle & al. 1962: 66]; Type: not designated [fide Decandolle & al. 1962: 55]", text);
+        assertEquals("Type: not designated [fide Decandolle & al. 1962: 66]; Type: not designated [fide Decandolle & al. 1962: 55]", text);
         tags = formatter.toTaggedText(container);
-        Assert.assertEquals(13, tags.size());
+        assertEquals(13, tags.size());
         i = 0;
-        Assert.assertEquals(TagEnum.label, tags.get(i).getType());
-        Assert.assertEquals("Type", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.postSeparator, tags.get(i).getType());
-        Assert.assertEquals(": ", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
-        Assert.assertEquals("not designated", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.separator, tags.get(i).getType());
-        Assert.assertEquals(" [fide ", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.reference, tags.get(i).getType());
-        Assert.assertEquals(Reference.class, tags.get(i).getEntityReference().getType());
-        Assert.assertEquals("Decandolle & al. 1962: 66", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.separator, tags.get(i).getType());
-        Assert.assertEquals("]", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.separator, tags.get(i).getType());
-        Assert.assertEquals("; ", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.label, tags.get(i).getType());
+        assertEquals(TagEnum.label, tags.get(i).getType());
+        assertEquals("Type", tags.get(i++).getText());
+        assertEquals(TagEnum.postSeparator, tags.get(i).getType());
+        assertEquals(": ", tags.get(i++).getText());
+        assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
+        assertEquals("not designated", tags.get(i++).getText());
+        assertEquals(TagEnum.separator, tags.get(i).getType());
+        assertEquals(" [fide ", tags.get(i++).getText());
+        assertEquals(TagEnum.reference, tags.get(i).getType());
+        assertEquals(Reference.class, tags.get(i).getEntityReference().getType());
+        assertEquals("Decandolle & al. 1962: 66", tags.get(i++).getText());
+        assertEquals(TagEnum.separator, tags.get(i).getType());
+        assertEquals("]", tags.get(i++).getText());
+        assertEquals(TagEnum.separator, tags.get(i).getType());
+        assertEquals("; ", tags.get(i++).getText());
+        assertEquals(TagEnum.label, tags.get(i).getType());
         //TODO maybe not correct and should be type, not Type
-        Assert.assertEquals("Type", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.postSeparator, tags.get(i).getType());
-        Assert.assertEquals(": ", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
-        Assert.assertEquals("not designated", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.separator, tags.get(i).getType());
-        Assert.assertEquals(" [fide ", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.reference, tags.get(i).getType());
-        Assert.assertEquals(Reference.class, tags.get(i).getEntityReference().getType());
-        Assert.assertEquals("Decandolle & al. 1962: 55", tags.get(i++).getText());
-        Assert.assertEquals(TagEnum.separator, tags.get(i).getType());
-        Assert.assertEquals("]", tags.get(i++).getText());;
+        assertEquals("Type", tags.get(i++).getText());
+        assertEquals(TagEnum.postSeparator, tags.get(i).getType());
+        assertEquals(": ", tags.get(i++).getText());
+        assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
+        assertEquals("not designated", tags.get(i++).getText());
+        assertEquals(TagEnum.separator, tags.get(i).getType());
+        assertEquals(" [fide ", tags.get(i++).getText());
+        assertEquals(TagEnum.reference, tags.get(i).getType());
+        assertEquals(Reference.class, tags.get(i).getEntityReference().getType());
+        assertEquals("Decandolle & al. 1962: 55", tags.get(i++).getText());
+        assertEquals(TagEnum.separator, tags.get(i).getType());
+        assertEquals("]", tags.get(i++).getText());;
     }
 
     //#10089
@@ -340,6 +342,6 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
                 !WITH_CITATION, !WITH_TYPE_LABEL, !WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, WITH_ACCESSION_NO_TYPE, languages);
         String text = formatter.format(container);
         int holotypeIndex = text.indexOf("holotype");
-        Assert.assertTrue("Holotype must be first, isotype second", holotypeIndex>0 && (holotypeIndex < text.indexOf("isotype")) );
+        assertTrue(holotypeIndex>0 && (holotypeIndex < text.indexOf("isotype")), "Holotype must be first, isotype second");
     }
 }

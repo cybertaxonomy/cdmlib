@@ -9,8 +9,8 @@
 
 package eu.etaxonomy.cdm.api.service.lsid;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.FileNotFoundException;
 
@@ -44,16 +44,16 @@ public class LSIDMetadataServiceTest extends CdmServicesTransactionalSpringInteg
 
 	@Test
 	public void testInit()	{
-		assertNotNull("lsidMetadataService should exist",lsidMetadataService);
+		assertNotNull(lsidMetadataService, "lsidMetadataService should exist");
 	}
 
 	@Test
 	public void testGetMetadataWithKnownLSID() throws Exception {
 		IIdentifiableEntity identifiableEntity = lsidMetadataService.getMetadata(lsid);
-		assertNotNull("getMetadata should return an IdentifiableEntity",identifiableEntity);
-		assertEquals("the object should have an lsid equal to the lsid supplied",lsid.getAuthority(),identifiableEntity.getLsid().getAuthority());
-		assertEquals("the object should have an lsid equal to the lsid supplied",lsid.getNamespace(),identifiableEntity.getLsid().getNamespace());
-		assertEquals("the object should have an lsid equal to the lsid supplied",lsid.getObject(),identifiableEntity.getLsid().getObject());
+		assertNotNull(identifiableEntity, "getMetadata should return an IdentifiableEntity");
+		assertEquals(lsid.getAuthority(), identifiableEntity.getLsid().getAuthority(), "the object should have an lsid equal to the lsid supplied");
+		assertEquals(lsid.getNamespace(), identifiableEntity.getLsid().getNamespace(), "the object should have an lsid equal to the lsid supplied");
+		assertEquals(lsid.getObject(), identifiableEntity.getLsid().getObject(), "the object should have an lsid equal to the lsid supplied");
 	}
 
     /* (non-Javadoc)

@@ -8,10 +8,14 @@
 */
 package eu.etaxonomy.cdm.api.service.idminter;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.FileNotFoundException;
 
 import org.hibernate.SessionFactory;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,7 +41,7 @@ public class RegistrationIdentifierMinterTest extends CdmServicesTransactionalSp
         minter.setMinLocalId("100");
         minter.setMaxLocalId("110");
         Identifier<String> indentifier = minter.mint();
-        Assert.assertEquals("104", indentifier.getLocalId());
+        assertEquals("104", indentifier.getLocalId());
     }
 
     @Test
@@ -49,8 +53,8 @@ public class RegistrationIdentifierMinterTest extends CdmServicesTransactionalSp
         minter.setMaxLocalId("110");
         minter.setIdentifierFormatString("http://phycobank/%s");
         Identifier<String> indentifier = minter.mint();
-        Assert.assertEquals("103", indentifier.getLocalId());
-        Assert.assertEquals("http://phycobank/103", indentifier.identifier);
+        assertEquals("103", indentifier.getLocalId());
+        assertEquals("http://phycobank/103", indentifier.identifier);
     }
 
     @Test
@@ -62,7 +66,7 @@ public class RegistrationIdentifierMinterTest extends CdmServicesTransactionalSp
         minter.setMaxLocalId("400");
         minter.setIdentifierFormatString("http://phycobank/%s");
         Identifier<String> indentifier = minter.mint();
-        Assert.assertEquals("300", indentifier.getLocalId());
+        assertEquals("300", indentifier.getLocalId());
     }
 
     @Test
@@ -79,28 +83,28 @@ public class RegistrationIdentifierMinterTest extends CdmServicesTransactionalSp
         } catch (OutOfIdentifiersException e){
             thrown = true;
         }
-        Assert.assertTrue(thrown);
+        assertTrue(thrown);
     }
 
     @Test
     public void testIsFromOwnRegistration(){
         RegistrationIdentifierMinter minter = new RegistrationIdentifierMinter();
-        Assert.assertNull(minter.getIdentifierFormatString());
-        Assert.assertTrue(minter.isFromOwnRegistration("1234"));
+        assertNull(minter.getIdentifierFormatString());
+        assertTrue(minter.isFromOwnRegistration("1234"));
 
         minter = new RegistrationIdentifierMinter();
         minter.setIdentifierFormatString("http://phycobank/%s");
-        Assert.assertTrue(minter.isFromOwnRegistration("http://phycobank/1234"));
-        Assert.assertFalse(minter.isFromOwnRegistration("http://phycobank/"));
-        Assert.assertFalse(minter.isFromOwnRegistration("http://otherreg/1234"));
-        Assert.assertFalse(minter.isFromOwnRegistration("1234"));
+        assertTrue(minter.isFromOwnRegistration("http://phycobank/1234"));
+        assertFalse(minter.isFromOwnRegistration("http://phycobank/"));
+        assertFalse(minter.isFromOwnRegistration("http://otherreg/1234"));
+        assertFalse(minter.isFromOwnRegistration("1234"));
 
         minter = new RegistrationIdentifierMinter();
         minter.setIdentifierFormatString("%s");
-        Assert.assertTrue(minter.isFromOwnRegistration("1234"));
-        Assert.assertFalse(minter.isFromOwnRegistration("http://phycobank/1234"));
-        Assert.assertFalse(minter.isFromOwnRegistration("http://phycobank/"));
-        Assert.assertFalse(minter.isFromOwnRegistration("http://otherreg/1234"));
+        assertTrue(minter.isFromOwnRegistration("1234"));
+        assertFalse(minter.isFromOwnRegistration("http://phycobank/1234"));
+        assertFalse(minter.isFromOwnRegistration("http://phycobank/"));
+        assertFalse(minter.isFromOwnRegistration("http://otherreg/1234"));
     }
 
     @Override

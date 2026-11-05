@@ -8,8 +8,11 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
 import java.util.Collection;
@@ -22,7 +25,6 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +81,7 @@ public class DescriptionServiceImplTest extends CdmServicesTransactionalSpringIn
         }
         service.saveOrUpdate(descBase);
         Pager<DescriptionElementBase> allElements = service.pageDescriptionElements(null, null, null, null, false, null, null, null);
-        Assert.assertEquals(1, allElements.getCount().intValue());
+        assertEquals(1, allElements.getCount().intValue());
         DescriptionElementBase test = allElements.getRecords().get(0);
         if (test instanceof TextData){
 
@@ -122,7 +124,7 @@ public class DescriptionServiceImplTest extends CdmServicesTransactionalSpringIn
         try {
             commitAndStartNewTransaction(null);
         } catch (Exception e) {
-            Assert.fail("Moving description element should not throw an exception. Exception is " + e.getMessage());
+            fail("Moving description element should not throw an exception. Exception is " + e.getMessage());
         }
     }
 
@@ -152,7 +154,7 @@ public class DescriptionServiceImplTest extends CdmServicesTransactionalSpringIn
         TextData element3Data = TextData.NewInstance();
         element3Data.setFeature(commonNameFeatureData);
         sourceDescriptionData.addElement(element3Data);
-        Assert.assertEquals(3, sourceDescriptionData.getElements().size());
+        assertEquals(3, sourceDescriptionData.getElements().size());
         TaxonDescription targetDescriptionData = TaxonDescription.NewInstance();
         this.service.save(sourceDescriptionData);
         this.service.save(targetDescriptionData);
@@ -160,25 +162,25 @@ public class DescriptionServiceImplTest extends CdmServicesTransactionalSpringIn
         commitAndStartNewTransaction(null);
 
         TaxonDescription sourceDescription = (TaxonDescription)this.service.find(sourceDescriptionData.getId());
-        Assert.assertEquals(3, sourceDescription.getElements().size());
+        assertEquals(3, sourceDescription.getElements().size());
 
         TaxonDescription targetDescription = (TaxonDescription)this.service.find(targetDescriptionData.getId());
 
         Collection<DescriptionElementBase> sourceCollection = new HashSet<DescriptionElementBase>();
         sourceCollection.addAll(sourceDescription.getElements());
         sourceCollection.remove(element3Data);  //should work as it works on equal
-        Assert.assertEquals(2, sourceCollection.size());
+        assertEquals(2, sourceCollection.size());
 
         service.moveDescriptionElementsToDescription(getUuidSet(sourceCollection), targetDescription, false, true);
 
-        Assert.assertEquals("Source description should have 1 element left", 1, sourceDescription.getElements().size());
-        Assert.assertEquals("Target description should have 2 new elements", 2, targetDescription.getElements().size());
+        assertEquals(1, sourceDescription.getElements().size(), "Source description should have 1 element left");
+        assertEquals(2, targetDescription.getElements().size(), "Target description should have 2 new elements");
         //the following tests are not valid anymore as elements are cloned now even if isCopy is false
-        //		Assert.assertTrue("The moved element should be in the new description", targetDescription.getElements().contains(element));
-        //		Assert.assertTrue("The moved element2 should be in the new description", targetDescription.getElements().contains(element2));
-        //		Assert.assertFalse("Element3 should not be in the new description", targetDescription.getElements().contains(element3));
+        //		assertTrue(targetDescription.getElements().contains(element), "The moved element should be in the new description");
+        //		assertTrue(targetDescription.getElements().contains(element2), "The moved element2 should be in the new description");
+        //		assertFalse(targetDescription.getElements().contains(element3), "Element3 should not be in the new description");
 
-        Assert.assertTrue("Element3 should remain in the old description", sourceDescription.getElements().contains(element3Data));
+        assertTrue(sourceDescription.getElements().contains(element3Data), "Element3 should remain in the old description");
         sourceDescription = (TaxonDescription) this.service.find(sourceDescription.getUuid());
         targetDescription = (TaxonDescription) this.service.find(targetDescription.getUuid());
         assertNotNull(sourceDescription);
@@ -188,11 +190,11 @@ public class DescriptionServiceImplTest extends CdmServicesTransactionalSpringIn
         } catch (Exception e) {
             //asserting that no ConcurrentModificationException is thrown when the elements collection is passed as a parameter
             e.printStackTrace();
-            Assert.fail();
+            fail();
         }
 
-        Assert.assertEquals("Source description should have 3 elements again", 3, sourceDescription.getElements().size());
-        Assert.assertEquals("Destination description should have no elements again", 0, targetDescription.getElements().size());
+        assertEquals(3, sourceDescription.getElements().size(), "Source description should have 3 elements again");
+        assertEquals(0, targetDescription.getElements().size(), "Destination description should have no elements again");
         sourceDescription = (TaxonDescription) this.service.find(sourceDescription.getUuid());
         targetDescription = (TaxonDescription) this.service.find(targetDescription.getUuid());
         assertNotNull(sourceDescription);
@@ -220,7 +222,7 @@ public class DescriptionServiceImplTest extends CdmServicesTransactionalSpringIn
         TextData element3Data = TextData.NewInstance();
         element3Data.setFeature(commonNameFeatureData);
         sourceDescriptionData.addElement(element3Data);
-        Assert.assertEquals(3, sourceDescriptionData.getElements().size());
+        assertEquals(3, sourceDescriptionData.getElements().size());
         TaxonDescription targetDescriptionData = TaxonDescription.NewInstance();
         this.service.save(sourceDescriptionData);
         this.service.save(targetDescriptionData);
@@ -228,7 +230,7 @@ public class DescriptionServiceImplTest extends CdmServicesTransactionalSpringIn
         commitAndStartNewTransaction(null);
 
         TaxonDescription sourceDescription = (TaxonDescription)this.service.find(sourceDescriptionData.getId());
-        Assert.assertEquals(3, sourceDescription.getElements().size());
+        assertEquals(3, sourceDescription.getElements().size());
 
         TaxonDescription targetDescription = (TaxonDescription)this.service.find(targetDescriptionData.getId());
         service.moveDescriptionElementsToDescription(getUuidSet(sourceDescription.getElements()), targetDescription, false, true);

@@ -8,6 +8,12 @@
 */
 package eu.etaxonomy.cdm.api.service.geo;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,7 +25,6 @@ import java.util.UUID;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -336,9 +341,8 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
                 statusOrderPreference, subAreaPreference, false);
 
         //test
-        Assert.assertEquals(1, filteredDistributions.size());
-        Assert.assertEquals("expecting to see computed status INTRODUCED even it has lower preference than NATIVE",
-                PresenceAbsenceTerm.INTRODUCED().getUuid(), filteredDistributions.iterator().next().getStatus().getUuid());
+        assertEquals(1, filteredDistributions.size());
+        assertEquals(PresenceAbsenceTerm.INTRODUCED().getUuid(), filteredDistributions.iterator().next().getStatus().getUuid(), "expecting to see computed status INTRODUCED even it has lower preference than NATIVE");
 
        /* Distributions for parent areas are only
         * removed if direct sub areas have the same status and if subAreaPreference=TRUE
@@ -356,7 +360,7 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
                 statusOrderPreference, subAreaPreference, true);
 
         //test
-        Assert.assertEquals(2, filteredDistributions.size());
+        assertEquals(2, filteredDistributions.size());
     }
 
     public Set<DistributionDto> filterDistributions(Collection<Distribution> distributions,
@@ -407,8 +411,8 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
                 distributions, areaTree, statusTree, hideMarkedAreas, false, statusOrderPreference, subAreaPreference, true);
 
         //Test
-        Assert.assertEquals(1, filteredDistributions.size());
-        Assert.assertEquals(PresenceAbsenceTerm.NATIVE().getUuid(), filteredDistributions.iterator().next().getStatus().getUuid());
+        assertEquals(1, filteredDistributions.size());
+        assertEquals(PresenceAbsenceTerm.NATIVE().getUuid(), filteredDistributions.iterator().next().getStatus().getUuid());
     }
 
     @Test
@@ -449,8 +453,8 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
         filteredDistributions = filterDistributions(distributions, areaTree, statusTree,
                 hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true);
         //... test
-        Assert.assertEquals(1, filteredDistributions.size());
-        Assert.assertEquals(berlin.getUuid(), filteredDistributions.iterator().next().getArea().getUuid());
+        assertEquals(1, filteredDistributions.size());
+        assertEquals(berlin.getUuid(), filteredDistributions.iterator().next().getArea().getUuid());
 
         //add distribution for Europe (not yet as parent of Germany)
         Distribution distEurope = Distribution.NewInstance(europe, PresenceAbsenceTerm.NATIVE());
@@ -458,26 +462,25 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
         filteredDistributions = filterDistributions(distributions, areaTree, statusTree,
                 hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true);
         //... test
-        Assert.assertEquals("Europe should be also in", 2, filteredDistributions.size());
+        assertEquals(2, filteredDistributions.size(), "Europe should be also in");
         Set<UUID> areaUuids = filteredDistributions.stream().map(d->d.getArea().getUuid()).collect(Collectors.toSet());
-        Assert.assertTrue("Europe should be also in", areaUuids.contains(europe.getUuid()));
-        Assert.assertTrue("Berlin should still be in", areaUuids.contains(berlin.getUuid()));
+        assertTrue(areaUuids.contains(europe.getUuid()), "Europe should be also in");
+        assertTrue(areaUuids.contains(berlin.getUuid()), "Berlin should still be in");
 
         //now add Europe as parent of Germany => Europe should be removed
         europeNode.addChild(germanyNode);
         filteredDistributions = filterDistributions(distributions, areaTree, statusTree,
                 hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true);
         //... test
-        Assert.assertEquals("Europe should be removed as it is a parent of Germany and ancestor of berlin",
-                1, filteredDistributions.size());
-        Assert.assertEquals(berlin.getUuid(), filteredDistributions.iterator().next().getArea().getUuid());
+        assertEquals(1, filteredDistributions.size(), "Europe should be removed as it is a parent of Germany and ancestor of berlin");
+        assertEquals(berlin.getUuid(), filteredDistributions.iterator().next().getArea().getUuid());
 
         //now remove Germany from distributions => Europe should still be removed as it is an ancestor of berlin
         distributions.remove(distGermany);
         filteredDistributions = filterDistributions(distributions, areaTree, statusTree,
                 hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true);
         //... test
-        Assert.assertEquals("Europe should be removed as it is an ancestor of berlin", 1, filteredDistributions.size());
+        assertEquals(1, filteredDistributions.size(), "Europe should be removed as it is an ancestor of berlin");
 
         //do not remove other area
         Distribution distFrance = Distribution.NewInstance(france, PresenceAbsenceTerm.NATIVE());
@@ -486,7 +489,7 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
         filteredDistributions = filterDistributions(distributions, areaTree, statusTree,
                 hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true);
         //... test
-        Assert.assertEquals(2, filteredDistributions.size());
+        assertEquals(2, filteredDistributions.size());
     }
 
     @Test
@@ -529,8 +532,8 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
                 areaTree, statusTree, hideMarkedAreas, false,
                 statusOrderPreference, subAreaPreference, true);
 
-        Assert.assertEquals(1, filteredDistributions.size());
-        Assert.assertEquals(germany.getUuid(), filteredDistributions.iterator().next().getArea().getUuid());
+        assertEquals(1, filteredDistributions.size());
+        assertEquals(germany.getUuid(), filteredDistributions.iterator().next().getArea().getUuid());
     }
 
     @Test
@@ -574,8 +577,8 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
                 keepFallBackOnlyIfNoSubareaDataExists);
 
         //test
-        Assert.assertEquals(1, filteredDistributions.size());
-        Assert.assertEquals(serbia.getUuid(), filteredDistributions.iterator().next().getArea().getUuid());
+        assertEquals(1, filteredDistributions.size());
+        assertEquals(serbia.getUuid(), filteredDistributions.iterator().next().getArea().getUuid());
 
         //filter
         keepFallBackOnlyIfNoSubareaDataExists = false;
@@ -588,9 +591,9 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
                 keepFallBackOnlyIfNoSubareaDataExists);
 
         //test
-        Assert.assertEquals(2, filteredDistributions.size());
-        Assert.assertTrue(filteredDistributions.stream().map(d->d.getArea().getUuid()).collect(toList).contains(serbia.getUuid()));
-        Assert.assertTrue(filteredDistributions.stream().map(d->d.getArea().getUuid()).collect(toList).contains(jugoslavia.getUuid()));
+        assertEquals(2, filteredDistributions.size());
+        assertTrue(filteredDistributions.stream().map(d->d.getArea().getUuid()).collect(toList).contains(serbia.getUuid()));
+        assertTrue(filteredDistributions.stream().map(d->d.getArea().getUuid()).collect(toList).contains(jugoslavia.getUuid()));
     }
 
     @Test
@@ -633,7 +636,7 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
                 keepFallBackOnlyIfNoSubareaDataExists);
 
         //test
-        Assert.assertEquals(1, filteredDistributions.size());
+        assertEquals(1, filteredDistributions.size());
 
         //filter
         keepFallBackOnlyIfNoSubareaDataExists = false;
@@ -644,8 +647,8 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
                 keepFallBackOnlyIfNoSubareaDataExists);
 
         //test
-        Assert.assertEquals(1, filteredDistributions.size());
-        Assert.assertEquals(jugoslavia.getUuid(), filteredDistributions.iterator().next().getArea().getUuid());
+        assertEquals(1, filteredDistributions.size());
+        assertEquals(jugoslavia.getUuid(), filteredDistributions.iterator().next().getArea().getUuid());
 
         //filter
         keepFallBackOnlyIfNoSubareaDataExists = true;
@@ -657,8 +660,8 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
                 keepFallBackOnlyIfNoSubareaDataExists);
 
         //test
-        Assert.assertEquals(1, filteredDistributions.size());
-        Assert.assertEquals(serbia.getUuid(), filteredDistributions.iterator().next().getArea().getUuid());
+        assertEquals(1, filteredDistributions.size());
+        assertEquals(serbia.getUuid(), filteredDistributions.iterator().next().getArea().getUuid());
 
         //filter
         keepFallBackOnlyIfNoSubareaDataExists = false;
@@ -669,9 +672,9 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
                 keepFallBackOnlyIfNoSubareaDataExists);
 
         //test
-        Assert.assertEquals(2, filteredDistributions.size());
-        Assert.assertTrue(filteredDistributions.stream().map(d->d.getArea().getUuid()).collect(toList).contains(jugoslavia.getUuid()));
-        Assert.assertTrue(filteredDistributions.stream().map(d->d.getArea().getUuid()).collect(toList).contains(serbia.getUuid()));
+        assertEquals(2, filteredDistributions.size());
+        assertTrue(filteredDistributions.stream().map(d->d.getArea().getUuid()).collect(toList).contains(jugoslavia.getUuid()));
+        assertTrue(filteredDistributions.stream().map(d->d.getArea().getUuid()).collect(toList).contains(serbia.getUuid()));
 
         //filter
         distributions.add(distPartOfSerbia);
@@ -683,8 +686,8 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
                 keepFallBackOnlyIfNoSubareaDataExists);
 
         //test
-        Assert.assertEquals(1, filteredDistributions.size());
-        Assert.assertEquals(partOfSerbia.getUuid(), filteredDistributions.iterator().next().getArea().getUuid());
+        assertEquals(1, filteredDistributions.size());
+        assertEquals(partOfSerbia.getUuid(), filteredDistributions.iterator().next().getArea().getUuid());
 
         //filter
         keepFallBackOnlyIfNoSubareaDataExists = false;
@@ -695,10 +698,10 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
                 keepFallBackOnlyIfNoSubareaDataExists);
 
         //test
-        Assert.assertEquals(3, filteredDistributions.size());
-        Assert.assertTrue(filteredDistributions.stream().map(d->d.getArea().getUuid()).collect(toList).contains(jugoslavia.getUuid()));
-        Assert.assertTrue(filteredDistributions.stream().map(d->d.getArea().getUuid()).collect(toList).contains(serbia.getUuid()));
-        Assert.assertTrue(filteredDistributions.stream().map(d->d.getArea().getUuid()).collect(toList).contains(partOfSerbia.getUuid()));
+        assertEquals(3, filteredDistributions.size());
+        assertTrue(filteredDistributions.stream().map(d->d.getArea().getUuid()).collect(toList).contains(jugoslavia.getUuid()));
+        assertTrue(filteredDistributions.stream().map(d->d.getArea().getUuid()).collect(toList).contains(serbia.getUuid()));
+        assertTrue(filteredDistributions.stream().map(d->d.getArea().getUuid()).collect(toList).contains(partOfSerbia.getUuid()));
     }
 
     @Test
@@ -737,8 +740,8 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
                 subAreaPreference,
                 true);
 
-        Assert.assertEquals(0, filteredDistributions.size());
-//        Assert.assertEquals(jugoslavia, filteredDistributions.iterator().next().getArea());
+        assertEquals(0, filteredDistributions.size());
+//        assertEquals(jugoslavia, filteredDistributions.iterator().next().getArea());
     }
 
     //NOTE: also tests the area tree retrieval
@@ -781,8 +784,8 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
                 true);
 
         //test
-        Assert.assertEquals("Ju should be included as subarea has no data", 1, filteredDistributions.size());
-        Assert.assertEquals(jugoslavia.getUuid(), filteredDistributions.iterator().next().getArea().getUuid());
+        assertEquals(1, filteredDistributions.size(), "Ju should be included as subarea has no data");
+        assertEquals(jugoslavia.getUuid(), filteredDistributions.iterator().next().getArea().getUuid());
     }
 
     @Test
@@ -802,26 +805,26 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
         filteredDistributions = filterDistributions(distributions, areaTree,
                 statusTree, hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference,
                 subAreaPreference, keepFallBackOnlyIfNoSubareaDataExists);
-        Assert.assertEquals(4, filteredDistributions.size());
+        assertEquals(4, filteredDistributions.size());
         List<UUID> areaList = filteredDistributions.stream().map(fd->fd.getArea().getUuid()).collect(Collectors.toList());
-        Assert.assertTrue(areaList.contains(germany.getUuid()));
-        Assert.assertTrue(areaList.contains(ileDeFrance.getUuid()));
-        Assert.assertTrue(areaList.contains(italy.getUuid()));
-        Assert.assertTrue(areaList.contains(spain.getUuid()));
+        assertTrue(areaList.contains(germany.getUuid()));
+        assertTrue(areaList.contains(ileDeFrance.getUuid()));
+        assertTrue(areaList.contains(italy.getUuid()));
+        assertTrue(areaList.contains(spain.getUuid()));
 
         //add Saar which is child of Germany and West Europe
         createAndAddSaarAndWestEuropeDistribution();
         filteredDistributions = filterDistributions(distributions, areaTree,
                 statusTree, hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference,
                 subAreaPreference, keepFallBackOnlyIfNoSubareaDataExists);
-        Assert.assertEquals(4, filteredDistributions.size());
+        assertEquals(4, filteredDistributions.size());
         List<UUID> areaList2 = filteredDistributions.stream().map(fd->fd.getArea().getUuid()).collect(Collectors.toList());
-        Assert.assertTrue(areaList2.contains(saar.getUuid()));
-        Assert.assertFalse("Should not contain West Europe as it is Saar parent", areaList2.contains(westEurope.getUuid()));
-        Assert.assertFalse("Should not contain Germany as it is Saar parent", areaList2.contains(germany.getUuid()));
-        Assert.assertTrue(areaList2.contains(ileDeFrance.getUuid()));
-        Assert.assertTrue(areaList.contains(italy.getUuid()));
-        Assert.assertTrue(areaList.contains(spain.getUuid()));
+        assertTrue(areaList2.contains(saar.getUuid()));
+        assertFalse(areaList2.contains(westEurope.getUuid()), "Should not contain West Europe as it is Saar parent");
+        assertFalse(areaList2.contains(germany.getUuid()), "Should not contain Germany as it is Saar parent");
+        assertTrue(areaList2.contains(ileDeFrance.getUuid()));
+        assertTrue(areaList.contains(italy.getUuid()));
+        assertTrue(areaList.contains(spain.getUuid()));
     }
 
     @Test
@@ -839,7 +842,7 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
         createDefaultDistributions();
         createDefaultDistributionDtos();
 
-        Assert.assertEquals("Tree:1<Europe:endemic{}:4"
+        assertEquals("Tree:1<Europe:endemic{}:4"
                 + "<Germany:native{}:2"
                 +     "<Baden Wuerttemberg:native{}:0>"
                 +     "<Berlin:native{}:0>>"
@@ -851,7 +854,7 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
 
         //with fallback
         fallBackAreaMarkerTypes.add(MarkerType.uuidFallbackArea);
-        Assert.assertEquals("Tree:1<Europe:endemic{}:4"
+        assertEquals("Tree:1<Europe:endemic{}:4"
                 + "<France:-:1<Ile-de-France:cultivated{}:0>>"
                 + "<Germany:native{}:2"
                 +     "<Baden Wuerttemberg:native{}:0>"
@@ -863,7 +866,7 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
         //change status
         bawueDist.setStatus(PresenceAbsenceTerm.CASUAL());
         createDefaultDistributionDtos();
-        Assert.assertEquals("Tree:1<Europe:endemic{}:4"
+        assertEquals("Tree:1<Europe:endemic{}:4"
                 + "<France:-:1<Ile-de-France:cultivated{}:0>>"
                 + "<Germany:native{}:2"
                 +     "<Baden Wuerttemberg:casual{}:0>"
@@ -875,7 +878,7 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
         //add fallback status
         createWesternEuropeDistribution();
         createDefaultDistributionDtos();
-        Assert.assertEquals("Tree:1<Europe:endemic{}:5"
+        assertEquals("Tree:1<Europe:endemic{}:5"
                 + "<France:-:1<Ile-de-France:cultivated{}:0>>"
                 + "<Germany:native{}:2"
                 +     "<Baden Wuerttemberg:casual{}:0>"
@@ -890,7 +893,7 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
         neverUseFallbackAreasAsParents = false;
         createWesternEuropeDistribution();
         createDefaultDistributionDtos();
-        Assert.assertEquals("Tree:1<Europe:endemic{}:4"
+        assertEquals("Tree:1<Europe:endemic{}:4"
                 + "<Germany:native{}:2"
                 +     "<Baden Wuerttemberg:casual{}:0>"
                 +     "<Berlin:native{}:0>>"
@@ -907,7 +910,7 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
         ref1.setTitleCache("Test Ref1", true);
         westEuropeDist.addPrimaryTaxonomicSource(ref1, "55");
         createDefaultDistributionDtos();
-        Assert.assertEquals("Tree:1<Europe:endemic{}:5"
+        assertEquals("Tree:1<Europe:endemic{}:5"
                 + "<France:-:1<Ile-de-France:cultivated{}:0>>"
                 + "<Germany:native{}:2"
                 +     "<Baden Wuerttemberg:casual{}:0>"
@@ -929,8 +932,8 @@ public class DistributionInfoBuilderTest extends CdmServicesTransactionalSpringI
     public String tree2String(DistributionTreeDto tree) {
         StringBuilder sb = new StringBuilder();
         TreeNode<Set<DistributionDto>, NamedAreaDto> root = tree.getRootElement();
-        Assert.assertNotNull("root should exist", root);
-        Assert.assertNull("root nodeId is null as it does not represent an area", root.getNodeId());
+        assertNotNull(root, "root should exist");
+        assertNull(root.getNodeId(), "root nodeId is null as it does not represent an area");
         sb.append("Tree:" + root.getNumberOfChildren());
         for (TreeNode<Set<DistributionDto>,NamedAreaDto> node : root.getChildren()) {
             node2String(node, sb);

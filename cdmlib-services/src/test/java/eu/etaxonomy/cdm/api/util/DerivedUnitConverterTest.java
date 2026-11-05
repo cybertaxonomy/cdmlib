@@ -8,8 +8,11 @@
 */
 package eu.etaxonomy.cdm.api.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -20,7 +23,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
  * @author a.kohlbecker
  * @since Jun 23, 2017
  */
-public class DerivedUnitConverterTest extends Assert {
+public class DerivedUnitConverterTest {
 
     @Test
     public void toMediaSpecimen() throws DerivedUnitConversionException {
