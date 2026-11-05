@@ -30,6 +30,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import eu.etaxonomy.cdm.persistence.hibernate.search.CdmHibernateSearchSettings;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceException;
 
@@ -130,9 +131,7 @@ public class CdmLocalContainerEntityManagerFactoryBean extends LocalContainerEnt
         if (entityInterceptor != null) {
             map.put(AvailableSettings.INTERCEPTOR, entityInterceptor);
         }
-        // HS 7 Jandex JAR scan: FileSystemAlreadyExistsException → HSEARCH900016 under Tomcat
-        map.putIfAbsent("hibernate.search.mapping.configurer",
-                "eu.etaxonomy.cdm.persistence.hibernate.search.CdmHibernateSearchMappingConfigurer");
+        CdmHibernateSearchSettings.applyDefaults(map);
 
         super.afterPropertiesSet();
     }

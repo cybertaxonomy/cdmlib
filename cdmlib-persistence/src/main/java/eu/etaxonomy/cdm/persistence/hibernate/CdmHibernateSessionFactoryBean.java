@@ -28,6 +28,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 import org.springframework.orm.hibernate5.SpringSessionContext;
 
+import eu.etaxonomy.cdm.persistence.hibernate.search.CdmHibernateSearchSettings;
+
 /**
  * Native SessionFactory bootstrap via Hibernate {@link Configuration}
  * (fallback when not using JPA {@code LocalContainerEntityManagerFactoryBean}).
@@ -85,10 +87,7 @@ public class CdmHibernateSessionFactoryBean
         if (hibernateProperties != null) {
             configuration.addProperties(hibernateProperties);
         }
-        if (!configuration.getProperties().containsKey("hibernate.search.mapping.configurer")) {
-            configuration.setProperty("hibernate.search.mapping.configurer",
-                    "eu.etaxonomy.cdm.persistence.hibernate.search.CdmHibernateSearchMappingConfigurer");
-        }
+        CdmHibernateSearchSettings.applyDefaults(configuration.getProperties());
         // Spring LocalSessionFactoryBuilder defaults
         configuration.setProperty(AvailableSettings.CURRENT_SESSION_CONTEXT_CLASS,
                 SpringSessionContext.class.getName());
