@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.remote.oauth2;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.Rule;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
@@ -30,10 +29,11 @@ import eu.etaxonomy.cdm.remote.server.ServerRunning;
  */
 public class AuthorizationCodeGrantTests {
 
-    @Rule
     public ServerRunning serverRunning = ServerRunning.isRunning();
 
     private String authenticateAndApprove(String location) {
+
+        serverRunning.assumeServerAvailable();
 
         ResponseEntity<String> page = serverRunning.getForString("/login.jsp");
         String cookie = page.getHeaders().getFirst("Set-Cookie");

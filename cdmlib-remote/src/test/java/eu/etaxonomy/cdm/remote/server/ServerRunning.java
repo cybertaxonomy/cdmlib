@@ -17,11 +17,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assume;
-import org.junit.internal.AssumptionViolatedException;
-import org.junit.rules.MethodRule;
-import org.junit.runners.model.FrameworkMethod;
-import org.junit.runners.model.Statement;
+import org.junit.jupiter.api.Assumptions;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -47,27 +43,25 @@ import eu.etaxonomy.cdm.common.URI;
 
 /**
  * <p>
- * A rule that prevents integration tests from failing if the server application is not running or not accessible. If
- * the server is not running in the background all the tests here will simply be skipped because of a violated
- * assumption (showing as successful). Usage:
+ * Helper that prevents integration tests from failing if the server application is not running or not accessible. If
+ * the server is not running in the background tests can call {@link #assumeServerAvailable()} and will simply be
+ * skipped because of a violated assumption.
  * </p>
  *
- * <pre>
- * &#064;Rule public static BrokerRunning brokerIsRunning = BrokerRunning.isRunning();
+ * <pre >
+ * ServerRunning serverRunning = ServerRunning.isRunning();
  *
- * &#064;Test public void testSendAndReceive() throws Exception { // ... test using RabbitTemplate etc. }
+ * &#064;Test public void testSendAndReceive() throws Exception {
+ *     serverRunning.assumeServerAvailable();
+ *     // ...
+ * }
  * </pre>
- * <p>
- * The rule can be declared as static so that it only has to check once for all tests in the enclosing test case, but
- * there isn't a lot of overhead in making it non-static.
- * </p>
  *
- * @see Assume
- * @see AssumptionViolatedException
+ * @see Assumptions
  *
  * @author Dave Syer
  */
-public class ServerRunning implements MethodRule {
+public class ServerRunning {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -131,22 +125,22 @@ public class ServerRunning implements MethodRule {
         this.hostName = hostName;
     }
 
-    @Override
-    public Statement apply(final Statement base, FrameworkMethod method, Object target) {
-
-        // Check at the beginning, so this can be used as a static field
+    /**
+     * Skip the calling test if the expected online/offline state of the server is not met.
+     */
+    public void assumeServerAvailable() {
         if (assumeOnline) {
-            Assume.assumeTrue(serverOnline.get(port));
+            Assumptions.assumeTrue(serverOnline.get(port));
         } else {
-            Assume.assumeTrue(serverOffline.get(port));
+            Assumptions.assumeTrue(serverOffline.get(port));
         }
 
-        RestTemplate client = new RestTemplate();
+        RestTemplate probeClient = new RestTemplate();
         boolean followRedirects = HttpURLConnection.getFollowRedirects();
         HttpURLConnection.setFollowRedirects(false);
         boolean online = false;
         try {
-            client.getForEntity(new UriTemplate(getUrl(CONNECT_TEST_PATH)).toString(), String.class);
+            probeClient.getForEntity(new UriTemplate(getUrl(CONNECT_TEST_PATH)).toString(), String.class);
             online = true;
             logger.info("Basic connectivity test passed");
         } catch (RestClientException e) {
@@ -154,35 +148,19 @@ public class ServerRunning implements MethodRule {
                     "Not executing tests because basic connectivity test failed for hostName=%s, port=%d", hostName,
                     port), e);
             if (assumeOnline) {
-                Assume.assumeNoException(e);
+                Assumptions.assumeTrue(false, e.getMessage());
             }
         } finally {
             HttpURLConnection.setFollowRedirects(followRedirects);
             if (online) {
                 serverOffline.put(port, false);
                 if (!assumeOnline) {
-                    Assume.assumeTrue(serverOffline.get(port));
+                    Assumptions.assumeTrue(serverOffline.get(port));
                 }
-
             } else {
                 serverOnline.put(port, false);
             }
         }
-
-        return new Statement() {
-
-            @Override
-            public void evaluate() throws Throwable {
-                try {
-                    postForStatus("/oauth/uncache_approvals", new LinkedMultiValueMap<String, String>());
-                    base.evaluate();
-                } finally {
-                    postForStatus("/oauth/cache_approvals", new LinkedMultiValueMap<String, String>());
-                }
-
-            }
-        };
-
     }
 
     public String getBaseUrl() {

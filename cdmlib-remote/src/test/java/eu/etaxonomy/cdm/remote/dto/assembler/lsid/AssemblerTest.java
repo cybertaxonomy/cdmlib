@@ -8,9 +8,10 @@
 */
 package eu.etaxonomy.cdm.remote.dto.assembler.lsid;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.withSettings;
 
 import java.io.Serializable;
@@ -31,7 +32,6 @@ import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -213,26 +213,25 @@ public class AssemblerTest {
 
         TaxonConcept taxonConcept = mapper.map(taxon, TaxonConcept.class);
 
-        assertNotNull("map() should return an object", taxonConcept);
+        assertNotNull(taxonConcept, "map() should return an object");
 
-        assertEquals("IdentifiableEntity.titleCache should be copied into BaseThing.title",taxon.getTitleCache(),taxonConcept.getTitle());
-        assertEquals("IdentifiableEntity.lsid should be copied into BaseThing.identifier",taxon.getLsid().toString(),taxonConcept.getIdentifier().toString());
-        assertEquals("BaseThing.sameAs should refer to the proxy version of the lsid","http://lsid.example.org/" + taxon.getLsid().toString(),taxonConcept.getSameAs());
-        assertEquals("CdmBase.created should be copied into BaseThing.created", ZonedDateTime.of(2004, 12, 25, 12, 0, 0, 0, DateTimeUtil.BERLIN),taxonConcept.getCreated());
-        assertNotNull("TaxonBase.sec should be mapped into BaseThing.publishedInCitation",taxonConcept.getPublishedInCitation());
-        assertEquals("TaxonBase.sec.titleCache should be mapped into BaseThing.publishedInCitation.title",sec.getTitleCache(),taxonConcept.getPublishedInCitation().getTitle());
-        assertNotNull("TaxonBase.sec.authorship should be mapped into TaxonConcept.accordingTo",taxonConcept.getAccordingTo());
-        assertEquals("TaxonBase.sec.authorship.titleCache should be mapped into TaxonConcept.accordingTo.title",authorship.getTitleCache(),taxonConcept.getAccordingTo().getTitle());
-        assertNotNull("TaxonBase.name should be mapped to TaxonConcept.hasName",taxonConcept.getHasName());
-        assertEquals("NonViralName.nameCache should be mapped to TaxonName.nameComplete",name.getNameCache(),taxonConcept.getHasName().getNameComplete());
-        assertNotNull("Taxon.relationsToThisTaxon should be copied into TaxonConcept.hasRelationship",taxonConcept.getHasRelationship());
-        assertEquals("There should be 6 relations in TaxonConcept.hasRelationship",
-                6, taxonConcept.getHasRelationship().size());
+        assertEquals(taxon.getTitleCache(), taxonConcept.getTitle(), "IdentifiableEntity.titleCache should be copied into BaseThing.title");
+        assertEquals(taxon.getLsid().toString(), taxonConcept.getIdentifier().toString(), "IdentifiableEntity.lsid should be copied into BaseThing.identifier");
+        assertEquals("http://lsid.example.org/" + taxon.getLsid().toString(), taxonConcept.getSameAs(), "BaseThing.sameAs should refer to the proxy version of the lsid");
+        assertEquals(ZonedDateTime.of(2004, 12, 25, 12, 0, 0, 0, DateTimeUtil.BERLIN), taxonConcept.getCreated(), "CdmBase.created should be copied into BaseThing.created");
+        assertNotNull(taxonConcept.getPublishedInCitation(), "TaxonBase.sec should be mapped into BaseThing.publishedInCitation");
+        assertEquals(sec.getTitleCache(), taxonConcept.getPublishedInCitation().getTitle(), "TaxonBase.sec.titleCache should be mapped into BaseThing.publishedInCitation.title");
+        assertNotNull(taxonConcept.getAccordingTo(), "TaxonBase.sec.authorship should be mapped into TaxonConcept.accordingTo");
+        assertEquals(authorship.getTitleCache(), taxonConcept.getAccordingTo().getTitle(), "TaxonBase.sec.authorship.titleCache should be mapped into TaxonConcept.accordingTo.title");
+        assertNotNull(taxonConcept.getHasName(), "TaxonBase.name should be mapped to TaxonConcept.hasName");
+        assertEquals(name.getNameCache(), taxonConcept.getHasName().getNameComplete(), "NonViralName.nameCache should be mapped to TaxonName.nameComplete");
+        assertNotNull(taxonConcept.getHasRelationship(), "Taxon.relationsToThisTaxon should be copied into TaxonConcept.hasRelationship");
+        assertEquals(6, taxonConcept.getHasRelationship().size(), "There should be 6 relations in TaxonConcept.hasRelationship");
         int nSynonyms = 0;
         int nIncludedInTaxa = 0;
         int pnParentTaxa = 0;
         for (Relationship rel : taxonConcept.getHasRelationship()){
-            Assert.assertNotNull(rel.getFromTaxon());
+            assertNotNull(rel.getFromTaxon());
 //            System.out.println(rel.getFromTaxon().getIdentifier().toString());
             if (rel.getFromTaxon().getIdentifier().toString().startsWith("urn:lsid:example.org:synyonms:")){
                 nSynonyms++;
@@ -240,14 +239,14 @@ public class AssemblerTest {
                 nIncludedInTaxa++;
             }else if (rel.getFromTaxon().getIdentifier().toString().startsWith("urn:lsid:example.org:taxonconcepts:p")){
                 TaxonRelationshipTerm category = rel.getRelationshipCategory();
-                Assert.assertEquals("is taxonomically included in", category.getTitle());
+                assertEquals("is taxonomically included in", category.getTitle());
                 pnParentTaxa++;
             }
 //            System.out.println(rel);
         }
-        Assert.assertEquals(3, nSynonyms);
-        Assert.assertEquals(1, nIncludedInTaxa);
-        Assert.assertEquals(2, pnParentTaxa);
+        assertEquals(3, nSynonyms);
+        assertEquals(1, nIncludedInTaxa);
+        assertEquals(2, pnParentTaxa);
     }
 
     @Test
@@ -265,10 +264,8 @@ public class AssemblerTest {
         secField.set(source, proxy);
 
         TaxonConcept taxonConcept = mapper.map(taxon, TaxonConcept.class);
-        assertNull("TaxonBase.sec was uninitialized, so TaxonConcept.publishedInCitation should be null",
-                taxonConcept.getPublishedInCitation());
-        assertNull("TaxonBase.sec was uninitialized, so TaxonConcept.accordingTo should be null",
-                taxonConcept.getAccordingTo());
+        assertNull(taxonConcept.getPublishedInCitation(), "TaxonBase.sec was uninitialized, so TaxonConcept.publishedInCitation should be null");
+        assertNull(taxonConcept.getAccordingTo(), "TaxonBase.sec was uninitialized, so TaxonConcept.accordingTo should be null");
     }
 
     @Test
@@ -287,8 +284,7 @@ public class AssemblerTest {
         relationsToThisTaxonField.set(taxon, proxy);
 
         TaxonConcept taxonConcept = mapper.map(taxon, TaxonConcept.class);
-        Assert.assertTrue("TaxonBase.relationsToThisTaxon was uninitialized, so TaxonConcept.hasRelationship should be null",
-                taxonConcept.getHasRelationship() == null || taxonConcept.getHasRelationship().isEmpty()); //with taxonNode mapping included this results in null, otherwise empty, not yet checked why
+        assertTrue(taxonConcept.getHasRelationship() == null || taxonConcept.getHasRelationship().isEmpty(), "TaxonBase.relationsToThisTaxon was uninitialized, so TaxonConcept.hasRelationship should be null"); //with taxonNode mapping included this results in null, otherwise empty, not yet checked why
     }
 
     @Test
