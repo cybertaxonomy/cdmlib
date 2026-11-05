@@ -8,11 +8,11 @@
 */
 package eu.etaxonomy.cdm.database.types;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
@@ -32,12 +32,12 @@ public class SqlServerDatabaseTypeTest {
     private String username;
     private String password;
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUpBeforeClass() throws Exception {
 		enumType = DatabaseTypeEnum.SqlServer;
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		server = "server";
 		dbName = "db";

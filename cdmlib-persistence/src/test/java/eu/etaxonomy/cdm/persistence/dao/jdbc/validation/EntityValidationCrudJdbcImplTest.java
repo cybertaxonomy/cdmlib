@@ -8,10 +8,10 @@
  */
 package eu.etaxonomy.cdm.persistence.dao.jdbc.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.time.ZonedDateTime;
@@ -102,8 +102,8 @@ public class EntityValidationCrudJdbcImplTest extends CdmSpringIntegrationTest {
 
         EntityValidation result = dao.getEntityValidation(emp.getClass().getName(), emp.getId());
         assertNotNull(result);
-        assertEquals("Unexpected UUID", result.getValidatedEntityUuid(), uuid);
-        assertEquals("Unexpected number of constraint violations", 2, result.getEntityConstraintViolations().size());
+        assertEquals(result.getValidatedEntityUuid(), uuid, "Unexpected UUID");
+        assertEquals(2, result.getEntityConstraintViolations().size(), "Unexpected number of constraint violations");
         Set<EntityConstraintViolation> violations = result.getEntityConstraintViolations();
         List<EntityConstraintViolation> list = new ArrayList<EntityConstraintViolation>(violations);
         Collections.sort(list, new Comparator<EntityConstraintViolation>() {
@@ -112,8 +112,8 @@ public class EntityValidationCrudJdbcImplTest extends CdmSpringIntegrationTest {
                 return o1.getPropertyPath().toString().compareTo(o2.getPropertyPath().toString());
             }
         });
-        assertEquals("Unexpected propertypath", list.get(0).getPropertyPath().toString(), "company.name");
-        assertEquals("Unexpected propertypath", list.get(1).getPropertyPath().toString(), "givenName");
+        assertEquals(list.get(0).getPropertyPath().toString(), "company.name", "Unexpected propertypath");
+        assertEquals(list.get(1).getPropertyPath().toString(), "givenName", "Unexpected propertypath");
     }
 
     @Test
@@ -360,24 +360,24 @@ public class EntityValidationCrudJdbcImplTest extends CdmSpringIntegrationTest {
         EntityValidation result;
 
         result = dao.getEntityValidation(MEDIA, 100);
-        assertNotNull("A validation result for media id=100 should exist", result);
-        assertEquals("Unexpected entity id", 1, result.getId());
-        assertEquals("Unexpected number of constraint violations", 1, result.getEntityConstraintViolations().size());
+        assertNotNull(result, "A validation result for media id=100 should exist");
+        assertEquals(1, result.getId(), "Unexpected entity id");
+        assertEquals(1, result.getEntityConstraintViolations().size(), "Unexpected number of constraint violations");
 
         result = dao.getEntityValidation(SYNONYM, 200);
         assertNotNull(result);
-        assertEquals("Unexpected entity id", 2, result.getId());
-        assertEquals("Unexpected number of constraint violations", 2, result.getEntityConstraintViolations().size());
+        assertEquals(2, result.getId(), "Unexpected entity id");
+        assertEquals(2, result.getEntityConstraintViolations().size(), "Unexpected number of constraint violations");
 
         result = dao.getEntityValidation(GATHERING_EVENT, 300);
         assertNotNull(result);
-        assertEquals("Unexpected entity id", 3, result.getId());
-        assertEquals("Unexpected number of constraint violations", 3, result.getEntityConstraintViolations().size());
+        assertEquals(3, result.getId(), "Unexpected entity id");
+        assertEquals(3, result.getEntityConstraintViolations().size(), "Unexpected number of constraint violations");
 
         result = dao.getEntityValidation(GATHERING_EVENT, 301);
         assertNotNull(result);
-        assertEquals("Unexpected entity id", 4, result.getId());
-        assertEquals("Unexpected number of constraint violations", 1, result.getEntityConstraintViolations().size());
+        assertEquals(4, result.getId(), "Unexpected entity id");
+        assertEquals(1, result.getEntityConstraintViolations().size(), "Unexpected number of constraint violations");
 
         // Test we get a null back
         result = dao.getEntityValidation("Foo Bar", 100);

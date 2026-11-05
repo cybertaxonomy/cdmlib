@@ -8,9 +8,9 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -56,28 +56,28 @@ public class IdentifiableDaoBaseTest extends CdmSpringIntegrationTest {
     @Test
     public void testFindByTitle() {
         List<TaxonBase> results = identifiableDao.findByTitle("Lorem");
-        assertNotNull("findByTitle should return a list",results);
-        assertEquals("findByTitle should return one entity", 1, results.size());
-        assertEquals("findByTitle should return an entity with uuid " + uuid, uuid, results.get(0).getUuid());
+        assertNotNull(results, "findByTitle should return a list");
+        assertEquals(1, results.size(), "findByTitle should return one entity");
+        assertEquals(uuid, results.get(0).getUuid(), "findByTitle should return an entity with uuid " + uuid);
     }
 
     @Test
     public void testCountByTitle() {
         long result = identifiableDao.countByTitle("%");
-        assertNotNull("findByTitle should return an integer",result);
-        assertEquals("findByTitle should return 2", 2, result);
+        assertNotNull(result, "findByTitle should return an integer");
+        assertEquals(2, result, "findByTitle should return 2");
 
         result = identifiableDao.countByTitle("%", MatchMode.ANYWHERE, null);
-        assertNotNull("findByTitle should return an integer",result);
-        assertEquals("findByTitle should return 2", 2, result);
+        assertNotNull(result, "findByTitle should return an integer");
+        assertEquals(2, result, "findByTitle should return 2");
 
         result = identifiableDao.countByTitle("Lorem");
-        assertNotNull("findByTitle should return an integer",result);
-        assertEquals("findByTitle should return 1", 1, result);
+        assertNotNull(result, "findByTitle should return an integer");
+        assertEquals(1, result, "findByTitle should return 1");
 
         result = identifiableDao.countByTitle("Lorem", MatchMode.ANYWHERE, null);
-        assertNotNull("findByTitle should return an integer",result);
-        assertEquals("findByTitle should return 1", 1, result);
+        assertNotNull(result, "findByTitle should return an integer");
+        assertEquals(1, result, "findByTitle should return 1");
     }
 
     @Test
@@ -88,9 +88,9 @@ public class IdentifiableDaoBaseTest extends CdmSpringIntegrationTest {
 
         List<Credit> credits = identifiableDao.getCredits(taxon, null, null);
 
-        assertNotNull("getCredits should return a List",credits);
-        assertFalse("the list should not be empty",credits.isEmpty());
-        assertEquals("getCredits should return 3 Credit instances",3,credits.size());
+        assertNotNull(credits, "getCredits should return a List");
+        assertFalse(credits.isEmpty(), "the list should not be empty");
+        assertEquals(3, credits.size(), "getCredits should return 3 Credit instances");
     }
 
     @Test
@@ -99,9 +99,9 @@ public class IdentifiableDaoBaseTest extends CdmSpringIntegrationTest {
         assert taxon != null : "IdentifiableEntity must exist";
         List<Credit> credits = taxon.getCredits();
 
-        assertNotNull("getCredits should return a List",credits);
-        assertFalse("the list should not be empty",credits.isEmpty());
-        assertEquals("getCredits should return 3 Credit instances",3,credits.size());
+        assertNotNull(credits, "getCredits should return a List");
+        assertFalse(credits.isEmpty(), "the list should not be empty");
+        assertEquals(3, credits.size(), "getCredits should return 3 Credit instances");
         assertEquals("My first credit", credits.get(0).getText());
         assertEquals("My second credit", credits.get(1).getText());
         assertEquals("My third credit", credits.get(2).getText());
@@ -114,9 +114,9 @@ public class IdentifiableDaoBaseTest extends CdmSpringIntegrationTest {
 
         List<IdentifiableSource> sources = identifiableDao.getSources(taxon, null, null, null);
 
-        assertNotNull("getSources should return a List", sources);
-        assertFalse("the list should not be empty", sources.isEmpty());
-        assertEquals("getSources should return 2 OriginalSource instances",2, sources.size());
+        assertNotNull(sources, "getSources should return a List");
+        assertFalse(sources.isEmpty(), "the list should not be empty");
+        assertEquals(2, sources.size(), "getSources should return 2 OriginalSource instances");
     }
 
     @Test

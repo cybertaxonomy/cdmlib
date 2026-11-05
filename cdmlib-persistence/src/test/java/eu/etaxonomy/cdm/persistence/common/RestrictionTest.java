@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.persistence.common;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class RestrictionTest extends CdmTransactionalSpringIntegrationTest {
                 restrictions,
                 null, null,
                 null, null);
-        assertEquals("countMembers should return 2", 2, references.size());
+        assertEquals(2, references.size(), "countMembers should return 2");
 
         restrictions.add(new Restriction<>("type", Operator.AND, null, EnumSet.of(ReferenceType.Section, ReferenceType.Journal)));
         references = referenceDao.findByTitleWithRestrictions(
@@ -62,7 +62,7 @@ public class RestrictionTest extends CdmTransactionalSpringIntegrationTest {
                 restrictions,
                 null, null,
                 null, null);
-        assertEquals("Filtered references size should be 1", 1, references.size());
+        assertEquals(1, references.size(), "Filtered references size should be 1");
     }
 
     @Override

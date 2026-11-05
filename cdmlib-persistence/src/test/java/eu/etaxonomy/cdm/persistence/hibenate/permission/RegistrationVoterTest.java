@@ -8,10 +8,12 @@
 */
 package eu.etaxonomy.cdm.persistence.hibenate.permission;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.EnumSet;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.security.core.Authentication;
 
 import eu.etaxonomy.cdm.model.name.Registration;
@@ -30,7 +32,6 @@ import eu.etaxonomy.cdm.persistence.permission.voter.RegistrationVoter;
  *
  * @author a.kohlbecker
  * @since 19.10.2017
- *
  */
 public class RegistrationVoterTest extends AbstractCdmPermissionVoterTest {
 
@@ -45,7 +46,7 @@ public class RegistrationVoterTest extends AbstractCdmPermissionVoterTest {
 
     RegistrationVoter voter = new RegistrationVoter();
 
-    @Before
+    @BeforeEach
     public void setup() {
 
         regPREPARATION = Registration.NewInstance();

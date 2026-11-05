@@ -8,11 +8,13 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +30,9 @@ import eu.etaxonomy.cdm.test.integration.spring.CdmSpringIntegrationTest;
 public class IdentificationKeyDaoHibernateImplTest extends CdmSpringIntegrationTest {
 
 	@Autowired
-	IIdentificationKeyDao identificationKeyDao;
+	private IIdentificationKeyDao identificationKeyDao;
 
-	UUID taxonUuid = UUID.fromString("54e767ee-894e-4540-a758-f906ecb4e2d9");
+	private UUID taxonUuid = UUID.fromString("54e767ee-894e-4540-a758-f906ecb4e2d9");
 
 	@BeforeEach
 	public void setUp() {
@@ -44,19 +46,19 @@ public class IdentificationKeyDaoHibernateImplTest extends CdmSpringIntegrationT
 	@Test
 	public void testFindByTaxonomicScope() {
 		Long count1 = identificationKeyDao.countByTaxonomicScope(taxonUuid, IIdentificationKey.class);
-		Assert.assertTrue(count1.equals(2l));
+		assertTrue(count1.equals(2l));
 		List<IIdentificationKey> list1 = identificationKeyDao.findByTaxonomicScope(taxonUuid, IIdentificationKey.class, null, null, null);
-		Assert.assertEquals(list1.size(), 2);
+		assertEquals(list1.size(), 2);
 
 		Long count2 = identificationKeyDao.countByTaxonomicScope(taxonUuid, MediaKey.class);
-		Assert.assertTrue(count2.equals(2l));
+		assertTrue(count2.equals(2l));
 		List<MediaKey> list2 = identificationKeyDao.findByTaxonomicScope(taxonUuid, MediaKey.class, null, null, null);
-		Assert.assertEquals(list2.size(), 2);
+		assertEquals(list2.size(), 2);
 
 		Long count3 = identificationKeyDao.countByTaxonomicScope(taxonUuid, PolytomousKey.class);
-		Assert.assertTrue(count3.equals(0l));
+		assertTrue(count3.equals(0l));
 		List<PolytomousKey> list3 = identificationKeyDao.findByTaxonomicScope(taxonUuid, PolytomousKey.class, null, null, null);
-		Assert.assertEquals(list3.size(), 0);
+		assertEquals(list3.size(), 0);
 	}
 
     @Override

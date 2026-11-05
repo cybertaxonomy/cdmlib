@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.permission;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -29,14 +29,14 @@ import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegratio
 public class GroupDaoHibernateImplTest extends CdmTransactionalSpringIntegrationTest {
 
 	@Autowired
-	IGroupDao groupDao;
+	private IGroupDao groupDao;
 
 	@Test
 	public void testFindGroupByUsername() {
 		Group group = groupDao.findGroupByName("Admins");
 
-		assertNotNull("findGroupByName should return a group", group);
-//		assertEquals("the user should have had their authorities loaded",2,group.getAuthorities().size());
+		assertNotNull(group, "findGroupByName should return a group");
+//		assertEquals(2, group.getAuthorities().size(), "the user should have had their authorities loaded");
 	}
 
 	@Test
@@ -50,8 +50,8 @@ public class GroupDaoHibernateImplTest extends CdmTransactionalSpringIntegration
 		List<String> propertyPaths = null;
 		List<Group> list = groupDao.findByName(queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
 
-		assertNotNull("A list should be returned", list);
-		assertEquals("2 groups should be returned", 2, list.size());
+		assertNotNull(list, "A list should be returned");
+		assertEquals(2, list.size(), "2 groups should be returned");
 	}
 
     @Override

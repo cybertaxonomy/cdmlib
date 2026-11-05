@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.test.suite;
 
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -15,6 +16,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBaseTest;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.description.DescriptionDaoHibernateImplTest;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImplTest;
 
+@Ignore // JUnit4 suite holder; tests run via Surefire discovery
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
         {

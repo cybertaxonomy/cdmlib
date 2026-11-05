@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.statistics;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;

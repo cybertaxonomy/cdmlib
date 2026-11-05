@@ -8,9 +8,11 @@
 */
 package eu.etaxonomy.cdm.persistence.hibenate.permission;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.EnumSet;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.permission.CRUD;

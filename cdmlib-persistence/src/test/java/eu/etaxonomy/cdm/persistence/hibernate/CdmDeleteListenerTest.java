@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.util.Set;
@@ -18,7 +19,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,13 +61,13 @@ public class CdmDeleteListenerTest extends CdmTransactionalSpringIntegrationTest
 		taxonNameDao.refresh(name, new LockOptions(LockMode.READ), null);
 		assertNotNull(name);
 //		int nRels = taxonDao.countAllRelationships();  //TODO needs fixing on test side or dao method side as it jumps into auditing
-//		Assert.assertEquals("There should be 2 relationships", 2, nRels);
+//		assertEquals(2, nRels, "There should be 2 relationships");
 		Set<NameRelationship> relations = name.getNameRelations();
-		Assert.assertEquals("There must be 1 name relationship", 1, relations.size());
+		assertEquals(1, relations.size(), "There must be 1 name relationship");
 		name.removeNameRelationship(relations.iterator().next());
 
 		Set<HybridRelationship> hybridRels = name.getHybridParentRelations();
-		Assert.assertEquals("There must be 1 parent relationship", 1, hybridRels.size());
+		assertEquals(1, hybridRels.size(), "There must be 1 parent relationship");
 
 		taxonNameDao.saveOrUpdate(name);
 
@@ -76,7 +76,7 @@ public class CdmDeleteListenerTest extends CdmTransactionalSpringIntegrationTest
 		startNewTransaction();
 
 //		nRels = taxonDao.countAllRelationships();
-//		Assert.assertEquals("There should be 1 relationship now", 1, nRels);
+//		assertEquals(1, nRels, "There should be 1 relationship now");
 	}
 
     @Override

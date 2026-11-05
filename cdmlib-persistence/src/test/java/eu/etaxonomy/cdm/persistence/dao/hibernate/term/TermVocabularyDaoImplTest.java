@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,28 +54,28 @@ public class TermVocabularyDaoImplTest extends CdmTransactionalSpringIntegration
     public void testListVocabularyByType() {
         //test class with no subclasses
         List<TermVocabulary> rankVocabularies = dao.listByTermType(TermType.Rank, false, null, null, null, null);
-        assertFalse("There should be at least one vocabulary containing terms of type Rank", rankVocabularies.isEmpty());
-        assertEquals("There should be only one vocabulary containing terms of type Rank", 1, rankVocabularies.size());
+        assertFalse(rankVocabularies.isEmpty(), "There should be at least one vocabulary containing terms of type Rank");
+        assertEquals(1, rankVocabularies.size(), "There should be only one vocabulary containing terms of type Rank");
 
         //include subtype, but termtype has no subtype
         rankVocabularies = dao.listByTermType(TermType.Rank, true, null, null, null, null);
-        assertFalse("There should be at least one vocabulary containing terms of type Rank", rankVocabularies.isEmpty());
-        assertEquals("There should be only one vocabulary containing terms of type Rank", 1, rankVocabularies.size());
+        assertFalse(rankVocabularies.isEmpty(), "There should be at least one vocabulary containing terms of type Rank");
+        assertEquals(1, rankVocabularies.size(), "There should be only one vocabulary containing terms of type Rank");
 
         //with different classes
         List<TermVocabulary> namedAreaVocabularies = dao.listByTermType(TermType.NamedArea, true, null, null, null, null);
         int subclassedSize = namedAreaVocabularies.size();
-        assertEquals("There should be 4 vocabularies (TdwgAreas, Continents, Waterbody, Countries)", 4, subclassedSize);
+        assertEquals(4, subclassedSize, "There should be 4 vocabularies (TdwgAreas, Continents, Waterbody, Countries)");
 
         //with sub types
         List<TermVocabulary> scopeVocabularies = dao.listByTermType(TermType.Scope, true, null, null, null, null);
         int subtypeSize = scopeVocabularies.size();
-        assertEquals("There should be 6 vocabularies (Scope, Sex, Stage, 3 x KindOfUnit)", 6, subtypeSize);
+        assertEquals(6, subtypeSize, "There should be 6 vocabularies (Scope, Sex, Stage, 3 x KindOfUnit)");
 
         List<TermVocabulary> scopeOnlyVocabularies = dao.listByTermType(TermType.Scope, false, null, null, null, null);
-        assertEquals("Scope only vocabularies w/o subtypes should be 1", 1, scopeOnlyVocabularies.size());
+        assertEquals(1, scopeOnlyVocabularies.size(), "Scope only vocabularies w/o subtypes should be 1");
         List<TermVocabulary> stageVocabularies = dao.listByTermType(TermType.Stage, false, null, null, null, null);
-        assertEquals("Stage only vocabularies should be 1", 1, stageVocabularies.size());
+        assertEquals(1, stageVocabularies.size(), "Stage only vocabularies should be 1");
     }
 
 
@@ -84,10 +83,10 @@ public class TermVocabularyDaoImplTest extends CdmTransactionalSpringIntegration
     @CdmDataSet("TermVocabularyDaoImplTest.testListVocabularyEmpty.xml")
     public void testListVocabularyByTypeEmpty() {
         List<TermVocabulary> emptyNamedAreas = dao.listByTermType(TermType.NamedArea, true, null, null, null, null);
-        assertEquals("There should be no vocabulary, as we do not return ALL empty vocabularies of ANY type anymore", 0, emptyNamedAreas.size());
+        assertEquals(0, emptyNamedAreas.size(), "There should be no vocabulary, as we do not return ALL empty vocabularies of ANY type anymore");
 
         List<TermVocabulary> languageVocabulariesAndEmpty = dao.listByTermType(TermType.Language, true, null, null, null, null);
-        assertEquals("There should be 2 vocabularies, the empty one and the one that has a language term in", 2, languageVocabulariesAndEmpty.size());
+        assertEquals(2, languageVocabulariesAndEmpty.size(), "There should be 2 vocabularies, the empty one and the one that has a language term in");
     }
 
 	@Test()
@@ -129,7 +128,7 @@ public class TermVocabularyDaoImplTest extends CdmTransactionalSpringIntegration
 	    newVoc.setProtectedTitleCache(true);  //make sure we use the title cache created during save by listeners
 	    String emptyLabel = newVoc.getTitleCache();
 	    //this value may need to be changed when the default cache generation changes
-	    Assert.assertEquals("TitleCache should use default title generation", "TermVocabulary<a7a2fbe4-3a35-4ec0-b2b2-2298c3ebdf57>", emptyLabel);
+	    assertEquals("TermVocabulary<a7a2fbe4-3a35-4ec0-b2b2-2298c3ebdf57>", emptyLabel, "TitleCache should use default title generation");
 
 	    //only German
 	    newVoc.setProtectedTitleCache(false);
@@ -137,7 +136,7 @@ public class TermVocabularyDaoImplTest extends CdmTransactionalSpringIntegration
 	    newVoc.addRepresentation(newRepresentation);
 	    dao.saveOrUpdate(newVoc);
 	    newVoc.setProtectedTitleCache(true);
-	    Assert.assertEquals("German Label should be new title cache", "Deutsches Label", newVoc.getTitleCache());
+	    assertEquals("Deutsches Label", newVoc.getTitleCache(), "German Label should be new title cache");
 
 	    //German and English
 	    newVoc.setProtectedTitleCache(false);
@@ -145,21 +144,21 @@ public class TermVocabularyDaoImplTest extends CdmTransactionalSpringIntegration
         newVoc.addRepresentation(englishRepresentation);
         dao.saveOrUpdate(newVoc);
         newVoc.setProtectedTitleCache(true);
-        Assert.assertEquals("English Label should be new title cache", "English label", newVoc.getTitleCache());
+        assertEquals("English label", newVoc.getTitleCache(), "English Label should be new title cache");
 
         //Change English label
         newVoc.setProtectedTitleCache(false);
         newVoc.setLabel("New English label");
         dao.saveOrUpdate(newVoc);
         newVoc.setProtectedTitleCache(true);
-        Assert.assertEquals("English (default language) label should be new English label", "New English label", newVoc.getTitleCache());
+        assertEquals("New English label", newVoc.getTitleCache(), "English (default language) label should be new English label");
 
         //Remove English
         newVoc.setProtectedTitleCache(false);
         newVoc.removeRepresentation(englishRepresentation);
         dao.saveOrUpdate(newVoc);
         newVoc.setProtectedTitleCache(true);
-        Assert.assertEquals("German Label should be new title cache again as English representation is not there anymore", "Deutsches Label", newVoc.getTitleCache());
+        assertEquals("Deutsches Label", newVoc.getTitleCache(), "German Label should be new title cache again as English representation is not there anymore");
 
 	}
 
@@ -172,16 +171,16 @@ public class TermVocabularyDaoImplTest extends CdmTransactionalSpringIntegration
 	    Set<TermType> termTypes = new HashSet<>();
 	    termTypes.add(TermType.NamedArea);
 	    List<TermVocabularyDto> vocDtos = dao.findVocabularyDtoByTermTypes(termTypes, true);
-	    Assert.assertEquals(4, vocDtos.size());
+	    assertEquals(4, vocDtos.size());
 
 	    //#9825 test deduplication
         @SuppressWarnings("unchecked")
         TermVocabulary<NamedArea> continentVoc = dao.findByUuid(NamedArea.uuidContinentVocabulary);
         continentVoc.addRepresentation(Representation.NewInstance("Kontinente", "Kontinente", "Kont.", Language.GERMAN()));
         vocDtos = dao.findVocabularyDtoByTermTypes(termTypes, true);
-        Assert.assertEquals("Deduplication for representations does not work", 4, vocDtos.size());
+        assertEquals(4, vocDtos.size(), "Deduplication for representations does not work");
         int repSize = vocDtos.stream().filter(voc->voc.getUuid().equals(NamedArea.uuidContinentVocabulary)).findFirst().get().getRepresentations().size();
-        Assert.assertEquals("There should be 2 representations for continent vocabulary", 2, repSize);
+        assertEquals(2, repSize, "There should be 2 representations for continent vocabulary");
 	}
 
     @Override

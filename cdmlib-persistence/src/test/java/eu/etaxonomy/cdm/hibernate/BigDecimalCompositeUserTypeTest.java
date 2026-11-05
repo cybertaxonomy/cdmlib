@@ -8,13 +8,16 @@
  */
 package eu.etaxonomy.cdm.hibernate;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import java.math.BigDecimal;
 
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.metamodel.spi.ValueAccess;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link BigDecimalCompositeUserType}.
@@ -26,27 +29,27 @@ public class BigDecimalCompositeUserTypeTest {
 
     private BigDecimalCompositeUserType userType;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         userType = new BigDecimalCompositeUserType();
     }
 
     @Test
     public void testNotMutable() {
-        Assert.assertFalse(userType.isMutable());
+        assertFalse(userType.isMutable());
     }
 
     @Test
     public void testDeepCopyReturnsSelf() {
         BigDecimal foo = new BigDecimal("1.0");
-        Assert.assertSame(foo, userType.deepCopy(foo));
+        assertSame(foo, userType.deepCopy(foo));
     }
 
     @Test
     public void testPropertyValueAndInstantiate() {
         BigDecimal value = new BigDecimal("1.320");
-        Assert.assertEquals(Integer.valueOf(3), userType.getPropertyValue(value, 0));
-        Assert.assertEquals(value, userType.getPropertyValue(value, 1));
+        assertEquals(Integer.valueOf(3), userType.getPropertyValue(value, 0));
+        assertEquals(value, userType.getPropertyValue(value, 1));
 
         ValueAccess access = new ValueAccess() {
             @Override
@@ -55,12 +58,12 @@ public class BigDecimalCompositeUserTypeTest {
             }
         };
         BigDecimal restored = userType.instantiate(access, (SessionFactoryImplementor) null);
-        Assert.assertEquals(2, restored.scale());
-        Assert.assertEquals(new BigDecimal("1.32"), restored);
+        assertEquals(2, restored.scale());
+        assertEquals(new BigDecimal("1.32"), restored);
     }
 
     @Test
     public void testReturnedClass() {
-        Assert.assertEquals(BigDecimal.class, userType.returnedClass());
+        assertEquals(BigDecimal.class, userType.returnedClass());
     }
 }

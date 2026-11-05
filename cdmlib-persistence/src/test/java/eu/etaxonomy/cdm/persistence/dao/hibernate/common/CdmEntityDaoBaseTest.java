@@ -8,10 +8,12 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -21,7 +23,6 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,7 +92,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalSpringIntegrationTestW
 
     @Test
     public void testCdmEntityDaoBase() throws Exception {
-        assertNotNull("cdmEntityDaoBase should exist",cdmEntityDaoBase);
+        assertNotNull(cdmEntityDaoBase, "cdmEntityDaoBase should exist");
     }
 
     @Test
@@ -131,7 +132,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalSpringIntegrationTestW
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
             logger.error("Unexpected failure of evaluation.", e);
-            Assert.fail();
+            fail();
         } finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
@@ -148,7 +149,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalSpringIntegrationTestW
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
             logger.error("Unexpected failure of evaluation.", e);
-            Assert.fail();
+            fail();
         } finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
@@ -182,7 +183,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalSpringIntegrationTestW
             endTransaction();
             startNewTransaction();
         }
-        Assert.assertNotNull("evaluation must fail since the user has no permission", securityException);
+        assertNotNull(securityException, "evaluation must fail since the user has no permission");
     }
 
     @Test
@@ -203,7 +204,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalSpringIntegrationTestW
             endTransaction();
             startNewTransaction();
         }
-        Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
+        assertNull(securityException, "evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""));
     }
 
     @Test
@@ -237,38 +238,38 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalSpringIntegrationTestW
             endTransaction();
             startNewTransaction();
         }
-        Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
+        assertNull(securityException, "evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""));
     }
 
     @Test
     @CdmDataSet("CdmEntityDaoBaseTest.xml")
     public void testFindById() {
         CdmBase cdmBase = cdmEntityDaoBase.findById(1);
-        assertNotNull("There should be an entity with an id of 1",cdmBase);
+        assertNotNull(cdmBase, "There should be an entity with an id of 1");
     }
 
     @Test
     @CdmDataSet("CdmEntityDaoBaseTest.xml")
     public void testFindByUuid() {
         CdmBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
-        assertNotNull("testFindByUuid() an entity with a uuid of " + uuid.toString(),cdmBase);
+        assertNotNull(cdmBase, "testFindByUuid() an entity with a uuid of " + uuid.toString());
     }
 
     @Test
     @CdmDataSet("CdmEntityDaoBaseTest.xml")
     public void testExists() {
         boolean exists = cdmEntityDaoBase.exists(uuid);
-        assertTrue("exists() should return true for uuid " + uuid.toString(), exists);
+        assertTrue(exists, "exists() should return true for uuid " + uuid.toString());
         boolean existsRandom = cdmEntityDaoBase.exists(UUID.randomUUID());
-        assertFalse("exists() should return false for any other uuid", existsRandom);
+        assertFalse(existsRandom, "exists() should return false for any other uuid");
     }
 
     @Test
     @CdmDataSet("CdmEntityDaoBaseTest.xml")
     public void testList() {
         List<TaxonBase> list = cdmEntityDaoBase.list(1000, 0);
-        assertNotNull("list() should not return null",list);
-        assertEquals("list() should return a list with two entities in it",list.size(),2);
+        assertNotNull(list, "list() should not return null");
+        assertEquals(list.size(), 2, "list() should return a list with two entities in it");
     }
 
     @Test
@@ -277,8 +278,8 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalSpringIntegrationTestW
         List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new RandomOrder());
         List<TaxonBase> list = cdmEntityDaoBase.list((Class)null, 1000, 0, orderHints, null);
-        assertNotNull("list() should not return null", list);
-        assertEquals("list() should return a list with two entities in it", list.size(), 2);
+        assertNotNull(list, "list() should not return null");
+        assertEquals(list.size(), 2, "list() should return a list with two entities in it");
     }
 
     @Test
@@ -288,8 +289,8 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalSpringIntegrationTestW
         orderHints.add(new RandomOrder());
         UUID[] uuids = new UUID[]{UUID.fromString("8d77c380-c76a-11dd-ad8b-0800200c9a66"), UUID.fromString("822d98dc-9ef7-44b7-a870-94573a3bcb46")};
         List<TaxonBase> list = cdmEntityDaoBase.list(Arrays.asList(uuids), 20, 0, orderHints, null);
-        assertNotNull("list() should not return null",list);
-        assertEquals("list() should return a list with two entities in it",list.size(),2);
+        assertNotNull(list, "list() should not return null");
+        assertEquals(list.size(), 2, "list() should return a list with two entities in it");
     }
 
     @Test
@@ -299,8 +300,8 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalSpringIntegrationTestW
         orderHints.add(new RandomOrder());
         Integer[] ids = new Integer[]{1, 2};
         List<TaxonBase> list = cdmEntityDaoBase.loadList(Arrays.asList(ids), orderHints, null);
-        assertNotNull("list() should not return null",list);
-        assertEquals("list() should return a list with two entities in it", 2, list.size());
+        assertNotNull(list, "list() should not return null");
+        assertEquals(2, list.size(), "list() should return a list with two entities in it");
     }
 
     @Test

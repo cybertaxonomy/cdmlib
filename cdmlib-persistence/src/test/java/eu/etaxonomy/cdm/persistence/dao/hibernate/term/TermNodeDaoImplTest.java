@@ -8,12 +8,14 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.FileNotFoundException;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,8 +59,8 @@ public class TermNodeDaoImplTest extends CdmTransactionalSpringIntegrationTest {
 //        List<TermNode> list = nodeDao.list();
         @SuppressWarnings({"unchecked" })
         TermNode<Feature> node = nodeDao.load(UUID.fromString("78c9277c-af28-42f8-b3a9-02f717d9250f"), null);
-        Assert.assertNotNull(node);
-        Assert.assertEquals(1, node.getOnlyApplicableIf().size());
+        assertNotNull(node);
+        assertEquals(1, node.getOnlyApplicableIf().size());
 	}
 
     @Override

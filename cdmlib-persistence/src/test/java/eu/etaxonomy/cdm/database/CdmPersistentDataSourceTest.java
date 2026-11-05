@@ -8,11 +8,11 @@
 */
 package eu.etaxonomy.cdm.database;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -23,10 +23,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.cache.internal.NoCachingRegionFactory;
 import org.hibernate.cache.spi.RegionFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -39,12 +39,13 @@ import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
  * @author a.mueller
  */
 public class CdmPersistentDataSourceTest {
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger();
 
 	private static CdmPersistentDataSource dataSource;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		dataSource = CdmPersistentDataSource.NewInstance("default");
 		assertNotNull(dataSource);
@@ -59,7 +60,7 @@ public class CdmPersistentDataSourceTest {
 		assertFalse(CdmPersistentDataSource.exists(dataSourceString));
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		//delete tmp
 		String dataSourceString = "tmp";
@@ -285,14 +286,14 @@ public class CdmPersistentDataSourceTest {
 		int firstInput;
 		try {
 			firstInput = is.read();
-			assertEquals("Input Stream should start with < (=Ascii(60))", 60, firstInput);
+			assertEquals(60, firstInput, "Input Stream should start with < (=Ascii(60))");
 		} catch (IOException e) {
 			fail("Exception occurred in datasource input stream read");
 		}
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testGetDataSourceOutputStream() {
 		FileOutputStream os = CdmPersistentSourceUtils.getCdmSourceOutputStream();
 		assertNotNull(os);

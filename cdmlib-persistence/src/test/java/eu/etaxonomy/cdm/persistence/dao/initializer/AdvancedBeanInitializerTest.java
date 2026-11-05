@@ -8,9 +8,9 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.initializer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
@@ -158,7 +158,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
         // find the reference by iD (not load!)
         referenceDao.findById(5000);
         TaxonName name = nameDao.findById(5000);
-        assertFalse("for this test to be significant the authorship must be uninitialized", Hibernate.isInitialized(name.getNomenclaturalReference().getAuthorship()));
+        assertFalse(Hibernate.isInitialized(name.getNomenclaturalReference().getAuthorship()), "for this test to be significant the authorship must be uninitialized");
         initializer.initialize(name, Arrays.asList(new String[]{"nomenclaturalSource.citation.authorship.$"}));
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference().getAuthorship()));
     }
@@ -191,12 +191,12 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
         TaxonName name = nameDao.load(nameUuid, Arrays.asList("nomenclaturalSource.citation.$.*.contact"));
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference())); // nomenclaturalReference
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference().getAuthorship())); // $
-        assertFalse("must not be initialized by 'nomenclaturalSource.citation.$'", Hibernate.isInitialized(name.getNomenclaturalReference().getExtensions()));
+        assertFalse(Hibernate.isInitialized(name.getNomenclaturalReference().getExtensions()), "must not be initialized by 'nomenclaturalSource.citation.$'");
         Team team = HibernateProxyHelper.deproxy(name.getNomenclaturalReference().getAuthorship(), Team.class);
         assertTrue(Hibernate.isInitialized(team.getTeamMembers())); // *
         Person person1 = HibernateProxyHelper.deproxy(team.getTeamMembers().get(0), Person.class);
         assertEquals(personUuid, person1.getUuid());
-        assertFalse("must not be initialized by 'nomenclaturalSource.citation.$.*.contact'", Hibernate.isInitialized(person1.getAnnotations()));
+        assertFalse(Hibernate.isInitialized(person1.getAnnotations()), "must not be initialized by 'nomenclaturalSource.citation.$.*.contact'");
     }
 
     @CdmDataSet
@@ -280,7 +280,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
         Team team = HibernateProxyHelper.deproxy(name.getNomenclaturalReference().getAuthorship(), Team.class);
 
         // members should not initialized since they where not included in the property path
-        assertFalse("members should not be intitialized since they where not included in the property path", Hibernate.isInitialized(team.getTeamMembers()));
+        assertFalse(Hibernate.isInitialized(team.getTeamMembers()), "members should not be intitialized since they where not included in the property path");
 
         // activate the teamAutoInitializer again
         AutoPropertyInitializer<CDM> teamAutoInitializer = deacivatedAutoIntitializers.get(TeamOrPersonBase.class);
@@ -290,7 +290,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
         taxon = (Taxon)taxonDao.load(taxonUuid, Arrays.asList("name.nomenclaturalSource.citation.authorship"));
 
         team = HibernateProxyHelper.deproxy(name.getNomenclaturalReference().getAuthorship(), Team.class);
-        assertTrue("members should have been intitialized by the ", Hibernate.isInitialized(team.getTeamMembers()));
+        assertTrue(Hibernate.isInitialized(team.getTeamMembers()), "members should have been intitialized by the ");
 
     }
 

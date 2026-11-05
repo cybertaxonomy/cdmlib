@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.util.UUID;
@@ -109,8 +109,8 @@ public class TaxonDaoHibernateImplBenchmark extends CdmTransactionalSpringIntegr
     @CdmDataSet("TaxonDaoHibernateImplTest.xml")
     public void testInit() {
         logger.warn("testInit()");
-        assertNotNull("Instance of ITaxonDao expected",taxonDao);
-        assertNotNull("Instance of IReferenceDao expected",referenceDao);
+        assertNotNull(taxonDao, "Instance of ITaxonDao expected");
+        assertNotNull(referenceDao, "Instance of IReferenceDao expected");
 
     }
 

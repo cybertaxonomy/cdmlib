@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -16,7 +17,6 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,8 +81,8 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalSpringIntegratio
 
 	@Test
 	public void testDaos() throws Exception {
-		assertNotNull("cdmEntityDaoBase should exist",cdmEntityDaoBase);
-		assertNotNull("agentDao should exist",agentDao);
+		assertNotNull(cdmEntityDaoBase, "cdmEntityDaoBase should exist");
+		assertNotNull(agentDao, "agentDao should exist");
 	}
 
 	@Test
@@ -118,9 +118,9 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalSpringIntegratio
 
 		cdmEntityDaoBase.saveOrUpdate(name2);
 
-		Assert.assertEquals(name, cdmEntityDaoBase.findByUuid(name.getUuid()));
+		assertEquals(name, cdmEntityDaoBase.findByUuid(name.getUuid()));
 
-		Assert.assertEquals(name2, cdmEntityDaoBase.findByUuid(name2.getUuid()));
+		assertEquals(name2, cdmEntityDaoBase.findByUuid(name2.getUuid()));
 		logger.debug("FulltitleCache: "+ cdmEntityDaoBase.findByUuid(name2.getUuid()).getFullTitleCache());
 		logger.debug("updated: " + cdmEntityDaoBase.findByUuid(name2.getUuid()).getUpdated());
 		TaxonName name3 = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
@@ -175,9 +175,9 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalSpringIntegratio
 		agentDao.saveOrUpdate(team1);
 
 		Person person4 = (Person)agentDao.findByUuid(UUID.fromString("4c4e15e3-3a4f-4505-900a-fae2555ac9e4"));
-		Assert.assertEquals(person3, person4);
+		assertEquals(person3, person4);
 		Team team2 = (Team) agentDao.findByUuid(UUID.fromString("db957a0a-1494-49bb-8d17-d3eaa2076573"));
-		Assert.assertEquals(team1, team2);
+		assertEquals(team1, team2);
 
 		commit();
 	}
@@ -245,7 +245,7 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalSpringIntegratio
 		amplification.setUuid(amplUuid);
 
 		amplificationDao.save(amplification);
-		Assert.assertEquals("<Amplification:11e6b2d5-3eb5-4434-9c56-5bb4c1102147>", amplification.getLabelCache());
+		assertEquals("<Amplification:11e6b2d5-3eb5-4434-9c56-5bb4c1102147>", amplification.getLabelCache());
 
 		Person author = Person.NewTitledInstance("Person");
 		Institution institution = Institution.NewInstance();
@@ -259,7 +259,7 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalSpringIntegratio
 
 		termDao.save(marker);
 		amplificationDao.saveOrUpdate(amplification);
-		Assert.assertEquals("My institute_Person_marker_2008", amplification.getLabelCache());
+		assertEquals("My institute_Person_marker_2008", amplification.getLabelCache());
 	}
 
 	@Override

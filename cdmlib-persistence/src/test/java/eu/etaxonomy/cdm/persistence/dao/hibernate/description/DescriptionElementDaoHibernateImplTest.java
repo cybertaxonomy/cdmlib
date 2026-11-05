@@ -8,13 +8,16 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.FileNotFoundException;
 import java.util.Map;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,9 +29,7 @@ import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
 import eu.etaxonomy.cdm.test.integration.spring.CdmExpectedDataSet;
@@ -52,19 +53,10 @@ public class DescriptionElementDaoHibernateImplTest
 	private IDescriptionElementDao descriptionElementDao;
 
 	@Autowired
-    private IDescriptionDao descriptionDao;
-
-	@Autowired
 	private IDefinedTermDao termDao;
-
-	@Autowired
-	private ITaxonDao taxonDao;
 
 // ***************************** TESTS ************************************/
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.description.DescriptionElementDaoImpl#countMedia(eu.etaxonomy.cdm.model.description.DescriptionElementBase)}.
-	 */
 	@Test
 	public void testCountMedia() {
 		logger.warn("testCountMedia not yet implemented");
@@ -77,12 +69,12 @@ public class DescriptionElementDaoHibernateImplTest
 	@CdmDataSet // (value="DescriptionElementDaoHibernateImplTest.xml")
 	public void testRetrieveMultiLanguageString(){
 //		int count = descriptionElementDao.count(TextData.class);
-//		Assert.assertTrue("There must exist TextData", count > 0);
+//		assertTrue(count > 0, "There must exist TextData");
 
 		//test read
 		TextData textDataTwo = (TextData)descriptionElementDao.findByUuid(uuidDobuleTextData);
-		Assert.assertEquals("There should be exactly 2 languageText in the multilanguageText", 2, textDataTwo.size());
-		Assert.assertTrue("One language should be English", textDataTwo.containsKey(Language.ENGLISH()));
+		assertEquals(2, textDataTwo.size(), "There should be exactly 2 languageText in the multilanguageText");
+		assertTrue(textDataTwo.containsKey(Language.ENGLISH()), "One language should be English");
 		Language eng = Language.ENGLISH();
 //		System.out.println("English: " + eng.getLabel() + "("+ eng.getId() + ", " + eng.getUuid() + ")");
 //
@@ -94,11 +86,11 @@ public class DescriptionElementDaoHibernateImplTest
 //		boolean contains = multiLangText.keySet().contains(eng);
 //		String et = doubleLanguageTextData.getText(eng);
 		LanguageString englishText = textDataTwo.getLanguageText(eng);
-		Assert.assertNotNull("English text should exist", englishText);
-		Assert.assertEquals("The English text should be correct", "Praesent vitae turpis vitae sapien sodales sagittis.", englishText.getText());
+		assertNotNull(englishText, "English text should exist");
+		assertEquals("Praesent vitae turpis vitae sapien sodales sagittis.", englishText.getText(), "The English text should be correct");
 		LanguageString czechText = textDataTwo.getLanguageText(Language.CZECH());
-		Assert.assertNotNull("Czech", czechText);
-		Assert.assertEquals("The Czech text should be correct", "A Czech translation for Praesent ...", czechText.getText());
+		assertNotNull(czechText, "Czech");
+		assertEquals("A Czech translation for Praesent ...", czechText.getText(), "The Czech text should be correct");
 	}
 
 	/**
@@ -112,15 +104,15 @@ public class DescriptionElementDaoHibernateImplTest
 		//test write
 		TextData singleLanguageTextData = (TextData)descriptionElementDao.findByUuid(uuidSingleTextData);
 		Map<Language, LanguageString> multiLangText = singleLanguageTextData.getMultilanguageText();
-		Assert.assertEquals("There should be exactly 1 languageText in the multilanguageText", 1, multiLangText.size());
-		Assert.assertTrue("The language should be English", multiLangText.containsKey(Language.ENGLISH()));
+		assertEquals(1, multiLangText.size(), "There should be exactly 1 languageText in the multilanguageText");
+		assertTrue(multiLangText.containsKey(Language.ENGLISH()), "The language should be English");
 		singleLanguageTextData.putText(Language.GERMAN(), "Ein test auf deutsch");
-		Assert.assertEquals("There should be exactly 2 languageText in the multilanguageText", 2, singleLanguageTextData.size());
+		assertEquals(2, singleLanguageTextData.size(), "There should be exactly 2 languageText in the multilanguageText");
 		String germanText = singleLanguageTextData.getText(Language.GERMAN());
-		Assert.assertNotNull("German text should exist", germanText);
+		assertNotNull(germanText, "German text should exist");
 
 		LanguageString germanLanguageText = singleLanguageTextData.getLanguageText(Language.GERMAN());
-		Assert.assertNotNull("German language text should exist", germanLanguageText);
+		assertNotNull(germanLanguageText, "German language text should exist");
 
 		singleLanguageTextData.putText(Language.ENGLISH(), singleLanguageTextData.getText(Language.ENGLISH()));
 		descriptionElementDao.saveOrUpdate(singleLanguageTextData);
@@ -141,8 +133,8 @@ public class DescriptionElementDaoHibernateImplTest
 		//test write
 		TextData singleLanguageTextData = (TextData)descriptionElementDao.findByUuid(uuidSingleTextData);
 		Map<Language, LanguageString> multiLangText = singleLanguageTextData.getMultilanguageText();
-		Assert.assertEquals("There should be exactly 1 languageText in the multilanguageText", 1, multiLangText.size());
-		Assert.assertTrue("The language should be English", multiLangText.containsKey(Language.ENGLISH()));
+		assertEquals(1, multiLangText.size(), "There should be exactly 1 languageText in the multilanguageText");
+		assertTrue(multiLangText.containsKey(Language.ENGLISH()), "The language should be English");
 
 		singleLanguageTextData.putText(Language.ENGLISH(), "A new English text");
 		descriptionElementDao.saveOrUpdate(singleLanguageTextData);
@@ -162,12 +154,12 @@ public class DescriptionElementDaoHibernateImplTest
 
 		//test write
 		TextData textDataTwo = (TextData)descriptionElementDao.findByUuid(uuidDobuleTextData);
-		Assert.assertEquals("There should be exactly 2 languageText in the multilanguageText", 2, textDataTwo.size());
+		assertEquals(2, textDataTwo.size(), "There should be exactly 2 languageText in the multilanguageText");
 
-		Assert.assertTrue("The language should be English", textDataTwo.containsKey(Language.ENGLISH()));
+		assertTrue(textDataTwo.containsKey(Language.ENGLISH()), "The language should be English");
 
 		textDataTwo.removeText(Language.ENGLISH());
-		Assert.assertEquals("There should be only 1 language left", 1, textDataTwo.size());
+		assertEquals(1, textDataTwo.size(), "There should be only 1 language left");
 		descriptionElementDao.saveOrUpdate(textDataTwo);
 
 		setComplete(); endTransaction();

@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.util.UUID;
@@ -47,7 +47,7 @@ public class Level2ValidationEventListenerTest extends CdmTransactionalSpringInt
 
 	@Test
 	public void testCdmEntityDaoBase() throws Exception	{
-		assertNotNull("cdmEntityDaoBase should exist", cdmEntityDaoBase);
+		assertNotNull(cdmEntityDaoBase, "cdmEntityDaoBase should exist");
 	}
 
 	//@Test

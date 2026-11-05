@@ -8,15 +8,14 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -69,17 +68,17 @@ public class RegistrationDaoHibernateImplTest extends CdmTransactionalSpringInte
         registration.setName(name);
         registrationDao.save(registration);
         registrationList = registrationDao.list( nomRef, null, null, null,null);
-        assertEquals("List should have 1 entry", 1, registrationList.size());
+        assertEquals(1, registrationList.size(), "List should have 1 entry");
         long count = registrationDao.count( nomRef, null);
         assertEquals(1, count);
         // ... with status
         registrationList = registrationDao.list( nomRef, statusList, null, null,null);
-        assertTrue("List should be empty", registrationList.isEmpty());
+        assertTrue(registrationList.isEmpty(), "List should be empty");
         registration.setStatus(RegistrationStatus.PUBLISHED);
         registrationList = registrationDao.list( nomRef, statusList, null, null,null);
-        assertEquals("List should have 1 entry", 1, registrationList.size());
+        assertEquals(1, registrationList.size(), "List should have 1 entry");
         registrationList = registrationDao.list( fullNullReferenceOptional, null, null, null,null);
-        assertEquals("In total there should be 1 registrations", 1, registrationList.size());
+        assertEquals(1, registrationList.size(), "In total there should be 1 registrations");
 
         //test type designation with ref
         Registration regWithType = Registration.NewInstance();
@@ -91,27 +90,27 @@ public class RegistrationDaoHibernateImplTest extends CdmTransactionalSpringInte
         regWithType.addTypeDesignation(desig);
         registrationDao.save(regWithType);
         registrationList = registrationDao.list(Optional.of(desigRef), null, null, null, null);
-        assertEquals("List should have 1 entry", 1, registrationList.size());
+        assertEquals(1, registrationList.size(), "List should have 1 entry");
         count = registrationDao.count(Optional.of(desigRef), null);
         assertEquals(1, count);
         registrationList = registrationDao.list( fullNullReferenceOptional, null, null, null,null);
-        assertEquals("In total there should be 2 registrations", 2, registrationList.size());
+        assertEquals(2, registrationList.size(), "In total there should be 2 registrations");
 
         //test unused ref
         Reference newRef = ReferenceFactory.newArticle();
         registrationList = registrationDao.list(Optional.of(newRef), null, null, null, null);
-        assertTrue("List should be empty", registrationList.isEmpty());
+        assertTrue(registrationList.isEmpty(), "List should be empty");
         //... and saved
         referenceDao.save(newRef);
         registrationList = registrationDao.list(Optional.of(newRef), null, null, null, null);
-        assertTrue("List should be empty", registrationList.isEmpty());
+        assertTrue(registrationList.isEmpty(), "List should be empty");
         count = registrationDao.count(Optional.of(newRef), null);
         assertEquals(0, count);
 
         //test null
         Optional<Reference> nullRef = Optional.empty();
         registrationList = registrationDao.list(nullRef, null, null, null, null);
-        assertEquals("List should be empty", 0, registrationList.size());
+        assertEquals(0, registrationList.size(), "List should be empty");
         count = registrationDao.count( nullRef, null);
         assertEquals(0, count);
 
@@ -122,21 +121,21 @@ public class RegistrationDaoHibernateImplTest extends CdmTransactionalSpringInte
         regWithUnreferenceName.setName(nameWithoutRef);
         registrationDao.save(regWithUnreferenceName);
         registrationList = registrationDao.list(nullRef, null, null, null, null);
-        assertEquals("List should have 1 entry", 1, registrationList.size());
+        assertEquals(1, registrationList.size(), "List should have 1 entry");
         count = registrationDao.count( nullRef, null);
         assertEquals(1, count);
         registrationList = registrationDao.list( fullNullReferenceOptional, null, null, null,null);
-        assertEquals("In total there should be 3 registrations", 3, registrationList.size());
+        assertEquals(3, registrationList.size(), "In total there should be 3 registrations");
 
         //... registration without name and type designation
         Registration emptyRegistration = Registration.NewInstance();
         registrationDao.save(emptyRegistration);
         registrationList = registrationDao.list(nullRef, null, null, null, null);
-        assertEquals("List should have 2 entries now", 2, registrationList.size());
+        assertEquals(2, registrationList.size(), "List should have 2 entries now");
         count = registrationDao.count( nullRef, null);
         assertEquals(2, count);
         registrationList = registrationDao.list( fullNullReferenceOptional, null, null, null,null);
-        assertEquals("In total there should be 4 registrations", 4, registrationList.size());
+        assertEquals(4, registrationList.size(), "In total there should be 4 registrations");
 
         //test name and type designation with same ref
         TaxonName additionalName = TaxonNameFactory.NewBotanicalInstance(null);
@@ -144,8 +143,8 @@ public class RegistrationDaoHibernateImplTest extends CdmTransactionalSpringInte
         additionalName.setNomenclaturalReference(desigRef);
         regWithType.setName(additionalName);
         registrationList = registrationDao.list(Optional.of(desigRef), null, null, null,null);
-        assertEquals("List should still have 1 entry", 1, registrationList.size());
-        assertEquals("",regWithType, registrationList.get(0));
+        assertEquals(1, registrationList.size(), "List should still have 1 entry");
+        assertEquals(regWithType, registrationList.get(0), "");
         count = registrationDao.count(Optional.of(desigRef), null);
         assertEquals(1, count);
 
@@ -158,15 +157,15 @@ public class RegistrationDaoHibernateImplTest extends CdmTransactionalSpringInte
         regWithType.addTypeDesignation(desig2);
         registrationDao.saveOrUpdate(regWithType);
         registrationList = registrationDao.list(Optional.of(desigRef), null, null, null,null);
-        assertEquals("List should still have 1 entry", 1, registrationList.size());
-        assertEquals("",regWithType, registrationList.get(0));
+        assertEquals(1, registrationList.size(), "List should still have 1 entry");
+        assertEquals(regWithType, registrationList.get(0), "");
         registrationList = registrationDao.list( Optional.of(otherRef), null, null, null,null);
-        assertEquals("Also for otherRef the registration should be found", 1, registrationList.size());
-        assertEquals("", regWithType, registrationList.get(0));
+        assertEquals(1, registrationList.size(), "Also for otherRef the registration should be found");
+        assertEquals(regWithType, registrationList.get(0), "");
         count = registrationDao.count(Optional.of(otherRef), null);
         assertEquals(1, count);
         registrationList = registrationDao.list( fullNullReferenceOptional, null, null, null,null);
-        assertEquals("In total there should be 4 registrations", 4, registrationList.size());
+        assertEquals(4, registrationList.size(), "In total there should be 4 registrations");
 
         //> 1
         Registration registration2 = Registration.NewInstance();
@@ -191,26 +190,26 @@ public class RegistrationDaoHibernateImplTest extends CdmTransactionalSpringInte
         registrationDao.save(registration4);
 
         registrationList = registrationDao.list( fullNullReferenceOptional, null, null, null,null);
-        assertEquals("In total there should be 7 registrations", 7, registrationList.size());
+        assertEquals(7, registrationList.size(), "In total there should be 7 registrations");
 
         count = registrationDao.count(Optional.of(desigRef), null);
         assertEquals(4, count);
         registrationList = registrationDao.list(Optional.of(desigRef), null, null, null,null);
-        assertEquals("List should have 4 entries", 4, registrationList.size());
+        assertEquals(4, registrationList.size(), "List should have 4 entries");
         registrationList = registrationDao.list(Optional.of(desigRef), null, 3, null,null);
-        assertEquals("List should have 3 entries", 3, registrationList.size());
+        assertEquals(3, registrationList.size(), "List should have 3 entries");
         registrationList = registrationDao.list(Optional.of(desigRef), null, 3, 2, null);
-        assertEquals("List should have 2 entries", 2, registrationList.size());
+        assertEquals(2, registrationList.size(), "List should have 2 entries");
 
         registrationList = registrationDao.list( fullNullReferenceOptional, statusList, null, null,null);
-        assertEquals("In total there should be 1 registration with status published", 1, registrationList.size());
+        assertEquals(1, registrationList.size(), "In total there should be 1 registration with status published");
 
         statusList.add(RegistrationStatus.PREPARATION);
         registrationList = registrationDao.list( fullNullReferenceOptional, statusList, null, null,null);
-        assertEquals("In total there should be 7 registration with status preparation or published", 7, registrationList.size());
+        assertEquals(7, registrationList.size(), "In total there should be 7 registration with status preparation or published");
         statusList.remove(RegistrationStatus.PUBLISHED);
         registrationList = registrationDao.list( fullNullReferenceOptional, statusList, null, null,null);
-        assertEquals("In total there should be 6 registration with status preparation", 6, registrationList.size());
+        assertEquals(6, registrationList.size(), "In total there should be 6 registration with status preparation");
     }
 
     @Test
@@ -251,10 +250,10 @@ public class RegistrationDaoHibernateImplTest extends CdmTransactionalSpringInte
         registrationDao.save(registration4);
 
         List<Registration> journalRegistrationList = registrationDao.list( Optional.of(journal), null, null, null,null);
-        Assert.assertEquals(4, journalRegistrationList.size());
+        assertEquals(4, journalRegistrationList.size());
 
         List<Registration> sectionRegistrationList = registrationDao.list( Optional.of(section), null, null, null,null);
-        Assert.assertEquals(2, sectionRegistrationList.size());
+        assertEquals(2, sectionRegistrationList.size());
     }
 
     @Override

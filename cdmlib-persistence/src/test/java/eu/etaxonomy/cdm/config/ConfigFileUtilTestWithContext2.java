@@ -8,16 +8,19 @@
  */
 package eu.etaxonomy.cdm.config;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import org.junit.jupiter.api.extension.ExtendWith;
+
 import java.io.File;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration("configFileUtil-app-context.xml")
 public class ConfigFileUtilTestWithContext2 {
 
@@ -27,6 +30,6 @@ public class ConfigFileUtilTestWithContext2 {
 	@Test
     public void testGetHomeDir() {
         String userHome = System.getProperty("user.home");
-        Assert.assertEquals(userHome + File.separator + ".cdmLibrary", configFileUtil.getCdmHomeDir().getAbsolutePath());
+        assertEquals(userHome + File.separator + ".cdmLibrary", configFileUtil.getCdmHomeDir().getAbsolutePath());
     }
 }

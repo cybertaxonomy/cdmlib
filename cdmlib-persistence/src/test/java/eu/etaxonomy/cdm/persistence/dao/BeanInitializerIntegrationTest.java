@@ -8,9 +8,9 @@
 */
 package eu.etaxonomy.cdm.persistence.dao;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -77,13 +77,13 @@ public class BeanInitializerIntegrationTest extends CdmTransactionalSpringIntegr
 		setComplete();
 		endTransaction();
 
-		assertNotNull("Sphingidae should not be null", sphingidae);
+		assertNotNull(sphingidae, "Sphingidae should not be null");
 		//TODO this does not fail due to property path, but it does even not fail without property path which is unexpected
 		//there is a very similar test (AdvancedBeanInitializerTest.testTitleAndNameCacheAutoInitializer) which loads the taxon
 		//and not the name and there it works.
-		assertTrue("TaxonName.nomenclaturalSource.citation should be initialized", Hibernate.isInitialized(sphingidae.getNomenclaturalReference()));
+		assertTrue(Hibernate.isInitialized(sphingidae.getNomenclaturalReference()), "TaxonName.nomenclaturalSource.citation should be initialized");
 
-		assertFalse("TaxonName.homotypicalGroup should not be initialized", Hibernate.isInitialized(sphingidae.getHomotypicalGroup()));
+		assertFalse(Hibernate.isInitialized(sphingidae.getHomotypicalGroup()), "TaxonName.homotypicalGroup should not be initialized");
 	}
 
 	/**
@@ -106,8 +106,8 @@ public class BeanInitializerIntegrationTest extends CdmTransactionalSpringIntegr
 		setComplete();
 		endTransaction();
 
-		assertNotNull("Sphingidae should not be null",sphingidae);
-		assertTrue("TaxonName.combinationAuthorship should be initialized",Hibernate.isInitialized(sphingidae.getCombinationAuthorship()));
+		assertNotNull(sphingidae, "Sphingidae should not be null");
+		assertTrue(Hibernate.isInitialized(sphingidae.getCombinationAuthorship()), "TaxonName.combinationAuthorship should be initialized");
 	}
 
 	/**
@@ -125,12 +125,12 @@ public class BeanInitializerIntegrationTest extends CdmTransactionalSpringIntegr
 		setComplete();
 		endTransaction();
 
-		assertNotNull("textData should not be null",textData);
+		assertNotNull(textData, "textData should not be null");
 
-		assertTrue("TextData.multilanguageText should be initialized",Hibernate.isInitialized(textData.getMultilanguageText()));
-		assertFalse("TextData.multilanguageText should not be empty",textData.getMultilanguageText().isEmpty());
+		assertTrue(Hibernate.isInitialized(textData.getMultilanguageText()), "TextData.multilanguageText should be initialized");
+		assertFalse(textData.getMultilanguageText().isEmpty(), "TextData.multilanguageText should not be empty");
 		LanguageString languageString = textData.getMultilanguageText().values().iterator().next();
-		assertTrue("LanguageString.language should be initialized",Hibernate.isInitialized(languageString.getLanguage()));
+		assertTrue(Hibernate.isInitialized(languageString.getLanguage()), "LanguageString.language should be initialized");
 	}
 
 	/**
@@ -150,11 +150,11 @@ public class BeanInitializerIntegrationTest extends CdmTransactionalSpringIntegr
 		setComplete();
 		endTransaction();
 
-		assertNotNull("textData should not be null",textData);
-		assertTrue("TextData.multilanguageText should be initialized",Hibernate.isInitialized(textData.getMultilanguageText()));
-		assertFalse("TextData.multilanguageText should not be empty",textData.getMultilanguageText().isEmpty());
+		assertNotNull(textData, "textData should not be null");
+		assertTrue(Hibernate.isInitialized(textData.getMultilanguageText()), "TextData.multilanguageText should be initialized");
+		assertFalse(textData.getMultilanguageText().isEmpty(), "TextData.multilanguageText should not be empty");
 		LanguageString languageString = textData.getMultilanguageText().values().iterator().next();
-		assertTrue("LanguageString.language should be initialized",Hibernate.isInitialized(languageString.getLanguage()));
+		assertTrue(Hibernate.isInitialized(languageString.getLanguage()), "LanguageString.language should be initialized");
 	}
 
     @Override

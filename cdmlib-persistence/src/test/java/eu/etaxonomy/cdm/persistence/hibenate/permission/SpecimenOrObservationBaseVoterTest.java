@@ -8,10 +8,12 @@
 */
 package eu.etaxonomy.cdm.persistence.hibenate.permission;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.EnumSet;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
@@ -113,7 +115,7 @@ public class SpecimenOrObservationBaseVoterTest extends AbstractCdmPermissionVot
     }
 
     @Test
-    @Ignore // see https://dev.e-taxonomy.eu/redmine/issues/7020
+    @Disabled // see https://dev.e-taxonomy.eu/redmine/issues/7020
     public void testMultipleOriginalsGrantForAllRoots(){
 
         buildDerivationGraph();

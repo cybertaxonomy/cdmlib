@@ -8,9 +8,9 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -24,7 +24,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.Hibernate;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,20 +108,20 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalSpringInteg
 
         boolean includeUnpublished = false;
         long numberOfDescriptionElements = descriptionDao.countDescriptionElements(null, null, null, null, includeUnpublished);
-        assertEquals("expecting 35 description elements in total", 35, numberOfDescriptionElements);
+        assertEquals(35, numberOfDescriptionElements, "expecting 35 description elements in total");
 
         numberOfDescriptionElements = descriptionDao.countDescriptionElements(null, null, null, TextData.class, includeUnpublished);
-        assertEquals("expecting 3 published description elements of type TextData", 3, numberOfDescriptionElements);
+        assertEquals(3, numberOfDescriptionElements, "expecting 3 published description elements of type TextData");
 
         numberOfDescriptionElements = descriptionDao.countDescriptionElements(null, TaxonDescription.class, null, TextData.class, includeUnpublished);
-        assertEquals("expecting 2 published description elements of type TextData", 2, numberOfDescriptionElements);
+        assertEquals(2, numberOfDescriptionElements, "expecting 2 published description elements of type TextData");
 
         DescriptionBase<?> description = descriptionDao.findByUuid(uuidTaxonDescription1);
         assert description != null : "description must exist";
 
         numberOfDescriptionElements = descriptionDao.countDescriptionElements(description, null, null, TextData.class, includeUnpublished);
 
-        assertEquals("expecting 2 description elements of type TextData in specific description", 2, numberOfDescriptionElements);
+        assertEquals(2, numberOfDescriptionElements, "expecting 2 description elements of type TextData in specific description");
     }
 
     @Test
@@ -131,16 +130,16 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalSpringInteg
         boolean includeUnpublished = false;
 
         List<TextData> elements = descriptionDao.listDescriptionElements(null, null, null, null, includeUnpublished, null, null, null);
-        assertEquals("expecting 35 description elements in total without unpublished", 35, elements.size());
+        assertEquals(35, elements.size(), "expecting 35 description elements in total without unpublished");
 
         elements = descriptionDao.listDescriptionElements(null, null, null, TextData.class, includeUnpublished, null, null, null);
-        assertEquals("expecting 4 published description elements of type TextData", 3, elements.size());
+        assertEquals(3, elements.size(), "expecting 4 published description elements of type TextData");
 
         elements = descriptionDao.listDescriptionElements(null, TaxonDescription.class, null, TextData.class, includeUnpublished, null, null, null);
-        assertEquals("expecting 3 published description elements of type TextData", 2, elements.size());
+        assertEquals(2, elements.size(), "expecting 3 published description elements of type TextData");
 
         elements = descriptionDao.listDescriptionElements(null, SpecimenDescription.class, null, TextData.class, includeUnpublished, null, null, null);
-        assertEquals("expecting 1 description elements of type TextData", 1, elements.size());
+        assertEquals(1, elements.size(), "expecting 1 description elements of type TextData");
 
         DescriptionBase<?> description = descriptionDao.findByUuid(uuidTaxonDescription1);
         assert description != null : "description must exist";
@@ -182,15 +181,15 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalSpringInteg
             }
         }
 
-        assertNotNull("getDescriptionElements should return a List", elements);
-        assertEquals("getDescriptionElement should return 2 elements",2,elements.size());
-        assertNotNull("Description Element with ID 34 should be part of the list",element34);
-        assertTrue("DescriptionElement.sources should be initialized",Hibernate.isInitialized(element34.getSources()));
-        assertTrue("DescriptionElement.sources should have elements",element34.getSources().size() > 0);
-        assertTrue("OriginalSourceBase.citation should be initialized",Hibernate.isInitialized(element34.getSources().iterator().next().getCitation()));
-        assertTrue("DescriptionElementBase.feature should be initialized",Hibernate.isInitialized(element34.getFeature()));
-        assertTrue("DescriptionElementBase.media should be initialized",Hibernate.isInitialized(element34.getMedia()));
-        assertTrue("TextData.multilanguageText should be initialized",Hibernate.isInitialized(((TextData)element34).getMultilanguageText()));
+        assertNotNull(elements, "getDescriptionElements should return a List");
+        assertEquals(2, elements.size(), "getDescriptionElement should return 2 elements");
+        assertNotNull(element34, "Description Element with ID 34 should be part of the list");
+        assertTrue(Hibernate.isInitialized(element34.getSources()), "DescriptionElement.sources should be initialized");
+        assertTrue(element34.getSources().size() > 0, "DescriptionElement.sources should have elements");
+        assertTrue(Hibernate.isInitialized(element34.getSources().iterator().next().getCitation()), "OriginalSourceBase.citation should be initialized");
+        assertTrue(Hibernate.isInitialized(element34.getFeature()), "DescriptionElementBase.feature should be initialized");
+        assertTrue(Hibernate.isInitialized(element34.getMedia()), "DescriptionElementBase.media should be initialized");
+        assertTrue(Hibernate.isInitialized(((TextData)element34).getMultilanguageText()), "TextData.multilanguageText should be initialized");
     }
 
     @Test
@@ -201,7 +200,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalSpringInteg
 
         long numberOfDescriptionElements = descriptionDao.countDescriptionElements(description, null, features, TextData.class, true);
 
-        assertEquals("countDescriptionElements should return 1", 1, numberOfDescriptionElements);
+        assertEquals(1, numberOfDescriptionElements, "countDescriptionElements should return 1");
     }
 
     @Test
@@ -215,22 +214,22 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalSpringInteg
         assert description != null : "description must exist";
 
         List<TextData> elements = descriptionDao.listDescriptionElements(null, null, features, TextData.class, includeUnpublished, null, null,null);
-        assertNotNull("getDescriptionElements should return a List", elements);
-        assertEquals("getDescriptionElement should return 2 elements", 2, elements.size());
+        assertNotNull(elements, "getDescriptionElements should return a List");
+        assertEquals(2, elements.size(), "getDescriptionElement should return 2 elements");
 
         elements = descriptionDao.listDescriptionElements(description, null, features, TextData.class, includeUnpublished, null, null,null);
-        assertEquals("getDescriptionElement should return 1 elements", 1, elements.size());
+        assertEquals(1, elements.size(), "getDescriptionElement should return 1 elements");
 
         elements = descriptionDao.listDescriptionElements(null, SpecimenDescription.class, features, TextData.class, includeUnpublished, null, null,null);
-        assertEquals("getDescriptionElement should return 1 elements", 1, elements.size());
+        assertEquals(1, elements.size(), "getDescriptionElement should return 1 elements");
 
         // 2. search for more Features: ECOLOGY & DESCRIPTION
         features.add(Feature.DESCRIPTION());
         elements = descriptionDao.listDescriptionElements(null, null, features, TextData.class, includeUnpublished, null, null,null);
-        assertEquals("getDescriptionElement should return 3 elements", 3, elements.size());
+        assertEquals(3, elements.size(), "getDescriptionElement should return 3 elements");
 
         elements = descriptionDao.listDescriptionElements(null, TaxonDescription.class, features, TextData.class, includeUnpublished, null, null,null);
-        assertEquals("getDescriptionElement should return 2 published elements", 2, elements.size());
+        assertEquals(2, elements.size(), "getDescriptionElement should return 2 published elements");
     }
 
     @Test
@@ -243,22 +242,22 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalSpringInteg
         List<DescriptionElementBase> elements1 = descriptionDao.getDescriptionElementForTaxon(
                 taxonSphingidae.getUuid(), null, null, false, null, 0, null);
 
-        assertNotNull("getDescriptionElementForTaxon should return a List", elements1);
-        assertEquals("getDescriptionElementForTaxon should return 1 elements",1,elements1.size());
+        assertNotNull(elements1, "getDescriptionElementForTaxon should return a List");
+        assertEquals(1, elements1.size(), "getDescriptionElementForTaxon should return 1 elements");
 
         // 2.
         List<DescriptionElementBase> elements2 = descriptionDao.getDescriptionElementForTaxon(
                 taxonSphingidae.getUuid(), null, DescriptionElementBase.class, false, null, 0, null);
 
-        assertNotNull("getDescriptionElementForTaxon should return a List", elements2);
-        assertTrue("getDescriptionElementForTaxon should be empty",elements2.isEmpty());
+        assertNotNull(elements2, "getDescriptionElementForTaxon should return a List");
+        assertTrue(elements2.isEmpty(), "getDescriptionElementForTaxon should be empty");
 
         // 3.
         List<Distribution> elements3 = descriptionDao.getDescriptionElementForTaxon(
                 taxonSphingidae.getUuid() , null, Distribution.class, false, null, 0, null);
 
-        assertNotNull("getDescriptionElementForTaxon should return a List", elements3);
-        assertEquals("getDescriptionElementForTaxon should return 1 elements",1,elements3.size());
+        assertNotNull(elements3, "getDescriptionElementForTaxon should return a List");
+        assertEquals(1, elements3.size(), "getDescriptionElementForTaxon should return 1 elements");
     }
 
     //see #2234
@@ -286,7 +285,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalSpringInteg
         this.taxonDao.save(taxon);
         descriptionDao.save(description);
         long n2 = this.descriptionDao.count();
-        Assert.assertEquals(1, n2-n1);
+        assertEquals(1, n2-n1);
 
         DefinedTerm scope = DefinedTerm.SEX_FEMALE();
         description.addScope(scope);
@@ -305,41 +304,41 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalSpringInteg
 
         //complete
         MarkerType completeMarkerType = (MarkerType)this.definedTermDao.findByUuid(UUID.fromString("b4b1b2ab-89a8-4ce6-8110-d60b8b1bc433")); //Marker "complete"
-        Assert.assertNotNull("MarkerType for 'complete' should exist", completeMarkerType);
+        assertNotNull(completeMarkerType, "MarkerType for 'complete' should exist");
         Set<MarkerType> markerTypes = new HashSet<>();
         markerTypes.add(completeMarkerType);
         long n1 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, null);
-        Assert.assertEquals("There should be 1 description marked 'complete'", 1, n1);
+        assertEquals(1, n1, "There should be 1 description marked 'complete'");
         List<TaxonDescription> descriptions = this.descriptionDao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, null, pageSize, pageNumber, propertyPaths);
-        Assert.assertEquals("There should be 1 description marked 'complete'", 1, descriptions.size());
+        assertEquals(1, descriptions.size(), "There should be 1 description marked 'complete'");
 
         //doubtful
         MarkerType isDoubtfulMarkerType = (MarkerType)this.definedTermDao.findByUuid(UUID.fromString("b51325c8-05fe-421a-832b-d86fc249ef6e")); //Marker "doubtful"
-        Assert.assertNotNull("MarkerType for 'doubtful' should exist", isDoubtfulMarkerType);
+        assertNotNull(isDoubtfulMarkerType, "MarkerType for 'doubtful' should exist");
         markerTypes = new HashSet<>();  //reset
         markerTypes.add(isDoubtfulMarkerType);
         long n2 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, null);
-        Assert.assertEquals("There should be no description marked 'doubtful'", 0, n2);
+        assertEquals(0, n2, "There should be no description marked 'doubtful'");
         descriptions = this.descriptionDao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, null, pageSize, pageNumber, propertyPaths);
-        Assert.assertEquals("There should be 0 description marked 'doubtful'", 0, descriptions.size());
+        assertEquals(0, descriptions.size(), "There should be 0 description marked 'doubtful'");
 
         //imported = false
         UUID uuidImported = UUID.fromString("96878790-4ceb-42a2-9738-a2242079b679");
         MarkerType importedMarkerType = (MarkerType)this.definedTermDao.findByUuid(uuidImported);
-        Assert.assertNotNull("MarkerType for 'imported' should exist", completeMarkerType);
+        assertNotNull(completeMarkerType, "MarkerType for 'imported' should exist");
         markerTypes = new HashSet<MarkerType>();
         markerTypes.add(importedMarkerType);
         long n3 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, null);
-        Assert.assertEquals("There should be no description marked 'imported' as true", 0, n3);
+        assertEquals(0, n3, "There should be no description marked 'imported' as true");
         descriptions = this.descriptionDao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, null, pageSize, pageNumber, propertyPaths);
-        Assert.assertEquals("There should be no description marked 'imported' as true", 0, descriptions.size());
+        assertEquals(0, descriptions.size(), "There should be no description marked 'imported' as true");
 
         markerTypes = null;
         descriptions = this.descriptionDao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, null, pageSize, pageNumber, propertyPaths);
-        Assert.assertEquals("There should be 1 description", 1, descriptions.size());
+        assertEquals(1, descriptions.size(), "There should be 1 description");
         TaxonDescription desc = descriptions.iterator().next();
         boolean hasMarkerImportedAsFalse = desc.hasMarker(importedMarkerType, false);
-        Assert.assertTrue("The only description should have a negative marker on 'imported'", hasMarkerImportedAsFalse);
+        assertTrue(hasMarkerImportedAsFalse, "The only description should have a negative marker on 'imported'");
     }
 
     @Test
@@ -349,32 +348,29 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalSpringInteg
         Set<DefinedTerm> scopes = null;
         Set<NamedArea> geographicalScope = null;
         Set<MarkerType> markerTypes = null;
-        Integer pageSize = null;
-        Integer pageNumber = null;
-        List<String> propertyPaths = null;
 
         //types
         Set<DescriptionType> types = EnumSet.noneOf(DescriptionType.class);
         long n = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, types);
-        Assert.assertEquals("There should be 1 description for the given taxon", 1, n);
+        assertEquals(1, n, "There should be 1 description for the given taxon");
 
         types = EnumSet.of(DescriptionType.AGGREGATED);
         n = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, types);
-        Assert.assertEquals("There should be 1 description of type 'aggregated' for the given taxon", 1, n);
+        assertEquals(1, n, "There should be 1 description of type 'aggregated' for the given taxon");
 
         types = EnumSet.of(DescriptionType.COMPUTED);
         n = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, types);
-        Assert.assertEquals("There should be 0 descriptions of type 'computed' for the given taxon", 0, n);
+        assertEquals(0, n, "There should be 0 descriptions of type 'computed' for the given taxon");
 
         types = EnumSet.of(DescriptionType.AGGREGATED, DescriptionType.COMPUTED);
         n = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, types);
-        Assert.assertEquals("There should be 0 descriptions of type 'aggregated' "
-                + "and type 'computed' for the given taxon", 0, n);
+        assertEquals(0, n, "There should be 0 descriptions of type 'aggregated' "
+                + "and type 'computed' for the given taxon");
 
         types = EnumSet.of(DescriptionType.AGGREGATED, DescriptionType.SECONDARY_DATA);
         n = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, types);
-        Assert.assertEquals("There should be 1 descriptions of type 'aggregated' "
-                + "and type 'secondary data' for the given taxon", 1, n);
+        assertEquals(1, n, "There should be 1 descriptions of type 'aggregated' "
+                + "and type 'secondary data' for the given taxon");
 
     }
 
@@ -392,7 +388,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalSpringInteg
         commitAndStartNewTransaction(null);
 
         Collection<TermDto> list = descriptionDao.listNamedAreasInUse(false, null, null);
-        Assert.assertEquals(3, list.size());
+        assertEquals(3, list.size());
     }
 
     @Test
@@ -400,7 +396,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalSpringInteg
     public void testListNamedAreasInUseWithParents(){
 
         Collection<TermDto> list = descriptionDao.listNamedAreasInUse(true, null, null);
-        Assert.assertEquals(3, list.size());
+        assertEquals(3, list.size());
     }
 
 
@@ -408,7 +404,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalSpringInteg
     @CdmDataSet
     public void testGetNodeOfIndividualAssociationForSpecimen() {
     	List<SortableTaxonNodeQueryResult> list = descriptionDao.getNodeOfIndividualAssociationForSpecimen(UUID.fromString("4c3231a9-336e-4b21-acf2-129683627de4"), null);
-    	Assert.assertEquals(1, list.size());
+    	assertEquals(1, list.size());
 
     }
     //#11040
@@ -418,7 +414,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalSpringInteg
 
         //create test data
         RevisionStatus completed = (RevisionStatus)definedTermDao.findByUuid(RevisionStatus.uuidCompleted);
-        assertNotNull("Revision status term must exist in test DB", completed);
+        assertNotNull(completed, "Revision status term must exist in test DB");
 
         DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
         occurrenceDao.save(specimen);
@@ -465,8 +461,8 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalSpringInteg
 
     private void assertRevisionStatus(List<TaxonNodeDto> dtos, UUID nodeUuid, String expectedStatus) {
         TaxonNodeDto dto = dtos.stream().filter(d->nodeUuid.equals(d.getUuid())).findFirst().orElse(null);
-        assertNotNull("No DTO found for node " + nodeUuid, dto);
-        assertEquals("Wrong revision status for node " + nodeUuid, expectedStatus, dto.getRevisionStatus());
+        assertNotNull(dto, "No DTO found for node " + nodeUuid);
+        assertEquals(expectedStatus, dto.getRevisionStatus(), "Wrong revision status for node " + nodeUuid);
     }
 
     @Override

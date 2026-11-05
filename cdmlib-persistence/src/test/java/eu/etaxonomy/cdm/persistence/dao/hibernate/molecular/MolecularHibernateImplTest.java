@@ -8,10 +8,12 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.molecular;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.Set;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,8 +68,8 @@ public class MolecularHibernateImplTest  extends CdmTransactionalSpringIntegrati
 
 		Sequence sequence = sequences.iterator().next();
 		DefinedTerm marker = sequence.getDnaMarker();
-		Assert.assertNotNull("Marker should not be null", marker);
-		Assert.assertEquals("Markers label should be 'Marker'",MARKER_LABEL, marker.getLabel());
+		assertNotNull(marker, "Marker should not be null");
+		assertEquals(MARKER_LABEL, marker.getLabel(), "Markers label should be 'Marker'");
 
 		commit();
 	}
@@ -77,12 +79,12 @@ public class MolecularHibernateImplTest  extends CdmTransactionalSpringIntegrati
 	public void testLoadUsedSequences() {
 		createTestDataSet();
 		PhylogeneticTree phyloTree = (PhylogeneticTree)mediaDao.findByUuid(phyloTreeUuid);
-		Assert.assertNotNull("Phylogenetic Tree should be found", phyloTree);
+		assertNotNull(phyloTree, "Phylogenetic Tree should be found");
 		Set<Sequence> sequences = phyloTree.getUsedSequences();
 
-		Assert.assertEquals(1, sequences.size());
+		assertEquals(1, sequences.size());
 		Sequence sequence = sequences.iterator().next();
-		Assert.assertEquals(sequenceUuid, sequence.getUuid());
+		assertEquals(sequenceUuid, sequence.getUuid());
 
 		commit();
 	}
@@ -96,7 +98,7 @@ public class MolecularHibernateImplTest  extends CdmTransactionalSpringIntegrati
 		uuidSample1 = sample.getUuid();
 
 		DefinedTerm marker = DefinedTerm.ITS1_MARKER();
-		Assert.assertNotNull("ITS1 marker must not be null", marker);
+		assertNotNull(marker, "ITS1 marker must not be null");
 		sequence.setDnaMarker(marker);
 
 		occurrenceDao.save(sample);

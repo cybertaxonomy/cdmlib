@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.permission;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -29,14 +29,14 @@ import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegratio
 public class UserDaoHibernateImplTest extends CdmTransactionalSpringIntegrationTest {
 
 	@Autowired
-	IUserDao userDao;
+	private IUserDao userDao;
 
 	@Test
 	public void testFindUserByUsername() {
 		User user = userDao.findUserByUsername("test");
 
-		assertNotNull("findUserByUsername should return a user", user);
-		assertEquals("the user should have had their authorities loaded",2,user.getAuthorities().size());
+		assertNotNull(user, "findUserByUsername should return a user");
+		assertEquals(2, user.getAuthorities().size(), "the user should have had their authorities loaded");
 	}
 
 	@Test
@@ -50,13 +50,13 @@ public class UserDaoHibernateImplTest extends CdmTransactionalSpringIntegrationT
 		List<String> propertyPaths = null;
 		List<User> list = userDao.findByUsername(queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
 
-		assertNotNull("A list should be returned", list);
-		assertEquals("3 users should be returned", 3, list.size());
+		assertNotNull(list, "A list should be returned");
+		assertEquals(3, list.size(), "3 users should be returned");
 
 		pageSize = 2;
 		list = userDao.findByUsername(queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
-		assertNotNull("A list should be returned", list);
-		assertEquals("2 users should be returned", 2, list.size());
+		assertNotNull(list, "A list should be returned");
+		assertEquals(2, list.size(), "2 users should be returned");
 	}
 
     /* (non-Javadoc)

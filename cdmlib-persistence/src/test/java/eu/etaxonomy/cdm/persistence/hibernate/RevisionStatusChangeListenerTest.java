@@ -8,10 +8,14 @@
 */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.FileNotFoundException;
 import java.time.ZonedDateTime;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -45,8 +49,8 @@ public class RevisionStatusChangeListenerTest extends CdmTransactionalSpringInte
 
         RevisionStatus completed = (RevisionStatus) definedTermDao.findByUuid(RevisionStatus.uuidCompleted);
         RevisionStatus inProcess = (RevisionStatus) definedTermDao.findByUuid(RevisionStatus.uuidInProcess);
-        Assert.assertNotNull(completed);
-        Assert.assertNotNull(inProcess);
+        assertNotNull(completed);
+        assertNotNull(inProcess);
 
         Taxon taxon = Taxon.NewInstance(null, null);
         taxonDao.save(taxon);
@@ -60,12 +64,11 @@ public class RevisionStatusChangeListenerTest extends CdmTransactionalSpringInte
         commitAndStartNewTransaction(null);
 
         taxon = (Taxon) taxonDao.findByUuid(taxon.getUuid());
-        Assert.assertNotNull(taxon.getRevisionStatus());
-        Assert.assertEquals(completed.getUuid(), taxon.getRevisionStatus().getStatus().getUuid());
+        assertNotNull(taxon.getRevisionStatus());
+        assertEquals(completed.getUuid(), taxon.getRevisionStatus().getStatus().getUuid());
         ZonedDateTime firstChanged = taxon.getRevisionStatus().getChanged();
-        Assert.assertNotNull("changed must be set automatically when status is set", firstChanged);
-        Assert.assertFalse("changed should be at/after the status change",
-                firstChanged.toInstant().isBefore(beforeFirstChange.toInstant()));
+        assertNotNull(firstChanged, "changed must be set automatically when status is set");
+        assertFalse(firstChanged.toInstant().isBefore(beforeFirstChange.toInstant()), "changed should be at/after the status change");
 
         // unrelated update must not touch changed
         taxon.setConceptId("concept-1");
@@ -73,9 +76,8 @@ public class RevisionStatusChangeListenerTest extends CdmTransactionalSpringInte
         commitAndStartNewTransaction(null);
 
         taxon = (Taxon) taxonDao.findByUuid(taxon.getUuid());
-        Assert.assertEquals("concept-1", taxon.getConceptId());
-        Assert.assertEquals("changed must stay unchanged on unrelated updates",
-                firstChanged.toInstant(), taxon.getRevisionStatus().getChanged().toInstant());
+        assertEquals("concept-1", taxon.getConceptId());
+        assertEquals(firstChanged.toInstant(), taxon.getRevisionStatus().getChanged().toInstant(), "changed must stay unchanged on unrelated updates");
 
         // status change without explicit changed → listener updates changed
         try {
@@ -89,12 +91,11 @@ public class RevisionStatusChangeListenerTest extends CdmTransactionalSpringInte
         commitAndStartNewTransaction(null);
 
         taxon = (Taxon) taxonDao.findByUuid(taxon.getUuid());
-        Assert.assertEquals(inProcess.getUuid(), taxon.getRevisionStatus().getStatus().getUuid());
+        assertEquals(inProcess.getUuid(), taxon.getRevisionStatus().getStatus().getUuid());
         ZonedDateTime secondChanged = taxon.getRevisionStatus().getChanged();
-        Assert.assertNotNull(secondChanged);
-        Assert.assertFalse(secondChanged.toInstant().isBefore(beforeSecondChange.toInstant()));
-        Assert.assertTrue("changed must be updated when status changes",
-                secondChanged.toInstant().isAfter(firstChanged.toInstant()));
+        assertNotNull(secondChanged);
+        assertFalse(secondChanged.toInstant().isBefore(beforeSecondChange.toInstant()));
+        assertTrue(secondChanged.toInstant().isAfter(firstChanged.toInstant()), "changed must be updated when status changes");
 
         // explicit changed timestamp must be preserved
         ZonedDateTime explicit = ZonedDateTime.parse("2020-01-15T10:00:00+01:00[Europe/Berlin]");
@@ -103,9 +104,8 @@ public class RevisionStatusChangeListenerTest extends CdmTransactionalSpringInte
         commitAndStartNewTransaction(null);
 
         taxon = (Taxon) taxonDao.findByUuid(taxon.getUuid());
-        Assert.assertEquals(completed.getUuid(), taxon.getRevisionStatus().getStatus().getUuid());
-        Assert.assertEquals("explicitly provided changed must be preserved",
-                explicit.toInstant(), taxon.getRevisionStatus().getChanged().toInstant());
+        assertEquals(completed.getUuid(), taxon.getRevisionStatus().getStatus().getUuid());
+        assertEquals(explicit.toInstant(), taxon.getRevisionStatus().getChanged().toInstant(), "explicitly provided changed must be preserved");
     }
 
     @Override

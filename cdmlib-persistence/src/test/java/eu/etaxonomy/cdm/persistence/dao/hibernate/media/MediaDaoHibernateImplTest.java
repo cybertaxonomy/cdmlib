@@ -8,10 +8,10 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.media;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ public class MediaDaoHibernateImplTest extends CdmSpringIntegrationTest {
 	public void testCountMediaKeys() {
 		long numberOfMediaKeys = mediaDao.countMediaKeys(null,null);
 
-		assertEquals("countMediaKeys should return 3",3,numberOfMediaKeys);
+		assertEquals(3, numberOfMediaKeys, "countMediaKeys should return 3");
 	}
 
 	@Test
@@ -82,10 +82,10 @@ public class MediaDaoHibernateImplTest extends CdmSpringIntegrationTest {
 		propertyPaths.add("title");
 		List<MediaKey> keys = mediaDao.getMediaKeys(null, null, null, null,propertyPaths);
 
-		assertNotNull("getMediaKeys should return a List",keys);
-		assertFalse("The list should not be empty",keys.isEmpty());
-		assertEquals("The list should contain 3 MediaKey instances",3, keys.size());
-		assertTrue("Media.title should have been initialized",Hibernate.isInitialized(keys.get(0).getTitle()));
+		assertNotNull(keys, "getMediaKeys should return a List");
+		assertFalse(keys.isEmpty(), "The list should not be empty");
+		assertEquals(3, keys.size(), "The list should contain 3 MediaKey instances");
+		assertTrue(Hibernate.isInitialized(keys.get(0).getTitle()), "Media.title should have been initialized");
 	}
 
 	@Test
@@ -103,7 +103,7 @@ public class MediaDaoHibernateImplTest extends CdmSpringIntegrationTest {
 
 		long numberOfMediaKeys = mediaDao.countMediaKeys(taxonomicScope,geoScopes);
 
-		assertEquals("countMediaKeys should return 1",1,numberOfMediaKeys);
+		assertEquals(1, numberOfMediaKeys, "countMediaKeys should return 1");
 	}
 
 	@Test
@@ -123,10 +123,10 @@ public class MediaDaoHibernateImplTest extends CdmSpringIntegrationTest {
 
 		List<MediaKey> keys = mediaDao.getMediaKeys(taxonomicScope,geoScopes, null, null,propertyPaths);
 
-		assertNotNull("getMediaKeys should return a List",keys);
-		assertFalse("The list should not be empty",keys.isEmpty());
-		assertEquals("The list should contain 1 MediaKey instance",1, keys.size());
-		assertTrue("Media.title should have been initialized",Hibernate.isInitialized(keys.get(0).getTitle()));
+		assertNotNull(keys, "getMediaKeys should return a List");
+		assertFalse(keys.isEmpty(), "The list should not be empty");
+		assertEquals(1, keys.size(), "The list should contain 1 MediaKey instance");
+		assertTrue(Hibernate.isInitialized(keys.get(0).getTitle()), "Media.title should have been initialized");
 	}
 
     @Test
@@ -136,8 +136,8 @@ public class MediaDaoHibernateImplTest extends CdmSpringIntegrationTest {
 
         List<Rights> rights = mediaDao.getRights(media, null, null, null);
 
-        assertNotNull("getRights should return a List", rights);
-        assertEquals("getRights should return 2 Rights instances",2,rights.size());
+        assertNotNull(rights, "getRights should return a List");
+        assertEquals(2, rights.size(), "getRights should return 2 Rights instances");
     }
 
     @Override

@@ -8,13 +8,13 @@
 */
 package eu.etaxonomy.cdm.database;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
 
 /**
@@ -34,7 +34,7 @@ public class CdmDataSourceTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		server = "myServer";
 		database = "myDatabase";
@@ -50,7 +50,7 @@ public class CdmDataSourceTest {
 	@Test
 	public void testNewMySqlInstanceStringStringStringString() {
 		ICdmDataSource ds = CdmDataSource.NewMySqlInstance(server, database, username, pwd);
-		assertNotNull("NewMySqlInstance(String, String, String, String) should not return null ", ds);
+		assertNotNull(ds, "NewMySqlInstance(String, String, String, String) should not return null ");
 		assertEquals(server, ds.getServer());
 		assertEquals(database, ds.getDatabase());
 		assertEquals(username, ds.getUsername());
@@ -61,7 +61,7 @@ public class CdmDataSourceTest {
 	@Test
 	public void testNewMySqlInstanceStringStringIntStringString() {
 		ICdmDataSource ds = CdmDataSource.NewMySqlInstance(server, database, port, username, pwd);
-		assertNotNull("NewMySqlInstance(String, String, int, String, String) should not return null ", ds);
+		assertNotNull(ds, "NewMySqlInstance(String, String, int, String, String) should not return null ");
 		assertEquals(server, ds.getServer());
 		assertEquals(database, ds.getDatabase());
 		assertEquals(username, ds.getUsername());
@@ -73,7 +73,7 @@ public class CdmDataSourceTest {
 	@Test
 	public void testNewSqlServerInstanceStringStringStringString() {
 		ICdmDataSource ds = CdmDataSource.NewSqlServerInstance(server, database, -1, username, pwd);
-		assertNotNull("NewSqlServerInstance(String, String, String, String) should not return null ", ds);
+		assertNotNull(ds, "NewSqlServerInstance(String, String, String, String) should not return null ");
 		assertEquals(server, ds.getServer());
 		assertEquals(database, ds.getDatabase());
 		assertEquals(username, ds.getUsername());
@@ -84,7 +84,7 @@ public class CdmDataSourceTest {
 	@Test
 	public void testNewSqlServerInstanceStringStringIntStringString() {
 		ICdmDataSource ds = CdmDataSource.NewSqlServerInstance(server, database, port, username, pwd);
-		assertNotNull("NewSqlServerInstance(String, String, String, String) should not return null ", ds);
+		assertNotNull(ds, "NewSqlServerInstance(String, String, String, String) should not return null ");
 		assertEquals(server, ds.getServer());
 		assertEquals(database, ds.getDatabase());
 		assertEquals(username, ds.getUsername());
@@ -96,7 +96,7 @@ public class CdmDataSourceTest {
 	@Test
 	public void testNewH2EmbeddedInstanceStringStringString() {
 		ICdmDataSource ds = CdmDataSource.NewH2EmbeddedInstance(database, username, pwd, null);
-		assertNotNull("NewH2EmbeddedInstance(String, String, String) should not return null ", ds);
+		assertNotNull(ds, "NewH2EmbeddedInstance(String, String, String) should not return null ");
 		assertEquals(null, ds.getServer());  //TODO right?
 		assertEquals(database, ds.getDatabase());
 		assertEquals(username, ds.getUsername());
@@ -107,7 +107,7 @@ public class CdmDataSourceTest {
 	@Test
 	public void testNewH2InMemoryInstance() {
 		ICdmDataSource ds = CdmDataSource.NewH2InMemoryInstance();
-		assertNotNull("NewH2InMemoryInstance() should not return null ", ds);
+		assertNotNull(ds, "NewH2InMemoryInstance() should not return null ");
 		assertEquals(DatabaseTypeEnum.H2, ds.getDatabaseType());
 		assertEquals(null, ds.getServer());
 		assertEquals(null, ds.getDatabase());
@@ -122,12 +122,12 @@ public class CdmDataSourceTest {
 		H2Mode h2Mode = H2Mode.EMBEDDED;
 		String filePath = "path";
 		ICdmDataSource ds = new CdmDataSource(dbType, server, database, port, username, pwd, filePath, h2Mode);
-		assertNotNull("new datasource() should not be null", ds);
+		assertNotNull(ds, "new datasource() should not be null");
 	}
 
 	@Test
 	public void testGetName() {
-		assertNotNull("datasource should not be null", datasource);
+		assertNotNull(datasource, "datasource should not be null");
 		assertEquals(database, datasource.getName());
 	}
 
@@ -135,7 +135,7 @@ public class CdmDataSourceTest {
 	public void testGetDatasourceBean() {
 		BeanDefinition bean = datasource.getDatasourceBean();
 		assertNotNull(bean);
-		assertEquals("the bean definition should have 4 properties: url, driverClassname, username, password", 4, bean.getPropertyValues().size());
+		assertEquals(4, bean.getPropertyValues().size(), "the bean definition should have 4 properties: url, driverClassname, username, password");
 		//TODO to be continued
 	}
 
@@ -180,7 +180,7 @@ public class CdmDataSourceTest {
 		assertEquals(null, datasource.getFilePath());
 		String filePath = "path";
 		ICdmDataSource ds = new CdmDataSource(DatabaseTypeEnum.H2, server, database, port, username, pwd, filePath, H2Mode.EMBEDDED);
-		assertNotNull("new datasource() should not be null", ds);
+		assertNotNull(ds, "new datasource() should not be null");
 		assertEquals(filePath, ds.getFilePath());
 	}
 
@@ -200,7 +200,7 @@ public class CdmDataSourceTest {
 		String filePath = "path";
 		H2Mode mode = H2Mode.EMBEDDED;
 		ICdmDataSource ds = new CdmDataSource(DatabaseTypeEnum.H2, server, database, port, username, pwd, filePath, mode);
-		assertNotNull("new datasource() should not be null", ds);
+		assertNotNull(ds, "new datasource() should not be null");
 		assertEquals(mode, ds.getMode());
 	}
 

@@ -8,9 +8,11 @@
 */
 package eu.etaxonomy.cdm.persistence.validation;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EntityValidationTaskQueueTest {
 
@@ -25,7 +27,7 @@ public class EntityValidationTaskQueueTest {
 	 * Level2ValidationTask extends EntityValidationTask in that in only validates constraints
 	 * belonging to the "Level2" validation group.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp(){
 
 		Employee emp1 = new Employee();
@@ -54,8 +56,8 @@ public class EntityValidationTaskQueueTest {
 		queue.offer(evt1);
 		queue.offer(evt2);
 		queue.offer(evt3);
-		Assert.assertEquals(queue.size(), 1);
-		Assert.assertTrue(queue.iterator().next() == evt3);
+		assertEquals(queue.size(), 1);
+		assertTrue(queue.iterator().next() == evt3);
 	}
 
 
@@ -68,8 +70,8 @@ public class EntityValidationTaskQueueTest {
 		EntityValidationTaskQueue queue = new EntityValidationTaskQueue(10);
 		queue.add(evt1);
 		queue.add(evt2);
-		Assert.assertEquals(queue.size(), 1);
-		Assert.assertTrue(queue.iterator().next() == evt2);
+		assertEquals(queue.size(), 1);
+		assertTrue(queue.iterator().next() == evt2);
 	}
 
 
@@ -82,7 +84,7 @@ public class EntityValidationTaskQueueTest {
 		EntityValidationTaskQueue queue = new EntityValidationTaskQueue(10);
 		queue.put(evt1);
 		queue.put(evt2);
-		Assert.assertEquals(queue.size(), 1);
-		Assert.assertTrue(queue.iterator().next() == evt2);
+		assertEquals(queue.size(), 1);
+		assertTrue(queue.iterator().next() == evt2);
 	}
 }

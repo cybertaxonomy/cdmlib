@@ -8,13 +8,13 @@
 */
 package eu.etaxonomy.cdm.persistence.hibenate.permission;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.EnumSet;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.permission.CRUD;
 import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
@@ -32,7 +32,7 @@ public class CdmAuthorityTest {
 	private GrantedAuthorityImpl grantedAuthority;
 	private String authority;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		grantedAuthority = GrantedAuthorityImpl.NewInstance(null);
 		authority = "";

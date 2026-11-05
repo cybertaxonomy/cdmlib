@@ -8,9 +8,12 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
-import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -21,7 +24,6 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -160,6 +162,7 @@ import eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
 import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 /**
@@ -217,11 +220,11 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
 			cdmGenericDao.merge(ref2, ref1, null);
 
 		} catch (MergeException e) {
-			Assert.fail();
+			fail();
 		}
 		commitAndStartNewTransaction(null);
 		list = cdmGenericDao.list(Reference.class, 10, 0, null, null);
-		Assert.assertEquals(1, list.size());
+		assertEquals(1, list.size());
 	}
 
 	@Test
@@ -355,19 +358,19 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
 		//		}
 
 		//All classes must be found
-		Assert.assertTrue("all classes must be found by getAllCdmClasses() method", foundClasses.containsAll(existingClassesList));
+		assertTrue(foundClasses.containsAll(existingClassesList), "all classes must be found by getAllCdmClasses() method");
 
 		//No extra classes must be found
 		for (Class<?> clazz : foundClasses){
 			if (! CdmBase.class.isAssignableFrom(clazz)&& !( AuditEvent.class == clazz) && !( CdmPreference.class == clazz)  ){ //OLD: && !( LSID.class == clazz)&& !( NomenclaturalCode.class == clazz) && !( Point.class == clazz) && !( Modifier.class == clazz) && !( Contact.class == clazz)
-				Assert.fail("Class " + clazz.getName() + " is not assignable from CdmBase");
+				fail("Class " + clazz.getName() + " is not assignable from CdmBase");
 			}
 		}
 
 		includeAbstractClasses = false;
 		Set<Class<? extends CdmBase>> noAbstractClasses = cdmGenericDao.getAllPersistedClasses(includeAbstractClasses);
 		Class<?> abstractClassToTest = TaxonBase.class;
-		Assert.assertFalse("Abstract class " + abstractClassToTest.getName() + " may not be in set ", noAbstractClasses.contains(abstractClassToTest));
+		assertFalse(noAbstractClasses.contains(abstractClassToTest), "Abstract class " + abstractClassToTest.getName() + " may not be in set ");
 	}
 
 	@Test
@@ -473,7 +476,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
         for (ReferencingObjectDto dto: referencedObjects){
             debug += "Object"+ i++ +": " + dto.getType().getSimpleName() + " - " + dto + "\n";
         }
-        assertEquals("The both taxon names should be dedulicated", 2, referencedObjects.size());
+        assertEquals(2, referencedObjects.size(), "The both taxon names should be dedulicated");
         debug += "############## END ###################\n";
         logger.warn(debug);
     }
@@ -506,7 +509,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
 //			System.out.println("Object: " + obj.getClass().getSimpleName() + " - " + obj);
 //		}
 //		System.out.println("############## END ###################");
-		assertEquals("Number of referencing objects must be 2.", 2, referencingObjects.size());
+		assertEquals(2, referencingObjects.size(), "Number of referencing objects must be 2.");
 	}
 
 	/**
@@ -592,30 +595,30 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
 
 		//unidircetional reference to the merged object should be redirected
 		cdmGenericDao.merge(article1, article2, null);
-		Assert.assertEquals("Name2 must have article 1 as new nomRef", article1 ,name2.getNomenclaturalReference());
+		assertEquals(article1, name2.getNomenclaturalReference(), "Name2 must have article 1 as new nomRef");
 		//TODO microCitations!! -> warning
 
 		//Annotations
-		Assert.assertEquals("Annotation number should be 2 (1 from each of the merged objects)", 2, article1.getAnnotations().size());
+		assertEquals(2, article1.getAnnotations().size(), "Annotation number should be 2 (1 from each of the merged objects)");
 
 		//Marker
-		Assert.assertEquals("Marker number should be 2 (1 from each of the merged objects)", 2, article1.getMarkers().size());
+		assertEquals(2, article1.getMarkers().size(), "Marker number should be 2 (1 from each of the merged objects)");
 
 		//Credits
-		Assert.assertEquals("Credits number should be 2 (1 from each of the merged objects)", 2, article1.getCredits().size());
+		assertEquals(2, article1.getCredits().size(), "Credits number should be 2 (1 from each of the merged objects)");
 
 		//Extensions
-		Assert.assertEquals("Extensions number should be 2 (1 from each of the merged objects)", 2, article1.getExtensions().size());
+		assertEquals(2, article1.getExtensions().size(), "Extensions number should be 2 (1 from each of the merged objects)");
 
 		//Sources
-		Assert.assertEquals("Sources number should be 2 (1 from each of the merged objects)", 2, article1.getSources().size());
+		assertEquals(2, article1.getSources().size(), "Sources number should be 2 (1 from each of the merged objects)");
 
 		//Media
-		Assert.assertEquals("Media number should be 2 (1 from each of the merged objects)", 2, article1.getMedia().size());
+		assertEquals(2, article1.getMedia().size(), "Media number should be 2 (1 from each of the merged objects)");
 
 		//Description sources
-		Assert.assertEquals("Number of sources for taxon description must be 1", 1, taxDesc.getSources().size());
-		Assert.assertEquals("Taxon description must have article1 as source", taxDesc.getSources().iterator().next().getCitation(),article1);
+		assertEquals(1, taxDesc.getSources().size(), "Number of sources for taxon description must be 1");
+		assertEquals(taxDesc.getSources().iterator().next().getCitation(), article1, "Taxon description must have article1 as source");
 
 		//test exceptions
 
@@ -624,9 +627,9 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
 		//FIXME TO BE IMPLEMENTED
 		//current defalt implementation for rights, credits and media is ADD_CLONE and therefore the below tests don't work
 		//TODO is this the wanted default behaviour?
-//		Assert.assertTrue("Rights2 must be contained in the rights", article1.getRights().contains(rights2));
-//		Assert.assertTrue("Credits2 must be contained in the credits", article1.getCredits().contains(credit2));
-//		Assert.assertTrue("Media2 must be contained in the media", article1.getMedia().contains(media2));
+//		assertTrue(article1.getRights().contains(rights2), "Rights2 must be contained in the rights");
+//		assertTrue(article1.getCredits().contains(credit2), "Credits2 must be contained in the credits");
+//		assertTrue(article1.getMedia().contains(media2), "Media2 must be contained in the media");
 
 	}
 
@@ -653,12 +656,12 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
 		taxonDao.save(taxon3);
 
 		cdmGenericDao.merge(name1, name2, null);
-		Assert.assertEquals("Name1 must have 2 taxa attached now.", 2 ,name1.getTaxonBases().size());
-		Assert.assertEquals("Taxon2 must have name1 as new name.", name1 ,taxon2.getName());
+		assertEquals(2, name1.getTaxonBases().size(), "Name1 must have 2 taxa attached now.");
+		assertEquals(name1, taxon2.getName(), "Taxon2 must have name1 as new name.");
 
 //TODO
 //		cdmGenericDao.merge(taxon1, taxon3, null);
-//		Assert.assertEquals("Name1 must have 3 taxa attached now.", 3 ,name1.getTaxonBases().size());
+//		assertEquals(3, name1.getTaxonBases().size(), "Name1 must have 3 taxa attached now.");
 	}
 
 	@Test
@@ -688,7 +691,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
 
 		team2.addTeamMember(person1);
 		team2.addTeamMember(person2);
-		String emailAddress2 = "Email2";
 
 		team3.addTeamMember(person3);
 
@@ -703,12 +705,12 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
 
 		cdmGenericDao.merge(team2, team3, null);
 
-		Assert.assertSame("Author of book1 must be team2.", team2, book1.getAuthorship());
-		Assert.assertSame("Author of book2 must be team2.", team2, book2.getAuthorship());
+		assertSame(team2, book1.getAuthorship(), "Author of book1 must be team2.");
+		assertSame(team2, book2.getAuthorship(), "Author of book2 must be team2.");
 
-		Assert.assertEquals("Team2 must have 3 persons as members.",3, team2.getTeamMembers().size());
-		Assert.assertTrue("Team2 must have person3 as new member.", team2.getTeamMembers().contains(person3));
-		Assert.assertSame("Team2 must have person3 as third member.",person3, team2.getTeamMembers().get(2));
+		assertEquals(3, team2.getTeamMembers().size(), "Team2 must have 3 persons as members.");
+		assertTrue(team2.getTeamMembers().contains(person3), "Team2 must have person3 as new member.");
+		assertSame(person3, team2.getTeamMembers().get(2), "Team2 must have person3 as third member.");
 
 		//Person
 		Institution institution1 = Institution.NewInstance();
@@ -725,9 +727,9 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
 		IMergeStrategy personMergeStrategy = DefaultMergeStrategy.NewInstance(Person.class);
 		personMergeStrategy.invoke(person1, person2);
 
-		Assert.assertEquals("Number of institutional memberships must be 2", 2, person1.getInstitutionalMemberships().size());
+		assertEquals(2, person1.getInstitutionalMemberships().size(), "Number of institutional memberships must be 2");
 		for (InstitutionalMembership institutionalMembership : person1.getInstitutionalMemberships()){
-			Assert.assertSame("Person of institutional memebership must be person1", person1, institutionalMembership.getPerson());
+			assertSame(person1, institutionalMembership.getPerson(), "Person of institutional memebership must be person1");
 		}
 	}
 
@@ -775,12 +777,12 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
         team2 = (Team)agentDao.load(team2.getUuid());
 
         //order should not change and 1a should be replaced by 1b
-        Assert.assertEquals("person1b", team1.getTeamMembers().get(0).getTitleCache());
-        Assert.assertEquals("person2", team1.getTeamMembers().get(1).getTitleCache());
+        assertEquals("person1b", team1.getTeamMembers().get(0).getTitleCache());
+        assertEquals("person2", team1.getTeamMembers().get(1).getTitleCache());
 
-        Assert.assertEquals("person2", team2.getTeamMembers().get(0).getTitleCache());
-        Assert.assertEquals("person1b", team2.getTeamMembers().get(1).getTitleCache());
-        Assert.assertEquals("person3", team2.getTeamMembers().get(2).getTitleCache());
+        assertEquals("person2", team2.getTeamMembers().get(0).getTitleCache());
+        assertEquals("person1b", team2.getTeamMembers().get(1).getTitleCache());
+        assertEquals("person3", team2.getTeamMembers().get(2).getTitleCache());
     }
 
     @Test
@@ -802,7 +804,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
         IntextReference intextRefRef = languageString.addIntextReference(ref1, 4, 8);
         String uuidIntextRefRef = intextRefRef.getUuid().toString();
         desc.addElement(textData);
-        Assert.assertEquals("And <cdm:reference cdmId='"+uuidRef1+"' intextId='"+uuidIntextRefRef+"'>here</cdm:reference> is a citation",
+        assertEquals("And <cdm:reference cdmId='"+uuidRef1+"' intextId='"+uuidIntextRefRef+"'>here</cdm:reference> is a citation",
                     languageString.getText());
 
         //SAVE AND COMMIT
@@ -818,7 +820,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
         taxon = (Taxon)taxonDao.findByUuid(taxon.getUuid());
         textData = (TextData)taxon.getDescriptions().iterator().next().getElements().iterator().next();
         languageString = textData.getLanguageText(language);
-        Assert.assertEquals("And <cdm:reference cdmId='"+uuidRef2+"' intextId='"+uuidIntextRefRef+"'>here</cdm:reference> is a citation",
+        assertEquals("And <cdm:reference cdmId='"+uuidRef2+"' intextId='"+uuidIntextRefRef+"'>here</cdm:reference> is a citation",
                 languageString.getText());
     }
 
@@ -842,7 +844,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
         taxon.addAnnotation(annotation);
         IntextReference intextRefName = annotation.addIntextReference(abiesAlba, "My annotation on ", "Abies alba", " and its habit.");
         String uuidIntextRefName = intextRefName.getUuid().toString();
-        Assert.assertEquals("My annotation on <cdm:name cdmId='"+uuidAbiesAlba+"' intextId='"+uuidIntextRefName+"'>Abies alba</cdm:name> and its habit.",
+        assertEquals("My annotation on <cdm:name cdmId='"+uuidAbiesAlba+"' intextId='"+uuidIntextRefName+"'>Abies alba</cdm:name> and its habit.",
                 annotation.getText());
 
         //SAVE AND COMMIT
@@ -860,7 +862,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
         taxon = (Taxon)taxonDao.findByUuid(taxon.getUuid());
         annotation = taxon.getAnnotations().iterator().next();
 
-        Assert.assertEquals("My annotation on <cdm:name cdmId='"+uuidPinusAlba+"' intextId='"+uuidIntextRefName+"'>Abies alba</cdm:name> and its habit.",
+        assertEquals("My annotation on <cdm:name cdmId='"+uuidPinusAlba+"' intextId='"+uuidIntextRefName+"'>Abies alba</cdm:name> and its habit.",
                 annotation.getText());
     }
 
@@ -895,7 +897,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
 
 		//starting condition
 		name1.setCombinationAuthorship(person1);
-		Assert.assertEquals("Name1 should have person1 as combination author", person1, name1.getCombinationAuthorship());
+		assertEquals(person1, name1.getCombinationAuthorship(), "Name1 should have person1 as combination author");
 
 		DefaultMergeStrategy strategy = DefaultMergeStrategy.NewInstance(TeamOrPersonBase.class);
 //		strategy.setOnlyReallocateLinks(true);
@@ -905,68 +907,68 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
 		cdmGenericDao.save(fieldUnit1);
 		try {
 			cdmGenericDao.merge(team2, person1, strategy);
-			Assert.fail("We expect exception because fieldunit.primaryCollector is of type person");
+			fail("We expect exception because fieldunit.primaryCollector is of type person");
 		} catch (MergeException e) {
 			if (! e.getMessage().contains("Object can not be merged into new object as it is referenced in a way that does not allow merging")){
-				Assert.fail("The exception should be the one thrown by DeduplicationHelper.reallocateByHolder(...)");
+				fail("The exception should be the one thrown by DeduplicationHelper.reallocateByHolder(...)");
 			}
 			fieldUnit1.setPrimaryCollector(null);  //clean up for next test
 		} catch (Exception e) {
-			Assert.fail("Unhandled exception during merge");
+			fail("Unhandled exception during merge");
 		}
-		Assert.assertEquals("Name1 should still have person1 as combination author", person1, name1.getCombinationAuthorship());
+		assertEquals(person1, name1.getCombinationAuthorship(), "Name1 should still have person1 as combination author");
 
 		//test collections
 		team1.addTeamMember(person1);
 		try {
 			cdmGenericDao.merge(team2, person1, strategy);
-			Assert.fail("We expect exception because fieldunit.primaryCollector is of type person");
+			fail("We expect exception because fieldunit.primaryCollector is of type person");
 		} catch (MergeException e) {
 			if (! e.getMessage().contains("Object can not be merged into new object as it is referenced in a way that does not allow merging")){
-				Assert.fail("The exception should be the one thrown by DeduplicationHelper.reallocateByHolder(...)");
+				fail("The exception should be the one thrown by DeduplicationHelper.reallocateByHolder(...)");
 			}
 			team1.removeTeamMember(person1); //clean up for next test
 		} catch (Exception e) {
-			Assert.fail("Unhandled exception during merge");
+			fail("Unhandled exception during merge");
 		}
-		Assert.assertEquals("Name1 should still have person1 as combination author", person1, name1.getCombinationAuthorship());
+		assertEquals(person1, name1.getCombinationAuthorship(), "Name1 should still have person1 as combination author");
 
 		//test successful merge
 		cdmGenericDao.save(name1);
 		cdmGenericDao.merge(team2, person1, strategy);
-		Assert.assertEquals("Name1 should have team2 as combination author now", team2, name1.getCombinationAuthorship());
+		assertEquals(team2, name1.getCombinationAuthorship(), "Name1 should have team2 as combination author now");
 	}
 
 	private void testMergeExceptions(CdmBase name1, CdmBase name2, CdmBase taxon, ICdmBase zooName1) throws MergeException{
 		//
 		try {
 			cdmGenericDao.merge(name1, null, null);
-			Assert.fail("Merging of 2 objects one or both of them null must throw an exception");
+			fail("Merging of 2 objects one or both of them null must throw an exception");
 		} catch (NullPointerException e) {
-			Assert.assertTrue("Merging of 2 objects of different types must throw an exception", true);
+			assertTrue(true, "Merging of 2 objects of different types must throw an exception");
 		}
 		//
 		try {
 			cdmGenericDao.merge(null, name1, null);
-			Assert.fail("Merging of 2 objects one or both of them null must throw an exception");
+			fail("Merging of 2 objects one or both of them null must throw an exception");
 		} catch (NullPointerException e) {
-			Assert.assertTrue("Merging of 2 objects of different types must throw an exception", true);
+			assertTrue(true, "Merging of 2 objects of different types must throw an exception");
 		}
 		//exceptions to be thrown
 		try {
 			cdmGenericDao.merge(name1, taxon, null);
 			//this is not fully true anymore !! In certain cases merging of objects of different classes is allowed
-			Assert.fail("Merging of 2 objects of different types must throw an exception");
+			fail("Merging of 2 objects of different types must throw an exception");
 		} catch (MergeException e) {
-			Assert.assertTrue("Merging of 2 objects of different types must throw an exception", true);
+			assertTrue(true, "Merging of 2 objects of different types must throw an exception");
 		}
 		//next exception
 		//for names this is not the case anymore
 //		try {
 //			cdmGenericDao.merge(name1, zooName1, null);
-//			Assert.fail("Merging of 2 objects of different types must throw an exception");
+//			fail("Merging of 2 objects of different types must throw an exception");
 //		} catch (MergeException e) {
-//			Assert.assertTrue("Merging of 2 objects of different types must throw an exception", true);
+//			assertTrue(true, "Merging of 2 objects of different types must throw an exception");
 //		}
 	}
 
@@ -990,22 +992,22 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
 		IMatchStrategyEqual matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
 		try {
 		    List<IBook> matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
-			Assert.assertNotNull("Resultlist must not be null", matchResult);
-			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
-			Assert.assertSame("Resultlist entry must be book 1", book1, matchResult.get(0));
+			assertNotNull(matchResult, "Resultlist must not be null");
+			assertEquals(1, matchResult.size(), "Resultlist must have 1 entries");
+			assertSame(book1, matchResult.get(0), "Resultlist entry must be book 1");
 
 			book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1999, 2002));
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
-			Assert.assertTrue("Resultlist must have no entries", matchResult.isEmpty());
+			assertTrue(matchResult.isEmpty(), "Resultlist must have no entries");
 
 			book3.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1999));
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
-			Assert.assertTrue("Resultlist must have no entries", matchResult.isEmpty());
+			assertTrue(matchResult.isEmpty(), "Resultlist must have no entries");
 
 			book3.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1999,2002));
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
-			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
-			Assert.assertSame("Resultlist entry must be book 1", book1, matchResult.get(0));
+			assertEquals(1, matchResult.size(), "Resultlist must have 1 entries");
+			assertSame(book1, matchResult.get(0), "Resultlist entry must be book 1");
 
 			//BookSection
 			IBookSection section1 = ReferenceFactory.newBookSection();
@@ -1025,16 +1027,16 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
 			cdmGenericDao.saveOrUpdate((Reference)section3);
 
 			List<IBookSection> sectionResult = cdmGenericDao.findMatching(section3, null);
-			Assert.assertEquals("Resultlist must have 1 entries", 1, sectionResult.size());
-			Assert.assertSame("Resultlist entry must be section1", section1, sectionResult.get(0));
+			assertEquals(1, sectionResult.size(), "Resultlist must have 1 entries");
+			assertSame(section1, sectionResult.get(0), "Resultlist entry must be section1");
 
 			section2.setInBook(book2 = (IBook)book1.clone());
 			cdmGenericDao.saveOrUpdate((Reference)book2);
 			cdmGenericDao.saveOrUpdate((Reference)book1);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
-			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
+			assertEquals(2, matchResult.size(), "Resultlist must have 2 entries");
 			sectionResult = cdmGenericDao.findMatching(section3, null);
-			Assert.assertEquals("Resultlist must have 1 entries", 2, sectionResult.size());
+			assertEquals(2, sectionResult.size(), "Resultlist must have 1 entries");
 
 			Person person1 = Person.NewTitledInstance("person");
 			Person person2 = Person.NewTitledInstance("person");
@@ -1048,7 +1050,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
 			agentDao.save(person3);
 
 //			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
-//			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
+//			assertEquals(2, matchResult.size(), "Resultlist must have 2 entries");
 
 			book1.setAuthorship(person1);
 			book2.setAuthorship(person1);
@@ -1058,21 +1060,21 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
 			boolean m2 = matchStrategy.invoke(book2, book3).isSuccessful();
 
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
-			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
+			assertEquals(2, matchResult.size(), "Resultlist must have 2 entries");
 
 			book2.setAuthorship(person2);
 			book3.setAuthorship(person3);
 			matchResult = cdmGenericDao.findMatching(book3, null);
-			Assert.assertEquals("Resultlist must have no entries", 0, matchResult.size());
+			assertEquals(0, matchResult.size(), "Resultlist must have no entries");
 
 			person3.setPrefix("pre1");
 			matchResult = cdmGenericDao.findMatching(book3, null);
-			Assert.assertEquals("Resultlist must have 1 entry", 1, matchResult.size());
-			Assert.assertSame("Resultlist entry must be book 1", book1, matchResult.get(0));
+			assertEquals(1, matchResult.size(), "Resultlist must have 1 entry");
+			assertSame(book1, matchResult.get(0), "Resultlist entry must be book 1");
 
 		} catch (MatchException e) {
 		    e.printStackTrace();
-			Assert.fail("Find match must not throw Exception: " + e.getMessage());
+			fail("Find match must not throw Exception: " + e.getMessage());
 		}
 	}
 
@@ -1092,19 +1094,19 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
 		IBook book2 = ((Reference)book1).clone();
 		IBook book3 = ((Reference)book1).clone();
 
-//		Assert.assertTrue("Cloned book should match", matchStrategy.invoke(book1, bookClone));
+//		assertTrue(matchStrategy.invoke(book1, bookClone), "Cloned book should match");
 //		book1.setTitleCache("cache1");
-//		Assert.assertFalse("Cached book should not match", matchStrategy.invoke(book1, bookClone));
+//		assertFalse(matchStrategy.invoke(book1, bookClone), "Cached book should not match");
 //
 //		bookClone.setTitleCache("cache1");
-//		Assert.assertTrue("Cached book with same cache should match", matchStrategy.invoke(book1, bookClone));
+//		assertTrue(matchStrategy.invoke(book1, bookClone), "Cached book with same cache should match");
 //
 //		bookClone.setTitleCache("cache2");
-//		Assert.assertFalse("Cached book with differings caches should not match", matchStrategy.invoke(book1, bookClone));
+//		assertFalse(matchStrategy.invoke(book1, bookClone), "Cached book with differings caches should not match");
 //		bookClone.setTitleCache("cache1"); //restore
 //
 //		bookClone.setEdition(null);
-//		Assert.assertTrue("Cached book with a defined and a null edition should match", matchStrategy.invoke(book1, bookClone));
+//		assertTrue(matchStrategy.invoke(book1, bookClone), "Cached book with a defined and a null edition should match");
 
 		cdmGenericDao.saveOrUpdate((Reference)book1);
 		cdmGenericDao.saveOrUpdate((Reference)book2);
@@ -1116,62 +1118,62 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
 
 		try {
 			List<IBook> matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
-			Assert.assertNotNull("Resultlist must not be null", matchResult);
-			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
-			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
-			Assert.assertTrue("Resultlist must contain book 2", matchResult.contains(book2));
+			assertNotNull(matchResult, "Resultlist must not be null");
+			assertEquals(2, matchResult.size(), "Resultlist must have 2 entries");
+			assertTrue(matchResult.contains(book1), "Resultlist must contain book 1");
+			assertTrue(matchResult.contains(book2), "Resultlist must contain book 2");
 
 			book1.setTitleCache("cache1", true);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
-			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
-			Assert.assertTrue("Resultlist must contain book 2", matchResult.contains(book2));
+			assertEquals(1, matchResult.size(), "Resultlist must have 1 entries");
+			assertTrue(matchResult.contains(book2), "Resultlist must contain book 2");
 
 			book2.setTitleCache("cache2", false);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
-			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
-			Assert.assertTrue("Resultlist must contain book 2", matchResult.contains(book2));
+			assertEquals(1, matchResult.size(), "Resultlist must have 1 entries");
+			assertTrue(matchResult.contains(book2), "Resultlist must contain book 2");
 
 			book2.setEdition(null);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
-			Assert.assertEquals("Resultlist must have 0 entries", 0, matchResult.size());
+			assertEquals(0, matchResult.size(), "Resultlist must have 0 entries");
 
 			book3.setTitleCache("cache1", true);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
-			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
-			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
+			assertEquals(1, matchResult.size(), "Resultlist must have 1 entries");
+			assertTrue(matchResult.contains(book1), "Resultlist must contain book 1");
 
 			IMatchStrategyEqual teamMatcher = DefaultMatchStrategy.NewInstance(Team.class);
 			boolean teamsMatch = teamMatcher.invoke(team1, team2).isSuccessful();
-			Assert.assertTrue("Team1 and team2 should match" ,teamsMatch);
+			assertTrue(teamsMatch, "Team1 and team2 should match");
 
 			book3.setAuthorship(team2);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
-			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
-			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
+			assertEquals(1, matchResult.size(), "Resultlist must have 1 entries");
+			assertTrue(matchResult.contains(book1), "Resultlist must contain book 1");
 
 			book3.setAuthorship(null);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
-			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
-			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
+			assertEquals(1, matchResult.size(), "Resultlist must have 1 entries");
+			assertTrue(matchResult.contains(book1), "Resultlist must contain book 1");
 
 			book2.setTitleCache(book3.getTitleCache(), true);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
-			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
-			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
-			Assert.assertTrue("Resultlist must contain book 2", matchResult.contains(book2));
+			assertEquals(2, matchResult.size(), "Resultlist must have 2 entries");
+			assertTrue(matchResult.contains(book1), "Resultlist must contain book 1");
+			assertTrue(matchResult.contains(book2), "Resultlist must contain book 2");
 
 			team2.setTitleCache("team2", true);
 			teamsMatch = teamMatcher.invoke(team1, team2).isSuccessful();
-			Assert.assertFalse("Team1 and team2 should not match" ,teamsMatch);
+			assertFalse(teamsMatch, "Team1 and team2 should not match");
 
 			book3.setAuthorship(team1);
 			book2.setAuthorship(team2);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
-			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
-			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
+			assertEquals(1, matchResult.size(), "Resultlist must have 1 entries");
+			assertTrue(matchResult.contains(book1), "Resultlist must contain book 1");
 
 		} catch (MatchException e) {
-			Assert.fail("Find match must not throw Exception: " + e.getMessage());
+			fail("Find match must not throw Exception: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -1215,16 +1217,16 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
             teamAs1.addTeamMember(person2);
             //match with single instance comparison after hql query
             List<Team> matchResult = cdmGenericDao.findMatching(teamAs1, matchStrategy, false);
-            Assert.assertEquals(1, matchResult.size());
+            assertEquals(1, matchResult.size());
 
             //test without single instance comparison after hql query
             List<Team> candidateMatchResult = cdmGenericDao.findMatching(teamAs1, matchStrategy, true);
             //FIXME #9905
-            Assert.assertEquals(1, candidateMatchResult.size());
+            assertEquals(1, candidateMatchResult.size());
 
             person1.setNomenclaturalTitle("NomTitle1b");
             candidateMatchResult = cdmGenericDao.findMatching(teamAs1, matchStrategy, true);
-            Assert.assertEquals(0, candidateMatchResult.size());
+            assertEquals(0, candidateMatchResult.size());
             person1.setNomenclaturalTitle("NomTitle1");  //set back
 
             Team teamDifferentOrder = Team.NewInstance();
@@ -1232,18 +1234,18 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
             teamDifferentOrder.addTeamMember(person1);
             candidateMatchResult = cdmGenericDao.findMatching(teamAs1, matchStrategy, true);
             //TODO improve, should be 0 in best implementation
-            Assert.assertEquals(1, candidateMatchResult.size());
+            assertEquals(1, candidateMatchResult.size());
 
             //test that reference.authorTeam.* still works without throwing exceptions
             TaxonName name = NonViralNameParserImpl.NewInstance().parseReferencedName("Abies alba Nyffeler & Eggli in Taxon 59: 232. 2010", NomenclaturalCode.ICNAFP, Rank.SPECIES());
             Reference nomRef = name.getNomenclaturalReference();
             IMatchStrategy referenceMatcher = MatchStrategyFactory.NewParsedReferenceInstance(nomRef);
             List<Reference> matching = cdmGenericDao.findMatching(nomRef, referenceMatcher);
-            Assert.assertEquals("We don't expect matchings, only tested that no exceptions are thrown", 0, matching.size());
+            assertEquals(0, matching.size(), "We don't expect matchings, only tested that no exceptions are thrown");
 
         } catch (IllegalArgumentException | MatchException e) {
             e.printStackTrace();
-            Assert.fail("No exception should be thrown");
+            fail("No exception should be thrown");
         }
     }
 
@@ -1290,7 +1292,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
         try {
             //matching a person saved as a team member with same family name and collector title
             List<Person> matchResult = cdmGenericDao.findMatching(person4, matchStrategy, false);
-            Assert.assertEquals(1, matchResult.size());
+            assertEquals(1, matchResult.size());
             Team teamAs1 = Team.NewInstance();
 
             teamAs1.addTeamMember(person1);
@@ -1299,11 +1301,11 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
             matchStrategy = MatchStrategyFactory.NewParsedCollectorTeamInstance();
             //match a team which already exists (team1).
             List<Team> matchResult_team = cdmGenericDao.findMatching(teamAs1, matchStrategy, false);
-            Assert.assertEquals(1, matchResult_team.size());
+            assertEquals(1, matchResult_team.size());
 
 
         } catch (IllegalArgumentException | MatchException e) {
-            Assert.fail("No exception should be thrown");
+            fail("No exception should be thrown");
         }
     }
 

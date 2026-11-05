@@ -8,12 +8,14 @@
 */
 package eu.etaxonomy.cdm.test.suite;
 
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBaseTest;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.term.DefinedTermDaoImplTest;
 
+@Ignore // JUnit4 suite holder; tests run via Surefire discovery
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
         {

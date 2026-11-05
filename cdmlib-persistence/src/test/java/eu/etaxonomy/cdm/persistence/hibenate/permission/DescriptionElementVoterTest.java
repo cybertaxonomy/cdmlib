@@ -8,10 +8,12 @@
 */
 package eu.etaxonomy.cdm.persistence.hibenate.permission;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.EnumSet;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -29,7 +31,6 @@ import eu.etaxonomy.cdm.persistence.permission.voter.DescriptionElementVoter;
  *
  * @author a.kohlbecker
  * @since Feb 2, 2017
- *
  */
 public class DescriptionElementVoterTest extends AbstractCdmPermissionVoterTest {
 
@@ -39,7 +40,7 @@ public class DescriptionElementVoterTest extends AbstractCdmPermissionVoterTest 
     private Feature ecology = Feature.NewInstance(null, "ecology", null);
     private Feature morphology = Feature.NewInstance(null, "morphology", null);
 
-    @Before
+    @BeforeEach
     public void setup() {
         textDataEco =  new TargetEntityStates(new TextData(ecology));
     }

@@ -8,12 +8,12 @@
 */
 package eu.etaxonomy.cdm.persistence.dao;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.lang.reflect.Method;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -29,7 +29,7 @@ public class MethodCacheImplTest {
     private IMethodCache methodCache;
     private Reference nomenclaturalReference;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         methodCache = new MethodCacheImpl();
         taxon = Taxon.NewInstance(null, null);
@@ -44,12 +44,12 @@ public class MethodCacheImplTest {
     @Test
     public void testGetMethod() {
         Method method = methodCache.getMethod(taxon.getClass(), "setName", botanicalName.getClass());
-        assertNotNull("Method should exist", method);
+        assertNotNull(method, "Method should exist");
     }
 
     @Test
     public void testGetMethodWhereMethodParameterIsInterface(){
         Method method = methodCache.getMethod(botanicalName.getClass(), "setNomenclaturalReference", nomenclaturalReference.getClass());
-        assertNotNull("Method should exist", method);
+        assertNotNull(method, "Method should exist");
     }
 }

@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -39,7 +39,7 @@ public class EntityConstraintViolationDaoHibernateImplTest extends CdmSpringInte
 
 	@Test
 	public void init(){
-		assertNotNull("Expecting an instance of IEntityConstraintViolationDao", dao);
+		assertNotNull(dao, "Expecting an instance of IEntityConstraintViolationDao");
 	}
 
 
@@ -48,16 +48,16 @@ public class EntityConstraintViolationDaoHibernateImplTest extends CdmSpringInte
 		List<EntityConstraintViolation> results;
 
 		results = dao.getConstraintViolations(MEDIA);
-		assertEquals("Unexpected number of validation results", 1, results.size());
+		assertEquals(1, results.size(), "Unexpected number of validation results");
 
 		results = dao.getConstraintViolations(SYNONYM);
-		assertEquals("Unexpected number of validation results", 2, results.size());
+		assertEquals(2, results.size(), "Unexpected number of validation results");
 
 		results = dao.getConstraintViolations(GATHERING_EVENT);
-		assertEquals("Unexpected number of validation results", 4, results.size());
+		assertEquals(4, results.size(), "Unexpected number of validation results");
 
 		results = dao.getConstraintViolations("foo.bar");
-		assertEquals("Unexpected number of validation results", 0, results.size());
+		assertEquals(0, results.size(), "Unexpected number of validation results");
 	}
 
 
@@ -66,28 +66,28 @@ public class EntityConstraintViolationDaoHibernateImplTest extends CdmSpringInte
 		List<EntityConstraintViolation> results;
 
 		results = dao.getConstraintViolations(MEDIA, Severity.NOTICE);
-		assertEquals("Unexpected number of validation results", 0, results.size());
+		assertEquals(0, results.size(), "Unexpected number of validation results");
 		results = dao.getConstraintViolations(MEDIA, Severity.WARNING);
-		assertEquals("Unexpected number of validation results", 0, results.size());
+		assertEquals(0, results.size(), "Unexpected number of validation results");
 		results = dao.getConstraintViolations(MEDIA, Severity.ERROR);
-		assertEquals("Unexpected number of validation results", 1, results.size());
+		assertEquals(1, results.size(), "Unexpected number of validation results");
 
 		results = dao.getConstraintViolations(SYNONYM, Severity.NOTICE);
-		assertEquals("Unexpected number of validation results", 0, results.size());
+		assertEquals(0, results.size(), "Unexpected number of validation results");
 		results = dao.getConstraintViolations(SYNONYM, Severity.WARNING);
-		assertEquals("Unexpected number of validation results", 1, results.size());
+		assertEquals(1, results.size(), "Unexpected number of validation results");
 		results = dao.getConstraintViolations(SYNONYM, Severity.ERROR);
-		assertEquals("Unexpected number of validation results", 1, results.size());
+		assertEquals(1, results.size(), "Unexpected number of validation results");
 
 		results = dao.getConstraintViolations(GATHERING_EVENT, Severity.NOTICE);
-		assertEquals("Unexpected number of validation results", 1, results.size());
+		assertEquals(1, results.size(), "Unexpected number of validation results");
 		results = dao.getConstraintViolations(GATHERING_EVENT, Severity.WARNING);
-		assertEquals("Unexpected number of validation results", 1, results.size());
+		assertEquals(1, results.size(), "Unexpected number of validation results");
 		results = dao.getConstraintViolations(GATHERING_EVENT, Severity.ERROR);
-		assertEquals("Unexpected number of validation results", 2, results.size());
+		assertEquals(2, results.size(), "Unexpected number of validation results");
 
 		results = dao.getConstraintViolations("foo.bar", Severity.WARNING);
-		assertEquals("Unexpected number of validation results", 0, results.size());
+		assertEquals(0, results.size(), "Unexpected number of validation results");
 	}
 
 	@Override

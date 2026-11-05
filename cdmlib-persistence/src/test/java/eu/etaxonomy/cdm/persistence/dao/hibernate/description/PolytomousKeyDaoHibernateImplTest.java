@@ -8,10 +8,13 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.io.FileNotFoundException;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,25 +29,23 @@ import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegratio
 public class PolytomousKeyDaoHibernateImplTest extends CdmTransactionalSpringIntegrationTest {
 
 	@Autowired
-	PolytomousKeyDaoImpl polytomousKeyDao;
+	private PolytomousKeyDaoImpl polytomousKeyDao;
 
 	@Autowired
-    PolytomousKeyNodeDaoImpl polytomousKeyNodeDao;
+	private PolytomousKeyNodeDaoImpl polytomousKeyNodeDao;
 
 	@BeforeEach
-	public void setUp() {
-
-	}
+	public void setUp() {}
 
 	@Test
 	@CdmDataSet("PolytomousKeyDaoHibernateImplTest.xml")
 //	@CdmExpectedDataSet  //for some reason this result in an infinite waiting of the connection pool
 	public void testSavePolytomousKey() {
 		PolytomousKey existingKey = polytomousKeyDao.findByUuid(UUID.fromString("bab66772-2c83-428a-bb6d-655d12ac6097"));
-		Assert.assertNotNull("",existingKey);
+		assertNotNull(existingKey, "");
 		PolytomousKeyNode root = existingKey.getRoot();
-		Assert.assertNotNull("Root should not be null",root);
-		Assert.assertEquals(2, root.childCount());
+		assertNotNull(root, "Root should not be null");
+		assertEquals(2, root.childCount());
 
 		//new key
 		PolytomousKey newKey = PolytomousKey.NewInstance();
@@ -69,8 +70,8 @@ public class PolytomousKeyDaoHibernateImplTest extends CdmTransactionalSpringInt
 		//doesn't make sense as long as there is no new session
 		PolytomousKey newKeyFromDb = polytomousKeyDao.findByUuid(newKey.getUuid());
 //		List<PolytomousKeyNode> children = newKeyFromDb.getRoot().getChildren();
-//		Assert.assertEquals(child1.getUuid(), children.get(0).getUuid());
-//		Assert.assertNotSame(child1.getUuid(), children.get(0).getUuid());
+//		assertEquals(child1.getUuid(), children.get(0).getUuid());
+//		assertNotSame(child1.getUuid(), children.get(0).getUuid());
 
 //		printDataSet(System.out, new String[]{"PolytomousKeyNode", "KeyStatement", "KeyStatement_LanguageString", "LanguageString"});
 	}
@@ -79,7 +80,7 @@ public class PolytomousKeyDaoHibernateImplTest extends CdmTransactionalSpringInt
 	public void testDeletePolyotomousKey(){
 		UUID uuid = UUID.fromString("bab66772-2c83-428a-bb6d-655d12ac6097");
 		PolytomousKey existingKey = polytomousKeyDao.findByUuid(uuid);
-		Assert.assertNotNull("",existingKey);
+		assertNotNull(existingKey, "");
 		PolytomousKeyNode node = existingKey.getRoot();
 		polytomousKeyDao.delete(existingKey);
 
@@ -89,9 +90,9 @@ public class PolytomousKeyDaoHibernateImplTest extends CdmTransactionalSpringInt
 //		} catch(Exception e) { logger.warn(e);}
 
 		PolytomousKey nonExistingKey = polytomousKeyDao.findByUuid(uuid);
-		Assert.assertNull("", nonExistingKey);
+		assertNull(nonExistingKey, "");
 		node = polytomousKeyNodeDao.findByUuid(node.getUuid());
-		Assert.assertNull("", node);
+		assertNull(node, "");
 	}
 
 	@Test

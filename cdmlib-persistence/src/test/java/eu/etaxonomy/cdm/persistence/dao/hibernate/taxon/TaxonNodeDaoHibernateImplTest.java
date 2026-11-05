@@ -8,10 +8,12 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -24,7 +26,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.proxy.HibernateProxy;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -113,8 +114,8 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalSpringIntegra
     @Test
     @CdmDataSet
     public void testInit() {
-        assertNotNull("Instance of ITaxonDao expected",taxonNodeDao);
-        assertNotNull("Instance of IReferenceDao expected",classificationDao);
+        assertNotNull(taxonNodeDao, "Instance of ITaxonDao expected");
+        assertNotNull(classificationDao, "Instance of IReferenceDao expected");
     }
 
     @Test
@@ -122,7 +123,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalSpringIntegra
     public void testFindByUuid() {
         TaxonNode taxonNode = taxonNodeDao.findByUuid(uuid1);
         Classification.class.getDeclaredConstructors();
-        assertNotNull("findByUuid should return a taxon node", taxonNode);
+        assertNotNull(taxonNode, "findByUuid should return a taxon node");
     }
 
     @Test
@@ -131,16 +132,16 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalSpringIntegra
 
         Classification classification =  classificationDao.load(ClassificationUuid, CLASSIFICATION_INIT_STRATEGY);
 
-        assertNotNull("findByUuid should return a taxon tree", classification);
-        assertNotNull("classification should have a name",classification.getName());
-        assertEquals("classification should have a name which is 'Name'",classification.getName().getText(),"Name");
+        assertNotNull(classification, "findByUuid should return a taxon tree");
+        assertNotNull(classification.getName(), "classification should have a name");
+        assertEquals(classification.getName().getText(), "Name", "classification should have a name which is 'Name'");
         TaxonNode taxNode = taxonNodeDao.load(uuid1,TAXONNODE_INIT_STRATEGY);
         TaxonNode taxNode2 = taxonNodeDao.load(uuid2,TAXONNODE_INIT_STRATEGY);
 
         TaxonNode taxNode3 = taxonNodeDao.load(uuid3, TAXONNODE_INIT_STRATEGY);
 
         List<TaxonBase> taxa = taxonDao.list(10, 0);
-        assertEquals("there should be 7 taxa", 7, taxa.size());
+        assertEquals(7, taxa.size(), "there should be 7 taxa");
         taxNode3 = CdmBase.deproxy(taxNode3);
         taxNode = CdmBase.deproxy(taxNode);
         taxNode2 = CdmBase.deproxy(taxNode2);
@@ -155,14 +156,14 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalSpringIntegra
         taxa = taxonDao.list(10, 0);
         // There should be 4 taxonBases: at the beginning 6 in the classification + 1 orphan taxon;
         //1 new created taxon -> 8: delete node3 deleted 4 taxa -> 4 taxa left.
-        assertEquals("there should be 4 taxa left", 4, taxa.size());
+        assertEquals(4, taxa.size(), "there should be 4 taxa left");
 
         classificationDao.delete(classification);
         classification = null;
 
        // classificationDao.flush();
         classification = classificationDao.findByUuid(ClassificationUuid);
-        assertEquals("The tree should be null", null, classification);
+        assertEquals(null, classification, "The tree should be null");
     }
 
     @Test
@@ -195,10 +196,10 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalSpringIntegra
         //with comparator
         Comparator<TaxonNode> comparator = TaxonNodeComparatorFactory.bySortMode(TaxonNodeSortMode.RankAndAlphabeticalOrder);
         children =taxonNodeDao.listChildrenOf(t_acherontia_node, null, null, true, includeUnpublished, null, comparator);
-        assertEquals("Size should be same as without comparator", 3, children.size());
+        assertEquals(3, children.size(), "Size should be same as without comparator");
         //not recursive
         children =taxonNodeDao.listChildrenOf(t_acherontia_node, null, null, true, includeUnpublished, null, null);
-        assertEquals("Size should be same as recursive", 3, children.size());
+        assertEquals(3, children.size(), "Size should be same as recursive");
 
         includeUnpublished = false;
         children =taxonNodeDao.listChildrenOf(t_acherontia_node, null, null, true, includeUnpublished, null, null);
@@ -221,14 +222,14 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalSpringIntegra
         assertNotNull(children);
         assertEquals(2, children.size());
         TaxonNodeDto child = children.stream().filter(c->!c.isPublish()).findFirst().get();
-        Assert.assertEquals(UUID.fromString("770239f6-4fa8-496b-8738-fe8f7b2ad519"), child.getUuid());
-        Assert.assertEquals("Acherontia styx Westwood, 1847", child.getTitleCache());
-        Assert.assertEquals("#t1#4#3#2#", child.getTreeIndex());
-        Assert.assertEquals(Integer.valueOf(1), child.getTaxonomicChildrenCount());
-        Assert.assertEquals(Integer.valueOf(1), child.getSortIndex());
+        assertEquals(UUID.fromString("770239f6-4fa8-496b-8738-fe8f7b2ad519"), child.getUuid());
+        assertEquals("Acherontia styx Westwood, 1847", child.getTitleCache());
+        assertEquals("#t1#4#3#2#", child.getTreeIndex());
+        assertEquals(Integer.valueOf(1), child.getTaxonomicChildrenCount());
+        assertEquals(Integer.valueOf(1), child.getSortIndex());
         List<TaggedText> taggedTitle = child.getTaggedTitle();
-        Assert.assertEquals("Acherontia styx Westwood, 1847", TaggedTextFormatter.createString(taggedTitle));
-        Assert.assertEquals("Acherontia", taggedTitle.get(0).getText());
+        assertEquals("Acherontia styx Westwood, 1847", TaggedTextFormatter.createString(taggedTitle));
+        assertEquals("Acherontia", taggedTitle.get(0).getText());
 
         includeUnpublished = false;
         children = classificationDao.listChildrenOf(
@@ -236,11 +237,11 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalSpringIntegra
         assertNotNull(children);
         assertEquals(1, children.size()); //1 is unpublished
         child = children.get(0);
-        Assert.assertEquals(uuid1, child.getUuid());
-        Assert.assertEquals("Acherontia lachesis (Fabricius, 1798)", child.getTitleCache());
-        Assert.assertEquals("#t1#4#3#1#", child.getTreeIndex());
-        Assert.assertEquals(Integer.valueOf(0), child.getTaxonomicChildrenCount());
-        Assert.assertEquals(Integer.valueOf(0), child.getSortIndex());
+        assertEquals(uuid1, child.getUuid());
+        assertEquals("Acherontia lachesis (Fabricius, 1798)", child.getTitleCache());
+        assertEquals("#t1#4#3#1#", child.getTreeIndex());
+        assertEquals(Integer.valueOf(0), child.getTaxonomicChildrenCount());
+        assertEquals(Integer.valueOf(0), child.getSortIndex());
 
 
     }
@@ -265,9 +266,9 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalSpringIntegra
     public void testGetAllTaxaByClassification(){
         Classification classification =  classificationDao.load(ClassificationUuid, CLASSIFICATION_INIT_STRATEGY);
 
-        assertNotNull("findByUuid should return a taxon tree", classification);
-        assertNotNull("classification should have a name",classification.getName());
-        assertEquals("classification should have a name which is 'Name'",classification.getName().getText(),"Name");
+        assertNotNull(classification, "findByUuid should return a taxon tree");
+        assertNotNull(classification.getName(), "classification should have a name");
+        assertEquals(classification.getName().getText(), "Name", "classification should have a name which is 'Name'");
         TaxonNode taxNode = taxonNodeDao.load(uuid1, TAXONNODE_INIT_STRATEGY);
         TaxonNode taxNode2 = taxonNodeDao.load(uuid2, TAXONNODE_INIT_STRATEGY);
 
@@ -285,16 +286,16 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalSpringIntegra
         taxonNodeDao.saveOrUpdate(child);
 
         List<TaxonNode> taxa = taxonNodeDao.getTaxonOfAcceptedTaxaByClassification(classification, null, null);
-        assertEquals("there should be 7 taxa left", 7, taxa.size());
+        assertEquals(7, taxa.size(), "there should be 7 taxa left");
         commitAndStartNewTransaction(null);
 
         taxa = taxonNodeDao.getTaxonOfAcceptedTaxaByClassification(classification, 10, 0);
         logger.info(taxa.size());
-        assertEquals("there should be 7 taxa left", 7, taxa.size());
+        assertEquals(7, taxa.size(), "there should be 7 taxa left");
 
         long countTaxa = taxonNodeDao.countTaxonOfAcceptedTaxaByClassification(classification);
         logger.info(countTaxa);
-        assertEquals("there should be 7 taxa left", 7l, countTaxa);
+        assertEquals(7l, countTaxa, "there should be 7 taxa left");
     }
 
     @Test
@@ -304,7 +305,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalSpringIntegra
     public void testSortindexForHibernateProxy(){
     	Taxon taxonWithLazyLoadedParentNodeOnTopLevel = (Taxon)taxonDao.findByUuid(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
     	TaxonNode parent = taxonWithLazyLoadedParentNodeOnTopLevel.getTaxonNodes().iterator().next().getParent();
-    	Assert.assertTrue("Parent node must be proxy, otherwise test does not work", parent instanceof HibernateProxy);
+    	assertTrue(parent instanceof HibernateProxy, "Parent node must be proxy, otherwise test does not work");
     	Taxon firstTopLevelTaxon = (Taxon)taxonDao.findByUuid(UUID.fromString("7b8b5cb3-37ba-4dba-91ac-4c6ffd6ac331"));
     	Classification classification = classificationDao.findByUuid(ClassificationUuid);
     	TaxonNode childNode = classification.addParentChild(taxonWithLazyLoadedParentNodeOnTopLevel, firstTopLevelTaxon, null, null);
@@ -319,7 +320,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalSpringIntegra
     public void testSortindexForHibernateProxy2(){
     	Taxon taxonWithLazyLoadedParentNodeOnTopLevel = (Taxon)taxonDao.findByUuid(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
     	TaxonNode parent = taxonWithLazyLoadedParentNodeOnTopLevel.getTaxonNodes().iterator().next().getParent();
-    	Assert.assertTrue("Parent node must be proxy, otherwise test does not work", parent instanceof HibernateProxy);
+    	assertTrue(parent instanceof HibernateProxy, "Parent node must be proxy, otherwise test does not work");
     	Taxon newTaxon = Taxon.NewInstance(null, null);
     	Classification classification = classificationDao.findByUuid(ClassificationUuid);
     	TaxonNode newNode = classification.addChildTaxon(newTaxon, 0, null, null);
@@ -345,12 +346,12 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalSpringIntegra
 
         //test
         TaxonNode newNode = taxonNodeDao.load(node.getUuid());
-        Assert.assertNotSame(node, newNode);
-        Assert.assertEquals("Node should have agent relation", 1, newNode.getAgentRelations().size());
+        assertNotSame(node, newNode);
+        assertEquals(1, newNode.getAgentRelations().size(), "Node should have agent relation");
         TaxonNodeAgentRelation newRel = newNode.getAgentRelations().iterator().next();
-        Assert.assertEquals(rel, newRel);
-        Assert.assertEquals(rel.getId(), newRel.getId());
-        Assert.assertNotSame(rel, newRel);
+        assertEquals(rel, newRel);
+        assertEquals(rel.getId(), newRel.getId());
+        assertNotSame(rel, newRel);
     }
 
     //see comment 7 in #6199
@@ -359,21 +360,21 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalSpringIntegra
     public void testPersistExcludedInfos(){
         //test read
         TaxonNode excludedNode = taxonNodeDao.load(UUID.fromString("4f73adcc-a535-4fbe-a97a-c05ee8b12191"));
-        Assert.assertTrue("Node should be excluded", excludedNode.isExcluded());
+        assertTrue(excludedNode.isExcluded(), "Node should be excluded");
         TaxonNode unplacedNode = taxonNodeDao.load(UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7"));
-        Assert.assertTrue("Node should be unplaced", unplacedNode.isUnplaced());
+        assertTrue(unplacedNode.isUnplaced(), "Node should be unplaced");
         TaxonNode notSpecialNode = taxonNodeDao.load(UUID.fromString("770239f6-4fa8-496b-8738-fe8f7b2ad519"));
-        Assert.assertFalse("Node should be neither excluded nor unplaced", notSpecialNode.isUnplaced() || notSpecialNode.isExcluded());
+        assertFalse(notSpecialNode.isUnplaced() || notSpecialNode.isExcluded(), "Node should be neither excluded nor unplaced");
 
         //read excluded node
         Map<Language, LanguageString> map = excludedNode.getPlacementNote();
-        Assert.assertEquals(2, map.size());
+        assertEquals(2, map.size());
         Set<Integer> langIds = new HashSet<>();
         for (Language lang : map.keySet()){
             langIds.add(lang.getId());
         }
-        Assert.assertTrue("Excluded note must contain text for language id = 1", langIds.contains(1));
-        Assert.assertTrue("", langIds.contains(2));
+        assertTrue(langIds.contains(1), "Excluded note must contain text for language id = 1");
+        assertTrue(langIds.contains(2), "");
     }
 
     @Test
@@ -518,8 +519,8 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalSpringIntegra
         //create test data
         RevisionStatus inProcess = (RevisionStatus)termDao.findByUuid(RevisionStatus.uuidInProcess);
         RevisionStatus completed = (RevisionStatus)termDao.findByUuid(RevisionStatus.uuidCompleted);
-        assertNotNull("Revision status terms must exist in test DB", inProcess);
-        assertNotNull("Revision status terms must exist in test DB", completed);
+        assertNotNull(inProcess, "Revision status terms must exist in test DB");
+        assertNotNull(completed, "Revision status terms must exist in test DB");
 
         Classification classification = Classification.NewInstance("Revision status test");
         classificationDao.save(classification);
@@ -609,8 +610,8 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalSpringIntegra
 
     private void assertRevisionStatus(List<TaxonNodeDto> dtos, UUID nodeUuid, String expectedStatus) {
         TaxonNodeDto dto = dtos.stream().filter(d->nodeUuid.equals(d.getUuid())).findFirst().orElse(null);
-        assertNotNull("No DTO found for node " + nodeUuid, dto);
-        assertEquals("Wrong revision status for node " + nodeUuid, expectedStatus, dto.getRevisionStatus());
+        assertNotNull(dto, "No DTO found for node " + nodeUuid);
+        assertEquals(expectedStatus, dto.getRevisionStatus(), "Wrong revision status for node " + nodeUuid);
     }
 
     @Override

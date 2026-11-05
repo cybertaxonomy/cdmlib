@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.test.suite;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -17,6 +18,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotationDaoImplTest;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBaseTest;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxonGraph.TaxonGraphTest;
 
+@Ignore // JUnit4 suite holder; tests run via Surefire discovery
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
             AnnotationDaoImplTest.class,

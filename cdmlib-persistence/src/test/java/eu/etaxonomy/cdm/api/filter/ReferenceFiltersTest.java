@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.filter;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.FileNotFoundException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -15,7 +17,6 @@ import java.util.List;
 
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -72,17 +73,17 @@ public class ReferenceFiltersTest extends CdmTransactionalSpringIntegrationTest 
         ZonedDateTime compareDate = ZonedDateTime.parse("2026-06-24", DateTimeUtil.FLEXIBLE_ISO);
         filters.add(ReferenceFilters.isBeforeDatePublished(compareDate));
         long result = refDao.countByTitle("abc", MatchMode.ANYWHERE, filters);
-        Assert.assertEquals("Only the earlier references 1972 should be returned", 1, result);
+        assertEquals(1, result, "Only the earlier references 1972 should be returned");
 
         List<Reference> resultList = refDao.findByTitle(Reference.class, title, MatchMode.ANYWHERE, filters, null, null, null, null);
-        Assert.assertEquals("1972", resultList.get(0).getDatePublishedString());
+        assertEquals("1972", resultList.get(0).getDatePublishedString());
 
         //validate against future date
         filters = new ArrayList<>();
         compareDate = ZonedDateTime.parse("3026-06-24", DateTimeUtil.FLEXIBLE_ISO);
         filters.add(ReferenceFilters.isBeforeDatePublished(compareDate));
         result = refDao.countByTitle("abc", MatchMode.ANYWHERE, filters);
-        Assert.assertEquals("All references with defined date before 3026 should be returned", 2, result);
+        assertEquals(2, result, "All references with defined date before 3026 should be returned");
     }
 
     @Override

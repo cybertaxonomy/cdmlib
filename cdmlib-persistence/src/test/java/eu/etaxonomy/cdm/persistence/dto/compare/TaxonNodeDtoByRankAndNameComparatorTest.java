@@ -8,14 +8,16 @@
 */
 package eu.etaxonomy.cdm.persistence.dto.compare;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
@@ -46,7 +48,7 @@ public class TaxonNodeDtoByRankAndNameComparatorTest {
     private UUID classificationUuid;
 
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         classificationUuid = UUID.randomUUID();
         nameParser = (INonViralNameParser)NonViralNameParserImpl.DefaultInstance();
@@ -105,21 +107,21 @@ public class TaxonNodeDtoByRankAndNameComparatorTest {
     @Test
     public void testCompare() {
         int c = comparator.compare(null, null);
-        Assert.assertEquals(0, c);
+        assertEquals(0, c);
         c = comparator.compare(nodeDto1, null);
-        Assert.assertEquals(-1, c);
+        assertEquals(-1, c);
         c = comparator.compare(null, nodeDto2);
-        Assert.assertEquals(1, c);
+        assertEquals(1, c);
         c = comparator.compare(nodeDto1, nodeDto1);
-        Assert.assertEquals(0, c);
+        assertEquals(0, c);
 
         c = comparator.compare(nodeDto1, nodeDto2);
-        Assert.assertTrue(c>0);
+        assertTrue(c>0);
         c = comparator.compare(nodeDto2, nodeDto1);
-        Assert.assertTrue(c<0);
+        assertTrue(c<0);
 
         List<ISortableTaxonNodeDto> sortableList = new ArrayList<>(nodeDtoList);
         Collections.sort(sortableList, comparator);
-        Assert.assertEquals(sortedList, sortableList);
+        assertEquals(sortedList, sortableList);
     }
 }

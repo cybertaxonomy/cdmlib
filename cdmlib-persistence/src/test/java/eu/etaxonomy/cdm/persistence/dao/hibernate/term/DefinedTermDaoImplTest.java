@@ -8,11 +8,11 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.Hibernate;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -86,50 +85,50 @@ public class DefinedTermDaoImplTest extends CdmTransactionalSpringIntegrationTes
 	@Test
 	public void testFindByTitle() throws Exception {
 		List<DefinedTermBase> terms = dao.findByTitle("Diagnosis");
-		assertNotNull("findByTitle should return a List", terms);
-		assertEquals("findByTitle should return one term ",terms.size(),1);
-		assertEquals("findByTitle should return Feature.DIAGNOSIS",terms.get(0),Feature.DIAGNOSIS());
+		assertNotNull(terms, "findByTitle should return a List");
+		assertEquals(terms.size(), 1, "findByTitle should return one term ");
+		assertEquals(terms.get(0), Feature.DIAGNOSIS(), "findByTitle should return Feature.DIAGNOSIS");
 	}
 
 	@Test
 	public void testFindByUuid() {
 		DefinedTermBase<?> term = dao.findByUuid(uuid);
-		assertNotNull("findByUuid should return a term",term);
-		assertEquals("findByUuid should return Feature.UNKNOWN",Feature.UNKNOWN(),term);
+		assertNotNull(term, "findByUuid should return a term");
+		assertEquals(Feature.UNKNOWN(), term, "findByUuid should return Feature.UNKNOWN");
 	}
 
 	@Test
 	public void testFindLanguageByIso2() {
 		Language lang = dao.findLanguageByIso("arm");
 		assertNotNull(lang);
-		assertEquals("getLanguageByIso should return the correct Language instance",lang.getUuid(), armUuid);
+		assertEquals(lang.getUuid(), armUuid, "getLanguageByIso should return the correct Language instance");
 	}
 
 	@Test
 	public void testFindLanguageByIso1() {
 		Language lang = dao.findLanguageByIso("hy");
 		assertNotNull(lang);
-		assertEquals("getLanguageByIso should return the correct Language instance",lang.getUuid(), armUuid);
+		assertEquals(lang.getUuid(), armUuid, "getLanguageByIso should return the correct Language instance");
 	}
 
 	@Test
 	public void testFindLanguageByMalformedIso1() {
 		Language lang = dao.findLanguageByIso("a");
-		assertNull("getLanguageByIso should return null for this malformed Iso \'a\'",lang);
+		assertNull(lang, "getLanguageByIso should return null for this malformed Iso \'a\'");
 	}
 
 	@Test
 	public void testFindLanguageByMalformedIso2() {
 		Language lang = dao.findLanguageByIso("abcd");
-		assertNull("getLanguageByIso should return null for this malformed Iso \'abcd\'",lang);
+		assertNull(lang, "getLanguageByIso should return null for this malformed Iso \'abcd\'");
 	}
 
 	@Test
 	public void testListByIdInVocabulary(){
 		UUID tdwgVocUuid = NamedArea.uuidTdwgAreaVocabulary;
 		List<NamedArea> list = dao.listByIdInVocabulary("GER", tdwgVocUuid, NamedArea.class, null, null);
-		assertNotNull("Method should return a result", list);
-		assertEquals("Method should return exactly 1 area", 1, list.size());
+		assertNotNull(list, "Method should return a result");
+		assertEquals(1, list.size(), "Method should return exactly 1 area");
 		NamedArea area = list.get(0);
 		assertEquals("GER", area.getIdInVocabulary());
 		assertEquals(tdwgVocUuid, area.getVocabulary().getUuid());
@@ -146,10 +145,10 @@ public class DefinedTermDaoImplTest extends CdmTransactionalSpringIntegrationTes
 
 		List<NamedArea> includes = dao.listIncludes(namedAreas, null, null, propertyPaths);
 
-		assertNotNull("getIncludes should return a List",includes);
-		assertFalse("The list should not be empty",includes.isEmpty());
-		assertEquals("getIncludes should return 9 NamedArea entities",9,includes.size());
-		assertTrue("NamedArea.level should be initialized",Hibernate.isInitialized(includes.get(0).getLevel()));
+		assertNotNull(includes, "getIncludes should return a List");
+		assertFalse(includes.isEmpty(), "The list should not be empty");
+		assertEquals(9, includes.size(), "getIncludes should return 9 NamedArea entities");
+		assertTrue(Hibernate.isInitialized(includes.get(0).getLevel()), "NamedArea.level should be initialized");
 	}
 
 	@Test
@@ -159,7 +158,7 @@ public class DefinedTermDaoImplTest extends CdmTransactionalSpringIntegrationTes
 		namedAreas.add(northernEurope);
 
 		long numberOfIncludes = dao.countIncludes(namedAreas);
-		assertEquals("countIncludes should return 9",9, numberOfIncludes);
+		assertEquals(9, numberOfIncludes, "countIncludes should return 9");
 	}
 
 	@Test
@@ -179,10 +178,10 @@ public class DefinedTermDaoImplTest extends CdmTransactionalSpringIntegrationTes
 
 		List<NamedArea> partOf = dao.listPartOf(namedAreas, null, null, propertyPaths);
 
-		assertNotNull("getPartOf should return a List",partOf);
-		assertFalse("The list should not be empty",partOf.isEmpty());
-		assertEquals("getPartOf should return 2 NamedArea entities",2,partOf.size());
-		assertTrue("NamedArea.level should be initialized",Hibernate.isInitialized(partOf.get(0).getLevel()));
+		assertNotNull(partOf, "getPartOf should return a List");
+		assertFalse(partOf.isEmpty(), "The list should not be empty");
+		assertEquals(2, partOf.size(), "getPartOf should return 2 NamedArea entities");
+		assertTrue(Hibernate.isInitialized(partOf.get(0).getLevel()), "NamedArea.level should be initialized");
 	}
 
 	@Test
@@ -199,7 +198,7 @@ public class DefinedTermDaoImplTest extends CdmTransactionalSpringIntegrationTes
 		namedAreas.add(westTropicalAfrica);
 
 		long numberOfPartOf = dao.countPartOf(namedAreas);
-		assertEquals("countPartOf should return 2",2,numberOfPartOf);
+		assertEquals(2, numberOfPartOf, "countPartOf should return 2");
 	}
 
 	@Test
@@ -244,14 +243,14 @@ public class DefinedTermDaoImplTest extends CdmTransactionalSpringIntegrationTes
         //only English
 	    newModifier.setProtectedTitleCache(false);
 	    newModifier.setProtectedTitleCache(true);
-        Assert.assertEquals("English Label should be the title cache", "English Modifier", newModifier.getTitleCache());
+        assertEquals("English Modifier", newModifier.getTitleCache(), "English Label should be the title cache");
 
         //Change English label
         newModifier.setProtectedTitleCache(false);
         newModifier.setLabel("New English label");
         dao.saveOrUpdate(newModifier);
         newModifier.setProtectedTitleCache(true);
-        Assert.assertEquals("English (default language) label should still be the title cache", "New English label", newModifier.getTitleCache());
+        assertEquals("New English label", newModifier.getTitleCache(), "English (default language) label should still be the title cache");
 
         //Add German
         newModifier.setProtectedTitleCache(false);
@@ -259,14 +258,14 @@ public class DefinedTermDaoImplTest extends CdmTransactionalSpringIntegrationTes
         newModifier.addRepresentation(newRepresentation);
         dao.saveOrUpdate(newModifier);
         newModifier.setProtectedTitleCache(true);
-        Assert.assertEquals("English (default language) label should still be the title cache", "New English label", newModifier.getTitleCache());
+        assertEquals("New English label", newModifier.getTitleCache(), "English (default language) label should still be the title cache");
 
         //Remove English
         newModifier.setProtectedTitleCache(false);
         newModifier.removeRepresentation(englishRepresentation);
         dao.saveOrUpdate(newModifier);
         newVoc.setProtectedTitleCache(true);
-        Assert.assertEquals("German Label should be the new title cache again as English representation is not there anymore", "Deutscher Modifier", newModifier.getTitleCache());
+        assertEquals("Deutscher Modifier", newModifier.getTitleCache(), "German Label should be the new title cache again as English representation is not there anymore");
     }
 
 	@Test
@@ -296,9 +295,9 @@ public class DefinedTermDaoImplTest extends CdmTransactionalSpringIntegrationTes
 
         //assert 1 more
         int nNow = this.dao.listByTermType(termType, null, null, null, null).size();
-        Assert.assertEquals("There should be exactly 1 more term now", nExisting + 1 , nNow);
+        assertEquals(nExisting + 1, nNow, "There should be exactly 1 more term now");
         int nTermsNow = this.dao.list(DefinedTerm.class, null, null, null, null).size();
-        Assert.assertEquals("There should be exactly 1 more term now", nExistingTerms + 1 , nTermsNow);
+        assertEquals(nExistingTerms + 1, nTermsNow, "There should be exactly 1 more term now");
         this.commitAndStartNewTransaction(null);
 
         // Add German representation in a fresh session: reload the managed term first.
@@ -308,13 +307,13 @@ public class DefinedTermDaoImplTest extends CdmTransactionalSpringIntegrationTes
         this.commitAndStartNewTransaction(null);
 
         nNow = this.dao.listByTermType(termType, null, null, null, null).size();
-        Assert.assertEquals("There should still be only one more term (but with 2 representations)", nExisting + 1 , nNow);
+        assertEquals(nExisting + 1, nNow, "There should still be only one more term (but with 2 representations)");
         nTermsNow = this.dao.list(DefinedTerm.class, null, null, null, null).size();
-        Assert.assertEquals("There should be exactly 1 more term now", nExistingTerms + 1 , nTermsNow);
+        assertEquals(nExistingTerms + 1, nTermsNow, "There should be exactly 1 more term now");
 
         List<DefinedTerm> languages = this.dao.listByTermType(TermType.Language, null, null, null, null);
-        Assert.assertNotNull(languages);
-        Assert.assertEquals(485, languages.size());
+        assertNotNull(languages);
+        assertEquals(485, languages.size());
 	}
 
     @Test
@@ -325,18 +324,18 @@ public class DefinedTermDaoImplTest extends CdmTransactionalSpringIntegrationTes
 	public void testListByVoc(){
         TermVocabulary<?> voc = this.vocabularyDao.findByUuid(NamedArea.uuidTdwgAreaVocabulary);
         List<NamedArea> namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING, null);
-        Assert.assertEquals("Expected no area", 0, namedAreas.size());
+        assertEquals(0, namedAreas.size(), "Expected no area");
 
         namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Ger", MatchMode.BEGINNING, null);
-        Assert.assertEquals("Expected GER-OO, GER", 2, namedAreas.size());
+        assertEquals(2, namedAreas.size(), "Expected GER-OO, GER");
         namedAreas.get(0).addRepresentation(Representation.NewInstance("Deutschland", "Deutschland", "DE", Language.GERMAN()));
 
         namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING, null);
-        Assert.assertEquals("Expected 1 area for 'Deu'", 1, namedAreas.size());
+        assertEquals(1, namedAreas.size(), "Expected 1 area for 'Deu'");
 
         voc = this.vocabularyDao.findByUuid(NamedArea.uuidContinentVocabulary);
         namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING, null);
-        Assert.assertEquals("Expected no area", 0, namedAreas.size());
+        assertEquals(0, namedAreas.size(), "Expected no area");
 	}
 
     @Override

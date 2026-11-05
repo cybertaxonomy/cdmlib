@@ -8,12 +8,12 @@
 */
 package eu.etaxonomy.cdm.database.types;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
@@ -34,12 +34,12 @@ public class OracleDatabaseTypeTest {
 	private String username;
 	private String password;
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUpBeforeClass() throws Exception {
 		enumType = DatabaseTypeEnum.Oracle;
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		server = "server";
 		dbName = "db";
@@ -51,7 +51,7 @@ public class OracleDatabaseTypeTest {
 				CdmDataSource.NewInstance(enumType, server, dbName, port, username, password));
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 	}
 
@@ -78,9 +78,6 @@ public class OracleDatabaseTypeTest {
 		assertEquals(server, dataSource.getServer());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getPortByConnectionString(java.lang.String)}.
-	 */
 	@Test
 	public void testGetPortByConnectionStringString() {
 		assertEquals(port, dataSource.getPort());

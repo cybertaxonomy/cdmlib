@@ -8,16 +8,18 @@
 */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Collection;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.kohlbecker
  * @since 18.10.2017
  */
-public class CdmSecurityHibernateInterceptorTest extends Assert {
+public class CdmSecurityHibernateInterceptorTest {
 
     @Test
     public void testUnprotectedCacheFields_unprotected() {

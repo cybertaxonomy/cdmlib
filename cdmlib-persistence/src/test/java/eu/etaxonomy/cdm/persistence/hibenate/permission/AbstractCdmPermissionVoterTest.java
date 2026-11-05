@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.persistence.hibenate.permission;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,7 +22,7 @@ import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
  * @author a.kohlbecker
  * @since Feb 2, 2017
  */
-abstract public class AbstractCdmPermissionVoterTest extends Assert {
+abstract public class AbstractCdmPermissionVoterTest {
 
     protected Authentication authentication(CdmAuthority ... authorities) {
 

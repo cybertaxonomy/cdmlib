@@ -8,14 +8,16 @@
 */
 package eu.etaxonomy.cdm.persistence.validation;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.Arrays;
 import java.util.Set;
 
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import jakarta.validation.ConstraintViolation;
@@ -27,13 +29,12 @@ import jakarta.validation.ValidatorFactory;
  * that it is working as expected.
  *
  * @author ayco holleman
- *
  */
 public class EntityValidationTaskTest {
 
 	private ValidatorFactory factory;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception{
 		HibernateValidatorConfiguration config = Validation.byProvider(HibernateValidator.class).configure();
 		factory = config.buildValidatorFactory();
@@ -68,7 +69,7 @@ public class EntityValidationTaskTest {
 		task.setValidator(factory.getValidator());
 		Set<ConstraintViolation<ICdmBase>> violations = task.validateWithErrorHandling();
 
-		Assert.assertEquals("Expecting three validation errors", 2, violations.size());
+		assertEquals(2, violations.size(), "Expecting three validation errors");
 
 		// Test that validation failed where we expected it to fail
 		String[] paths = new String[violations.size()];
@@ -77,7 +78,7 @@ public class EntityValidationTaskTest {
 			paths[i++] = cv.getPropertyPath().toString();
 		}
 		Arrays.sort(paths);
-		Assert.assertArrayEquals(paths, new String[] { "company.name", "givenName" });
+		assertArrayEquals(paths, new String[] { "company.name", "givenName" });
 
 	}
 
@@ -94,9 +95,9 @@ public class EntityValidationTaskTest {
 		Level3ValidationTask task = new Level3ValidationTask(one, null);
 		task.setValidator(factory.getValidator());
 		Set<ConstraintViolation<ICdmBase>> violations = task.validateWithErrorHandling();
-		Assert.assertEquals(violations.size(), 1);
+		assertEquals(violations.size(), 1);
 		// Assert that validation failed where we expected it to fail.
-		Assert.assertEquals(violations.iterator().next().getInvalidValue(), "smith");
+		assertEquals(violations.iterator().next().getInvalidValue(), "smith");
 	}
 
 }

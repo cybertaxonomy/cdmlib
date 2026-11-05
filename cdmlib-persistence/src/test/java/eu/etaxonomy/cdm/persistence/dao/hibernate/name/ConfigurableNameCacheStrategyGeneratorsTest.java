@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.FileNotFoundException;
 import java.util.UUID;
@@ -31,10 +31,10 @@ import eu.etaxonomy.cdm.test.integration.spring.CdmSpringIntegrationTest;
 public class ConfigurableNameCacheStrategyGeneratorsTest extends CdmSpringIntegrationTest {
 
 	@Autowired
-	ITaxonNameDao taxonNameDao;
+	private ITaxonNameDao taxonNameDao;
 
 	@Autowired
-	ITaxonDao taxonDao;
+	private ITaxonDao taxonDao;
 
 	private UUID cryptocoryneGriffithiiUuid;
 	private UUID acherontiaLachesisUuid;
@@ -53,33 +53,33 @@ public class ConfigurableNameCacheStrategyGeneratorsTest extends CdmSpringIntegr
 	public void testPersistentEntities() {
 		TaxonName acherontiaLachesis = taxonNameDao.findByUuid(acherontiaLachesisUuid);
 		INameCacheStrategy zoologicalStrategy = acherontiaLachesis.cacheStrategy();
-		assertEquals("ZoologicalName.cacheStrategy should be TestingZoologicalNameCacheStrategy",TestingZoologicalNameCacheStrategy.class,zoologicalStrategy.getClass());
+		assertEquals(TestingZoologicalNameCacheStrategy.class, zoologicalStrategy.getClass(), "ZoologicalName.cacheStrategy should be TestingZoologicalNameCacheStrategy");
 
 		TaxonName cryptocoryneGriffithii = taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid);
 		INameCacheStrategy botanicalStrategy = cryptocoryneGriffithii.cacheStrategy();
-		assertEquals("BotanicalName.cacheStrategy should be TestingBotanicalNameCacheStrategy",TestingBotanicalNameCacheStrategy.class,botanicalStrategy.getClass());
+		assertEquals(TestingBotanicalNameCacheStrategy.class, botanicalStrategy.getClass(), "BotanicalName.cacheStrategy should be TestingBotanicalNameCacheStrategy");
 	}
 
 	@Test
 	public void testHibernateProxyEntities() {
 		TaxonName acherontiaLachesis = taxonDao.findByUuid(acherontiaLachesisConceptUuid).getName();
 		INameCacheStrategy zoologicalStrategy = acherontiaLachesis.cacheStrategy();
-		assertEquals("ZoologicalName.cacheStrategy should be TestingZoologicalNameCacheStrategy",TestingZoologicalNameCacheStrategy.class,zoologicalStrategy.getClass());
+		assertEquals(TestingZoologicalNameCacheStrategy.class, zoologicalStrategy.getClass(), "ZoologicalName.cacheStrategy should be TestingZoologicalNameCacheStrategy");
 
 		TaxonName cryptocoryneGriffithii = taxonDao.findByUuid(cryptocoryneGriffithiiConceptUuid).getName();
 		INameCacheStrategy botanicalStrategy = cryptocoryneGriffithii.cacheStrategy();
-		assertEquals("BotanicalName.cacheStrategy should be TestingBotanicalNameCacheStrategy",TestingBotanicalNameCacheStrategy.class,botanicalStrategy.getClass());
+		assertEquals(TestingBotanicalNameCacheStrategy.class, botanicalStrategy.getClass(), "BotanicalName.cacheStrategy should be TestingBotanicalNameCacheStrategy");
 	}
 
 	@Test
 	public void testNewEntities() {
 		TaxonName acherontiaLachesis = TaxonNameFactory.NewZoologicalInstance(null);
 		INameCacheStrategy zoologicalStrategy = acherontiaLachesis.cacheStrategy();
-		assertEquals("ZoologicalName.cacheStrategy should be TestingZoologicalNameCacheStrategy",TestingZoologicalNameCacheStrategy.class,zoologicalStrategy.getClass());
+		assertEquals(TestingZoologicalNameCacheStrategy.class, zoologicalStrategy.getClass(), "ZoologicalName.cacheStrategy should be TestingZoologicalNameCacheStrategy");
 
 		TaxonName cryptocoryneGriffithii = TaxonNameFactory.NewBotanicalInstance(null);
 		INameCacheStrategy botanicalStrategy = cryptocoryneGriffithii.cacheStrategy();
-		assertEquals("BotanicalName.cacheStrategy should be TestingBotanicalNameCacheStrategy",TestingBotanicalNameCacheStrategy.class,botanicalStrategy.getClass());
+		assertEquals(TestingBotanicalNameCacheStrategy.class, botanicalStrategy.getClass(), "BotanicalName.cacheStrategy should be TestingBotanicalNameCacheStrategy");
 	}
 
     @Override

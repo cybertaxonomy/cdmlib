@@ -8,12 +8,13 @@
 */
 package eu.etaxonomy.cdm.persistence.hibernate.replace;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.FileNotFoundException;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -73,8 +74,8 @@ public class ReferringObjectMetadataFactoryTest extends CdmTransactionalSpringIn
 		Institution x = (Institution)agentDao.findByUuid(institution1);
 		Institution y = (Institution)agentDao.findByUuid(institution2);
 
-		Assert.assertNotNull(x);
-		Assert.assertNotNull(y);
+		assertNotNull(x);
+		assertNotNull(y);
 
 		agentDao.replace(x,y);
 	}
@@ -90,8 +91,8 @@ public class ReferringObjectMetadataFactoryTest extends CdmTransactionalSpringIn
 		Person x = (Person)agentDao.findByUuid(person1);
 		Person y = (Person)agentDao.findByUuid(person2);
 
-		Assert.assertNotNull(x);
-		Assert.assertNotNull(y);
+		assertNotNull(x);
+		assertNotNull(y);
 
 		agentDao.replace(x,y);
 		this.setComplete();
@@ -105,8 +106,8 @@ public class ReferringObjectMetadataFactoryTest extends CdmTransactionalSpringIn
 		Person x = (Person)agentDao.findByUuid(person3);
 		Person y = (Person)agentDao.findByUuid(person2);
 
-		Assert.assertNotNull(x);
-		Assert.assertNotNull(y);
+		assertNotNull(x);
+		assertNotNull(y);
 
 		agentDao.replace(x,y);
 	}

@@ -8,6 +8,11 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.occurrence;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +25,6 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.h2.util.StringUtils;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -108,9 +112,9 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalSpringIntegr
         unit.setMediaSpecimen(media3);
         dao.save(unit);
 
-        Assert.assertEquals(3, dao.countMedia(unit));
+        assertEquals(3, dao.countMedia(unit));
         unit.setMediaSpecimen(media2);
-        Assert.assertEquals(2, dao.countMedia(unit));
+        assertEquals(2, dao.countMedia(unit));
     }
 
     @Test
@@ -131,27 +135,27 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalSpringIntegr
         dao.save(unit);
 
         List<Media> media = dao.getMedia(unit, null, null, null);
-        Assert.assertEquals(3, media.size());
+        assertEquals(3, media.size());
         //test that paging works (note: the sorting is not a requirement for the method, but with current implementation it works; if implementation is changed the test may need to be adapted
         List<Integer> ids = media.stream().map(m->m.getId()).collect(Collectors.toList());
         Collections.sort(ids);
-        Assert.assertEquals(ids.get(0), (Integer)media.get(0).getId());
-        Assert.assertEquals(ids.get(1), (Integer)media.get(1).getId());
-        Assert.assertEquals(ids.get(2), (Integer)media.get(2).getId());
+        assertEquals(ids.get(0), (Integer)media.get(0).getId());
+        assertEquals(ids.get(1), (Integer)media.get(1).getId());
+        assertEquals(ids.get(2), (Integer)media.get(2).getId());
         media = dao.getMedia(unit, 2, 1, null);
-        Assert.assertEquals(1, media.size());
-        Assert.assertEquals(ids.get(2), (Integer)media.get(0).getId());
+        assertEquals(1, media.size());
+        assertEquals(ids.get(2), (Integer)media.get(0).getId());
 
         //test deduplication
         unit.setMediaSpecimen(media2);
-        Assert.assertEquals(2, dao.countMedia(unit));
+        assertEquals(2, dao.countMedia(unit));
     }
 
 	@Test
 	public void testSaveOriginalLabelData(){
 		DerivedUnit unit = DerivedUnit.NewInstance(SpecimenOrObservationType.DerivedUnit);
 		String originalLabelInfo = StringUtils.pad("my original info", 10000, "x", false);
-		Assert.assertEquals(Integer.valueOf(10000),  (Integer)originalLabelInfo.length());
+		assertEquals(Integer.valueOf(10000),  (Integer)originalLabelInfo.length());
 		unit.setOriginalLabelInfo(originalLabelInfo);
 		//test that lob is supported
 		dao.save(unit);
@@ -170,17 +174,17 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalSpringIntegr
 	    //occurrence status with no constraint violation observed.
 	    UUID uuid = UUID.fromString("07e70de7-680b-48c1-9c94-50c1aa470a92");
 	    DerivedUnit specimen = (DerivedUnit)dao.load(uuid);
-	    Assert.assertNotNull(specimen);
+	    assertNotNull(specimen);
 	    OccurrenceStatus status = specimen.getStatus().iterator().next();
-	    Assert.assertNotNull(status);
-	    Assert.assertNull(status.getType());
+	    assertNotNull(status);
+	    assertNull(status.getType());
 
 	    //guarantee that a constraint still exists on OccurrenceStatus.type
 	    status.setCitationMicroReference("222");
 	    dao.saveOrUpdate(specimen);
 	    try {
             commitAndStartNewTransaction(new String[]{/*"OccurrenceStatus","OccurrenceStatus_Annotation","Annotation","SpecimenOrObservationBase" */});
-            Assert.fail("Updating status without type should throw an exception");
+            fail("Updating status without type should throw an exception");
         } catch (Throwable e1) {
             //constraint violation expected
             while (!(e1 instanceof ConstraintViolationException)
@@ -188,8 +192,8 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalSpringIntegr
                 e1 = e1.getCause();
             }
             ConstraintViolationException e = (ConstraintViolationException)e1;
-            Assert.assertEquals(1, e.getConstraintViolations().size());
-            Assert.assertEquals("Occurrence status must have a type defined", e.getConstraintViolations().iterator().next().getMessage());
+            assertEquals(1, e.getConstraintViolations().size());
+            assertEquals("Occurrence status must have a type defined", e.getConstraintViolations().iterator().next().getMessage());
         }
 	}
 
@@ -218,37 +222,37 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalSpringIntegr
         List<SpecimenOrObservationBase> associatedUnits = dao.listByAssociatedTaxon(
                 type, taxon, included_unpublished, taxonOccRelType,
                 limit, start, orderHints, propertyPaths);
-        Assert.assertEquals("All directly associated specimen should be attached", 7, associatedUnits.size());
+        assertEquals(7, associatedUnits.size(), "All directly associated specimen should be attached");
 
         //test published only
         associatedUnits = dao.listByAssociatedTaxon(
                 type, taxon, no_unpublished, taxonOccRelType,
                 limit, start, orderHints, propertyPaths);
-        Assert.assertEquals("All published directly associated specimen should be attached", 6, associatedUnits.size());
+        assertEquals(6, associatedUnits.size(), "All published directly associated specimen should be attached");
 
         //test include individual associations
         associatedUnits = dao.listByAssociatedTaxon(
                 type, taxon, included_unpublished, TaxonOccurrenceRelationType.IndividualsAssociations(),
                 limit, start, orderHints, propertyPaths);
-        Assert.assertEquals("Only specimen associated via individuals association should be attached", 1, associatedUnits.size());
+        assertEquals(1, associatedUnits.size(), "Only specimen associated via individuals association should be attached");
 
         //test include determinations
         associatedUnits = dao.listByAssociatedTaxon(
                 type, taxon, included_unpublished, TaxonOccurrenceRelationType.Determinations(),
                 limit, start, orderHints, propertyPaths);
-        Assert.assertEquals("Only specimen associated via determination should be attached", 2, associatedUnits.size());
+        assertEquals(2, associatedUnits.size(), "Only specimen associated via determination should be attached");
 
         //test include current determinations only
         associatedUnits = dao.listByAssociatedTaxon(
                 type, taxon, included_unpublished, TaxonOccurrenceRelationType.CurrentDeterminations(),
                 limit, start, orderHints, propertyPaths);
-        Assert.assertEquals("Only specimen associated via determination should be attached", 1, associatedUnits.size());
+        assertEquals(1, associatedUnits.size(), "Only specimen associated via determination should be attached");
 
         //test include type specimens
         associatedUnits = dao.listByAssociatedTaxon(
                 type, taxon, included_unpublished, TaxonOccurrenceRelationType.TypeDesignations(),
                 limit, start, orderHints, propertyPaths);
-        Assert.assertEquals("Only specimen associated via type designation should be attached", 4, associatedUnits.size());
+        assertEquals(4, associatedUnits.size(), "Only specimen associated via type designation should be attached");
 
         //test orderHints
         List<OrderHint> titleCacheOrder = new ArrayList<>();
@@ -258,13 +262,13 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalSpringIntegr
                 limit, start, titleCacheOrder, propertyPaths);
         @SuppressWarnings("rawtypes")
         Iterator<SpecimenOrObservationBase> iterator = associatedUnits.iterator();
-        Assert.assertEquals("FieldUnit 3", iterator.next().getTitleCache());
-        Assert.assertEquals("Specimen Accepted Name Type", iterator.next().getTitleCache());
-        Assert.assertEquals("Specimen Determination", iterator.next().getTitleCache());
-        Assert.assertEquals("Specimen Heterotypic Name Type 1", iterator.next().getTitleCache());
-        Assert.assertEquals("Specimen Heterotypic Name Type 2", iterator.next().getTitleCache());
-        Assert.assertEquals("Specimen Homotypic Name Type", iterator.next().getTitleCache());
-        Assert.assertEquals("Specimen Individual Association", iterator.next().getTitleCache());
+        assertEquals("FieldUnit 3", iterator.next().getTitleCache());
+        assertEquals("Specimen Accepted Name Type", iterator.next().getTitleCache());
+        assertEquals("Specimen Determination", iterator.next().getTitleCache());
+        assertEquals("Specimen Heterotypic Name Type 1", iterator.next().getTitleCache());
+        assertEquals("Specimen Heterotypic Name Type 2", iterator.next().getTitleCache());
+        assertEquals("Specimen Homotypic Name Type", iterator.next().getTitleCache());
+        assertEquals("Specimen Individual Association", iterator.next().getTitleCache());
 
         //test limit + start
         int myLimit = 3;
@@ -272,12 +276,12 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalSpringIntegr
         associatedUnits = dao.listByAssociatedTaxon(
                 type, taxon, included_unpublished, taxonOccRelType,
                 myLimit, myStart, titleCacheOrder, propertyPaths);
-        Assert.assertEquals(myLimit, associatedUnits.size());
+        assertEquals(myLimit, associatedUnits.size());
         iterator = associatedUnits.iterator();
         //this is a subset of the above test
-        Assert.assertEquals("Specimen Determination", iterator.next().getTitleCache());
-        Assert.assertEquals("Specimen Heterotypic Name Type 1", iterator.next().getTitleCache());
-        Assert.assertEquals("Specimen Heterotypic Name Type 2", iterator.next().getTitleCache());
+        assertEquals("Specimen Determination", iterator.next().getTitleCache());
+        assertEquals("Specimen Heterotypic Name Type 1", iterator.next().getTitleCache());
+        assertEquals("Specimen Heterotypic Name Type 2", iterator.next().getTitleCache());
 
         //test type
         //... type all classes (default)
@@ -287,23 +291,22 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalSpringIntegr
                 limit, start, orderHints, propertyPaths);
         //TODO do we really want to have the type of the homotypic synonym here
         //     though it is not explicitly mentioned in the synonymy of field unit taxon?
-        Assert.assertEquals("Only field unit 1 (added via ind. ass.) and the 2 derived units "
+        assertEquals(3, associatedUnits.size(), "Only field unit 1 (added via ind. ass.) and the 2 derived units "
                 + " associated to the name and its homotypic group via type designation "
-                + " should be returned for field unit taxon",
-                3, associatedUnits.size());
+                + " should be returned for field unit taxon");
 
         //... test type = FieldUnit.class
         List<FieldUnit> fieldUnits = dao.listByAssociatedTaxon(
                 FieldUnit.class, fieldUnitTaxon, included_unpublished, taxonOccRelType,
                 limit, start, orderHints, propertyPaths);
-        Assert.assertEquals("Only the field unit 1 should be attached to field unit taxon", 1, fieldUnits.size());
+        assertEquals(1, fieldUnits.size(), "Only the field unit 1 should be attached to field unit taxon");
 
         //... test type = DerivedUnit.class
         List<DerivedUnit> derivedUnits = dao.listByAssociatedTaxon(
                 DerivedUnit.class, fieldUnitTaxon, included_unpublished, taxonOccRelType,
                 limit, start, orderHints, propertyPaths);
-        Assert.assertEquals("Only the 2 derived unit associated via type designation should "
-                + " be attached to field unit taxon", 2, derivedUnits.size());
+        assertEquals(2, derivedUnits.size(), "Only the 2 derived unit associated via type designation should "
+                + " be attached to field unit taxon");
 
         //test synonyms
         //TODO not yet available in listByAssociatedTaxon()
@@ -453,7 +456,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalSpringIntegr
             return taxon;
 
         } catch (Exception e) {
-            Assert.fail("No exception should be thrown during data creation: " + e.getMessage());
+            fail("No exception should be thrown during data creation: " + e.getMessage());
             return null;
         }
 	}

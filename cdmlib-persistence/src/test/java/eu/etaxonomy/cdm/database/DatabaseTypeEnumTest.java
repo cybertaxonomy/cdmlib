@@ -8,14 +8,14 @@
 */
 package eu.etaxonomy.cdm.database;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.mueller
@@ -29,7 +29,7 @@ public class DatabaseTypeEnumTest {
 	private static DatabaseTypeEnum dbEnumMariaDb;
     private static DatabaseTypeEnum dbEnumSql;
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUpBeforeClass() throws Exception {
 		dbEnumMySql = DatabaseTypeEnum.MySQL;
 	    dbEnumMariaDb = DatabaseTypeEnum.MariaDB;

@@ -8,14 +8,18 @@
 */
 package eu.etaxonomy.cdm.database.update;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.lang.reflect.Method;
 import java.sql.SQLException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.config.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
@@ -37,18 +41,18 @@ public class CdmUpdaterTest {
 
 // ******************** TESTS ****************************************************/
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testUpdateToCurrentVersion() {
 		CdmUpdater cdmUpdater = new CdmUpdater();
 		ICdmDataSource datasource = cdm_test_algaterra();
 		try {
 			boolean connectionAvailable = datasource.testConnection();
-			Assert.assertTrue("Testdatabase is not available", connectionAvailable);
+			assertTrue(connectionAvailable, "Testdatabase is not available");
 		} catch (ClassNotFoundException e) {
-			Assert.fail();
+			fail();
 		} catch (SQLException e) {
-			Assert.fail();
+			fail();
 		}
 		cdmUpdater.updateToCurrentVersion(datasource, null);
 	}
@@ -88,7 +92,7 @@ public class CdmUpdaterTest {
 
 			currentUpdater = (ISchemaUpdater)method.invoke(updater);
 		} catch (Exception e) {
-			Assert.fail("CdmUpdater.getCurrentSchemaUpdater not found:" + e.getMessage());
+			fail("CdmUpdater.getCurrentSchemaUpdater not found:" + e.getMessage());
 			return;
 		}
 		ISchemaUpdater lastUpdater = currentUpdater;
@@ -100,10 +104,10 @@ public class CdmUpdaterTest {
 			tmpUpdater = tmpUpdater.getPreviousUpdater();
 			lastUpdater = tmpUpdater;
 		}
-		Assert.assertNotNull("Current Updater must not be null", currentUpdater);
-		Assert.assertEquals("Very first schema updater must be schemaUpdater_24_25. Something seems to be wrong in recursive call of getPreviousSchemaUpdater", SchemaUpdater_24_25.class, lastUpdater.getClass());
+		assertNotNull(currentUpdater, "Current Updater must not be null");
+		assertEquals(SchemaUpdater_24_25.class, lastUpdater.getClass(), "Very first schema updater must be schemaUpdater_24_25. Something seems to be wrong in recursive call of getPreviousSchemaUpdater");
 
 		//test correct schema version string
-		Assert.assertEquals(CdmMetaData.getDbSchemaVersion(), currentUpdater.getTargetVersion());
+		assertEquals(CdmMetaData.getDbSchemaVersion(), currentUpdater.getTargetVersion());
 	}
 }

@@ -8,11 +8,14 @@
 */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.FileNotFoundException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,16 +85,16 @@ public class SaveOrUpdateEntityListenerTest extends CdmTransactionalSpringIntegr
 		unit = (DerivedUnit)occurrenceDao.findByUuid(unit.getUuid());
 		for (DeterminationEvent persistedDetEvent : unit.getDeterminations()){
 			if (persistedDetEvent.getUuid().equals(detWithTaxonOnlyAndNoName.getUuid())){
-				Assert.assertNotNull("Taxon should not be null", persistedDetEvent.getTaxon());
-				Assert.assertNull("TaxonName should be null, because taxon has no name", persistedDetEvent.getTaxonName());
+				assertNotNull(persistedDetEvent.getTaxon(), "Taxon should not be null");
+				assertNull(persistedDetEvent.getTaxonName(), "TaxonName should be null, because taxon has no name");
 			}else if (persistedDetEvent.getUuid().equals(detWithTaxonOnlyAndNameOnTaxon.getUuid())){
-				Assert.assertNotNull("Taxon should not be null", persistedDetEvent.getTaxon());
-				Assert.assertNotNull("TaxonName should not be null, injected by listener from taxon", persistedDetEvent.getTaxonName());
+				assertNotNull(persistedDetEvent.getTaxon(), "Taxon should not be null");
+				assertNotNull(persistedDetEvent.getTaxonName(), "TaxonName should not be null, injected by listener from taxon");
 			}else if (persistedDetEvent.getUuid().equals(detWithNameOnly.getUuid())){
-				Assert.assertNull("Taxon should be null as only name was attached", persistedDetEvent.getTaxon());
-				Assert.assertNotNull("TaxonName should not be null as set manually", persistedDetEvent.getTaxonName());
+				assertNull(persistedDetEvent.getTaxon(), "Taxon should be null as only name was attached");
+				assertNotNull(persistedDetEvent.getTaxonName(), "TaxonName should not be null as set manually");
 			}else{
-				Assert.fail("All cases should be handled");
+				fail("All cases should be handled");
 			}
 		}
 	}

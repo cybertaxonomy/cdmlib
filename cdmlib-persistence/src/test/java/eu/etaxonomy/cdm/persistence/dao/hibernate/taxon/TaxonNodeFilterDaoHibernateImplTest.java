@@ -8,14 +8,15 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -171,45 +172,45 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalSpringI
         filter = TaxonNodeFilter.NewClassificationInstance(classification);
         filter.setSortMode(TaxonNodeFilter.TaxonNodeFilterSortMode.TREEINDEX);
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
+        assertEquals(5, listUuid.size(), "All 5 children but not root node should be returned");
 
         List<UUID> expectedList = Arrays.asList(new UUID[]{uuidNode1Gen, uuidNode3Spec, uuidNode4SubSpec1, uuidNode5SubSpec2, uuidNode2Fam});
         //in theory node1 and 3 as well as node4 and 5 could be exchanged depending on the id they get. But we expect
         //in this test environment that node1.id < node2.id and node4.id < node5.id
-        Assert.assertEquals(expectedList, listUuid);
+        assertEquals(expectedList, listUuid);
 
         List<Integer> idList = filterDao.listIds(filter);
-        Assert.assertEquals((Integer)node1.getId(), idList.get(0));
-        Assert.assertEquals((Integer)node3.getId(), idList.get(1));
-        Assert.assertEquals((Integer)node4.getId(), idList.get(2));
-        Assert.assertEquals((Integer)node5.getId(), idList.get(3));
-        Assert.assertEquals((Integer)node2.getId(), idList.get(4));
+        assertEquals((Integer)node1.getId(), idList.get(0));
+        assertEquals((Integer)node3.getId(), idList.get(1));
+        assertEquals((Integer)node4.getId(), idList.get(2));
+        assertEquals((Integer)node5.getId(), idList.get(3));
+        assertEquals((Integer)node2.getId(), idList.get(4));
 
         //ID
         filter.setSortMode(TaxonNodeFilter.TaxonNodeFilterSortMode.ID);
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
+        assertEquals(5, listUuid.size(), "All 5 children but not root node should be returned");
 
         expectedList = Arrays.asList(new UUID[]{uuidNode1Gen, uuidNode2Fam, uuidNode3Spec, uuidNode4SubSpec1, uuidNode5SubSpec2});
         //in theory the given id is not necessarily ascending per save, but usually it is, at least in test environment
         //and therefore we expect the given result
-        Assert.assertEquals(expectedList, listUuid);
+        assertEquals(expectedList, listUuid);
 
         filter.setSortMode(TaxonNodeFilter.TaxonNodeFilterSortMode.TREEINDEX_DESC);
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
+        assertEquals(5, listUuid.size(), "All 5 children but not root node should be returned");
 
         expectedList = Arrays.asList(new UUID[]{uuidNode2Fam, uuidNode5SubSpec2, uuidNode4SubSpec1, uuidNode3Spec, uuidNode1Gen});
         //in theory node 1 and 3 as well as node 4 and 5 could be exchanged depending on the id they get. But we expect
         //in this test environment that node1.id < node2.id and node4.id < node5.id
-        Assert.assertEquals(expectedList, listUuid);
+        assertEquals(expectedList, listUuid);
 
         idList = filterDao.listIds(filter);
-        Assert.assertEquals((Integer)node2.getId(), idList.get(0));
-        Assert.assertEquals((Integer)node5.getId(), idList.get(1));
-        Assert.assertEquals((Integer)node4.getId(), idList.get(2));
-        Assert.assertEquals((Integer)node3.getId(), idList.get(3));
-        Assert.assertEquals((Integer)node1.getId(), idList.get(4));
+        assertEquals((Integer)node2.getId(), idList.get(0));
+        assertEquals((Integer)node5.getId(), idList.get(1));
+        assertEquals((Integer)node4.getId(), idList.get(2));
+        assertEquals((Integer)node3.getId(), idList.get(3));
+        assertEquals((Integer)node1.getId(), idList.get(4));
     }
 
     @Test
@@ -222,32 +223,32 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalSpringI
 
         //UUID List
         List<UUID> listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
+        assertEquals(5, listUuid.size(), "All 5 children but not root node should be returned");
 
         //family should be sorted before genus and children due to rank
         //subspecies 2 should be sorted before subspecies 1 due to alphabetic order
         List<UUID> expectedList = Arrays.asList(new UUID[]{uuidNode2Fam, uuidNode1Gen, uuidNode3Spec,
                 uuidNode5SubSpec2, uuidNode4SubSpec1});
-        Assert.assertEquals(expectedList, listUuid);
+        assertEquals(expectedList, listUuid);
 
         //ID list
         List<Integer> idList = filterDao.listIds(filter);
         int i = 0;
-        Assert.assertEquals((Integer)node2.getId(), idList.get(i++));
-        Assert.assertEquals((Integer)node1.getId(), idList.get(i++));
-        Assert.assertEquals((Integer)node3.getId(), idList.get(i++));
-        Assert.assertEquals((Integer)node5.getId(), idList.get(i++));
-        Assert.assertEquals((Integer)node4.getId(), idList.get(i++));
+        assertEquals((Integer)node2.getId(), idList.get(i++));
+        assertEquals((Integer)node1.getId(), idList.get(i++));
+        assertEquals((Integer)node3.getId(), idList.get(i++));
+        assertEquals((Integer)node5.getId(), idList.get(i++));
+        assertEquals((Integer)node4.getId(), idList.get(i++));
 
         //Sort by name only
         filter.setSortMode(TaxonNodeFilter.TaxonNodeFilterSortMode.ALPHABETIC);
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
+        assertEquals(5, listUuid.size(), "All 5 children but not root node should be returned");
 
         //genus and children should be sorted before family (due to alphabet only)
         //subspecies 2 should be sorted before subspecies 1 (due to alphabetic order)
         expectedList = Arrays.asList(new UUID[]{uuidNode1Gen, uuidNode3Spec, uuidNode5SubSpec2, uuidNode4SubSpec1, uuidNode2Fam});
-        Assert.assertEquals(expectedList, listUuid);
+        assertEquals(expectedList, listUuid);
     }
 
     @Test
@@ -267,51 +268,51 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalSpringI
         //europe
         TaxonNodeFilter filter = new TaxonNodeFilter(europe);
         listUuid = filterDao.listUuids(filter);
-        assertEquals(message, 2, listUuid.size());
-        Assert.assertTrue(listUuid.contains(node2.getUuid()));
-        Assert.assertTrue(listUuid.contains(node3.getUuid()));
-        Assert.assertFalse(listUuid.contains(node4.getUuid())); //status is absent
+        assertEquals(2, listUuid.size(), message);
+        assertTrue(listUuid.contains(node2.getUuid()));
+        assertTrue(listUuid.contains(node3.getUuid()));
+        assertFalse(listUuid.contains(node4.getUuid())); //status is absent
 
         //germany
         filter = new TaxonNodeFilter(germany);
         filter.setPropagateDistributionToHigherTaxa(false);
         listUuid = filterDao.listUuids(filter);
-        assertEquals(message, 1, listUuid.size());
-        Assert.assertTrue(listUuid.contains(node3.getUuid())); //German taxon but no propagation to parent
+        assertEquals(1, listUuid.size(), message);
+        assertTrue(listUuid.contains(node3.getUuid())); //German taxon but no propagation to parent
         //...propagate
         filter = new TaxonNodeFilter(germany);
         filter.setPropagateDistributionToHigherTaxa(true);
         listUuid = filterDao.listUuids(filter);
-        assertEquals(message, 2, listUuid.size());
-        Assert.assertTrue(listUuid.contains(node3.getUuid())); //German taxon and ...
-        Assert.assertTrue(listUuid.contains(node1.getUuid())); //propagated parent
+        assertEquals(2, listUuid.size(), message);
+        assertTrue(listUuid.contains(node3.getUuid())); //German taxon and ...
+        assertTrue(listUuid.contains(node1.getUuid())); //propagated parent
         filter = new TaxonNodeFilter(germany);
         filter.setPropagateDistributionToHigherTaxa(true);
-        Assert.assertEquals(2, filterDao.count(filter));
+        assertEquals(2, filterDao.count(filter));
 
         //middleEurope
         filter = new TaxonNodeFilter(middleEurope);
         filter.setPropagateDistributionToHigherTaxa(false);
         listUuid = filterDao.listUuids(filter);
-        assertEquals(message, 1, listUuid.size());
-        Assert.assertTrue(listUuid.contains(node3.getUuid()));
+        assertEquals(1, listUuid.size(), message);
+        assertTrue(listUuid.contains(node3.getUuid()));
         //... propagate
         filter = new TaxonNodeFilter(middleEurope);
         filter.setPropagateDistributionToHigherTaxa(true);
         listUuid = filterDao.listUuids(filter);
-        assertEquals(message, 2, listUuid.size());
-        Assert.assertTrue(listUuid.contains(node3.getUuid()));  //German taxon and ...
-        Assert.assertTrue(listUuid.contains(node1.getUuid()));  //propagated parent
+        assertEquals(2, listUuid.size(), message);
+        assertTrue(listUuid.contains(node3.getUuid()));  //German taxon and ...
+        assertTrue(listUuid.contains(node1.getUuid()));  //propagated parent
 
         //denmark - find all propagated parents
         filter = new TaxonNodeFilter(denmark);
         filter.setIncludeAbsentDistributions(true);  //subspecies has absent distribution in denmark
         filter.setPropagateDistributionToHigherTaxa(true);  //note: does not really make sense for absent distributions
         listUuid = filterDao.listUuids(filter);
-        assertEquals(message, 3, listUuid.size());
-        Assert.assertTrue(listUuid.contains(node4.getUuid()));
-        Assert.assertTrue(listUuid.contains(node3.getUuid()));  //propagated parent
-        Assert.assertTrue(listUuid.contains(node1.getUuid()));  //propagated parent
+        assertEquals(3, listUuid.size(), message);
+        assertTrue(listUuid.contains(node4.getUuid()));
+        assertTrue(listUuid.contains(node3.getUuid()));  //propagated parent
+        assertTrue(listUuid.contains(node1.getUuid()));  //propagated parent
 
         //find subspecies in denmark and propagate to parent,
         //but not to grand parent as it is not in the taxonomic scope (subtree filter)
@@ -320,20 +321,20 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalSpringI
         filter.setIncludeAbsentDistributions(true);  //note: does not really make sense for absent distributions
         filter.orSubtree(node3);
         listUuid = filterDao.listUuids(filter);
-        assertEquals(message, 2, listUuid.size());
-        Assert.assertTrue(listUuid.contains(node4.getUuid()));
-        Assert.assertTrue(listUuid.contains(node3.getUuid()));  //propagated parent
-        Assert.assertFalse(listUuid.contains(node1.getUuid()));  //should not be included due to subtree filter
+        assertEquals(2, listUuid.size(), message);
+        assertTrue(listUuid.contains(node4.getUuid()));
+        assertTrue(listUuid.contains(node3.getUuid()));  //propagated parent
+        assertFalse(listUuid.contains(node1.getUuid()));  //should not be included due to subtree filter
         filter = new TaxonNodeFilter(denmark);
         filter.setPropagateDistributionToHigherTaxa(true);
         filter.setIncludeAbsentDistributions(true);  //note: does not really make sense for absent distributions
         filter.orSubtree(node3);
-        Assert.assertEquals(2, filterDao.count(filter));
+        assertEquals(2, filterDao.count(filter));
 
         //africa - no available distribution
         filter = new TaxonNodeFilter(africa);
         listUuid = filterDao.listUuids(filter);
-        assertEquals(message, 0, listUuid.size());
+        assertEquals(0, listUuid.size(), message);
     }
 
     @Test
@@ -342,48 +343,48 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalSpringI
         String message = "wrong number of nodes filtered";
         TaxonNodeFilter filter = TaxonNodeFilter.NewInstance();
         List<UUID> listUuid = filterDao.listUuids(filter);
-        assertEquals(message, 5, listUuid.size());  //test start condition without rank filter
+        assertEquals(5, listUuid.size(), message);  //test start condition without rank filter
 
         filter = TaxonNodeFilter.NewRankInstance(Rank.SPECIES(), Rank.GENUS());
         listUuid = filterDao.listUuids(filter);
-        assertEquals(message, 2, listUuid.size());
-        Assert.assertTrue(listUuid.contains(node1.getUuid()));
-        Assert.assertTrue(listUuid.contains(node3.getUuid()));
+        assertEquals(2, listUuid.size(), message);
+        assertTrue(listUuid.contains(node1.getUuid()));
+        assertTrue(listUuid.contains(node3.getUuid()));
 
         filter = TaxonNodeFilter.NewRankInstance(Rank.SPECIES(), Rank.KINGDOM());
         listUuid = filterDao.listUuids(filter);
-        assertEquals(message, 3, listUuid.size());
-        Assert.assertTrue(listUuid.contains(node1.getUuid()));
-        Assert.assertTrue(listUuid.contains(node2.getUuid()));
-        Assert.assertTrue(listUuid.contains(node3.getUuid()));
+        assertEquals(3, listUuid.size(), message);
+        assertTrue(listUuid.contains(node1.getUuid()));
+        assertTrue(listUuid.contains(node2.getUuid()));
+        assertTrue(listUuid.contains(node3.getUuid()));
 
         filter = TaxonNodeFilter.NewRankInstance(Rank.FAMILY(), Rank.FAMILY());
         listUuid = filterDao.listUuids(filter);
-        assertEquals(message, 1, listUuid.size());
-        Assert.assertTrue(listUuid.contains(node2.getUuid()));
+        assertEquals(1, listUuid.size(), message);
+        assertTrue(listUuid.contains(node2.getUuid()));
 
         filter = TaxonNodeFilter.NewRankInstance(Rank.VARIETY(), Rank.SPECIES());
         listUuid = filterDao.listUuids(filter);
-        assertEquals(message, 3, listUuid.size());
-        Assert.assertTrue(listUuid.contains(node3.getUuid()));
-        Assert.assertTrue(listUuid.contains(node4.getUuid()));
-        Assert.assertTrue(listUuid.contains(node5.getUuid()));
+        assertEquals(3, listUuid.size(), message);
+        assertTrue(listUuid.contains(node3.getUuid()));
+        assertTrue(listUuid.contains(node4.getUuid()));
+        assertTrue(listUuid.contains(node5.getUuid()));
 
         filter = TaxonNodeFilter.NewRankInstance(Rank.KINGDOM(), Rank.ORDER());
         listUuid = filterDao.listUuids(filter);
-        assertEquals(message, 0, listUuid.size());
+        assertEquals(0, listUuid.size(), message);
 
         //reset
         Rank nullRank = null;
         filter.setRankMax(nullRank).setRankMin(nullRank);
         listUuid = filterDao.listUuids(filter);
-        assertEquals("Reseting the rank filters should work", 5, listUuid.size());
+        assertEquals(5, listUuid.size(), "Reseting the rank filters should work");
 
         filter = TaxonNodeFilter.NewRankInstance(Rank.KINGDOM(), Rank.ORDER());
         UUID nullUuid = null;
         filter.setRankMax(nullUuid).setRankMin(nullUuid);
         listUuid = filterDao.listUuids(filter);
-        assertEquals("Reseting the rank filters should work", 5, listUuid.size());
+        assertEquals(5, listUuid.size(), "Reseting the rank filters should work");
     }
 
     @Test
@@ -392,41 +393,41 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalSpringI
         TaxonNodeFilter filter = TaxonNodeFilter.NewSubtreeInstance(node1);
         List<UUID> listUuid = filterDao.listUuids(filter);
 //      List<TaxonNode> children = taxonNodeDao.listChildrenOf(node1, null, null, null, true);
-        Assert.assertEquals("All 4 children should be returned", 4, listUuid.size());
-        Assert.assertTrue(listUuid.contains(node4.getUuid()));
-        Assert.assertFalse(listUuid.contains(node2.getUuid()));
-        Assert.assertFalse(listUuid.contains(classification.getRootNode().getUuid()));
+        assertEquals(4, listUuid.size(), "All 4 children should be returned");
+        assertTrue(listUuid.contains(node4.getUuid()));
+        assertFalse(listUuid.contains(node2.getUuid()));
+        assertFalse(listUuid.contains(classification.getRootNode().getUuid()));
 
         filter = TaxonNodeFilter.NewSubtreeInstance(classification.getRootNode());
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
+        assertEquals(5, listUuid.size(), "All 5 children but not root node should be returned");
 
         filter.setIncludeRootNodes(true);
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("All 6 children including root node should be returned", 6, listUuid.size());
+        assertEquals(6, listUuid.size(), "All 6 children including root node should be returned");
 
         filter = TaxonNodeFilter.NewSubtreeInstance(node3);
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("All 3 children should be returned", 3, listUuid.size());
+        assertEquals(3, listUuid.size(), "All 3 children should be returned");
 
         filter.orSubtree(node2);
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("All 3 children and node 2 should be returned", 4, listUuid.size());
-        Assert.assertTrue(listUuid.contains(node2.getUuid()));
+        assertEquals(4, listUuid.size(), "All 3 children and node 2 should be returned");
+        assertTrue(listUuid.contains(node2.getUuid()));
 
         filter = TaxonNodeFilter.NewSubtreeInstance(node1).notSubtree(node4);
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("Node and 2 children but not node4 should be returned", 3, listUuid.size());
-        Assert.assertFalse(listUuid.contains(node4.getUuid()));
+        assertEquals(3, listUuid.size(), "Node and 2 children but not node4 should be returned");
+        assertFalse(listUuid.contains(node4.getUuid()));
 
         //uuids
         filter = TaxonNodeFilter.NewSubtreeInstance(node3.getUuid());
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("All 3 children should be returned", 3, listUuid.size());
+        assertEquals(3, listUuid.size(), "All 3 children should be returned");
 
         filter = TaxonNodeFilter.NewSubtreeInstance(taxon1.getUuid());
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("A NON subtree uuid should not return a result", 0, listUuid.size());
+        assertEquals(0, listUuid.size(), "A NON subtree uuid should not return a result");
 
     }
 
@@ -435,15 +436,15 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalSpringI
         Classification classification = classificationDao.findByUuid(classification1.getUuid());
         TaxonNodeFilter filter = TaxonNodeFilter.NewSubtreeInstance(classification.getRootNode());
         List<UUID> listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
+        assertEquals(5, listUuid.size(), "All 5 children but not root node should be returned");
 
         filter.setIncludeUnpublished(true);
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("All 6 children including unpublished should be returned", 6, listUuid.size());
+        assertEquals(6, listUuid.size(), "All 6 children including unpublished should be returned");
 
         filter.setIncludeRootNodes(true);
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("All 7 children including root node should be returned", 7, listUuid.size());
+        assertEquals(7, listUuid.size(), "All 7 children including root node should be returned");
     }
 
     @Test
@@ -455,20 +456,20 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalSpringI
 
         filter = TaxonNodeFilter.NewClassificationInstance(classification);
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
+        assertEquals(5, listUuid.size(), "All 5 children but not root node should be returned");
 
         filter.setIncludeRootNodes(true);
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("All 6 children including root node should be returned", 6, listUuid.size());
+        assertEquals(6, listUuid.size(), "All 6 children including root node should be returned");
 
         filter = TaxonNodeFilter.NewClassificationInstance(classification.getUuid())
                 .setIncludeRootNodes(true);
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("All 6 children should be returned", 6, listUuid.size());
+        assertEquals(6, listUuid.size(), "All 6 children should be returned");
 
         filter = TaxonNodeFilter.NewClassificationInstance(taxon1.getUuid());
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("A NON classification uuid should not return a result", 0, listUuid.size());
+        assertEquals(0, listUuid.size(), "A NON classification uuid should not return a result");
 
     }
 
@@ -480,19 +481,19 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalSpringI
 
         filter = TaxonNodeFilter.NewTaxonInstance(taxon1);
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("The 1 taxon should be returned", 1, listUuid.size());
+        assertEquals(1, listUuid.size(), "The 1 taxon should be returned");
 
         filter = TaxonNodeFilter.NewTaxonInstance(taxon1.getUuid());
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("The 1 taxon should be returned", 1, listUuid.size());
+        assertEquals(1, listUuid.size(), "The 1 taxon should be returned");
 
         filter = TaxonNodeFilter.NewTaxonInstance(taxon1.getUuid()).orTaxon(taxon2.getUuid());
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("The 2 taxa should be returned", 2, listUuid.size());
+        assertEquals(2, listUuid.size(), "The 2 taxa should be returned");
 
         filter = TaxonNodeFilter.NewTaxonInstance(node1.getUuid());
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("A NON taxon uuid should not return a result", 0, listUuid.size());
+        assertEquals(0, listUuid.size(), "A NON taxon uuid should not return a result");
     }
 
     @Test
@@ -503,20 +504,20 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalSpringI
 
         filter = TaxonNodeFilter.NewTaxonNodeInstance(node1);
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("The 1 taxon should be returned", 1, listUuid.size());
+        assertEquals(1, listUuid.size(), "The 1 taxon should be returned");
 
         filter = TaxonNodeFilter.NewTaxonNodeInstance(node1.getUuid());
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("The 1 nodes should be returned", 1, listUuid.size());
+        assertEquals(1, listUuid.size(), "The 1 nodes should be returned");
 
         filter = TaxonNodeFilter.NewTaxonNodeInstance(node1.getUuid())
                 .orTaxonNode(node2.getUuid());
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("The 2 nodes should be returned", 2, listUuid.size());
+        assertEquals(2, listUuid.size(), "The 2 nodes should be returned");
 
         filter = TaxonNodeFilter.NewTaxonNodeInstance(taxon1.getUuid());
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("A NON taxon node uuid should not return a result", 0, listUuid.size());
+        assertEquals(0, listUuid.size(), "A NON taxon node uuid should not return a result");
 
     }
 
@@ -525,19 +526,19 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalSpringI
         Classification classification = classificationDao.findByUuid(classification1.getUuid());
         TaxonNodeFilter filter = TaxonNodeFilter.NewSubtreeInstance(node1);
         List<UUID> listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("All 4 children should be returned", 4, listUuid.size());
+        assertEquals(4, listUuid.size(), "All 4 children should be returned");
 
         filter.orClassification(classification.getUuid());
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("Still 4 children should be returned", 4, listUuid.size());
+        assertEquals(4, listUuid.size(), "Still 4 children should be returned");
 
         filter.orTaxon(taxon3).orTaxon(taxon4);
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("The 2 children should be returned", 2, listUuid.size());
+        assertEquals(2, listUuid.size(), "The 2 children should be returned");
 
         filter.orTaxonNode(node3.getUuid());
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("1 node should remain", 1, listUuid.size());
+        assertEquals(1, listUuid.size(), "1 node should remain");
 
         //New
         filter = TaxonNodeFilter.NewSubtreeInstance(node1);  //4 children, see above
@@ -545,22 +546,22 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalSpringI
 
         filter.setRankMax(Rank.uuidSpecies);
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("3 children should be returned", 3, listUuid.size());
+        assertEquals(3, listUuid.size(), "3 children should be returned");
 
         filter.setRankMin(Rank.uuidSpecies);
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("Only species should be returned", 1, listUuid.size());
+        assertEquals(1, listUuid.size(), "Only species should be returned");
 
         Rank nullRank = null;
         filter.setRankMin(nullRank);
         filter.setIncludeUnpublished(true);
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("4 children should be returned, including unpublished", 4, listUuid.size());
+        assertEquals(4, listUuid.size(), "4 children should be returned, including unpublished");
 
         NamedArea germany = HibernateProxyHelper.deproxy(termDao.load(germanyUuid), NamedArea.class);
         filter.orArea(germany);
         listUuid = filterDao.listUuids(filter);
-        Assert.assertEquals("1 child should be returned", 1, listUuid.size());
+        assertEquals(1, listUuid.size(), "1 child should be returned");
     }
 
     @Test
@@ -568,15 +569,15 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalSpringI
         Classification classification = classificationDao.findByUuid(classification1.getUuid());
         TaxonNodeFilter filter = TaxonNodeFilter.NewSubtreeInstance(node1);
         long n = filterDao.count(filter);
-        Assert.assertEquals("All 4 children should be returned", 4, n);
+        assertEquals(4, n, "All 4 children should be returned");
 
         filter = TaxonNodeFilter.NewSubtreeInstance(classification.getRootNode());
         n = filterDao.count(filter);
-        Assert.assertEquals("All 5 children but not root node should be returned", 5, n);
+        assertEquals(5, n, "All 5 children but not root node should be returned");
 
         filter.setIncludeRootNodes(true);
         n = filterDao.count(filter);
-        Assert.assertEquals("All 6 children including root node should be returned", 6, n);
+        assertEquals(6, n, "All 6 children including root node should be returned");
     }
 
     private <S extends DescriptionBase<?>> S save(S newDescription) {

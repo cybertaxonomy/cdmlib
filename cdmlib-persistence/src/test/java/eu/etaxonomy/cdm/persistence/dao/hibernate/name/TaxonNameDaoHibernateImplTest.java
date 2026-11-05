@@ -8,15 +8,12 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
-import eu.etaxonomy.cdm.test.integration.spring.CdmExpectedDataSet;
-
-import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
@@ -27,7 +24,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +52,8 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmExpectedDataSet;
 import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 @CdmDataSet
@@ -97,9 +95,9 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
 
         List<HybridRelationship> result = taxonNameDao.getHybridNames(cryptocoryneGriffithii, null, null, null,null,null);
 
-        assertNotNull("getHybridNames should return a list",result);
-        assertFalse("the list should not be empty", result.isEmpty());
-        assertEquals("getHybridNames should return 1 HybridRelationship instance",1,result.size());
+        assertNotNull(result, "getHybridNames should return a list");
+        assertFalse(result.isEmpty(), "the list should not be empty");
+        assertEquals(1, result.size(), "getHybridNames should return 1 HybridRelationship instance");
     }
 
     @Test
@@ -109,7 +107,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
 
         long count = taxonNameDao.countHybridNames(cryptocoryneGriffithii, null);
 
-        assertEquals("countHybridNames should return 1",Long.valueOf(1), Long.valueOf(count));
+        assertEquals(Long.valueOf(1), Long.valueOf(count), "countHybridNames should return 1");
     }
 
     @Test
@@ -119,9 +117,9 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
 
         List<NameRelationship> result = taxonNameDao.getNameRelationships(acherontia, NameRelationship.Direction.relatedFrom, null, null,null,null, null);
 
-        assertNotNull("getRelatedNames should return a list",result);
-        assertFalse("the list should not be empty", result.isEmpty());
-        assertEquals("getRelatedNames should return 1 NameRelationship instance",1,result.size());
+        assertNotNull(result, "getRelatedNames should return a list");
+        assertFalse(result.isEmpty(), "the list should not be empty");
+        assertEquals(1, result.size(), "getRelatedNames should return 1 NameRelationship instance");
 
         // testing inverted direction
         TaxonName atropos = taxonNameDao.findByUuid(atroposUuid);
@@ -129,15 +127,15 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
 
         result = taxonNameDao.getNameRelationships(atropos, NameRelationship.Direction.relatedTo, null, null,null,null, null);
 
-        assertNotNull("getRelatedNames should return a list",result);
-        assertFalse("the list should not be empty", result.isEmpty());
-        assertEquals("getRelatedNames should return 2 NameRelationship instance",2,result.size());
+        assertNotNull(result, "getRelatedNames should return a list");
+        assertFalse(result.isEmpty(), "the list should not be empty");
+        assertEquals(2, result.size(), "getRelatedNames should return 2 NameRelationship instance");
 
         result = taxonNameDao.getNameRelationships(null, null, null, null,null,null, null);
 
-        assertNotNull("getRelatedNames should return a list",result);
-        assertFalse("the list should not be empty", result.isEmpty());
-        assertEquals("getRelatedNames should return all 2 NameRelationship instance",2,result.size());
+        assertNotNull(result, "getRelatedNames should return a list");
+        assertFalse(result.isEmpty(), "the list should not be empty");
+        assertEquals(2, result.size(), "getRelatedNames should return all 2 NameRelationship instance");
     }
 
     @Test
@@ -147,7 +145,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
 
         long count = taxonNameDao.countNameRelationships(acherontia, NameRelationship.Direction.relatedFrom, null);
 
-        assertEquals("countRelatedNames should return 1",1,count);
+        assertEquals(1, count, "countRelatedNames should return 1");
 
         // testing inverted direction
         TaxonName atropos = taxonNameDao.findByUuid(atroposUuid);
@@ -155,7 +153,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
 
         count = taxonNameDao.countNameRelationships(atropos, NameRelationship.Direction.relatedTo, null);
 
-        assertEquals("countRelatedNames should return 2",2,count);
+        assertEquals(2, count, "countRelatedNames should return 2");
     }
 
     @Test
@@ -166,15 +164,15 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
         @SuppressWarnings("rawtypes")
         List<TypeDesignationBase> result1 = taxonNameDao.getTypeDesignations(acherontiaLachesis, null, null, null, null, null);
 
-        assertNotNull("getTypeDesignations should return a list",result1);
-        assertFalse("the list should not be empty", result1.isEmpty());
-        assertEquals("getTypeDesignations should return 1 TypeDesignationBase instance",1,result1.size());
+        assertNotNull(result1, "getTypeDesignations should return a list");
+        assertFalse(result1.isEmpty(), "the list should not be empty");
+        assertEquals(1, result1.size(), "getTypeDesignations should return 1 TypeDesignationBase instance");
 
         List<SpecimenTypeDesignation> result2 = taxonNameDao.getTypeDesignations(acherontiaLachesis, SpecimenTypeDesignation.class, null, null, null, null);
 
-        assertNotNull("getTypeDesignations should return a list",result2);
-        assertFalse("the list should not be empty", result2.isEmpty());
-        assertEquals("getTypeDesignations should return 1 TypeDesignationBase instance",1,result2.size());
+        assertNotNull(result2, "getTypeDesignations should return a list");
+        assertFalse(result2.isEmpty(), "the list should not be empty");
+        assertEquals(1, result2.size(), "getTypeDesignations should return 1 TypeDesignationBase instance");
     }
 
     @Test
@@ -184,16 +182,16 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
 
         long count = taxonNameDao.countTypeDesignations(acherontiaLachesis, null);
 
-        assertEquals("countTypeDesignations should return 1",1,count);
+        assertEquals(1, count, "countTypeDesignations should return 1");
     }
 
     @Test
     public void testSearchNames() {
         List<TaxonName> result = taxonNameDao.searchNames("Atropos", null, null, null, Rank.GENUS(), null, null, null, null);
 
-        assertNotNull("searchNames should return a list",result);
-        assertFalse("the list should not be empty", result.isEmpty());
-        assertEquals("searchNames should return 3 TaxonName instances",3,result.size());
+        assertNotNull(result, "searchNames should return a list");
+        assertFalse(result.isEmpty(), "the list should not be empty");
+        assertEquals(3, result.size(), "searchNames should return 3 TaxonName instances");
     }
 
     @Test
@@ -206,7 +204,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
                 Rank.GENUS(), null,
                 pageSize, pageIndex, Arrays.asList(new OrderHint("genusOrUninomial", SortOrder.ASCENDING)));
 
-        assertNotNull("searchNames should return a list",resuls);
+        assertNotNull(resuls, "searchNames should return a list");
         assertFalse(resuls.isEmpty());
         assertEquals(3, resuls.size());
     }
@@ -298,7 +296,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
     public void testCountNames() {
         long count = taxonNameDao.countNames("Atropos", null, null, null, Rank.GENUS());
 
-        assertEquals("countNames should return 3", 3, count);
+        assertEquals(3, count, "countNames should return 3");
     }
 
     @Test
@@ -312,7 +310,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
         includedProperties.add("rank");
         long count = taxonNameDao.count(zoologicalName, includedProperties);
 
-        assertEquals("countNames should return 3",3,count);
+        assertEquals(3, count, "countNames should return 3");
     }
 
     @Test
@@ -329,8 +327,8 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
             e.printStackTrace();
         }
         assertNotNull(rank);
-        assertFalse("Rank are equal, level must not be higher", rank.isHigher(acherontiaLachesis.getRank()));
-        assertFalse("Rank are equal, level must not be lower", rank.isLower(acherontiaLachesis.getRank()));
+        assertFalse(rank.isHigher(acherontiaLachesis.getRank()), "Rank are equal, level must not be higher");
+        assertFalse(rank.isLower(acherontiaLachesis.getRank()), "Rank are equal, level must not be lower");
     }
 
     @Test
@@ -350,9 +348,9 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
         acherontiaLachesis = taxonNameDao.findByUuid(cryptoCoryneGriffithiIiUuid);
         taxon = taxonDao.findByUuid(taxonUuid);
         group = CdmBase.deproxy(homotypicalGroupDao.findByUuid(groupUuid));
-        assertNull("There should be no taxonName with the deleted uuid", acherontiaLachesis);
-        assertNull("There should be no taxon with the deleted uuid", taxon);
-        assertNull("There should be no homotypicalGroup with the deleted uuid", group);
+        assertNull(acherontiaLachesis, "There should be no taxonName with the deleted uuid");
+        assertNull(taxon, "There should be no taxon with the deleted uuid");
+        assertNull(group, "There should be no homotypicalGroup with the deleted uuid");
     }
 
     /**
@@ -367,8 +365,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
         assertEquals("Aus aus, Sp. Pl.", ausAus.getFullTitleCache());
 
         ausAus.getNomenclaturalSource().setCitationMicroReference("23");
-        assertEquals("Here the full cache should show the cache as stored in the database but did not",
-                "Aus aus, Sp. Pl.: 23", ausAus.getFullTitleCache());
+        assertEquals("Aus aus, Sp. Pl.: 23", ausAus.getFullTitleCache(), "Here the full cache should show the cache as stored in the database but did not");
     }
 
     @Test
@@ -404,7 +401,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
                 NameTypeDesignationStatus status = ntd.getTypeStatus();
                 assertTrue(status.isInstanceOf(NameTypeDesignationStatus.class));
             } else if (typeDesignation instanceof SpecimenTypeDesignation) {
-                Assert.assertNull("There should be only 1 specimen type designation but this is already the second", specTypeDesig);
+                assertNull(specTypeDesig, "There should be only 1 specimen type designation but this is already the second");
                 TypeDesignationStatusBase<?> typeDesignationStatus = ((SpecimenTypeDesignation)typeDesignation).getTypeStatus();
                 assertTrue(typeDesignationStatus.isInstanceOf(SpecimenTypeDesignationStatus.class));
                 specTypeDesig = CdmBase.deproxy(typeDesignation,SpecimenTypeDesignation.class);
@@ -412,9 +409,9 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
         }
         @SuppressWarnings("null")
         Set<TaxonName> names = specTypeDesig.getTypifiedNames();
-        Assert.assertEquals("There should be exactly 1 typified name for the the specimen type designation", 1, names.size());
+        assertEquals(1, names.size(), "There should be exactly 1 typified name for the the specimen type designation");
         TaxonName singleName = names.iterator().next();
-        Assert.assertEquals("", UUID.fromString("61b1dcae-8aa6-478a-bcd6-080cf0eb6ad7"), singleName.getUuid());
+        assertEquals(UUID.fromString("61b1dcae-8aa6-478a-bcd6-080cf0eb6ad7"), singleName.getUuid(), "");
     }
 
     @Test
@@ -489,8 +486,8 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
         this.commitAndStartNewTransaction();
 
         name1 = taxonNameDao.load(name1.getUuid());
-        Assert.assertNotNull(name1);
-        Assert.assertEquals("Name1 should have 2 type designations", 2, name1.getTypeDesignations().size());
+        assertNotNull(name1);
+        assertEquals(2, name1.getTypeDesignations().size(), "Name1 should have 2 type designations");
 
         desig1 = (SpecimenTypeDesignation)typeDesignationDao.findByUuid(desig1.getUuid());
         name1.removeTypeDesignation(desig1);
@@ -498,26 +495,26 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
         this.commitAndStartNewTransaction();
 
         name1 = taxonNameDao.load(name1.getUuid());
-        Assert.assertNotNull(name1);
-        Assert.assertEquals("Name1 should have 1 type designation", 1, name1.getTypeDesignations().size());
+        assertNotNull(name1);
+        assertEquals(1, name1.getTypeDesignations().size(), "Name1 should have 1 type designation");
 
         desig2 = (SpecimenTypeDesignation)typeDesignationDao.findByUuid(desig2.getUuid());
-        Assert.assertNotNull(desig2);
+        assertNotNull(desig2);
         name1.removeTypeDesignation(desig2);
 
         this.commitAndStartNewTransaction();
 
         name1 = taxonNameDao.load(name1.getUuid());
-        Assert.assertNotNull(name1);
-        Assert.assertEquals("Name1 should have no type designations", 0, name1.getTypeDesignations().size());
+        assertNotNull(name1);
+        assertEquals(0, name1.getTypeDesignations().size(), "Name1 should have no type designations");
 
         name2 = taxonNameDao.load(name2.getUuid());
-        Assert.assertNotNull(name2);
-        Assert.assertEquals("Name2 should have 1 type designation", 1, name2.getTypeDesignations().size());
+        assertNotNull(name2);
+        assertEquals(1, name2.getTypeDesignations().size(), "Name2 should have 1 type designation");
 
         SpecimenTypeDesignation desig1New = (SpecimenTypeDesignation)name2.getTypeDesignations().iterator().next();
         desig1 = (SpecimenTypeDesignation)typeDesignationDao.findByUuid(desig1.getUuid());
-        Assert.assertSame("Desig1New should be same as desig1", desig1, desig1New);
+        assertSame(desig1, desig1New, "Desig1New should be same as desig1");
 
 //      Note: the following is only true if TaxonName.typeDesignation is cascaded AND
 //            because the name2 is in the same session. The exception is a re-attache
@@ -529,14 +526,14 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
 //            typeDesignationDao.delete(desig1);
 //            this.setComplete();
 //            this.endTransaction();
-//            Assert.fail("desig1 should not be deletable as it is still connected to name2");
+//            fail("desig1 should not be deletable as it is still connected to name2");
 //        }catch (Exception e){
 //            //this.setComplete();
 //            this.endTransaction();
 //            this.startNewTransaction();
 //        }
         name2 = taxonNameDao.load(name2.getUuid());
-        Assert.assertNotNull(name1);
+        assertNotNull(name1);
         desig1 = (SpecimenTypeDesignation)typeDesignationDao.findByUuid(desig1.getUuid());
         name2.removeTypeDesignation(desig1);
 
@@ -580,10 +577,10 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
 
         commitAndStartNewTransaction(null);
         specTypeDesig = genericDao.find(SpecimenTypeDesignation.class, specTypeDesig.getUuid());
-        Assert.assertNotNull("specimen type designation should exists in db", specTypeDesig);
+        assertNotNull(specTypeDesig, "specimen type designation should exists in db");
         specTypeDesig.getTypifiedNames().size();
         Set<TaxonName> typifiedNames = specTypeDesig.getTypifiedNames();
-        Assert.assertEquals("There should be 2 typified names for this type designation now", 2, typifiedNames.size());
+        assertEquals(2, typifiedNames.size(), "There should be 2 typified names for this type designation now");
 
 //      printDataSet(System.out, new String[]{"TaxonName","TaxonName_AUD",
 //              "HomotypicalGroup","HomotypicalGroup_AUD",

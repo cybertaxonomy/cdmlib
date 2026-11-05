@@ -8,16 +8,17 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.agent;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -70,7 +71,7 @@ public class AgentDaoImplTest extends CdmTransactionalSpringIntegrationTest {
         assert team != null : "team must exist";
 
         long numberOfMembers = agentDao.countMembers(team);
-        assertEquals("countMembers should return 5",5,numberOfMembers);
+        assertEquals(5, numberOfMembers, "countMembers should return 5");
     }
 
     @Test
@@ -80,16 +81,16 @@ public class AgentDaoImplTest extends CdmTransactionalSpringIntegrationTest {
         assert team != null : "team must exist";
 
         List<Person> members = agentDao.getMembers(team, null, null);
-        assertNotNull("getMembers should return a List", members);
-        assertFalse("getMembers should not be empty",members.isEmpty());
-        assertEquals("getMembers should return 5 person instances",5,members.size());
+        assertNotNull(members, "getMembers should return a List");
+        assertFalse(members.isEmpty(), "getMembers should not be empty");
+        assertEquals(5, members.size(), "getMembers should return 5 person instances");
         //test order (3,4,1)
         Person firstMember = members.get(0);
-        assertEquals("First member must be the one with agentbase id 3 (sortindex = 0)", 3, firstMember.getId());
+        assertEquals(3, firstMember.getId(), "First member must be the one with agentbase id 3 (sortindex = 0)");
         Person lastMember = members.get(4);
-        assertEquals("Last member must be the one with agentbase id 4 (sortindex = 4)", 4, lastMember.getId());
+        assertEquals(4, lastMember.getId(), "Last member must be the one with agentbase id 4 (sortindex = 4)");
         Person id1Member = members.get(2);
-        assertEquals("The member with id = 1 must be the third (sortindex = 2)", 1, id1Member.getId());
+        assertEquals(1, id1Member.getId(), "The member with id = 1 must be the third (sortindex = 2)");
     }
 
     @Test
@@ -118,7 +119,7 @@ public class AgentDaoImplTest extends CdmTransactionalSpringIntegrationTest {
     @CdmDataSet("AgentDaoImplTest.testFind.xml")
     public void testFindInCurrentView() {
         Person person = (Person)agentDao.findByUuid(personUuid);
-        Assert.assertEquals("The person's givenname should be \'Benjamin\' in the current view", "Benjamin", person.getGivenName());
+        assertEquals("Benjamin", person.getGivenName(), "The person's givenname should be \'Benjamin\' in the current view");
     }
 
     @Test
@@ -126,7 +127,7 @@ public class AgentDaoImplTest extends CdmTransactionalSpringIntegrationTest {
     public void testFindInPreviousView() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
         Person person = (Person)agentDao.findByUuid(personUuid);
-        Assert.assertEquals("The person's givenname should be \'Ben\' in the previous view",person.getGivenName(),"Ben");
+        assertEquals(person.getGivenName(), "Ben", "The person's givenname should be \'Ben\' in the previous view");
     }
 
     @Test
@@ -137,48 +138,48 @@ public class AgentDaoImplTest extends CdmTransactionalSpringIntegrationTest {
         agentDao.delete(person);
 
         person =(Person)agentDao.findByUuid(personUuid);
-        Assert.assertNull(person);
+        assertNull(person);
         commitAndStartNewTransaction(null);
     }
 
     @Test
     @CdmDataSet("AgentDaoImplTest.testExists.xml")
     public void testExists() {
-        Assert.assertFalse("Person with the uuid " + personUuid.toString() +  "should not exist in the current view",agentDao.exists(personUuid));
+        assertFalse(agentDao.exists(personUuid), "Person with the uuid " + personUuid.toString() +  "should not exist in the current view");
     }
 
     @Test
     @CdmDataSet("AgentDaoImplTest.testExists.xml")
     public void testExistsInPreviousView() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
-        Assert.assertTrue("Person with the uuid " + personUuid.toString() +  "should exist in the previous view",agentDao.exists(uuid));
+        assertTrue(agentDao.exists(uuid), "Person with the uuid " + personUuid.toString() +  "should exist in the previous view");
     }
 
     @Test
     @CdmDataSet("AgentDaoImplTest.testExists.xml")
     public void testCount() {
-        Assert.assertEquals("There should be eight agents in the current view",8, agentDao.count());
+        assertEquals(8, agentDao.count(), "There should be eight agents in the current view");
     }
 
     @Test
     @CdmDataSet("AgentDaoImplTest.testExists.xml")
     public void testCountInPreviousView() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
-        Assert.assertEquals("There should be nine agents in the previous view",9, agentDao.count());
+        assertEquals(9, agentDao.count(), "There should be nine agents in the previous view");
     }
 
     @Test
     @CdmDataSet("AgentDaoImplTest.testExists.xml")
     public void testCountAuditEvents() {
-        Assert.assertEquals("There should be eleven AuditEvents",11, agentDao.countAuditEvents(null, null, null, null));
+        assertEquals(11, agentDao.countAuditEvents(null, null, null, null), "There should be eleven AuditEvents");
     }
 
     @Test
     @CdmDataSet("AgentDaoImplTest.testExists.xml")
     public void testList() {
         List<AgentBase> result = agentDao.list(null,null);
-        Assert.assertNotNull("list() should return a list",result);
-        Assert.assertEquals("list() should return eight agents in the current view", result.size(),8);
+        assertNotNull(result, "list() should return a list");
+        assertEquals(result.size(), 8, "list() should return eight agents in the current view");
     }
 
     @Test
@@ -186,8 +187,8 @@ public class AgentDaoImplTest extends CdmTransactionalSpringIntegrationTest {
     public void testListInPreviousView() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
         List<AgentBase> result = agentDao.list(null, null);
-        Assert.assertNotNull("list() should return a list",result);
-        Assert.assertEquals("list() should return nine agents in the current view",result.size(),9);
+        assertNotNull(result, "list() should return a list");
+        assertEquals(result.size(), 9, "list() should return nine agents in the current view");
     }
 
     @Test
@@ -197,31 +198,31 @@ public class AgentDaoImplTest extends CdmTransactionalSpringIntegrationTest {
         List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.ASCENDING));
         List<AgentBase> result = agentDao.list((Class)null, null, null, orderHints, null);
-        Assert.assertNotNull("list() should return a list",result);
-        Assert.assertEquals("list() should return nine agents in the current view",result.size(),9);
-        Assert.assertEquals(result.get(0).getTitleCache(), "B.R. Clark");
-        Assert.assertEquals(result.get(8).getTitleCache(), "University of Oxford");
+        assertNotNull(result, "list() should return a list");
+        assertEquals(result.size(), 9, "list() should return nine agents in the current view");
+        assertEquals(result.get(0).getTitleCache(), "B.R. Clark");
+        assertEquals(result.get(8).getTitleCache(), "University of Oxford");
     }
 
     @Test
     @CdmDataSet("AgentDaoImplTest.testExists.xml")
     public void testCountPeople() {
-        Assert.assertEquals("There should be four agents in the current view", 4, agentDao.count(Person.class));
+        assertEquals(4, agentDao.count(Person.class), "There should be four agents in the current view");
     }
 
     @Test
     @CdmDataSet("AgentDaoImplTest.testExists.xml")
     public void testCountPeopleInPreviousView() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
-        Assert.assertEquals("There should be five agents in the previous view", 5, agentDao.count(Person.class));
+        assertEquals(5, agentDao.count(Person.class), "There should be five agents in the previous view");
     }
 
     @Test
     @CdmDataSet("AgentDaoImplTest.testExists.xml")
     public void testListPeople() {
         List<Person> result = agentDao.list(Person.class, null, null);
-        Assert.assertNotNull("list() should return a list",result);
-        Assert.assertEquals("list() should return four agents in the current view", 4, result.size());
+        assertNotNull(result, "list() should return a list");
+        assertEquals(4, result.size(), "list() should return four agents in the current view");
     }
 
     @Test
@@ -230,23 +231,23 @@ public class AgentDaoImplTest extends CdmTransactionalSpringIntegrationTest {
 
         List<Restriction<?>> restrictions = new ArrayList<>();
         List<AgentBase> result = agentDao.list(null, restrictions, (Integer)null, (Integer)null, null, null);
-        Assert.assertNotNull("list() should return a list",result);
-        Assert.assertEquals("list() should return 9 AgentBase entities in the current view", 9 ,result.size());
+        assertNotNull(result, "list() should return a list");
+        assertEquals(9, result.size(), "list() should return 9 AgentBase entities in the current view");
 
         List<Person>  personResults = agentDao.list(Person.class, restrictions, (Integer)null, (Integer)null, null, null);
-        Assert.assertEquals("list() should return 5 Persons entities", 5, personResults.size());
+        assertEquals(5, personResults.size(), "list() should return 5 Persons entities");
 
         Restriction<String> givenNameExact = new Restriction<>("givenName", MatchMode.EXACT);
         restrictions.add(givenNameExact);
 
         personResults = agentDao.list(Person.class, restrictions, (Integer)null, (Integer)null, null, null);
-        Assert.assertEquals("list() empty value lists should be ignored", 5, personResults.size());
+        assertEquals(5, personResults.size(), "list() empty value lists should be ignored");
 
         restrictions.clear();
         givenNameExact = new Restriction<>("givenName", MatchMode.EXACT, "Ben");
         restrictions.add(givenNameExact);
         personResults = agentDao.list(Person.class, restrictions, (Integer)null, (Integer)null, null, null);
-        Assert.assertEquals("list() should return 1 AgentBase entity having the givenname 'Ben'", 1 ,personResults.size());
+        assertEquals(1, personResults.size(), "list() should return 1 AgentBase entity having the givenname 'Ben'");
     }
 
     @Test
@@ -254,19 +255,19 @@ public class AgentDaoImplTest extends CdmTransactionalSpringIntegrationTest {
     public void testCountPeopleFiltered() {
 
         List<Restriction<?>> restrictions = new ArrayList<>();
-        Assert.assertEquals("count() should return 9 AgentBase entities", 9 , agentDao.count(null, restrictions));
+        assertEquals(9, agentDao.count(null, restrictions), "count() should return 9 AgentBase entities");
 
-        Assert.assertEquals("count() should return 5 Persons entities", 5, agentDao.count(Person.class, restrictions));
+        assertEquals(5, agentDao.count(Person.class, restrictions), "count() should return 5 Persons entities");
 
         Restriction<String> givenNameExact = new Restriction<>("givenName", MatchMode.EXACT);
         restrictions.add(givenNameExact);
 
-        Assert.assertEquals("count() empty value lists should be ignored", 5, agentDao.count(Person.class, restrictions));
+        assertEquals(5, agentDao.count(Person.class, restrictions), "count() empty value lists should be ignored");
 
         restrictions.clear();
         givenNameExact = new Restriction<>("givenName", MatchMode.EXACT, "Ben");
         restrictions.add(givenNameExact);
-        Assert.assertEquals("count() should return 1 Persons entity having the given name 'Ben'", 1 , agentDao.count(Person.class, restrictions));
+        assertEquals(1, agentDao.count(Person.class, restrictions), "count() should return 1 Persons entity having the given name 'Ben'");
     }
 
     @Test
@@ -274,8 +275,8 @@ public class AgentDaoImplTest extends CdmTransactionalSpringIntegrationTest {
     public void testListPeopleInPreviousView() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
         List<Person> result = agentDao.list(Person.class, null, null);
-        Assert.assertNotNull("list() should return a list",result);
-        Assert.assertEquals("list() should return five agents in the current view",result.size(),5);
+        assertNotNull(result, "list() should return a list");
+        assertEquals(result.size(), 5, "list() should return five agents in the current view");
     }
 
     @Test

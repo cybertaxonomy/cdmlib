@@ -8,11 +8,15 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -44,7 +48,7 @@ public class PreferenceDaoImplTest  extends CdmTransactionalSpringIntegrationTes
     @Test
     @CdmDataSet
     public void testDao() {
-    	Assert.assertNotNull(dao);
+    	assertNotNull(dao);
     }
 
     @Test
@@ -53,31 +57,31 @@ public class PreferenceDaoImplTest  extends CdmTransactionalSpringIntegrationTes
         PrefKey key = CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.NomenclaturalCode);
 //        PrefKey key = CdmPreference.NewKey(PreferenceSubjectEnum.Database, PreferencePredicate.NomenclaturalCode);
         CdmPreference pref = dao.get(key);
-        Assert.assertNotNull("CdmPreference for given key must exist", pref);
-        Assert.assertEquals("ICNAFP", pref.getValue());
+        assertNotNull(pref, "CdmPreference for given key must exist");
+        assertEquals("ICNAFP", pref.getValue());
 
         key = CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.Test);
 //        key = CdmPreference.NewKey(PreferenceSubjectEnum.Database, PreferencePredicate.Test);
         pref = dao.get(key);
-        Assert.assertNull("CdmPreference for given key must not exist", pref);
+        assertNull(pref, "CdmPreference for given key must not exist");
     }
 
     @Test
     @CdmDataSet
     public void testCount() {
     	 long countStart = dao.count();
-         Assert.assertEquals("There should be 1 preference in the CDM store", 1, countStart);
+         assertEquals(1, countStart, "There should be 1 preference in the CDM store");
     }
 
     @Test
     @CdmDataSet
     public void testList() {
          List<CdmPreference> list = dao.list();
-         Assert.assertEquals("There should be 1 preference in the CDM store", 1, list.size());
+         assertEquals(1, list.size(), "There should be 1 preference in the CDM store");
          CdmPreference pref = list.get(0);
-         Assert.assertNotNull("CdmPreference for given key must exist", pref);
-         Assert.assertEquals("ICNAFP", pref.getValue());
-         Assert.assertTrue(pref.isDatabasePref());
+         assertNotNull(pref, "CdmPreference for given key must exist");
+         assertEquals("ICNAFP", pref.getValue());
+         assertTrue(pref.isDatabasePref());
     }
 
     @Test
@@ -85,20 +89,20 @@ public class PreferenceDaoImplTest  extends CdmTransactionalSpringIntegrationTes
     public void testSet() {
     	//test existing pref
         long countStart = dao.count();
-        Assert.assertEquals(1, countStart);
+        assertEquals(1, countStart);
 
         //add 1 pref
         CdmPreference pref = CdmPreference.NewInstance(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.Test, "200");
         int addedPrefs = 1;
         dao.set(pref);
 	   	long count = dao.count();
-	    Assert.assertEquals("There should be 1 new preference (resulting in 2 prefs)", countStart + addedPrefs, count);
+	    assertEquals(countStart + addedPrefs, count, "There should be 1 new preference (resulting in 2 prefs)");
 
 	    //override existing pref
 	    pref = CdmPreference.NewInstance(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.NomenclaturalCode, "ICZN");
         dao.set(pref);
 	   	count = dao.count();
-	    Assert.assertEquals("There should still be only 1 new preference (resulting in 2 prefs)", countStart + addedPrefs, count);
+	    assertEquals(countStart + addedPrefs, count, "There should still be only 1 new preference (resulting in 2 prefs)");
 
 	    //override with default value
 	    //delete default values, we decided to keep preferences with default values in db and remove them explicitly when wanted to use the default (#8062 and #8045)
@@ -106,16 +110,16 @@ public class PreferenceDaoImplTest  extends CdmTransactionalSpringIntegrationTes
 	    pref.setAllowOverride(true);
 	    dao.set(pref);
 	    count = dao.count();
-        Assert.assertEquals("There should still be 1 preference left. Nomenclatural Code should not be delete though containing default value", countStart + addedPrefs, count);
+        assertEquals(countStart + addedPrefs, count, "There should still be 1 preference left. Nomenclatural Code should not be delete though containing default value");
 
         //fully remove existing pref
         pref = CdmPreference.NewInstance(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.NomenclaturalCode, PreferencePredicate.NomenclaturalCode.getDefaultValue().toString());
         pref.setAllowOverride(true);
         dao.remove(pref.getKey());
         count = dao.count();
-        Assert.assertEquals("There should be only 1 preference left. Nomenclatural Code should be delete", addedPrefs, count);
+        assertEquals(addedPrefs, count, "There should be only 1 preference left. Nomenclatural Code should be delete");
         pref = dao.get(CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.NomenclaturalCode));
-        Assert.assertNull(pref);
+        assertNull(pref);
     }
 
     @Test
@@ -126,17 +130,17 @@ public class PreferenceDaoImplTest  extends CdmTransactionalSpringIntegrationTes
         TaxonNode speciesNode = genusNode.getChildNodes().get(0);
 
         CdmPreference pref = dao.find(speciesNode, PreferencePredicate.NomenclaturalCode.getKey());
-        Assert.assertNotNull("CdmPreference for given key must exist", pref);
-        Assert.assertEquals("ICZN", pref.getValue());
+        assertNotNull(pref, "CdmPreference for given key must exist");
+        assertEquals("ICZN", pref.getValue());
 
         pref = dao.find(genusNode, PreferencePredicate.NomenclaturalCode.getKey());
-        Assert.assertNotNull("CdmPreference for given key must exist", pref);
-        Assert.assertEquals("ICVCN", pref.getValue());
+        assertNotNull(pref, "CdmPreference for given key must exist");
+        assertEquals("ICVCN", pref.getValue());
 
         pref = dao.find(classification.addChildTaxon(null, null, null), PreferencePredicate.NomenclaturalCode.getKey());
-        Assert.assertNotNull("CdmPreference for given key must exist", pref);
-        Assert.assertEquals("ICNAFP", pref.getValue());
-        Assert.assertTrue(pref.isDatabasePref());
+        assertNotNull(pref, "CdmPreference for given key must exist");
+        assertEquals("ICNAFP", pref.getValue());
+        assertTrue(pref.isDatabasePref());
 
     }
 

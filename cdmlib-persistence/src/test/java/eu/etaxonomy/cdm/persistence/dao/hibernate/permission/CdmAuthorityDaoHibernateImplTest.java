@@ -8,10 +8,13 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.permission;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.FileNotFoundException;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -46,11 +49,11 @@ public class CdmAuthorityDaoHibernateImplTest extends CdmTransactionalSpringInte
     @CdmDataSet
     public void testLoad() {
         CdmAuthority authority = authorityDao.load(uuidAuthority1);
-        Assert.assertNotNull(authority);
-        Assert.assertTrue(authority.getOperations().contains(CRUD.CREATE));
+        assertNotNull(authority);
+        assertTrue(authority.getOperations().contains(CRUD.CREATE));
         User user = userDao.load(1, null);
-        Assert.assertNotNull(user);
-        Assert.assertEquals(authority, user.getAuthoritiesB().iterator().next());
+        assertNotNull(user);
+        assertEquals(authority, user.getAuthoritiesB().iterator().next());
     }
 
     @Override

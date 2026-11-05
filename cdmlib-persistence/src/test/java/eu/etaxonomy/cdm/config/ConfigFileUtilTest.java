@@ -8,10 +8,11 @@
  */
 package eu.etaxonomy.cdm.config;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.File;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.kohlbecker
@@ -22,6 +23,6 @@ public class ConfigFileUtilTest {
 	@Test
     public void testGetHomeDirFallback() {
         String userHome = System.getProperty("user.home");
-        Assert.assertEquals(userHome+File.separator+".cdmLibrary", ConfigFileUtil.getCdmHomeDirFallback().toString());
+        assertEquals(userHome+File.separator+".cdmLibrary", ConfigFileUtil.getCdmHomeDirFallback().toString());
     }
 }

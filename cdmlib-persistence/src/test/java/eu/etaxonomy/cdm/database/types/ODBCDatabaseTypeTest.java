@@ -8,15 +8,14 @@
 */
 package eu.etaxonomy.cdm.database.types;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
@@ -33,32 +32,19 @@ public class ODBCDatabaseTypeTest {
 
 	private static DatabaseTypeEnum enumType;
 
-	CdmPersistentDataSource dataSource;
-	String server;
-	String dbName;
-	int port;
-	String username;
-	String password;
+	private CdmPersistentDataSource dataSource;
+	private String server;
+	private String dbName;
+	private int port;
+	private String username;
+	private String password;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
+	@BeforeAll
 	public static void setUpBeforeClass() throws Exception {
 		enumType = DatabaseTypeEnum.ODBC;
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		server = "server";
 		dbName = "db";
@@ -69,25 +55,16 @@ public class ODBCDatabaseTypeTest {
 				"sybaseTest", CdmDataSource.NewInstance(enumType, server, dbName, port, username, password));
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.types.PostgreSQLDatabaseType#getConnectionString(eu.etaxonomy.cdm.database.ICdmDataSource)}.
-	 */
 	@Test
 	public void testGetConnectionStringICdmDataSource() {
 		String expected = "jdbc:odbc:" + server ;
 		assertEquals(expected, enumType.getConnectionString(dataSource));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.types.PostgreSQLDatabaseType#getConnectionString(eu.etaxonomy.cdm.database.ICdmDataSource, int)}.
-	 */
 	@Test
 	public void testGetConnectionStringICdmDataSourceInt() {
 		port = 357;
@@ -95,26 +72,17 @@ public class ODBCDatabaseTypeTest {
 		assertEquals(expected, ((OdbcDatabaseType)enumType.getDatabaseType()).getConnectionString(dataSource, port));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.types.PostgreSQLDatabaseType#getDatabaseNameByConnectionString(java.lang.String)}.
-	 */
 	@Test
 	public void testGetDatabaseNameByConnectionString() {
 		dbName = null;
 		assertEquals(dbName, dataSource.getDatabase());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getServerNameByConnectionString(java.lang.String)}.
-	 */
 	@Test
 	public void testGetServerNameByConnectionStringString() {
 		assertEquals(server, dataSource.getServer());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getPortByConnectionString(java.lang.String)}.
-	 */
 	@Test
 	public void testGetPortByConnectionStringString() {
 		port = -1;
