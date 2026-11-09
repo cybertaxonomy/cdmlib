@@ -16,6 +16,7 @@ import com.github.dozermapper.core.CustomConverter;
 import com.github.dozermapper.core.MappingException;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.TimePeriodBase;
 
 public class TimePeriodConverter implements CustomConverter {
 
@@ -25,11 +26,12 @@ public class TimePeriodConverter implements CustomConverter {
 		if (source == null) {
 			return null;
 		}
-		if (source instanceof TimePeriod) {
+		// datePublished is VerbatimTimePeriod (TimePeriodBase), not only TimePeriod
+		if (source instanceof TimePeriodBase) {
 
-			//convert from TimePeriod -> ZonedDateTime
+			//convert from TimePeriodBase -> ZonedDateTime
 			//FIXME null as default most probably not correct
-		    Partial start = ((TimePeriod)source).getStart();
+		    Partial start = ((TimePeriodBase)source).getStart();
 			if(start != null){
 			    return TimePeriod.zonedDateTimeFromPartial(start, null);
 			} else {
@@ -43,7 +45,7 @@ public class TimePeriodConverter implements CustomConverter {
 			return null;
 		} else {
 
-			throw new MappingException("Converter TestCustomConverter used incorrectly. Arguments passed in were:"
+			throw new MappingException("TimePeriodConverter used incorrectly. Arguments passed in were:"
 					+ existingDestinationFieldValue + " and " + source);
 		}
 	}

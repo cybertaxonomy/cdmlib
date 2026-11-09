@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2023 EDIT
 * European Distributed Institute of Taxonomy
@@ -16,7 +15,6 @@ import java.util.UUID;
 /**
  * @author KatjaLuther
  * @date 23.06.2023
- *
  */
 public class CdmBaseDto implements Serializable, ICdmBaseDto {
 

@@ -21,16 +21,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.From;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.EntityType;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,6 +30,7 @@ import org.hibernate.Session;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditQuery;
+import org.hibernate.query.criteria.HibernateCriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -61,6 +52,19 @@ import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadata;
 import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadataFactory;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import jakarta.persistence.Lob;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.From;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Selection;
+import jakarta.persistence.metamodel.EntityType;
 
 /**
  * Hibernate implementation for {@link ICdmEntityDao}.
@@ -371,6 +375,34 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             }
             return results.get(0);
         }
+    }
+
+    @Override
+    public T findByUuidPreferManaged(UUID uuid) throws DataAccessException {
+        return findByUuidPreferManaged(uuid, INCLUDE_UNPUBLISHED);
+    }
+
+    private T findByUuidPreferManaged(UUID uuid, boolean includeUnpublished) throws DataAccessException {
+
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Integer> cq = cb.createQuery(Integer.class);
+        Root<T> root = cq.from(type);
+        Predicate where = predicateUuid(cb, root, uuid);
+        if (IPublishable.class.isAssignableFrom(type) && !includeUnpublished) {
+            where = cb.and(where, predicateBoolean(cb, root, "publish", Boolean.TRUE));
+        }
+        cq.select(root.get("id"))
+          .where(where)
+          .orderBy(cb.desc(root.get("created")));
+
+        List<Integer> ids = getSession().createQuery(cq).getResultList();
+        if (ids.isEmpty()) {
+            return null;
+        }
+        if (ids.size() > 1) {
+            logger.error("findByUuidPreferManaged() delivers more than one result for UUID: " + uuid);
+        }
+        return getSession().get(type, ids.get(0));
     }
 
     @Override
@@ -785,9 +817,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
         Root<? extends T> root = cq.from(entityClass);
 
-        List<javax.persistence.criteria.Selection<?>> selections = new ArrayList<>();
-        List<javax.persistence.criteria.Expression<?>> groupByExpressions = new ArrayList<>();
-        List<javax.persistence.criteria.Order> orders = new ArrayList<>();
+        List<Selection<?>> selections = new ArrayList<>();
+        List<Expression<?>> groupByExpressions = new ArrayList<>();
+        List<Order> orders = new ArrayList<>();
         Map<String, From<?, ?>> joins = new HashMap<>();
 
         if (groups != null) {
@@ -1050,32 +1082,38 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     //TODO: there is a very similar implementation somewhere else
+    /**
+     * Note: since hibernate 6 case-insensitivity for {@link Lob} are
+     * implemented via hibernate specific iLike.
+     */
     protected <S extends T> Predicate predicateForMatchMode(String param,
             String queryString, MatchMode matchMode,
             CriteriaBuilder cb, From<?,?> root, boolean ignoreCase) {
 
+        String pattern = queryString == null ? "" : queryString;
+        Expression<String> path = root.get(param);
         Predicate result;
         if (ignoreCase) {
-            String lowerQueryString = queryString == null ? "" : queryString.toLowerCase();
+            // HibernateCriteriaBuilder.ilike works for VARCHAR and CLOB/@Lob
+            HibernateCriteriaBuilder hcb = (HibernateCriteriaBuilder) cb;
             if (matchMode == null) {
-                result = cb.like(cb.lower(root.get(param)), lowerQueryString);
+                result = hcb.ilike(path, pattern);
             } else if (matchMode == MatchMode.EXACT) {
-                result = cb.equal(cb.lower(root.get(param)), lowerQueryString);
+                result = hcb.ilike(path, pattern);
             } else if (matchMode == MatchMode.BEGINNING || matchMode == MatchMode.END
                     || matchMode == MatchMode.ANYWHERE || matchMode == MatchMode.LIKE) {
-                result = cb.like(cb.lower(root.get(param)), matchMode.queryStringFrom(lowerQueryString));
+                result = hcb.ilike(path, matchMode.queryStringFrom(pattern));
             } else {
                 throw new RuntimeException("Unsupported MatchMode: " + matchMode.name());
             }
-        }else {
-            String lowerQueryString = queryString == null ? "" : queryString;
+        } else {
             if (matchMode == null) {
-                result = cb.like(root.get(param), lowerQueryString);
+                result = cb.like(path, pattern);
             } else if (matchMode == MatchMode.EXACT) {
-                result = cb.equal(root.get(param), lowerQueryString);
+                result = cb.equal(path, pattern);
             } else if (matchMode == MatchMode.BEGINNING || matchMode == MatchMode.END
                     || matchMode == MatchMode.ANYWHERE || matchMode == MatchMode.LIKE) {
-                result = cb.like(root.get(param), matchMode.queryStringFrom(lowerQueryString));
+                result = cb.like(path, matchMode.queryStringFrom(pattern));
             } else {
                 throw new RuntimeException("Unsupported MatchMode: " + matchMode.name());
             }

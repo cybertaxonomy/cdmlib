@@ -279,12 +279,15 @@ public class CdmPersistentDataSource
         if (hibernateConfig == null){
             hibernateConfig = HibernateConfiguration.NewDefaultInstance();
         }
-        boolean showSql = hibernateConfig.getShowSql();
-        boolean formatSql = hibernateConfig.getFormatSql();
-        boolean registerAuditing = hibernateConfig.getRegisterEnvers();
-        boolean registerSearchListener = hibernateConfig.getRegisterSearch();
-        Class<? extends RegionFactory> cacheProviderClass = hibernateConfig.getCacheProviderClass();
-        String byteCodeProvider = hibernateConfig.getByteCodeProvider();
+        // null-safe defaults: deprecated overload passes registerEnvers=null
+        boolean showSql = hibernateConfig.getShowSql(HibernateConfiguration.SHOW_SQL_DEFAULT);
+        boolean formatSql = hibernateConfig.getFormatSql(HibernateConfiguration.FORMAT_SQL_DEFAULT);
+        boolean registerAuditing = hibernateConfig.getRegisterEnvers(HibernateConfiguration.REGISTER_ENVERS_DEFAULT);
+        boolean registerSearchListener = hibernateConfig.getRegisterSearch(HibernateConfiguration.REGISTER_SEARCH_DEFAULT);
+        Class<? extends RegionFactory> cacheProviderClass = hibernateConfig.getCacheProviderClass(
+                HibernateConfiguration.CACHE_PROVIDER_DEFAULT);
+        String byteCodeProvider = hibernateConfig.getByteCodeProvider(
+                HibernateConfiguration.BYTECODE_PROVIDER_DEFAULT);
 
 		//Hibernate default values
 		if (hbm2dll == null){

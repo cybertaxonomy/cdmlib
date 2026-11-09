@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.cdm.model.metadata;
 
+import org.hibernate.type.SqlTypes;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.Length;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,11 +18,11 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Lob;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -134,8 +137,12 @@ public final class CdmPreference implements Serializable {
 	@EmbeddedId
 	private PrefKey key;
 
-	@Column(length=VALUE_LENGTH)
+	// VALUE_LENGTH enforced in setter.
+	// Envers can drop @Lob on _AUD (→ varchar(255) vs legacy CLOB). LONG32 exceeds dialect max VARCHAR
+	// so expected type upgrades to CLOB; @JdbcTypeCode reinforces CLOB. Keep until Envers preserves LOB reliably.
+	@Column(length = Length.LONG32)
 	@Lob
+	@JdbcTypeCode(SqlTypes.CLOB)
 	private String value;
 
     //if false, the preference should not be overridden by local preferences,

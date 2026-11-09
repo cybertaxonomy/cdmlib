@@ -16,12 +16,11 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.FlushMode;
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +33,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.database.update.SortIndexUpdater;
+import jakarta.persistence.FlushModeType;
 
 /**
  * @author k.luther
@@ -50,7 +50,7 @@ public class SortIndexUpdaterWrapper implements Serializable {
     private static final String POLYTOMOUS_KEY_NODE = "PolytomousKeyNode";
 
     @Autowired
-    private HibernateTransactionManager transactionManager;
+    private PlatformTransactionManager transactionManager;
 //    @Autowired
 //    private CdmRepository repository;  //TODO not unique therefore byName or so is needed
     @Autowired
@@ -83,7 +83,7 @@ public class SortIndexUpdaterWrapper implements Serializable {
         return result;
     }
 
-    private UpdateResult update(SortIndexUpdater updater,  IProgressMonitor  monitor){
+    private UpdateResult update(SortIndexUpdater updater, IProgressMonitor monitor){
 
         //TODO change to long running task result
         UpdateResult updateResult = new UpdateResult();
@@ -91,7 +91,7 @@ public class SortIndexUpdaterWrapper implements Serializable {
 
             TransactionStatus tx = startTransaction(true);
             String query = updater.createIndexMapQuery();
-            List<?> data = getSqlResult(query);
+            List<Object[]> data = getSqlResult(query, Object[].class);
 
             int c = 2;
             if (updater.getTableName().equals(TAXON_NODE)){
@@ -142,7 +142,7 @@ public class SortIndexUpdaterWrapper implements Serializable {
             if (updater.getTableName().equals(TAXON_NODE)){
 
                 query = updater.getChildrenCountQuery();
-                data = getSqlResult(query);
+                data = getSqlResult(query, Object[].class);
                 subMonitor = SubProgressMonitor.NewInstance(monitor, data.size());
                 int realCount;
                 int countChildren;
@@ -175,14 +175,14 @@ public class SortIndexUpdaterWrapper implements Serializable {
         return updateResult;
     }
 
-    private List<?> getSqlResult(String query) {
-        NativeQuery<?> sqlQuery = getSession().createNativeQuery(query);
-        List<?> data = sqlQuery.list();
+    private <T extends Object> List<T> getSqlResult(String query, Class<T> clazz) {
+        NativeQuery<T> sqlQuery = getSession().createNativeQuery(query, clazz);
+        List<T> data = sqlQuery.list();
         return data;
     }
 
     private int executeSqlResult(String query) {
-        NativeQuery<?> sqlQuery = getSession().createNativeQuery(query);
+        NativeQuery<Object> sqlQuery = getSession().createNativeQuery(query, Object.class);
         return sqlQuery.executeUpdate();
     }
 
@@ -207,7 +207,7 @@ public class SortIndexUpdaterWrapper implements Serializable {
         TransactionStatus txStatus = transactionManager.getTransaction(txDef);
 
         //TODO is this really necessary
-        getSession().setHibernateFlushMode(FlushMode.COMMIT);
+        getSession().setFlushMode(FlushModeType.COMMIT);
 
         return txStatus;
     }

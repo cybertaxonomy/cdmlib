@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.jaxb;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;

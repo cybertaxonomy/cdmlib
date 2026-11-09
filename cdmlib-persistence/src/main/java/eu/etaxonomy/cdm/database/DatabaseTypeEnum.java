@@ -26,9 +26,7 @@ import eu.etaxonomy.cdm.database.types.MySQLDatabaseType;
 import eu.etaxonomy.cdm.database.types.OdbcDatabaseType;
 import eu.etaxonomy.cdm.database.types.OracleDatabaseType;
 import eu.etaxonomy.cdm.database.types.PostgreSQLDatabaseType;
-import eu.etaxonomy.cdm.database.types.SqlServer2005DatabaseType;
-import eu.etaxonomy.cdm.database.types.SqlServer2008DatabaseType;
-import eu.etaxonomy.cdm.database.types.SqlServer2012DatabaseType;
+import eu.etaxonomy.cdm.database.types.SqlServerDatabaseType;
 import eu.etaxonomy.cdm.database.types.SybaseDatabaseType;
 
 /**
@@ -39,13 +37,10 @@ public enum DatabaseTypeEnum {
 	ODBC(2),
 	PostgreSQL(3),
 	Oracle(4),
-	//SqlServer2000(5),
-	SqlServer2005(6),
-	Sybase(7),
-	H2(8),
-	SqlServer2008(9),
-    SqlServer2012(10),
-    MariaDB(11),  //not yet tested
+	SqlServer(5),
+	Sybase(6),
+	H2(7),
+    MariaDB(8),  //not yet tested
     ;
 
     private static final Logger logger = LogManager.getLogger();
@@ -66,17 +61,13 @@ public enum DatabaseTypeEnum {
             	this.dbType = new PostgreSQLDatabaseType(); break;
         	case 4:
              	this.dbType = new OracleDatabaseType(); break;
+            case 5:
+            	this.dbType = new SqlServerDatabaseType(); break;
             case 6:
-            	this.dbType = new SqlServer2005DatabaseType(); break;
-            case 7:
             	this.dbType = new SybaseDatabaseType(); break;
-            case 8:
+            case 7:
             	this.dbType = new H2DatabaseType(); break;
-            case 9:
-                this.dbType = new SqlServer2008DatabaseType(); break;
-            case 10:
-                this.dbType = new SqlServer2012DatabaseType(); break;
-            case 11:
+            case 8:
                 this.dbType = new MariaDbDatabaseType(); break;
             default:
                 throw new RuntimeException("Database type not handled");
@@ -236,7 +227,7 @@ public enum DatabaseTypeEnum {
         }else if (product.toLowerCase().matches("\\.*sqlserver\\.*")) {
             //TODO we need to distinguish versions here once we have sql server 2008 database enum
 //            metaData.getDatabaseProductVersion()
-            return SqlServer2005;
+            return SqlServer;
             //XX
         }else if (product.toLowerCase().matches("\\.*h2\\.*")) {
             return H2;
@@ -271,7 +262,7 @@ public enum DatabaseTypeEnum {
     }
 
     public boolean isSqlServer() {
-        return this == SqlServer2005 || this == SqlServer2008 || this == SqlServer2012;
+        return this == SqlServer;
     }
 
     public boolean isH2() {
@@ -281,5 +272,4 @@ public enum DatabaseTypeEnum {
     public boolean isPostgres() {
         return this == PostgreSQL;
     }
-
 }

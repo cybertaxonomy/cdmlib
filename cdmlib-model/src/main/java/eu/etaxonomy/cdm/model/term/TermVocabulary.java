@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.cdm.model.term;
 
+import org.hibernate.type.SqlTypes;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.Length;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,23 +18,10 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
@@ -42,8 +32,24 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordFie
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.compare.term.TermLanguageComparator;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.UriBridge;
+import eu.etaxonomy.cdm.jpa.UriConverter;
 import eu.etaxonomy.cdm.model.common.Language;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Lob;
+import jakarta.persistence.OneToMany;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlIDREF;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * A single enumeration must only contain DefinedTerm instances of one kind
@@ -73,7 +79,12 @@ public class TermVocabulary<T extends DefinedTermBase>
 	// UUID needed? Further vocs can be setup through our own ontology.
 	@XmlElement(name = "TermSourceURI")
 	@KeywordField(valueBridge = @ValueBridgeRef(type = UriBridge.class))
-	@Type(type="uriUserType")
+	@Convert(converter = UriConverter.class)
+	// Envers can drop @Lob on _AUD (→ varchar(255) vs legacy CLOB). LONG32 exceeds dialect max VARCHAR
+	// so expected type upgrades to CLOB; @JdbcTypeCode reinforces CLOB. Keep until Envers preserves LOB reliably.
+	@Column(length = Length.LONG32)
+	@Lob
+	@JdbcTypeCode(SqlTypes.CLOB)
 	private URI termSourceUri;
 
 	@XmlElementWrapper(name = "Terms")
@@ -81,8 +92,7 @@ public class TermVocabulary<T extends DefinedTermBase>
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="vocabulary", fetch=FetchType.LAZY, targetEntity = DefinedTermBase.class)
-	@Type(type="DefinedTermBase")
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
 	@IndexedEmbedded(includeDepth = 2)
 	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	protected Set<T> terms = newTermSet();
@@ -148,7 +158,7 @@ public class TermVocabulary<T extends DefinedTermBase>
     }
 
 	public Set<T> getTerms() {
-		return terms;
+		return HibernateProxyHelper.deproxyAll(terms);
 	}
 
 	public void addTerm(T term) {

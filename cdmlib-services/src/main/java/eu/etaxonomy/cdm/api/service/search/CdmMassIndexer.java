@@ -8,58 +8,39 @@
 */
 package eu.etaxonomy.cdm.api.service.search;
 
-import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
-import java.lang.reflect.Field;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.search.spell.Dictionary;
-import org.apache.lucene.search.spell.LuceneDictionary;
-import org.apache.lucene.search.spell.SpellChecker;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
 import org.hibernate.CacheMode;
-import org.hibernate.Session;
-import org.hibernate.search.backend.lucene.LuceneExtension;
-import org.hibernate.search.backend.lucene.scope.LuceneIndexScope;
+import org.hibernate.SessionFactory;
+import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.MySQLDialect;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.mapper.orm.entity.SearchIndexedEntity;
 import org.hibernate.search.mapper.orm.mapping.SearchMapping;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 import org.hibernate.search.mapper.pojo.massindexing.MassIndexingMonitor;
-import org.hibernate.search.util.common.SearchException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
-import eu.etaxonomy.cdm.common.monitor.RestServiceProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.persistence.hibernate.CdmSessionUtils;
+import jakarta.persistence.EntityManager;
 
 /**
  * @author Andreas Kohlbecker
@@ -73,86 +54,15 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
     private final Set<Class<? extends CdmBase>> indexedClasses = new HashSet<>();
 
-    private HibernateTransactionManager transactionManager;
-
     @Autowired
-    public void setTransactionManager(PlatformTransactionManager transactionManager) {
-        this.transactionManager = (HibernateTransactionManager)transactionManager;
-    }
+    private SessionFactory sessionFactory;
 
-    protected Session getSession(){
-        Session session = transactionManager.getSessionFactory().getCurrentSession();
-        return session;
-    }
-
-    protected <T extends CdmBase> void createDictionary(Class<T> type, IProgressMonitor monitor)  {
-
-        SearchMapping mapping = getSearchMapping();
-        try {
-            mapping.indexedEntity(type);
-        } catch (SearchException e) {
-            logger.info("Skipping dictionary creation for non-indexed type {}", type.getName());
-            return;
-        }
-
-        LuceneIndexScope scope = mapping.scope(type).extension(LuceneExtension.get());
-        IndexReader indexReader = scope.openIndexReader();
-        List<String> idFields = getIndexedDeclaredFields(type);
-
-        monitor.subTask("creating dictionary " + type.getSimpleName());
-
-        SubProgressMonitor subMonitor = SubProgressMonitor.NewInstance(monitor, 1);
-        subMonitor.beginTask("Creating dictionary " + type.getSimpleName(), 1);
-
-        SpellChecker spellChecker = null;
-        try {
-            // Use a RAM directory for the spell checker index; the former HS5
-            // DirectoryBasedIndexManager API is no longer available.
-            Directory directory = FSDirectory.open(
-                    java.nio.file.Paths.get(System.getProperty("java.io.tmpdir"),
-                            "cdm-spellcheck", type.getSimpleName()));
-            spellChecker = new SpellChecker(directory);
-            Iterator<String> itr = idFields.iterator();
-            while(itr.hasNext()) {
-                String indexedField = itr.next();
-                logger.info("creating dictionary for field " + indexedField);
-                Dictionary dictionary = new LuceneDictionary(indexReader, indexedField);
-                IndexWriterConfig iwc = new IndexWriterConfig(new StandardAnalyzer());
-                spellChecker.indexDictionary(dictionary, iwc, true);
-            }
-            subMonitor.internalWorked(1);
-        } catch (IOException e) {
-            logger.error("IOException when creating dictionary", e);
-            //TODO better means to notify that the process has been stopped, using the STOPPED_WORK_INDICATOR is only a hack
-            monitor.worked(RestServiceProgressMonitor.STOPPED_WORK_INDICATOR);
-            monitor.done();
-        } catch (RuntimeException e) {
-            logger.error("RuntimeException when creating dictionary", e);
-            //TODO better means to notify that the process has been stopped, using the STOPPED_WORK_INDICATOR is only a hack
-            monitor.worked(RestServiceProgressMonitor.STOPPED_WORK_INDICATOR);
-            monitor.done();
-        } finally {
-            try {
-                indexReader.close();
-            } catch (IOException e) {
-                logger.error("IOException when closing index reader", e);
-            }
-        }
-        if (spellChecker != null) {
-            try {
-                logger.info("closing spellchecker ");
-                spellChecker.close();
-            } catch (IOException e) {
-                logger.error("IOException when closing spellchecker", e);
-            }
-        }
-
-        logger.info("end creating dictionary " + type.getName());
-        subMonitor.done();
+    private EntityManager getEntityManager(){
+        return CdmSessionUtils.getTransactionalEntityManager(sessionFactory);
     }
 
     private SearchMapping getSearchMapping() {
-        return Search.mapping(transactionManager.getSessionFactory());
+        return Search.mapping(sessionFactory);
     }
 
     /**
@@ -160,7 +70,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
      * Index files for each entity live under {@code <root>/<indexName>/}.
      */
     private void logIndexDirectory() {
-        Map<String, Object> props = transactionManager.getSessionFactory().getProperties();
+        Map<String, Object> props = sessionFactory.getProperties();
         Object directoryType = props.get("hibernate.search.backend.directory.type");
         Object directoryRoot = props.get("hibernate.search.backend.directory.root");
         if (directoryRoot != null) {
@@ -213,22 +123,14 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     }
 
     private <T> Long countEntities(Class<T> type) {
-        Object countResultObj = getSession().createQuery("select count(*) from " + type.getName()).uniqueResult();
-        Long countResult = (Long)countResultObj;
-        return countResult;
+        return getEntityManager()
+                .createQuery("SELECT count(*) FROM " + type.getName(), Long.class)
+                .getSingleResult();
     }
 
     protected <T extends CdmBase>void purge(Class<T> type, IProgressMonitor monitor) {
-
         logger.info("purging " + type.getName());
-        Search.session(getSession()).workspace(type).purge();
-
-        // Spell-check index purge relied on HS5 DirectoryBasedIndexManager; disabled under HS6.
-        boolean doSpellIndex = false;
-
-        if(doSpellIndex){
-            logger.warn("Spell index purge is not supported under Hibernate Search 6");
-        }
+        Search.session(getEntityManager()).workspace(type).purge();
     }
 
     @Override
@@ -264,12 +166,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     }
 
     /**
-     * Reindex method which uses
-     * the mass indexer available in hibernate search 5.5
-     *
-     * @param type
-     * @param monitor
-     * @throws InterruptedException
+     * Reindex one entity type via the Hibernate Search mass indexer.
      */
     protected void reindexSingleClass(Class<? extends CdmBase> type, IProgressMonitor monitor) {
 
@@ -286,13 +183,13 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         MassIndexingMonitor indexerMonitorWrapper = new MassIndexerProgressMonitorWrapper(subMonitor, batchSize);
 
         try {
-            Search.session(getSession())
+            Search.session(getEntityManager())
                 .massIndexer(type)
                 .batchSizeToLoadObjects(batchSize)
                 .cacheMode(CacheMode.IGNORE)
                 .threadsToLoadObjects(4)
-                .idFetchSize(150) //only as workaround revert the changes temporarily
-                //.idFetchSize(Integer.MIN_VALUE)  //was 150
+                .idFetchSize(resolveIdFetchSize())
+
                 .monitor(indexerMonitorWrapper)
                 .startAndWait();
         } catch (InterruptedException ie) {
@@ -301,26 +198,23 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         }
     }
 
-    @Override
-    public void createDictionary(IProgressMonitor monitor) {
-        if(monitor == null){
-            monitor = new NullProgressMonitor();
+    /**
+     * MySQL/MariaDB need {@link Integer#MIN_VALUE} so the JDBC driver streams IDs
+     * instead of preloading the whole result set. Other databases (e.g. H2) reject
+     * negative fetch sizes.
+     */
+    private int resolveIdFetchSize() {
+        Dialect dialect = sessionFactory.unwrap(SessionFactoryImplementor.class)
+                .getJdbcServices().getDialect();
+        if (dialect instanceof MySQLDialect) {
+            return Integer.MIN_VALUE;
         }
-
-        monitor.setTaskName("CdmMassIndexer_Dictionary");
-        int steps = dictionaryClasses().length; // +1 for optimize
-        monitor.beginTask("Creating Dictionary " + dictionaryClasses().length + " classes", steps);
-
-        for(Class<?> type : dictionaryClasses()){
-            createDictionary((Class)type, monitor);
-        }
-
-        monitor.done();
-
+        return 150;
     }
+
     protected void optimize() {
-        Search.session(getSession()).workspace().mergeSegments();
-        getSession().clear();
+        Search.session(getEntityManager()).workspace().mergeSegments();
+        getEntityManager().clear();
     }
 
     @Override
@@ -349,27 +243,6 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         monitor.done();
     }
 
-
-    /**
-     * Returns a list of declared indexable fields within a class through reflection.
-     */
-    private List<String> getIndexedDeclaredFields(Class<?> clazz) {
-        List<String> idFields = new ArrayList<String>();
-        if(clazz.isAnnotationPresent(Indexed.class)) {
-            Field[] declaredFields = clazz.getDeclaredFields();
-            for(int i=0;i<declaredFields.length;i++ ) {
-                logger.info("checking field " + declaredFields[i].getName());
-                if(declaredFields[i].isAnnotationPresent(FullTextField.class) ||
-                        declaredFields[i].isAnnotationPresent(KeywordField.class) ||
-                        declaredFields[i].isAnnotationPresent(GenericField.class)) {
-                    idFields.add(declaredFields[i].getName());
-                    logger.info("adding field " + declaredFields[i].getName());
-                }
-            }
-        }
-        return idFields;
-    }
-
     @Override
     public Set<Class<? extends CdmBase>> indexedClasses() {
 
@@ -381,12 +254,5 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             all.forEach(sie->indexedClasses.add((Class<? extends CdmBase>)sie.javaClass()));
         }
         return indexedClasses;
-    }
-
-    @Override
-    public Class<?>[] dictionaryClasses() {
-        return new Class[] {
-                TaxonName.class
-        };
     }
 }

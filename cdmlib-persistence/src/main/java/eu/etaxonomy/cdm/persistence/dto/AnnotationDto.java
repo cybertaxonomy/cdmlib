@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2023 EDIT
 * European Distributed Institute of Taxonomy
@@ -16,7 +15,6 @@ import java.util.UUID;
 /**
  * @author K.Luther
  * @date 05.06.2023
- *
  */
 public class AnnotationDto extends CdmBaseDto implements Serializable, Comparable<AnnotationDto>{
 

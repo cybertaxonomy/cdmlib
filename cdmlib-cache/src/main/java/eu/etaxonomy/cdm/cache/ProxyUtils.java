@@ -18,20 +18,19 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.hibernate.collection.internal.PersistentBag;
-import org.hibernate.collection.internal.PersistentList;
-import org.hibernate.collection.internal.PersistentMap;
-import org.hibernate.collection.internal.PersistentSet;
-import org.hibernate.collection.internal.PersistentSortedMap;
-import org.hibernate.collection.internal.PersistentSortedSet;
+import org.hibernate.collection.spi.PersistentBag;
 import org.hibernate.collection.spi.PersistentCollection;
+import org.hibernate.collection.spi.PersistentList;
+import org.hibernate.collection.spi.PersistentMap;
+import org.hibernate.collection.spi.PersistentSet;
+import org.hibernate.collection.spi.PersistentSortedMap;
+import org.hibernate.collection.spi.PersistentSortedSet;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 import org.hibernate.proxy.pojo.bytebuddy.SerializableProxy;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.PersistentMultiLanguageText;
 
 /**
  * @author cmathew
@@ -88,7 +87,7 @@ public class ProxyUtils {
             if(pc instanceof PersistentList || pc instanceof PersistentBag) {
                 return new ArrayList<>((List<?>)pc);
             }
-            if(pc instanceof PersistentMap || pc instanceof PersistentMultiLanguageText) {
+            if(pc instanceof PersistentMap) {
                 return new HashMap<>((Map<?,?>)pc);
             }
             if(pc instanceof PersistentSortedMap) {
@@ -110,7 +109,7 @@ public class ProxyUtils {
             if(pc instanceof PersistentList) {
                 return new CollectionField(new ArrayList<>((List<?>)pc), CollectionType.LIST);
             }
-            if(pc instanceof PersistentMap || pc instanceof PersistentMultiLanguageText) {
+            if(pc instanceof PersistentMap) {
                 return new CollectionField(new HashMap<>((Map<?,?>)pc), CollectionType.MAP);
             }
             if(pc instanceof PersistentSortedMap) {

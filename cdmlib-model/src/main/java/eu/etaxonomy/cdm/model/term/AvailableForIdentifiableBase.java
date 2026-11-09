@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.model.term;
 
-import javax.persistence.Entity;
-import javax.xml.bind.annotation.XmlElement;
+import jakarta.persistence.Entity;
+import jakarta.xml.bind.annotation.XmlElement;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

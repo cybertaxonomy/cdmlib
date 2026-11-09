@@ -8,33 +8,35 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
+import org.hibernate.type.SqlTypes;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.Length;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.MapKeyColumn;
-import javax.persistence.Transient;
 import javax.wsdl.Definition;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 
 import com.ibm.lsid.MalformedLSIDException;
 
-import eu.etaxonomy.cdm.hibernate.WSDLDefinitionUserType;
 import eu.etaxonomy.cdm.jaxb.NamespacesAdapter;
+import eu.etaxonomy.cdm.jpa.WsdlDefinitionConverter;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Lob;
+import jakarta.persistence.MapKeyColumn;
+import jakarta.persistence.Transient;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "LSIDAuthority", propOrder = {
@@ -46,7 +48,6 @@ import eu.etaxonomy.cdm.jaxb.NamespacesAdapter;
 })
 @XmlRootElement(name = "LSIDAuthority")
 @Entity
-@TypeDefs(@TypeDef(name = "wsdlDefinitionUserType", typeClass = WSDLDefinitionUserType.class))
 public class LSIDAuthority extends CdmBase {
 	private static final long serialVersionUID = 9168994979216936689L;
 
@@ -69,7 +70,12 @@ public class LSIDAuthority extends CdmBase {
 
 	// the wsdl describing how to invoke operations on the authority
     @XmlTransient
-	@Type(type = "wsdlDefinitionUserType")
+	@Convert(converter = WsdlDefinitionConverter.class)
+	// Envers can drop @Lob on _AUD (→ varchar(255) vs legacy CLOB). LONG32 exceeds dialect max VARCHAR
+	// so expected type upgrades to CLOB; @JdbcTypeCode reinforces CLOB. Keep until Envers preserves LOB reliably.
+	@Column(length = Length.LONG32)
+	@Lob
+	@JdbcTypeCode(SqlTypes.CLOB)
 	private Definition authorityWSDL;
 
     @XmlElement(name = "Namespaces")

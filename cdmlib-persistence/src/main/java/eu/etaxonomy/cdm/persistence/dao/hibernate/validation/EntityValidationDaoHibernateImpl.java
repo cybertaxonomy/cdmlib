@@ -13,8 +13,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.validation.ConstraintViolation;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.query.Query;
@@ -28,6 +26,7 @@ import eu.etaxonomy.cdm.model.validation.EntityValidation;
 import eu.etaxonomy.cdm.model.validation.Severity;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationDao;
+import jakarta.validation.ConstraintViolation;
 
 /**
  * @author ayco_holleman
@@ -127,7 +126,7 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
                         + "ORDER BY vr.validatedEntityClass, vr.validatedEntityId",
                         EntityValidation.class);
         query.setParameter("cls", validatedEntityClass);
-        query.setParameter("severity", severity.toString());
+        query.setParameter("severity", severity);
         List<EntityValidation> result = query.list();
         return result;
     }
@@ -139,7 +138,7 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
               + " WHERE cv.severity = :severity "
               + " ORDER BY vr.validatedEntityClass, vr.validatedEntityId",
               EntityValidation.class);
-        query.setParameter("severity", severity.toString());
+        query.setParameter("severity", severity);
         List<EntityValidation> result = query.list();
         return result;
     }

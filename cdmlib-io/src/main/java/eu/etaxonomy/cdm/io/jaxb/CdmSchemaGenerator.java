@@ -13,9 +13,10 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.SchemaOutputResolver;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.SchemaOutputResolver;
+
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -48,7 +49,7 @@ public class CdmSchemaGenerator extends SchemaOutputResolver {
      * Buffers one schema file per namespace.
      * Result here is schema1.xsd, ..., schema7.xsd in C:\Temp.
      * filename param is ignored.
-	 * @see javax.xml.bind.SchemaOutputResolver#createOutput(java.lang.String, java.lang.String)
+	 * @see jakarta.xml.bind.SchemaOutputResolver#createOutput(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public Result createOutput(String namespaceUri, String filename) throws IOException {
@@ -61,7 +62,7 @@ public class CdmSchemaGenerator extends SchemaOutputResolver {
 
 	/**
      * Writes one schema file per namespace.
-	 * @see javax.xml.bind.SchemaOutputResolver#createOutput(java.lang.String, java.lang.String)
+	 * @see jakarta.xml.bind.SchemaOutputResolver#createOutput(java.lang.String, java.lang.String)
 	 */
 	public void writeSchema() throws IOException {
 		jaxbContext.generateSchema(this);
@@ -71,7 +72,7 @@ public class CdmSchemaGenerator extends SchemaOutputResolver {
 	 * Not used
 	 *
      * Buffers one single generated schema.
-	 * @see javax.xml.bind.SchemaOutputResolver#createOutput(java.lang.String, java.lang.String)
+	 * @see jakarta.xml.bind.SchemaOutputResolver#createOutput(java.lang.String, java.lang.String)
 	 */
 	public Schema createSchema() throws SAXException {
 

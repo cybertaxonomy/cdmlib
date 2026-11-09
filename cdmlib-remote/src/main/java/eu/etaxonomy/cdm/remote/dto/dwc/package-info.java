@@ -5,5 +5,5 @@
 // Generated on: 2010.09.06 at 10:10:43 AM MESZ 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://rs.tdwg.org/dwc/xsd/simpledarwincore/", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+@jakarta.xml.bind.annotation.XmlSchema(namespace = "http://rs.tdwg.org/dwc/xsd/simpledarwincore/", elementFormDefault = jakarta.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package eu.etaxonomy.cdm.remote.dto.dwc;

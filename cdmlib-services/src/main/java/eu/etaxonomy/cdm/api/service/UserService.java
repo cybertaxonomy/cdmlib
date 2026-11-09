@@ -27,6 +27,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserCache;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -149,7 +150,7 @@ public class UserService
     @Override
     @Transactional(readOnly=false)
     @PreAuthorize("#username == authentication.name or hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-    public void changePasswordForUser(String username, String newPassword) {
+    public void changePasswordForUser(@P("username") String username, String newPassword) {
         Assert.hasText(username, "Username must not be empty.");
         Assert.hasText(newPassword, "Password must not be empty.");
 

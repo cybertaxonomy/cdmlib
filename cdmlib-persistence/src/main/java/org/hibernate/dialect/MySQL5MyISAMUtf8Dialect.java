@@ -12,20 +12,18 @@ import org.hibernate.mapping.Index;
 import org.hibernate.tool.schema.spi.Exporter;
 
 /**
- *  Extends MySQL5InnoDBDialect and sets the default charset to be UTF-8
- *	@author a.mueller
- *  /TODO licence
+ * MyISAM + UTF-8 dialect. Extends {@link MySQLDialect} (Hibernate 6) instead of the
+ * legacy {@code MySQL5Dialect}, which reports MySQL 5.0 and triggers HHH000511.
+ *
+ * @author a.mueller
  */
-public class MySQL5MyISAMUtf8Dialect extends MySQL5Dialect {
+public class MySQL5MyISAMUtf8Dialect extends MySQLDialect {
 
     private MySqlIsamIndexExporter mySqlIsamIndexExporter = new MySqlIsamIndexExporter( this );
 
 
 	public MySQL5MyISAMUtf8Dialect(){
 		super();
-		//see http://dev.mysql.com/doc/refman/5.0/en/numeric-type-overview.html
-		//not needed anymore, it is added in MySQLDialect in the meanwhile
-		//registerColumnType(Types.BOOLEAN, "bit");
 	}
 
     @Override

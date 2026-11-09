@@ -39,13 +39,4 @@ public interface ICdmMassIndexer {
      * @return a List of {@link CdmBase} sub classes
      */
     public Set<Class<? extends CdmBase>> indexedClasses();
-
-    /**
-     * Create (spell-checking) dictionary listed in {@link ICdmMassIndexer#dictionaryClasses()}.
-     * This action will not purge the dictionary.
-     * @param monitor TODO
-     */
-    public abstract void createDictionary(IProgressMonitor monitor);
-
-    public Class[] dictionaryClasses();
 }

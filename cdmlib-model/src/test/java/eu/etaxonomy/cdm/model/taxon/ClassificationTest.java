@@ -8,7 +8,12 @@
 */
 package eu.etaxonomy.cdm.model.taxon;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -223,9 +228,8 @@ public class ClassificationTest {
 			Set<Class<? extends CdmBase>> allCdmClasses = findAllCdmClasses();
 
 			Class<? extends CdmBase> referencedClass = referencedCdmBase.getClass();
-			Set<CdmBase> result = new HashSet<CdmBase>();
-			System.out.println("Referenced Class: " + referencedClass.getName());
-
+			Set<CdmBase> result = new HashSet<>();
+//			System.out.println("Referenced Class: " + referencedClass.getName());
 
 			for (Class<? extends CdmBase> cdmClass : allCdmClasses){
 				Set<Field> fields = getFields(cdmClass);

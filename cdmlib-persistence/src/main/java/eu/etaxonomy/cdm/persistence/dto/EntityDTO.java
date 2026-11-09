@@ -17,7 +17,6 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  *
  * @author a.mueller
  * @since 2016-09-21
- *
  */
 //might extend CdmBase in future, when a default formatter is available for all CdmBase classes
 public class EntityDTO<T extends IdentifiableEntity> extends EntityDTOBase<T> {

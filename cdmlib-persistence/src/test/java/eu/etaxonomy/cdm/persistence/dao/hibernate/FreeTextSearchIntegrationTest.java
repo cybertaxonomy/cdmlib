@@ -47,26 +47,6 @@ public class FreeTextSearchIntegrationTest extends CdmTransactionalIntegrationTe
 	@SpringBeanByType
 	private IDescriptionElementDao descriptionElementDao;
 
-//	@SpringBeanByType
-//	TaxonAlternativeSpellingSuggestionParser alternativeSpellingSuggestionParser;
-//
-//	@Test
-//	public void test() {
-//		taxonDao.rebuildIndex();
-//		taxonDao.optimizeIndex();
-//
-//		descriptionElementDao.rebuildIndex();
-//		descriptionElementDao.optimizeIndex();
-//		setComplete();
-//		endTransaction();
-//		taxonDao.countTaxa("Arum",null); // For some reason this flushes the indexes and allows the next method to create the spellings index
-//	}
-//
-//	@Test
-//	public void test1() {
-//		alternativeSpellingSuggestionParser.refresh();
-//	}
-
 	@Test
 	public void testSearchTextData() {
 		List<OrderHint> orderHints = new ArrayList<>();
@@ -149,38 +129,6 @@ public class FreeTextSearchIntegrationTest extends CdmTransactionalIntegrationTe
 
 		List<TaxonBase> results = taxonDao.search(null, "Aroph*",  null, null, orderHints, propertyPaths);
 		assertEquals("searchTaxa should return 6 taxa",7,results.size());
-    }
-
-    @Test
-    @Ignore //we currently don't use suggest anymore
-    public void testSuggestSingleTerm() {
-    	String suggestion = taxonDao.suggestQuery("Aram");
-    	assertNotNull("suggestQuery should return a String",suggestion);
-    	assertEquals("The spelling suggestion for \"Aram\" should be \"arum\"","arum",suggestion);
-    }
-
-    @Test
-    @Ignore //we currently don't use suggest anymore
-    public void testSuggestSingleTermInCompositeQuery() {
-    	String suggestion = taxonDao.suggestQuery("Aram italicum");
-    	assertNotNull("suggestQuery should return a String",suggestion);
-    	assertEquals("The spelling suggestion for \"Aram italicum\" should be \"arum italicum\"","arum italicum",suggestion);
-    }
-
-    @Test
-    @Ignore //we currently don't use suggest anymore
-    public void testSuggestMultipleTermsInCompositeQuery() {
-    	String suggestion = taxonDao.suggestQuery("Aram italocum");
-    	assertNotNull("suggestQuery should return a String", suggestion);
-    	assertEquals("The spelling suggestion for \"Aram italocum\" should be \"arum italicum\"","arum italicum",suggestion);
-    }
-
-    @Test
-    @Ignore //we currently don't use suggest anymore
-    public void testSuggestMultipleTermsInCompositeQueryWithAnd() {
-    	String suggestion = taxonDao.suggestQuery("Aram AND italocum");
-    	assertNotNull("suggestQuery should return a String",suggestion);
-    	assertEquals("The spelling suggestion for \"Aram AND italocum\" should be \"+arum +italicum\"","+arum +italicum",suggestion);
     }
 
     @Override

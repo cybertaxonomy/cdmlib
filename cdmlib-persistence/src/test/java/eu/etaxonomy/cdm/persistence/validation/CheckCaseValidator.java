@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.persistence.validation;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 /**
  * A Mock class for testing entity validation tasks. DO NOT MODIFY UNLESS YOU

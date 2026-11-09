@@ -8,9 +8,8 @@
 */
 package eu.etaxonomy.cdm.model.description;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Iterator;
+import java.util.TreeSet;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,15 +43,16 @@ public class PresenceAbsenceTermTest extends EntityTestBase {
         PresenceAbsenceTerm term3 = PresenceAbsenceTerm.ABSENT();
         PresenceAbsenceTerm term4 = PresenceAbsenceTerm.NATIVE_REPORTED_IN_ERROR();
 
-        List<PresenceAbsenceTerm> list = new ArrayList<>();
-        list.add(term4);
-        list.add(term2);
-        list.add(term3);
+        TreeSet<PresenceAbsenceTerm> list = new TreeSet<>();
         list.add(term1);
+        list.add(term3);
+        list.add(term2);
+        list.add(term4);
 
-        Collections.sort(list);
-        for (PresenceAbsenceTerm t: list){
-            System.out.println(t.getTitleCache());
-        }
+        Iterator<PresenceAbsenceTerm> it = list.iterator();
+        Assert.assertEquals(term4, it.next());
+        Assert.assertEquals(term3, it.next());
+        Assert.assertEquals(term1, it.next());
+        Assert.assertEquals(term2, it.next());
     }
 }

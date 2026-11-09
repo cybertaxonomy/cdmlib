@@ -12,11 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -47,6 +42,10 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         extends AnnotatableDaoBaseImpl<T>
@@ -364,11 +363,6 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         } catch (ParseException e) {
             throw new QueryParseException(e, queryString);
         }
-    }
-
-    @Override
-    public String suggestQuery(String string) {
-        throw new UnsupportedOperationException("suggestQuery is not supported for objects of class " + type.getName());
     }
 
     @Override

@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.jaxb;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 public class ClassAdapter extends XmlAdapter<String, Class> {
 

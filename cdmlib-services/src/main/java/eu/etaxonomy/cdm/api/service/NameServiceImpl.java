@@ -192,11 +192,8 @@ public class NameServiceImpl
             //remove references to this name
             removeNameRelationshipsByDeleteConfig(name, config);
 
-           //remove name from homotypical group
-            HomotypicalGroup homotypicalGroup = name.getHomotypicalGroup();
-            if (homotypicalGroup != null){
-                homotypicalGroup.removeTypifiedName(name, false);
-            }
+           // HomotypicalGroup cleanup is handled in TaxonNameDaoHibernateImpl.delete without
+           // lazy-loading typifiedNames (H6 EntityInitializerImpl AssertionError risk).
             //all type designation relationships are removed as they belong to the name
             deleteTypeDesignation(name, null);
             //if original spellings should be deleted, remove it from the nomenclatural source
@@ -948,6 +945,7 @@ public class NameServiceImpl
     }
 
 
+    @Override
     public DeleteResult isDeletable(TaxonName name, DeleteConfiguratorBase config, UUID taxonUuid){
         DeleteResult result = new DeleteResult();
 
@@ -1067,13 +1065,15 @@ public class NameServiceImpl
 
     @Override
     public DeleteResult isDeletable(UUID nameUUID, DeleteConfiguratorBase config){
-        TaxonName name = this.load(nameUUID);
+        // Prefer managed: name may already be in the persistence context (e.g. via taxon).
+        TaxonName name = dao.findByUuidPreferManaged(nameUUID);
         return isDeletable(name, config, null);
     }
 
     @Override
     public DeleteResult isDeletable(UUID nameUUID, DeleteConfiguratorBase config, UUID taxonUuid){
-        TaxonName name = this.load(nameUUID);
+        // Prefer managed: name may already be in the persistence context (e.g. via taxon).
+        TaxonName name = dao.findByUuidPreferManaged(nameUUID);
         return isDeletable(name, config, taxonUuid);
     }
 

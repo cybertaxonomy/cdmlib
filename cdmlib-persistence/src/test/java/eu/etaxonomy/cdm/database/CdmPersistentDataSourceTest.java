@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 /**
  * @author a.mueller
  */
-@Ignore
 public class CdmPersistentDataSourceTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger();
@@ -217,7 +216,7 @@ public class CdmPersistentDataSourceTest {
 		String dataSourceString = "tmp";
 		assertFalse(CdmPersistentDataSource.exists(dataSourceString));
 
-		DatabaseTypeEnum databaseType = DatabaseTypeEnum.SqlServer2005;
+		DatabaseTypeEnum databaseType = DatabaseTypeEnum.SqlServer;
 		String servername = "server";
 		String db = "database";
 		String username = "username";
@@ -234,9 +233,10 @@ public class CdmPersistentDataSourceTest {
 			loadedDataSource = CdmPersistentDataSource.NewInstance(dataSourceString);
 		} catch (DataSourceNotFoundException e1) {
 			fail();
+			return;
 		}
 		assertEquals(databaseType, dataSource.getDatabaseType());
-		assertEquals(DatabaseTypeEnum.SqlServer2005.getDriverClassName(), loadedDataSource.getCdmSourceProperty(CdmSourceProperties.DRIVER_CLASS));
+		assertEquals(DatabaseTypeEnum.SqlServer.getDriverClassName(), loadedDataSource.getCdmSourceProperty(CdmSourceProperties.DRIVER_CLASS));
 		assertEquals("jdbc:sqlserver://server:1234;databaseName=database;SelectMethod=cursor", loadedDataSource.getCdmSourceProperty(CdmSourceProperties.URL));
 		assertEquals(username, loadedDataSource.getCdmSourceProperty(CdmSourceProperties.USERNAME));
 		assertEquals(password, loadedDataSource.getCdmSourceProperty(CdmSourceProperties.PASSWORD));
@@ -289,15 +289,12 @@ public class CdmPersistentDataSourceTest {
 		} catch (IOException e) {
 			fail("Exception occurred in datasource input stream read");
 		}
-
 	}
 
-
-	@Ignore
 	@Test
+	@Ignore
 	public void testGetDataSourceOutputStream() {
 		FileOutputStream os = CdmPersistentSourceUtils.getCdmSourceOutputStream();
 		assertNotNull(os);
 	}
-
 }

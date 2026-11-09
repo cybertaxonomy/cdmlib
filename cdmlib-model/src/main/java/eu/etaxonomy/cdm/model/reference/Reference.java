@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.cdm.model.reference;
 
+import org.hibernate.type.SqlTypes;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.Length;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -15,38 +18,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
@@ -62,13 +38,15 @@ import eu.etaxonomy.cdm.format.common.TimePeriodPartialFormatter;
 import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.search.DoiBridge;
 import eu.etaxonomy.cdm.hibernate.search.UriBridge;
+import eu.etaxonomy.cdm.jpa.DoiConverter;
+import eu.etaxonomy.cdm.jpa.UriConverter;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.TimePeriodBase;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.media.IHasLink;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
@@ -86,6 +64,31 @@ import eu.etaxonomy.cdm.validation.annotation.InReference;
 import eu.etaxonomy.cdm.validation.annotation.NoRecursiveInReference;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderColumn;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlIDREF;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * The class for references (information sources). Originally
@@ -142,7 +145,7 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Audited
-@Table(name = "Reference", indexes = {@javax.persistence.Index(name = "referenceTitleCacheIndex", columnList = "titleCache")})
+@Table(name = "Reference", indexes = {@jakarta.persistence.Index(name = "referenceTitleCacheIndex", columnList = "titleCache")})
 //@InReference(groups=Level3.class)
 @ReferenceCheck(groups = Level2.class)
 @InReference(groups = Level3.class)
@@ -166,17 +169,14 @@ public class Reference
     @XmlAttribute(name ="type")
 	@Column(name="refType")
 	@NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-    	parameters = {@Parameter(name  = "enumClass",
-    	value = "eu.etaxonomy.cdm.model.reference.ReferenceType")}
-    )
 	@Audited
 	private ReferenceType type;
 
-	//Title of the reference
+	//Title of the reference (intended ~4096 chars; DB column is CLOB)
 	@XmlElement(name ="Title" )
-	@Column(length=4096, name="title")
+	@Column(name="title", length = Length.LONG32)
 	@Lob
+	@JdbcTypeCode(SqlTypes.CLOB)
 	@FullTextField
 	@Match(MatchMode.EQUAL_REQUIRED) //TODO correct? was EQUAL_REQUIRED before, but with abbrevTitle this is not realistic anymore, see also #6427
     //TODO Val #3379
@@ -237,7 +237,7 @@ public class Reference
 
     @XmlElement(name = "Doi")
     @FullTextField(valueBridge = @ValueBridgeRef(type = DoiBridge.class))
-    @Type(type="doiUserType")
+    @Convert(converter = DoiConverter.class)
     @Column(length=DOI.MAX_LENGTH)
     private DOI doi;
 
@@ -320,8 +320,9 @@ public class Reference
 	private VerbatimTimePeriod datePublished = VerbatimTimePeriod.NewVerbatimInstance();
 
     @XmlElement(name ="Abstract" )
-	@Column(length=CLOB_LENGTH, name="referenceAbstract")
+	@Column(name="referenceAbstract", length = Length.LONG32)
 	@Lob
+	@JdbcTypeCode(SqlTypes.CLOB)
     @FullTextField
     //TODO Val #3379
 //	@NullOrNotEmpty
@@ -331,7 +332,12 @@ public class Reference
 	//URIs like DOIs, LSIDs or Handles for this reference
 	@XmlElement(name = "URI")
 	@KeywordField(valueBridge = @ValueBridgeRef(type = UriBridge.class))
-	@Type(type="uriUserType")
+	@Convert(converter = UriConverter.class)
+	// Envers can drop @Lob on _AUD (→ varchar(255) vs legacy CLOB). LONG32 exceeds dialect max VARCHAR
+	// so expected type upgrades to CLOB; @JdbcTypeCode reinforces CLOB. Keep until Envers preserves LOB reliably.
+	@Column(length = Length.LONG32)
+	@Lob
+	@JdbcTypeCode(SqlTypes.CLOB)
 	private URI uri;
 
 	//flag to subselect only references that could be useful for nomenclatural citations.
@@ -360,7 +366,7 @@ public class Reference
     @XmlElement(name = "Credit")
     @OrderColumn(name="sortIndex")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     //TODO
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
@@ -723,8 +729,8 @@ public class Reference
     @Override
     @Transient
     @Deprecated
-    public VerbatimTimePeriod setDatePublished(TimePeriod datePublished){
-        VerbatimTimePeriod newTimePeriod = VerbatimTimePeriod.toVerbatim(datePublished);
+    public VerbatimTimePeriod setDatePublished(TimePeriodBase datePublished){
+        VerbatimTimePeriod newTimePeriod = TimePeriodBase.toVerbatim(datePublished);
         setDatePublished(newTimePeriod);
         return newTimePeriod;
     }

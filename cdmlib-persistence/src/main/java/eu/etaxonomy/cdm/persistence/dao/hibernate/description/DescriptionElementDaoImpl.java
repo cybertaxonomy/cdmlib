@@ -117,9 +117,4 @@ public class DescriptionElementDaoImpl
         }
     }
 
-    @Override
-    public String suggestQuery(String string) {
-        throw new UnsupportedOperationException("suggest query is not supported yet");
-    }
-
 }

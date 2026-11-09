@@ -163,7 +163,7 @@ public class ReferenceDefaultCacheStrategyTest {
 		article1.setInJournal(null);
 		article1.resetTitleCache();
 		Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" " + ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL, article1.getTitleCache());
-        article1.setDatePublished(null);
+        article1.setDatePublished((VerbatimTimePeriod)null);
         article1.resetTitleCache();
         Assert.assertEquals("Team1: My article. "+UTF8.EN_DASH+" " + ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL, article1.getTitleCache());
 	}

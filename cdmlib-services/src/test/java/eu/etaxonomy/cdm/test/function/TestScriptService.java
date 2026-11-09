@@ -107,7 +107,7 @@ public class TestScriptService {
 //		database = "cdm36";
 //		int port = 1433;
 //		username = "cdmupdater";
-//		dataSource = CdmDataSource.NewSqlServer2012Instance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
+//		dataSource = CdmDataSource.NewSqlServerInstance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
 //
 //		//H2
 //        String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2";
@@ -274,13 +274,13 @@ public class TestScriptService {
 //		String user = "edit";
 //		String pwd = "wp5";
 //
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.SqlServer2005;
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.SqlServer;
 		String server = "LAPTOPHP";
 		String database = "cdmTest";
 		String username = "edit";
 		String password = "";
 
-		ICdmDataSource dataSource = CdmDataSource.NewInstance(DatabaseTypeEnum.SqlServer2005, "LAPTOPHP", "cdmTest", DatabaseTypeEnum.SqlServer2005.getDefaultPort(), "edit", "");
+		ICdmDataSource dataSource = CdmDataSource.NewInstance(DatabaseTypeEnum.SqlServer, "LAPTOPHP", "cdmTest", DatabaseTypeEnum.SqlServer.getDefaultPort(), "edit", "");
 
 		appCtr.getDatabaseService().saveDataSource("testSqlServer", dataSource);
 		try {
@@ -293,8 +293,8 @@ public class TestScriptService {
 		appCtr.close();
 	}
 
-	private void testSqlServer2005(){
-		DatabaseTypeEnum databaseTypeEnum = DatabaseTypeEnum.SqlServer2005;
+	private void testSqlServer(){
+		DatabaseTypeEnum databaseTypeEnum = DatabaseTypeEnum.SqlServer;
 		String server = "LAPTOPHP";
 		String database = "cdmTest";
 		String username = "edit";

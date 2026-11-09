@@ -15,7 +15,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
@@ -101,8 +100,6 @@ public class TaxonGraphBeforeTransactionCompleteProcess
     }
 
     private Session temporarySession;
-
-    private Level origLoggerLevel;
 
     private Session parentSession;
 
@@ -356,7 +353,8 @@ public class TaxonGraphBeforeTransactionCompleteProcess
         if(getSession() == null){
             parentSession = session;
             temporarySession = session
-                      .sessionWithOptions().transactionContext()
+                      // Hibernate 6: transactionContext() removed; connection() shares JDBC connection and transaction
+                      .sessionWithOptions().connection()
                       // in contrast to AuditProcess.doBeforeTransactionCompletion we need the session to close automatically,
                       // otherwise the hibernate search indexer will suffer from LazyInitializationExceptions
                       .autoClose(true)

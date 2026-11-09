@@ -23,13 +23,14 @@ import javax.sql.DataSource;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.dialect.H2CorrectedDialect;
+import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.MariaDb11Dialect;
 import org.hibernate.dialect.MySQL5MyISAMUtf8Dialect;
-import org.hibernate.dialect.PostgreSQL82Dialect;
+import org.hibernate.dialect.PostgreSQLDialect;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -214,7 +215,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
             try {
                 connection = dataSource.getConnection();
                 String metadataTableName = "CdmMetaData";
-                if(inferHibernateDialectName(dataSource).equals(H2CorrectedDialect.class.getName())){
+                if(inferHibernateDialectName(dataSource).equals(H2Dialect.class.getName())){
                     metadataTableName = metadataTableName.toUpperCase();
                 }
                 ResultSet tables = connection.getMetaData().getTables(connection.getCatalog(), null, metadataTableName, null);
@@ -339,7 +340,8 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
         String path = (beanDefinitionFileFromProperty != null ? beanDefinitionFileFromProperty : getBeanDefinitionFile());
         logger.info("loading DataSourceBean '" + beanName + "' from: " + path);
         FileSystemResource file = new FileSystemResource(path);
-        XmlBeanFactory beanFactory  = new XmlBeanFactory(file);
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+        new XmlBeanDefinitionReader(beanFactory).loadBeanDefinitions(file);
         DataSource dataSource = beanFactory.getBean(beanName, DataSource.class);
         if(dataSource instanceof ComboPooledDataSource){
             logger.info("DataSourceBean '" + beanName + "' is a ComboPooledDataSource [URL:" + ((ComboPooledDataSource)dataSource).getJdbcUrl()+ "]");
@@ -363,7 +365,8 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
         String path = (beanDefinitionFileFromProperty != null ? beanDefinitionFileFromProperty : getBeanDefinitionFile());
         logger.info("loading dataSourceProperties from: " + path);
         FileSystemResource file = new FileSystemResource(path);
-        XmlBeanFactory beanFactory  = new XmlBeanFactory(file);
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+        new XmlBeanDefinitionReader(beanFactory).loadBeanDefinitions(file);
         DataSourceProperties properties = null;
         try {
             properties = beanFactory.getBean("dataSourceProperties", DataSourceProperties.class);
@@ -451,10 +454,10 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
                 return MariaDb11Dialect.class.getName();
             }
             if(url.contains(":h2:")){
-                return H2CorrectedDialect.class.getName();
+                return H2Dialect.class.getName();
             }
             if(url.contains(":postgresql:")){
-                return PostgreSQL82Dialect.class.getName();
+                return PostgreSQLDialect.class.getName();
             }
         }
 

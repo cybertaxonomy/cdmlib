@@ -16,31 +16,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapKeyJoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
-import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.TypeBinderRef;
@@ -68,6 +45,31 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapKeyJoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderColumn;
+import jakarta.persistence.Transient;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlIDREF;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * The upmost (abstract) class for a piece of information) about
@@ -131,10 +133,10 @@ public abstract class DescriptionElementBase
 
     @XmlElement(name = "ModifyingText")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "DescriptionElementBase_ModifyingText")
     @MapKeyJoinColumn(name="modifyingtext_mapkey_id")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @IndexedEmbedded
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private Map<Language,LanguageString> modifyingText = new HashMap<>();
@@ -143,9 +145,9 @@ public abstract class DescriptionElementBase
     @XmlElement(name = "Medium")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @OrderColumn(name="sortIndex")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private List<Media> media = new ArrayList<>();
 
     @XmlElement(name = "InDescription")
@@ -158,12 +160,21 @@ public abstract class DescriptionElementBase
     private DescriptionBase<?> inDescription;
 
 	@XmlElement(name = "TimePeriod")
+	@Embedded
+	// Explicit names: TimePeriodBase is @MappedSuperclass; Hibernate 6 does not apply
+	// ImplicitNamingStrategyComponentPathImpl to those inherited fields, so TemporalData's
+	// second period embeddable would otherwise collide on column "end".
+	@AttributeOverrides({
+		@AttributeOverride(name = "start", column = @Column(name = "timeperiod_start")),
+		@AttributeOverride(name = "end", column = @Column(name = "timeperiod_end")),
+		@AttributeOverride(name = "freeText", column = @Column(name = "timeperiod_freeText"))
+	})
     private TimePeriod timeperiod = TimePeriod.NewInstance();
 
     @XmlElementWrapper(name = "Sources")
     @XmlElement(name = "DescriptionElementSource")
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sourcedElement", orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sourcedElement", orphanRemoval=true,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @Merge(MergeMode.ADD_CLONE)
     private Set<DescriptionElementSource> sources = new HashSet<>();
 

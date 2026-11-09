@@ -11,8 +11,10 @@ package eu.etaxonomy.cdm.model.metadata;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.jpa.EnumConverterBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.IKeyTerm;
+import jakarta.persistence.Converter;
 
 public enum CdmMetaDataPropertyName implements IKeyTerm{
 
@@ -36,6 +38,13 @@ public enum CdmMetaDataPropertyName implements IKeyTerm{
         this.label = label;
         this.key = key;
         this.oldPropertyId = oldPropertyId;
+    }
+
+//********************** CONVERTER **********************************/
+
+    @Converter(autoApply = true)
+    public static class CdmMetaDataPropertyNameConverter extends EnumConverterBase<CdmMetaDataPropertyName> {
+        public CdmMetaDataPropertyNameConverter() { super(CdmMetaDataPropertyName.class); }
     }
 
 //**************** METHODS ****************************/

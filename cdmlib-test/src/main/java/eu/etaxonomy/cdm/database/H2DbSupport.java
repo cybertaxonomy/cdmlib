@@ -2,6 +2,8 @@ package eu.etaxonomy.cdm.database;
 
 /**
  * Based on http://code.google.com/p/java-tester/source/browse/trunk/src/main/java/org/jtester/unitils/database/H2DbSupport.java
+ * <p>
+ * Queries updated for H2 2.x {@code INFORMATION_SCHEMA} (SQL-standard layout).
  */
 import java.util.Set;
 
@@ -26,7 +28,7 @@ public class H2DbSupport extends DbSupport {
         @Override
         public Set<String> getTableNames() {
                 return getSQLHandler().getItemsAsStringSet(
-                                "select TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_TYPE = 'TABLE' AND TABLE_SCHEMA = '"
+                                "select TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_TYPE = 'BASE TABLE' AND TABLE_SCHEMA = '"
                                                 + getSchemaName() + "'");
         }
 
@@ -54,7 +56,7 @@ public class H2DbSupport extends DbSupport {
         @Override
         public long getSequenceValue(String sequenceName) {
                 return getSQLHandler().getItemAsLong(
-                                "select CURRENT_VALUE from INFORMATION_SCHEMA.SEQUENCES where SEQUENCE_SCHEMA = '"
+                                "select BASE_VALUE from INFORMATION_SCHEMA.SEQUENCES where SEQUENCE_SCHEMA = '"
                                                 + getSchemaName() + "' and SEQUENCE_NAME = '" + sequenceName + "'");
         }
 
@@ -136,8 +138,14 @@ public class H2DbSupport extends DbSupport {
 
         private Set<String> getPrimaryKeyColumnNames(String tableName) {
                 return getSQLHandler().getItemsAsStringSet(
-                                "select COLUMN_NAME from INFORMATION_SCHEMA.INDEXES where PRIMARY_KEY=TRUE AND TABLE_NAME = '"
-                                                + tableName + "' AND TABLE_SCHEMA = '" + getSchemaName() + "'");
+                                "select kcu.COLUMN_NAME from INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc "
+                                                + "join INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu "
+                                                + "on tc.CONSTRAINT_SCHEMA = kcu.CONSTRAINT_SCHEMA "
+                                                + "and tc.CONSTRAINT_NAME = kcu.CONSTRAINT_NAME "
+                                                + "and tc.TABLE_SCHEMA = kcu.TABLE_SCHEMA "
+                                                + "and tc.TABLE_NAME = kcu.TABLE_NAME "
+                                                + "where tc.CONSTRAINT_TYPE = 'PRIMARY KEY' AND tc.TABLE_NAME = '"
+                                                + tableName + "' AND tc.TABLE_SCHEMA = '" + getSchemaName() + "'");
         }
 
         private Set<String> getNotNullColummnNames(String tableName) {
@@ -148,9 +156,9 @@ public class H2DbSupport extends DbSupport {
 
         private Set<String> getForeignKeyConstraintNames(String tableName) {
                 return getSQLHandler().getItemsAsStringSet(
-                                "select CONSTRAINT_NAME from INFORMATION_SCHEMA.CONSTRAINTS "
-                                                + "where CONSTRAINT_TYPE = 'REFERENTIAL' AND TABLE_NAME = '" + tableName
-                                                + "' AND CONSTRAINT_SCHEMA = '" + getSchemaName() + "'");
+                                "select CONSTRAINT_NAME from INFORMATION_SCHEMA.TABLE_CONSTRAINTS "
+                                                + "where CONSTRAINT_TYPE = 'FOREIGN KEY' AND TABLE_NAME = '" + tableName
+                                                + "' AND TABLE_SCHEMA = '" + getSchemaName() + "'");
         }
 
         private void removeForeignKeyConstraint(String tableName, String constraintName) {

@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -77,8 +77,8 @@ public class ManagementController {
      *
      * @see
      * org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal
-     * (javax.servlet.http.HttpServletRequest,
-     * javax.servlet.http.HttpServletResponse)
+     * (jakarta.servlet.http.HttpServletRequest,
+     * jakarta.servlet.http.HttpServletResponse)
      */
     // @RequestMapping(value = { "/manager/datasources/list" }, method =
     // RequestMethod.GET)
@@ -168,53 +168,6 @@ public class ManagementController {
         }
         return typeList;
     }
-
-    /**
-     *
-     * Create dictionaries for all cdm entities listed in
-     * {@link ICdmMassIndexer#dictionaryClasses()}. Re-dicting will not purge
-     * the dictionaries.
-     *
-     * @param frontendBaseUrl
-     *            if the CDM server is running behind a reverse proxy you need
-     *            to supply the base URL of web service front-end which is
-     *            provided by the proxy server.
-     * @param request
-     * @param respone
-     * @return
-     * @throws Exception
-     */
-    @RequestMapping(value = { "redict" }, method = {RequestMethod.GET, RequestMethod.OPTIONS})
-    public synchronized ModelAndView doRedict(
-            @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
-            @RequestParam(value = "priority", required = false) Integer priority,
-            @RequestParam(value = "dataRedirect", required = false) boolean dataRedirect,
-            HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
-
-       String processLabel = "Re-Dicting";
-        ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(
-                progressMonitorController);
-
-        if (!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
-           indexMonitorUuid = progressUtil.registerNewMonitor();
-            Thread subThread = new Thread() {
-               @Override
-                public void run() {
-                    indexer.createDictionary(progressMonitorController
-                            .getMonitor(indexMonitorUuid));
-               }
-           };
-            if (priority == null) {
-               priority = AbstractController.DEFAULT_BATCH_THREAD_PRIORITY;
-           }
-           subThread.setPriority(priority);
-           subThread.start();
-       }
-       // send redirect "see other"
-        return progressUtil.respondWithMonitor(frontendBaseUrl, processLabel,
-                indexMonitorUuid, dataRedirect, request, response);
-   }
 
     /**
      * This will wipe out the index.

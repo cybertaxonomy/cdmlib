@@ -22,7 +22,7 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.boot.registry.internal.StandardServiceRegistryImpl;
 import org.hibernate.cfg.AvailableSettings;
-import org.hibernate.dialect.H2CorrectedDialectTest;
+import org.hibernate.dialect.H2Dialect;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.schema.TargetType;
 import org.springframework.core.io.ClassPathResource;
@@ -56,7 +56,7 @@ public class DdlCreator {
         }
 
 	    try {
-		    new DdlCreator().execute(H2CorrectedDialectTest.class, "h2");
+		    new DdlCreator().execute(H2Dialect.class, "h2");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -319,10 +319,6 @@ public class Source {
 	    try{
 	        if (DEBUG_LOG_WRITER) {
                 DriverManager.setLogWriter((new PrintWriter(System.out)));
-//            } else if (mDbms.equalsIgnoreCase(SQL_SERVER_2005)) {
-//	            Class.forName(clsSQLServer2005);
-//	            server = mServer + ":" + mPort;
-//	            mUrl = urlSQLServer2005 + server + ";databaseName=" + mDb +";SelectMethod="+ selectMethod;
 	        }
 	        else if (mDbms.equalsIgnoreCase(SQL_SERVER)) {
 	            Class.forName(clsSQLServer);

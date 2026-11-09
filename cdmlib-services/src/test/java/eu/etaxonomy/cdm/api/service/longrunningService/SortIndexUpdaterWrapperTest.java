@@ -66,7 +66,7 @@ public class SortIndexUpdaterWrapperTest extends CdmTransactionalIntegrationTest
             UpdateResult result = sortIndexUpdater.doInvoke(config);
 
             Assert.assertEquals("No exception should be thrown during sortindex update", 0, result.getExceptions().size());
-
+            commit();
         } catch (SecurityException e1) {  //NoSuchFieldException |
             Assert.fail("sortIndex field not found");
         }

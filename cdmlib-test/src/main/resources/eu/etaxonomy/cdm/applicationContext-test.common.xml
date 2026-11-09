@@ -4,11 +4,11 @@
   xmlns:context="http://www.springframework.org/schema/context"
   xmlns:tx="http://www.springframework.org/schema/tx"
   xsi:schemaLocation="http://www.springframework.org/schema/beans
-    https://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+    https://www.springframework.org/schema/beans/spring-beans.xsd
     http://www.springframework.org/schema/context
-    https://www.springframework.org/schema/context/spring-context-4.3.xsd
+    https://www.springframework.org/schema/context/spring-context.xsd
     http://www.springframework.org/schema/tx
-    https://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+    https://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <!--
         ========================================================================================
@@ -57,10 +57,11 @@
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="hibernate.format_sql">false</prop>
                 <prop key="hibernate.search.backend.directory.type">local-heap</prop>
+                <prop key="hibernate.search.mapping.configurer">eu.etaxonomy.cdm.persistence.hibernate.search.CdmHibernateSearchMappingConfigurer</prop>
                 <!-- local-heap: avoid Lucene write.lock clashes with the Unitils SessionFactory -->
                 <!-- exclusive_index_use has no HS6 equivalent -->
-                <prop key="hibernate.dialect">org.hibernate.dialect.H2CorrectedDialectTest</prop>
-                <prop key="implicitNamingStrategy">org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl"</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
+                <prop key="hibernate.implicit_naming_strategy">org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl</prop>
             </props>
         </property>
     </bean>
@@ -83,14 +84,5 @@
             </list>
         </constructor-arg>
     </bean>
-
-<!--
-    We do not use spelling suggestions anymore. This one relates to springmodules which is
-    somewhat outdated. Once we work again with spelling suggestions we better use a modern
-    approache, e.g. annotation based.
-    <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
-      <property name="location" value="file:./target/index/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>
-      <property name="create" value="true"/>
-    </bean> -->
 
 </beans>

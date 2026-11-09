@@ -79,7 +79,7 @@ public class TestAggregations {
 //		database = "cdm36";
 //		int port = 1433;
 //		username = "cdmupdater";
-//		dataSource = CdmDataSource.NewSqlServer2012Instance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
+//		dataSource = CdmDataSource.NewSqlServerInstance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
 //
 //		//H2
 //        String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2";

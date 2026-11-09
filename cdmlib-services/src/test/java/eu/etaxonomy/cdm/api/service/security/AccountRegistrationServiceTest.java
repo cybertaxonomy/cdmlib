@@ -18,9 +18,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.MimeMessage;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,6 +41,8 @@ import eu.etaxonomy.cdm.api.security.PasswordResetRequest;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.common.LogUtils;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.MimeMessage;
 
 /**
  * @author a.kohlbecker
@@ -88,8 +87,7 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
     @Before
     public void startEmailServer() {
         // Integer smtpPort = env.getProperty(SendEmailConfigurer.PORT, Integer.class);
-        wiser = new Wiser();
-        wiser.setPort(2500); // must be the same as configured for SendEmailConfigurer.PORT
+        wiser = Wiser.port(2500); // must be the same as configured for SendEmailConfigurer.PORT
         wiser.start();
         logger.debug("Wiser email server started");
     }

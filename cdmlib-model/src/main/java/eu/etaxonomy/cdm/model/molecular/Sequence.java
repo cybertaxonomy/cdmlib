@@ -8,27 +8,31 @@
 */
 package eu.etaxonomy.cdm.model.molecular;
 
+import org.hibernate.Length;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Transient;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlIDREF;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -113,11 +117,19 @@ public class Sequence
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
 	private Media contigFile;
 
 	/** @see #getConsensusSequence() */
 	@XmlElement(name = "ConsensusSequence")
+	@Embedded
+	// Explicit columns: two SequenceString embeds would both map to "length"/"string"
+	// without path prefix (breaks Envers Sequence_AUD under Hibernate 6.6+).
+	// Names match ImplicitNamingStrategyComponentPathImpl + existing DB schema.
+	@AttributeOverrides({
+		@AttributeOverride(name = "string", column = @Column(name = "consensusSequence_string", length = Length.LONG32)),
+		@AttributeOverride(name = "length", column = @Column(name = "consensusSequence_length"))
+	})
     private SequenceString consensusSequence = SequenceString.NewInstance();
 
 	@XmlAttribute(name = "isBarcode")
@@ -125,6 +137,11 @@ public class Sequence
 
 	/** @see #getBarcodeSequence()*/
 	@XmlElement(name = "BarcodeSequencePart")
+	@Embedded
+	@AttributeOverrides({
+		@AttributeOverride(name = "string", column = @Column(name = "barcodeSequencePart_string", length = Length.LONG32)),
+		@AttributeOverride(name = "length", column = @Column(name = "barcodeSequencePart_length"))
+	})
     private SequenceString barcodeSequencePart = SequenceString.NewInstance();
 
 	/** @see #getGeneticAccessionNumber()*/
@@ -142,7 +159,7 @@ public class Sequence
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="consensusAlignment", fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
 	private Set<SingleReadAlignment> singleReadAlignments = new HashSet<>();
 
 	/** @see #getDnaMarker() */

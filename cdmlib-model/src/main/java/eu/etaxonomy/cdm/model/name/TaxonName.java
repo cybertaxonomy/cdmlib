@@ -18,38 +18,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.engine.backend.types.Projectable;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
@@ -110,6 +81,33 @@ import eu.etaxonomy.cdm.validation.annotation.NameMustHaveAuthority;
 import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlIDREF;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * The upmost (abstract) class for scientific taxon names regardless of any
@@ -187,8 +185,8 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(name="TaxonName", indexes = {
-        @javax.persistence.Index(name = "taxonNameBaseTitleCacheIndex", columnList = "titleCache"),
-        @javax.persistence.Index(name = "taxonNameBaseNameCacheIndex", columnList = "nameCache") })
+        @jakarta.persistence.Index(name = "taxonNameBaseTitleCacheIndex", columnList = "titleCache"),
+        @jakarta.persistence.Index(name = "taxonNameBaseNameCacheIndex", columnList = "nameCache") })
 @NameMustFollowCode
 @CorrectEpithetsForRank(groups = Level2.class)
 @CorrectRanksForCode(groups = Level2.class)
@@ -213,9 +211,6 @@ public class TaxonName
     @XmlAttribute(name ="NameType")
     @Column(name="nameType", length=15)
     @NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.name.NomenclaturalCode")}
-    )
     @Audited //needed ?
     private NomenclaturalCode nameType;
 
@@ -225,9 +220,6 @@ public class TaxonName
      */
     @XmlAttribute(name ="NameType")
     @Column(name="gender", length=1)
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.name.TaxonNameGender")}
-    )
     @Audited
     private TaxonNameGender gender;
 
@@ -246,7 +238,9 @@ public class TaxonName
     @XmlElementWrapper(name = "Descriptions")
     @XmlElement(name = "Description")
     @OneToMany(mappedBy="taxonName", fetch= FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
+        org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.MERGE,
+        org.hibernate.annotations.CascadeType.DELETE})
     @NotNull
     private Set<TaxonNameDescription> descriptions = new HashSet<>();
 
@@ -280,8 +274,8 @@ public class TaxonName
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name="TaxonName_TypeDesignationBase",
-        joinColumns=@javax.persistence.JoinColumn(name="TaxonName_id"),
-        inverseJoinColumns=@javax.persistence.JoinColumn(name="typedesignations_id")
+        joinColumns=@jakarta.persistence.JoinColumn(name="TaxonName_id"),
+        inverseJoinColumns=@jakarta.persistence.JoinColumn(name="typedesignations_id")
     )
     @NotNull
     private Set<TypeDesignationBase> typeDesignations = new HashSet<>();
@@ -289,8 +283,10 @@ public class TaxonName
     @XmlElement(name = "HomotypicalGroup")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    // Prefer Hibernate SAVE_UPDATE over JPA CascadeType.PERSIST: groups are often shared/detached;
+    // JPA PERSIST then fails with "detached entity passed to persist".
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.MERGE})
     @Match(MatchMode.IGNORE)
     @CacheUpdate(noUpdate ="titleCache")
     //TODO Val #3379
@@ -300,7 +296,8 @@ public class TaxonName
     @XmlElementWrapper(name = "RelationsFromThisName")
     @XmlElement(name = "RelationFromThisName")
     @OneToMany(mappedBy="relatedFrom", fetch= FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.PERSIST,
+        org.hibernate.annotations.CascadeType.MERGE, org.hibernate.annotations.CascadeType.DELETE})
     @Merge(MergeMode.RELATION)
     @NotNull
     @Valid
@@ -311,7 +308,8 @@ public class TaxonName
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="relatedTo", fetch= FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.PERSIST,
+        org.hibernate.annotations.CascadeType.MERGE, org.hibernate.annotations.CascadeType.DELETE})
     @Merge(MergeMode.RELATION)
     @NotNull
     @Valid
@@ -320,7 +318,8 @@ public class TaxonName
     @XmlElementWrapper(name = "NomenclaturalStatuses")
     @XmlElement(name = "NomenclaturalStatus")
     @OneToMany(fetch= FetchType.LAZY, mappedBy = "name", orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE})
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.PERSIST,
+        org.hibernate.annotations.CascadeType.MERGE, org.hibernate.annotations.CascadeType.DELETE})
     @NotNull
     @IndexedEmbedded(includeDepth=1)
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
@@ -351,8 +350,8 @@ public class TaxonName
     @XmlElement(name = "NomenclaturalSource")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true, mappedBy="sourcedName")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true, mappedBy="sourcedName",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @CacheUpdate(noUpdate ="titleCache")
     @IndexedEmbedded
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
@@ -425,9 +424,6 @@ public class TaxonName
 
     @XmlAttribute(name ="autonymFlag")
     @Column(name="autonymFlag", length=10)
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.common.TriState")}
-    )
     private TriState autonymFlag = TriState.INDETERMINATE;
 
     @XmlElement(name = "CombinationAuthorship")
@@ -504,7 +500,8 @@ public class TaxonName
     @XmlElementWrapper(name = "HybridRelationsFromThisName")
     @XmlElement(name = "HybridRelationsFromThisName")
     @OneToMany(mappedBy="relatedFrom", fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.PERSIST,
+        org.hibernate.annotations.CascadeType.MERGE})
     @Merge(MergeMode.RELATION)
     @NotNull
     private Set<HybridRelationship> hybridParentRelations = new HashSet<>();
@@ -512,7 +509,8 @@ public class TaxonName
     @XmlElementWrapper(name = "HybridRelationsToThisName")
     @XmlElement(name = "HybridRelationsToThisName")
     @OneToMany(mappedBy="relatedTo", fetch = FetchType.LAZY, orphanRemoval=true) //a hybrid relation can be deleted automatically if the child is deleted.
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.PERSIST,
+        org.hibernate.annotations.CascadeType.MERGE, org.hibernate.annotations.CascadeType.DELETE})
     @Merge(MergeMode.RELATION)
     @NotNull
     private Set<HybridRelationship> hybridChildRelations = new HashSet<>();

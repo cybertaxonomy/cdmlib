@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.persistence.validation;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 /**
  * A ConstraintValidator that deliberately takes some time to test task queue overruns.

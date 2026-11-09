@@ -12,8 +12,8 @@ import java.io.Serializable;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
-import javax.persistence.Embeddable;
-import javax.persistence.Transient;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Transient;
 
 import com.ibm.lsid.MalformedLSIDException;
 

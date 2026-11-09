@@ -23,14 +23,6 @@ import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Fetch;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -80,6 +72,13 @@ import eu.etaxonomy.cdm.persistence.dto.compare.SortableTaxonNodeQueryResultComp
 import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Fetch;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 /**
  * @author a.mueller
@@ -91,7 +90,6 @@ public class TaxonDaoHibernateImpl
               extends IdentifiableDaoBase<TaxonBase>
               implements ITaxonDao {
 
-//    private AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser;
     private static final Logger logger = LogManager.getLogger();
 
     @SuppressWarnings("unchecked")
@@ -105,12 +103,6 @@ public class TaxonDaoHibernateImpl
 
     @Autowired
     private ITaxonNameDao taxonNameDao;
-
-////    spelling support currently disabled in appcontext, see spelling.xml ... "
-////    @Autowired(required = false)   //TODO switched of because it caused problems when starting CdmApplicationController
-//    public void setAlternativeSpellingSuggestionParser(AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser) {
-//        this.alternativeSpellingSuggestionParser = alternativeSpellingSuggestionParser;
-//    }
 
     @Override
     public TaxonBase load(UUID uuid, List<String> propertyPaths){
@@ -352,10 +344,12 @@ public class TaxonDaoHibernateImpl
             Set<NamedArea> areasExpanded = new HashSet<>();
             if(namedAreas != null && namedAreas.size() > 0){
                 // expand areas and restrict by distribution area
+                // Use partOf.id: under Hibernate 6, "parentArea = :area" (entity compare via JOIN)
+                // can match the area itself instead of its children (see expandNamedAreas).
                 Query<NamedArea> areaQuery = getSession().createQuery("SELECT childArea "
-                        + " FROM NamedArea AS childArea LEFT JOIN childArea.partOf as parentArea "
-                        + " WHERE parentArea = :area", NamedArea.class);
-                expandNamedAreas(namedAreas, areasExpanded, areaQuery);
+                        + " FROM NamedArea AS childArea "
+                        + " WHERE childArea.partOf.id = :areaId", NamedArea.class);
+                expandNamedAreas(namedAreas, areasExpanded, areaQuery, new HashSet<>());
             }
             boolean doAreaRestriction = areasExpanded.size() > 0;
 
@@ -605,14 +599,22 @@ public class TaxonDaoHibernateImpl
         }
     }
 
-    private void expandNamedAreas(Collection<NamedArea> namedAreas, Set<NamedArea> areasExpanded, Query<NamedArea> areaQuery) {
-        for(NamedArea a : namedAreas){
+    /**
+     * Recursively collects {@code namedAreas} and all areas that have them as {@code partOf}.
+     * {@code visitedIds} guards against cycles; needed especially if HQL ever returns an area
+     * as its own child (Hibernate 6 entity comparison via JOIN alias).
+     */
+    private void expandNamedAreas(Collection<NamedArea> namedAreas, Set<NamedArea> areasExpanded,
+            Query<NamedArea> areaQuery, Set<Integer> visitedIds) {
+        for (NamedArea a : namedAreas) {
+            if (a == null || !visitedIds.add(a.getId())) {
+                continue;
+            }
             areasExpanded.add(a);
-            areaQuery.setParameter("area", a);
+            areaQuery.setParameter("areaId", a.getId());
             List<NamedArea> childAreas = areaQuery.list();
-            if(childAreas.size() > 0){
-                areasExpanded.addAll(childAreas);
-                expandNamedAreas(childAreas, areasExpanded, areaQuery);
+            if (!childAreas.isEmpty()) {
+                expandNamedAreas(childAreas, areasExpanded, areaQuery, visitedIds);
             }
         }
     }
@@ -1069,28 +1071,6 @@ public class TaxonDaoHibernateImpl
             indexingPlan.addOrUpdate(taxonBase);
         }
         indexingPlan.execute();
-    }
-
-    @Override
-    public String suggestQuery(String queryString) {
-        throw new RuntimeException("Query suggestion currently not implemented in TaxonDaoHibernateImpl");
-//        checkNotInPriorView("TaxonDaoHibernateImpl.suggestQuery(String queryString)");
-//        String alternativeQueryString = null;
-//        if (alternativeSpellingSuggestionParser != null) {
-//            try {
-//
-//                alternativeSpellingSuggestionParser.parse(queryString);
-//                org.apache.lucene.search.Query alternativeQuery = alternativeSpellingSuggestionParser.suggest(queryString);
-//                if (alternativeQuery != null) {
-//                    alternativeQueryString = alternativeQuery
-//                            .toString("name.titleCache");
-//                }
-//
-//            } catch (ParseException e) {
-//                throw new QueryParseException(e, queryString);
-//            }
-//        }
-//        return alternativeQueryString;
     }
 
     @Override

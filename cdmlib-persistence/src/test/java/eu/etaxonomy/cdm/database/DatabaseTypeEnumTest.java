@@ -27,13 +27,13 @@ public class DatabaseTypeEnumTest {
 
 	private static DatabaseTypeEnum dbEnumMySql;
 	private static DatabaseTypeEnum dbEnumMariaDb;
-    private static DatabaseTypeEnum dbEnumSql2005;
+    private static DatabaseTypeEnum dbEnumSql;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		dbEnumMySql = DatabaseTypeEnum.MySQL;
 	    dbEnumMariaDb = DatabaseTypeEnum.MariaDB;
-		dbEnumSql2005 = DatabaseTypeEnum.SqlServer2005;
+		dbEnumSql = DatabaseTypeEnum.SqlServer;
 	}
 
 	/**
@@ -88,8 +88,8 @@ public class DatabaseTypeEnumTest {
 		ICdmDataSource mariadbDataSource = CdmDataSource.NewMariaDbInstance("192.168.2.10", "cdm_test", null, null);
         assertEquals("jdbc:mariadb://192.168.2.10:3306/cdm_test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull", DatabaseTypeEnumTest.dbEnumMariaDb.getConnectionString(mariadbDataSource));
 
-		ICdmDataSource sqlServerDataSource = CdmDataSource.NewSqlServer2005Instance("192.168.2.10", "cdm_test", -1, null, null);
-		assertEquals("jdbc:sqlserver://192.168.2.10:1433;databaseName=cdm_test;SelectMethod=cursor", DatabaseTypeEnumTest.dbEnumSql2005.getConnectionString(sqlServerDataSource));
+		ICdmDataSource sqlServerDataSource = CdmDataSource.NewSqlServerInstance("192.168.2.10", "cdm_test", -1, null, null);
+		assertEquals("jdbc:sqlserver://192.168.2.10:1433;databaseName=cdm_test;SelectMethod=cursor", DatabaseTypeEnumTest.dbEnumSql.getConnectionString(sqlServerDataSource));
 	}
 
 	/**
@@ -98,18 +98,15 @@ public class DatabaseTypeEnumTest {
 	@Test
 	public void testGetAllTypes() {
 		List<DatabaseTypeEnum> typeList = DatabaseTypeEnum.getAllTypes();
-		assertEquals(10, typeList.size());
+		assertEquals(8, typeList.size());
 		assertEquals(DatabaseTypeEnum.MySQL, typeList.get(0));
 		assertEquals(DatabaseTypeEnum.ODBC, typeList.get(1));
 		assertEquals(DatabaseTypeEnum.PostgreSQL, typeList.get(2));
 		assertEquals(DatabaseTypeEnum.Oracle, typeList.get(3));
-	//	assertEquals(DatabaseTypeEnum.SqlServer2000, typeList.get(4));
-		assertEquals(DatabaseTypeEnum.SqlServer2005, typeList.get(4));
+		assertEquals(DatabaseTypeEnum.SqlServer, typeList.get(4));
 		assertEquals(DatabaseTypeEnum.Sybase, typeList.get(5));
 		assertEquals(DatabaseTypeEnum.H2, typeList.get(6));
-		assertEquals(DatabaseTypeEnum.SqlServer2008, typeList.get(7));
-        assertEquals(DatabaseTypeEnum.SqlServer2012, typeList.get(8));
-        assertEquals(DatabaseTypeEnum.MariaDB, typeList.get(9));
+        assertEquals(DatabaseTypeEnum.MariaDB, typeList.get(7));
 	}
 
 	/**
@@ -117,10 +114,7 @@ public class DatabaseTypeEnumTest {
 	 */
 	@Test
 	public void testGetDatabaseTypeEnumByDriverClass() {
-		//assertEquals(DatabaseTypeEnum.SqlServer2000, DatabaseTypeEnum.getDatabaseEnumByDriverClass("com.microsoft.jdbc.sqlserver.SQLServerDriver"));
-		//does not work anymore as SQLServer driver is ambigous
-		//assertEquals(DatabaseTypeEnum.SqlServer2000, DatabaseTypeEnum.getDatabaseEnumByDriverClass("com.microsoft.sqlserver.jdbc.SQLServerDriver"));
-		//assertEquals(DatabaseTypeEnum.SqlServer2005, DatabaseTypeEnum.getDatabaseEnumByDriverClass("com.microsoft.sqlserver.jdbc.SQLServerDriver"));
+		assertEquals(DatabaseTypeEnum.SqlServer, DatabaseTypeEnum.byDriverClass("com.microsoft.sqlserver.jdbc.SQLServerDriver"));
 		assertEquals(DatabaseTypeEnum.MySQL, DatabaseTypeEnum.byDriverClass("com.mysql.cj.jdbc.Driver"));
 		assertEquals(null, DatabaseTypeEnum.byDriverClass("com.microsoft.xxx"));
 	}

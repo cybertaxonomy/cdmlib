@@ -8,33 +8,38 @@
 */
 package eu.etaxonomy.cdm.model.media;
 
+import org.hibernate.type.SqlTypes;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.Length;
 import java.lang.reflect.Constructor;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.jpa.UriConverter;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlIDREF;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * A media representation is basically anything having a
@@ -63,6 +68,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 public class MediaRepresentation extends VersionableEntity {
 
     private static final long serialVersionUID = -1520078266008619806L;
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
     //http://www.iana.org/assignments/media-types
@@ -81,7 +87,12 @@ public class MediaRepresentation extends VersionableEntity {
 
     // where the media file is stored
     @XmlElement(name = "URI")
-    @Type(type="uriUserType")
+    @Convert(converter = UriConverter.class)
+    // Envers can drop @Lob on _AUD (→ varchar(255) vs legacy CLOB). LONG32 exceeds dialect max VARCHAR
+    // so expected type upgrades to CLOB; @JdbcTypeCode reinforces CLOB. Keep until Envers preserves LOB reliably.
+    @Column(length = Length.LONG32)
+    @Lob
+    @JdbcTypeCode(SqlTypes.CLOB)
     private URI uri;
 
     // in bytes
@@ -91,7 +102,7 @@ public class MediaRepresentation extends VersionableEntity {
     @XmlElementWrapper(name = "MediaMetaDatas")
     @XmlElement(name = "MediaMetaData")
     @OneToMany (mappedBy="mediaRepresentation", fetch= FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.REFRESH})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE, CascadeType.REFRESH})
     private Set<MediaMetaData> mediaMetaData = new HashSet<>();
 
 //********************* FACTORY ***********************************************/

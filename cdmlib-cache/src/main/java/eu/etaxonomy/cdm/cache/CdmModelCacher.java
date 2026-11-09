@@ -18,7 +18,6 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -27,7 +26,9 @@ import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.dialect.H2Dialect;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
 import org.hibernate.property.access.spi.Getter;
@@ -79,6 +80,8 @@ public class CdmModelCacher {
         URL hibernateConfigFile = this.getClass().getResource(HB_CONFIG_FILE_PATH);
     	final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
     			.configure(hibernateConfigFile) // configures settings from hibernate.cfg.xml
+    			// Hibernate 6 requires an explicit dialect when building Metadata without JDBC
+    			.applySetting(AvailableSettings.DIALECT, H2Dialect.class.getName())
     			.build();
 
     	Map<String, CdmModelFieldPropertyFromClass> modelClassMap = new HashMap<>();
@@ -119,11 +122,7 @@ public class CdmModelCacher {
 
     private void addGetters(PersistentClass persistentClass, CdmModelFieldPropertyFromClass cmgmfc) {
         if (persistentClass != null) {
-            @SuppressWarnings("unchecked")
-            Iterator<Property> propertyIt = persistentClass.getPropertyIterator();
-
-            while(propertyIt.hasNext()){
-                Property property = propertyIt.next();
+            for (Property property : persistentClass.getProperties()) {
                 Getter getter = property.getGetter(persistentClass.getMappedClass());
                 if(getter != null && getter.getMember() != null) {
                     Field field = (Field)getter.getMember();

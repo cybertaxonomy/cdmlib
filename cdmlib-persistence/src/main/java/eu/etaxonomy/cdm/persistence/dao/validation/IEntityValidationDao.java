@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.persistence.dao.validation;
 
 import java.util.List;
 
-import javax.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidator;
 
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.model.validation.EntityValidation;

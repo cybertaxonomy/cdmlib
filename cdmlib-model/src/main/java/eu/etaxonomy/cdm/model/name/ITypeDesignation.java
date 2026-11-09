@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.model.name;
 
 import java.util.Set;
 
-import javax.persistence.Transient;
+import jakarta.persistence.Transient;
 
 /**
  * Common interface for all type designation subclasses.

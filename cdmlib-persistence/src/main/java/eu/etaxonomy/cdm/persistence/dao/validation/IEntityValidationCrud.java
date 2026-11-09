@@ -10,8 +10,8 @@ package eu.etaxonomy.cdm.persistence.dao.validation;
 
 import java.util.Set;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
@@ -34,7 +34,7 @@ public interface IEntityValidationCrud {
      * <p>
      * Note that validation groups that have been applied could also have been
      * extracted from the specified set of {@code ConstraintViolation}s, using
-     * the metadata APIs of the javax.validation framework. However the set of
+     * the metadata APIs of the jakarta.validation framework. However the set of
      * {@code ConstraintViolation}s is most likely to result from a call to one
      * of the {@code validate} methods in {@link Validator}. These methods may
      * return an empty set, meaning "nothing wrong". If so, all previously

@@ -15,9 +15,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileNotFoundException;
 import java.util.Set;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
-import javax.validation.groups.Default;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
+import jakarta.validation.groups.Default;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

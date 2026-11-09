@@ -11,12 +11,12 @@ package eu.etaxonomy.cdm.persistence.query;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.From;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Selection;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.From;
+import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Selection;
 
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 

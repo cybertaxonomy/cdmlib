@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.jaxb;
 
-import javax.xml.bind.Marshaller;
+import jakarta.xml.bind.Marshaller;
 
 /**
  * @author a.babadshanjan

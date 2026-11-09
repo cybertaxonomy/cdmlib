@@ -15,13 +15,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.persistence.Tuple;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
@@ -64,6 +57,12 @@ import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import jakarta.persistence.Tuple;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 /**
  * @author a.babadshanjan
@@ -582,7 +581,7 @@ public class OccurrenceDaoHibernateImpl
         query.setParameterList("setOfAll", setOfAll);
 
         if(type != null && !type.equals(SpecimenOrObservationBase.class)){
-            query.setParameter("type", type.getSimpleName());
+            query.setParameter("type", type);
         }
 
         addLimitAndStart(query, limit, start);
@@ -916,8 +915,7 @@ public class OccurrenceDaoHibernateImpl
         query.setParameterList("setOfAllIds", setOfAllIds);
 
         if(requiresClassFilter){
-            //note: null warning is incorrect here
-            query.setParameter("type", clazz.getSimpleName());
+            query.setParameter("type", clazz);
         }
 
         addLimitAndStart(query, limit, start);

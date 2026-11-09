@@ -16,7 +16,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.QualifierAnnotationAutowireCandidateResolver;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.support.GenericApplicationContext;
-import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
+import org.springframework.core.DefaultParameterNameDiscoverer;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
@@ -44,7 +44,7 @@ public class MonitoredGenericApplicationContext extends GenericApplicationContex
         super(new MonitoredListableBeanFactory());
         //taken from empty constructor of GenericApplicationContext
         ((MonitoredListableBeanFactory)getBeanFactory()).setSerializationId(getId());
-        ((MonitoredListableBeanFactory)getBeanFactory()).setParameterNameDiscoverer(new LocalVariableTableParameterNameDiscoverer());
+        ((MonitoredListableBeanFactory)getBeanFactory()).setParameterNameDiscoverer(new DefaultParameterNameDiscoverer());
         ((MonitoredListableBeanFactory)getBeanFactory()).setAutowireCandidateResolver(new QualifierAnnotationAutowireCandidateResolver());
     }
 

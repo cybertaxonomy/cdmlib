@@ -11,12 +11,12 @@ package eu.etaxonomy.cdm.remote.controller.interceptor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import eu.etaxonomy.cdm.database.NamedContextHolder;
 
@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.database.NamedContextHolder;
  * See https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/CdmServerSwitchableDataSources for more information.</em>
  */
 @Deprecated
-public class DatasourceContextHandlerInterceptor extends HandlerInterceptorAdapter {
+public class DatasourceContextHandlerInterceptor implements HandlerInterceptor {
 
 	private static final Logger logger = LogManager.getLogger();
 

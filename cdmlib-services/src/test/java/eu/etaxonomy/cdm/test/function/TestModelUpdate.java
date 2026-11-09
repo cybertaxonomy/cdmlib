@@ -100,6 +100,8 @@ public class TestModelUpdate {
         String username = "edit";
         String serverSql = "130.133.70.26";
 //        server = "160.45.63.175";
+//        server = "160.45.63.171";
+//        dbType = DatabaseTypeEnum.MariaDB;
 
         if (dbType == DatabaseTypeEnum.MySQL){
             return CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
@@ -112,10 +114,10 @@ public class TestModelUpdate {
             username = "sa";
             CdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path);
             return dataSource;
-        }else if (dbType == DatabaseTypeEnum.SqlServer2005){
+        }else if (dbType == DatabaseTypeEnum.SqlServer){
             server = serverSql;
             username = "cdmupdater";
-            CdmDataSource dataSource = CdmDataSource.NewSqlServer2005Instance(server, database, 1433, username, AccountStore.readOrStorePassword(server, database, username, null));
+            CdmDataSource dataSource = CdmDataSource.NewSqlServerInstance(server, database, 1433, username, AccountStore.readOrStorePassword(server, database, username, null));
             return dataSource;
         }else if (dbType == DatabaseTypeEnum.PostgreSQL){
             server = serverSql;

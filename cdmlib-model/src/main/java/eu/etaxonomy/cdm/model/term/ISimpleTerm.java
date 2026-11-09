@@ -6,7 +6,7 @@ package eu.etaxonomy.cdm.model.term;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.Transient;
+import jakarta.persistence.Transient;
 
 /**
  * The common interface which is implemented by {@link DefinedTermBase defined terms} and enumerations

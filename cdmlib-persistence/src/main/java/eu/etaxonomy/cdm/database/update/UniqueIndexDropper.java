@@ -96,7 +96,7 @@ public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase {
 		DatabaseTypeEnum type = datasource.getDatabaseType();
 		String indexName = getIndexName(datasource, caseType);
 
-//		if (type.equals(DatabaseTypeEnum.SqlServer2005)){
+//		if (type.equals(DatabaseTypeEnum.SqlServer)){
 			//MySQL allows both syntaxes
 //			updateQuery = "ALTER TABLE @tableName ADD @columnName @columnType";
 //		}else

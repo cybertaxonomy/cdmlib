@@ -11,10 +11,14 @@ package eu.etaxonomy.cdm.io.cdm2cdm;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -80,6 +84,9 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
 
           String tmpDirLocation = System.getProperty("java.io.tmpdir");
           Path path = Path.of(tmpDirLocation, "testVoc");
+          // Fixed path under java.io.tmpdir: wipe leftovers from older H2 (1.4 write format)
+          // so H2 2.x can create a fresh database (CREATE alone does not migrate .mv.db).
+          deleteRecursivelyIfExists(path);
 
           ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("testVoc", "sa", "", path.toString());
           otherRepository = CdmApplicationController.NewInstance(dataSource,
@@ -244,6 +251,21 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
         uuid = (uuid == null? UUID.randomUUID() : uuid);
         term.setUuid(uuid);
         return term;
+    }
+
+    private static void deleteRecursivelyIfExists(Path path) throws IOException {
+        if (!Files.exists(path)) {
+            return;
+        }
+        try (Stream<Path> walk = Files.walk(path)) {
+            walk.sorted(Comparator.reverseOrder()).forEach(p -> {
+                try {
+                    Files.deleteIfExists(p);
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to delete " + p, e);
+                }
+            });
+        }
     }
 
     @Override

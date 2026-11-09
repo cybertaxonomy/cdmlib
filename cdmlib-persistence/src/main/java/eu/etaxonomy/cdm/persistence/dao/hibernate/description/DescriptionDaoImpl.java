@@ -15,13 +15,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,7 +26,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.hibernate.EnumSetUserType;
+import eu.etaxonomy.cdm.jpa.EnumSetConverterBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Marker;
@@ -61,6 +54,12 @@ import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
 import eu.etaxonomy.cdm.persistence.dto.QuantitativeDataDto;
 import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 @Repository
 @Qualifier("descriptionDaoImpl")
@@ -216,7 +215,7 @@ public class DescriptionDaoImpl
 
         //descriptionTypes
         if(!CdmUtils.isNullSafeEmpty(descriptionTypes)) {
-            Predicate p = EnumSetUserType.hasAllEnumValues(descriptionTypes, cb, root);
+            Predicate p = EnumSetConverterBase.hasAllEnumValues(descriptionTypes, cb, root);
             predicates.add(p);
         }
 
@@ -562,7 +561,7 @@ public class DescriptionDaoImpl
 
         query.setParameter("taxon_uuid", taxonUuid);
         if(type != null){
-            query.setParameter("type", type.getSimpleName());
+            query.setParameter("type", type);
         }
         if (!includeUnpublished){
             query.setParameter("publish", true);

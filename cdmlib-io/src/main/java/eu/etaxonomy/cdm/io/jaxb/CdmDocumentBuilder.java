@@ -19,9 +19,10 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URISyntaxException;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.PropertyException;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -110,7 +111,7 @@ public class CdmDocumentBuilder extends Jaxb2Marshaller  {
     @Override
     protected void initJaxbMarshaller(Marshaller marshaller) throws JAXBException {
         try {
-            marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new CdmNamespacePrefixMapper() );
+            marshaller.setProperty("org.glassfish.jaxb.namespacePrefixMapper", new CdmNamespacePrefixMapper() );
 
             // For test purposes insert newlines to make the XML output readable
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, formattedOutput);

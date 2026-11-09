@@ -15,26 +15,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapKeyJoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderColumn;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import jakarta.validation.constraints.NotNull;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlIDREF;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -89,7 +91,7 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
 @XmlRootElement(name = "TaxonNode")
 @Entity
 @Audited
-@Table(name = "TaxonNode", indexes = {@javax.persistence.Index(name = "taxonNodeTreeIndex", columnList = "treeIndex")})
+@Table(name = "TaxonNode", indexes = {@jakarta.persistence.Index(name = "taxonNodeTreeIndex", columnList = "treeIndex")})
 @ChildTaxaMustBeLowerRankThanParent(groups = Level3.class)
 @ChildTaxaMustNotSkipRanks(groups = Level3.class)
 @ChildTaxaMustDeriveNameFromParent(groups = Level3.class)
@@ -104,7 +106,7 @@ public class TaxonNode
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     private Taxon taxon;
 
     @XmlElement(name = "parent")
@@ -148,7 +150,7 @@ public class TaxonNode
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="taxonNode", fetch=FetchType.LAZY, orphanRemoval = true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     private Set<TaxonNodeAgentRelation> agentRelations = new HashSet<>();
 
     /**
@@ -156,9 +158,6 @@ public class TaxonNode
      */
     @XmlAttribute(name ="TaxonNodeStatus")
     @Column(name="status", length=10)
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus")}
-    )
     @Audited
     @NotNull
     private TaxonNodeStatus status = TaxonNodeStatus.INCLDUDED;
@@ -166,9 +165,15 @@ public class TaxonNode
     @XmlElement(name = "placementNote")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-//    @MapKeyJoinColumn(name="placementNote_mapkey_id")
-    @JoinTable(name = "TaxonNode_PlacementNote")  //to make possible to add also unplacedNote
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+    // Explicit join + map-key column: DB column is placementNote_KEY (SchemaUpdater_5120),
+    // not the Hibernate-6 default placementNote_mapkey_id used by other Multilanguage maps
+    @JoinTable(
+            name = "TaxonNode_PlacementNote",
+            joinColumns = @JoinColumn(name = "TaxonNode_id"),
+            inverseJoinColumns = @JoinColumn(name = "placementNote_id")
+    )
+    @MapKeyJoinColumn(name = "placementNote_KEY")
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     private Map<Language,LanguageString> placementNote = new HashMap<>();
 
 //	private Taxon originalConcept;

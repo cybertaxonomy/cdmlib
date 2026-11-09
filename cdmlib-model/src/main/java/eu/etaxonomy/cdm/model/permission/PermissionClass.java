@@ -14,11 +14,13 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.jpa.EnumConverterBase;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
+import jakarta.persistence.Converter;
 
 /**
  * see also {@link CdmBaseType}
@@ -110,7 +112,14 @@ public enum PermissionClass implements IEnumTerm<PermissionClass>{
         delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
     }
 
- // *************************** DELEGATE **************************************/
+//********************** CONVERTER **********************************/
+
+    @Converter(autoApply = true)
+    public static class PermissionClassConverter extends EnumConverterBase<PermissionClass> {
+        public PermissionClassConverter() { super(PermissionClass.class); }
+    }
+
+// *************************** DELEGATE **************************************/
 
     private static EnumeratedTermVoc<PermissionClass> delegateVoc;
     private IEnumTerm<PermissionClass> delegateVocTerm;

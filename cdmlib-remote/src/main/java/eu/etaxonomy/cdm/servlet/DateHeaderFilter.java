@@ -12,18 +12,16 @@ import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.web.util.NestedServletException;
-
 /**
  * Adds a "Date" Header to the http response formatted as RFC_1123_DATE_TIME.
  *
@@ -45,31 +43,15 @@ public class DateHeaderFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
+        // Let request exceptions propagate; only guard setting the Date header
+        // (may fail if the response is already committed). see #9185
+        chain.doFilter(request, response);
         try {
             OffsetDateTime dateTime = OffsetDateTime.now();
-            // from chain.doFilter() NestedServletExceptions with NPEs may bubble up
-            // from controller methods which miss proper handling of not found entities or the like
-            // (HTTP 404 : uuid not found)
-            // These situations are caught below and logged at info level for debugging purposes
-            // during development. In production environment we don't want to clutter the logs with
-            // this. see #9185
-            chain.doFilter(request, response);
             HttpServletResponse httpServletResponse = (HttpServletResponse) response;
             httpServletResponse.setHeader("Date", dateTime.format(DateTimeFormatter.RFC_1123_DATE_TIME));
-        } catch ( NullPointerException e) {
-            // see above and #9185
-            logger.debug("Can not add data header: " + e.getMessage());
-        } catch (NestedServletException e) {
-            // see above and #9185
-            if(e.getCause() != null && e.getCause() instanceof NullPointerException) {
-                logger.debug("Can not add data header: " + e.getCause());
-            } else {
-                // higher level in this case as these are unexpected
-                logger.warn("Can not add data header.", e);
-            }
         } catch (Exception e) {
-            // higher level in this case as these are unexpected
-            logger.warn("Can not add data header.", e);
+            logger.debug("Can not add date header: " + e.getMessage());
         }
     }
 

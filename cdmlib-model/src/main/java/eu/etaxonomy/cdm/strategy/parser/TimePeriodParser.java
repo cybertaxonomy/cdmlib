@@ -20,6 +20,7 @@ import org.joda.time.Partial;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.TimePeriodBase;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 
 /**
@@ -72,7 +73,7 @@ public class TimePeriodParser {
     private static final String strDateYearMonthDay = "(\\d{4,4}" + dashOrWs + ")?" + strMonthes + "(" + dashOrWs + "[0-3]?\\d)?\\+?";
 	private static final Pattern dateYearMonthDayPattern = Pattern.compile(strDateYearMonthDay);
 
-	public static <T extends TimePeriod> T parseString(T timePeriod, String periodString){
+	public static <T extends TimePeriodBase> T parseString(T timePeriod, String periodString){
 		T result = timePeriod;
 
 		if(timePeriod == null){
@@ -155,7 +156,7 @@ public class TimePeriodParser {
         }
     }
 
-    private static void parseSlashDatePattern(String periodString, TimePeriod result) {
+    private static void parseSlashDatePattern(String periodString, TimePeriodBase result) {
         String[] dates = periodString.split("-");
         Partial dtStart = null;
         Partial dtEnd = null;
@@ -185,7 +186,7 @@ public class TimePeriodParser {
         }
     }
 
-	private static void parseDotDatePattern(String periodString,TimePeriod result) {
+	private static void parseDotDatePattern(String periodString, TimePeriodBase result) {
 		String[] dates = periodString.split("-");
 		Partial dtStart = null;
 		Partial dtEnd = null;
@@ -227,7 +228,7 @@ public class TimePeriodParser {
         return dtEnd;
     }
 
-    private static void parseDateWithMonthName(String dateString, TimePeriod result) {
+    private static void parseDateWithMonthName(String dateString, TimePeriodBase result) {
         String[] periods = dateString.split(SEP);
         boolean isContinued = false;
         if (periods.length > 2){
@@ -262,7 +263,7 @@ public class TimePeriodParser {
         }
     }
 
-    private static void parseDateWithRomanMonth(String dateString, TimePeriod result) {
+    private static void parseDateWithRomanMonth(String dateString, TimePeriodBase result) {
         String[] periods = dateString.split(SEP);
         boolean isContinued = false;
         if (periods[0].endsWith("+")){
@@ -343,7 +344,7 @@ public class TimePeriodParser {
         }
     }
 
-    private static void parseDateYearMonthDay(String dateString, TimePeriod result) {
+    private static void parseDateYearMonthDay(String dateString, TimePeriodBase result) {
         String[] dates = dateString.split(dashOrWs);
 
         if (dates.length > 3 || dates.length < 1){
@@ -475,7 +476,7 @@ public class TimePeriodParser {
     }
 
     //TODO "continued" not yet handled, probably looks different here (e.g. 2017--x)
-    private static void parseLifeSpanPattern(String periodString, TimePeriod result) {
+    private static void parseLifeSpanPattern(String periodString, TimePeriodBase result) {
 
 		try{
 			String[] years = periodString.split("--");
@@ -491,7 +492,7 @@ public class TimePeriodParser {
 	}
 
 	private static void parseStandardPattern(String periodString,
-			TimePeriod result) {
+			TimePeriodBase result) {
 		String[] years = periodString.split("-");
 		Partial dtStart = null;
 		Partial dtEnd = null;

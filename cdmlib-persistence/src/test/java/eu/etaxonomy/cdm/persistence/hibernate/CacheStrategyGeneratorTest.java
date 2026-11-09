@@ -20,6 +20,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -47,6 +48,7 @@ import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
@@ -86,7 +88,9 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 	}
 
 	@Test
-	@DataSet("CacheStrategyGeneratorTest.xml")
+	@DataSets({
+		@DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "CacheStrategyGeneratorTest.xml")
+	})
 	@ExpectedDataSet
 	public void testOnSaveOrUpdateNames() {
 
@@ -99,9 +103,14 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		cdmEntityDaoBase.saveOrUpdate(name);
 
 		TaxonName name2 =  cdmEntityDaoBase.findByUuid(UUID.fromString("05a438d6-065f-49ef-84db-c7dc2c259975"));
+		// Clear caches explicitly so CacheStrategyGenerator must regenerate them
+		// (PropertyChangeAspect also nulls them on epithet changes when weaving is active).
 		name2.setProtectedFullTitleCache(false);
 		name2.setProtectedTitleCache(false);
 		name2.setProtectedNameCache(false);
+		name2.setNameCache(null, false);
+		name2.setTitleCache(null, false);
+		name2.setFullTitleCache(null, false);
 		name2.setGenusOrUninomial("Abies");
 		name2.setSpecificEpithet("alba");
 		name2.setAuthorshipCache("Mill.", true);
@@ -114,7 +123,6 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		cdmEntityDaoBase.saveOrUpdate(name2);
 
 		Assert.assertEquals(name, cdmEntityDaoBase.findByUuid(name.getUuid()));
-		IBotanicalName nameTest = cdmEntityDaoBase.findByUuid(name.getUuid());
 
 		Assert.assertEquals(name2, cdmEntityDaoBase.findByUuid(name2.getUuid()));
 		logger.debug("FulltitleCache: "+ cdmEntityDaoBase.findByUuid(name2.getUuid()).getFullTitleCache());
@@ -128,14 +136,18 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		TaxonName nameBase = taxa.get (0);
 		IBotanicalName botName = nameBase;
 
-		logger.debug("created "+botName.getCreated());
-		logger.debug("updated: " +botName.getUpdated());
+		logger.debug("created " + botName.getCreated());
+		logger.debug("updated: " + botName.getUpdated());
 //		IBotanicalName name3 =  (IBotanicalName)cdmEntityDaoBase.findByUuid(UUID.fromString("049a3963-c4ea-4047-8588-2f8f15352730"));
 //		printDataSet(System.err, new String[]{"TaxonName", "Reference"});
+
+		commit();
 	}
 
 	@Test
-	@DataSet("CacheStrategyGeneratorTest.xml")
+	@DataSets({
+		@DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "CacheStrategyGeneratorTest.xml")
+	})
 	@ExpectedDataSet
 	public void testOnSaveOrUpdateAgents() {
 
@@ -172,6 +184,8 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		Assert.assertEquals(person3, person4);
 		Team team2 = (Team) agentDao.findByUuid(UUID.fromString("db957a0a-1494-49bb-8d17-d3eaa2076573"));
 		Assert.assertEquals(team1, team2);
+
+		commit();
 	}
 
 	private Person makePerson1() {
@@ -198,7 +212,9 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 	}
 
 	@Test
-	@DataSet("CacheStrategyGeneratorTest.xml")
+	@DataSets({
+		@DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "CacheStrategyGeneratorTest.xml")
+	})
 	@ExpectedDataSet
 	//TODO correct abbrevTitleCache for article still unclear (open question: with or without article title ?)
 	public void testOnSaveOrUpdateReferences() {

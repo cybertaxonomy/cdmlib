@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -375,7 +375,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 
       private Validator validator;
 
-      private javax.validation.Validator javaxValidator;
+      private jakarta.validation.Validator javaxValidator;
 
       @RequestMapping(method = RequestMethod.PUT, headers="content-type=multipart/form-data")
       public T doPutForm(@PathVariable(value = "uuid") UUID uuid, @ModelAttribute("object") T object, BindingResult result) {

@@ -11,20 +11,20 @@ package eu.etaxonomy.cdm.model.common;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.persistence.Embeddable;
-import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.envers.Audited;
 import org.joda.time.Partial;
 import org.joda.time.ReadableInstant;
 
 import eu.etaxonomy.cdm.format.common.VerbatimTimePeriodFormatter;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Transient;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * @author a.mueller
@@ -37,7 +37,8 @@ import eu.etaxonomy.cdm.format.common.VerbatimTimePeriodFormatter;
 })
 @XmlRootElement(name = "VerbatimTimePeriod")
 @Embeddable
-public class VerbatimTimePeriod extends TimePeriod {
+@Audited
+public class VerbatimTimePeriod extends TimePeriodBase {
 
     private static final long serialVersionUID = -6543644293635460526L;
     @SuppressWarnings("unused")

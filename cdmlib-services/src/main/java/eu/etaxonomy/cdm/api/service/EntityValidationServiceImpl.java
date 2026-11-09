@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.List;
 import java.util.Set;
 
-import javax.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

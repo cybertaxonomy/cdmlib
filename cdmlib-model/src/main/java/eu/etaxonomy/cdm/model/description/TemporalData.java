@@ -8,12 +8,16 @@
 */
 package eu.etaxonomy.cdm.model.description;
 
-import javax.persistence.Entity;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,6 +51,16 @@ public class TemporalData
     private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "Period")
+    @Embedded
+    // See DescriptionElementBase.timeperiod: MappedSuperclass fields of TimePeriodBase
+    // need explicit column names when a second period is embedded on the same table.
+    @AttributeOverrides({
+        @AttributeOverride(name = "start", column = @Column(name = "period_start")),
+        @AttributeOverride(name = "end", column = @Column(name = "period_end")),
+        @AttributeOverride(name = "freeText", column = @Column(name = "period_freeText")),
+        @AttributeOverride(name = "extremeStart", column = @Column(name = "period_extremeStart")),
+        @AttributeOverride(name = "extremeEnd", column = @Column(name = "period_extremeEnd"))
+    })
     private ExtendedTimePeriod period = ExtendedTimePeriod.NewExtendedInstance();
 
     public static TemporalData NewInstance(){

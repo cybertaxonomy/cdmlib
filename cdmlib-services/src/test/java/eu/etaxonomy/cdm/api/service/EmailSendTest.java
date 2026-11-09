@@ -15,9 +15,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileNotFoundException;
 import java.util.Objects;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
@@ -30,6 +27,8 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.config.SendEmailConfigurer;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 public class EmailSendTest extends CdmIntegrationTest {
 
@@ -68,8 +67,7 @@ public class EmailSendTest extends CdmIntegrationTest {
         Wiser wiser = null;
         if(useWiser) {
             // start test smtp server
-            wiser = new Wiser();
-            wiser.setPort(2500); // better use random port
+            wiser = Wiser.port(2500); // better use random port
             wiser.start();
         }
 
@@ -94,7 +92,7 @@ public class EmailSendTest extends CdmIntegrationTest {
                 assertEquals(TO, envelopeReceiver);
                 try {
                     MimeMessage mess = message.getMimeMessage();
-                    subject  = mess.getSubject();
+                    subject = mess.getSubject();
                 } catch (MessagingException e) {
                     logger.error("MessagingException", e);
                 }

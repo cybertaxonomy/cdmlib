@@ -21,12 +21,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
@@ -40,7 +34,6 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.RevisionStatus;
 import eu.etaxonomy.cdm.model.common.RevisionStatusInfo;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -67,6 +60,11 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.dto.compare.SortableTaxonNodeQueryResultComparator;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 /**
  * @author a.mueller
@@ -129,7 +127,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 			        taxonDao.saveOrUpdate(taxon);
     				taxon = HibernateProxyHelper.deproxy(taxonDao.findByUuid(taxon.getUuid()), Taxon.class);
     				taxonDao.delete(taxon);
-
 			    }
 			}
 		}
@@ -880,21 +877,16 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
                     }
                 }
             }
-            commitAndRestartTransaction(newSec);
+            commitAndRestartTransaction();
             monitor.worked(taxonIdList.size());
         }
         return result;
     }
 
-    private void commitAndRestartTransaction(CdmBase... cdmBaseToUpdate) {
+    private void commitAndRestartTransaction() {
         getSession().getTransaction().commit();
         getSession().clear();
         getSession().beginTransaction();
-        for (CdmBase cdmBase : cdmBaseToUpdate){
-            if (cdmBase != null){
-                getSession().update(cdmBase);
-            }
-        }
     }
 
     @Override
@@ -1099,11 +1091,9 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
             query.setParameterList("relTypeUuid", relTypeUuids);
         }
 
-        RevisionStatus statusEntity = revisionStatus == null ? null : revisionStatus.getStatus();
         List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_SET_SUBTREE_PARTITION_SIZE);
         for (List<Integer> taxonIdList : partitionList){
-            @SuppressWarnings({ "unchecked", "rawtypes" })
-            List<TaxonBase> taxonList = (List)taxonDao.loadList(taxonIdList, null, null);
+            List<TaxonBase> taxonList = taxonDao.loadList(taxonIdList, null, null);
             for (TaxonBase taxonBase : taxonList){
                 if (taxonBase != null){
                     Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
@@ -1117,7 +1107,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
                     }
                 }
             }
-            commitAndRestartTransaction(statusEntity);
+            commitAndRestartTransaction();
         }
         return result;
     }
@@ -1175,8 +1165,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         if(excludeHybrids){
 
             String hybridWhere =  " AND (n is NULL OR "
-                    + " (n.monomHybrid=0 AND n.binomHybrid=0 "
-                    + "   AND n.trinomHybrid=0 AND n.hybridFormula=0 )) ";
+                    + " (n.monomHybrid=false AND n.binomHybrid=false "
+                    + "   AND n.trinomHybrid=false AND n.hybridFormula=false )) ";
 
             whereStr += hybridWhere; //String.format(hybridWhere, t);
         }
@@ -1254,7 +1244,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
             case COUNT:
             default: return hql;
             }
-
         }
     }
 

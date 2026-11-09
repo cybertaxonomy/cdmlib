@@ -1,11 +1,9 @@
 package eu.etaxonomy.cdm.api.conversation;
 
-import javax.sql.DataSource;
-
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.orm.hibernate5.SessionHolder;
+import org.springframework.orm.jpa.EntityManagerHolder;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 
@@ -25,14 +23,13 @@ public class ConversationHolderMock extends ConversationHolder {
 	}
 
 	@Override
-    public SessionHolder getSessionHolder(){
+    public EntityManagerHolder getEntityManagerHolder(){
 		return null;
 	}
 
-	/**
-	 * @return
-	 */
-	private DataSource getDataSource() {
+	@Override
+	@Deprecated
+    public EntityManagerHolder getSessionHolder(){
 		return null;
 	}
 

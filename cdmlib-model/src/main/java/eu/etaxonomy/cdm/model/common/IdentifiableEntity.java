@@ -17,22 +17,22 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.FetchType;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderColumn;
+import jakarta.persistence.Transient;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -125,7 +125,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @XmlElementWrapper(name = "Extensions", nillable = true)
     @XmlElement(name = "Extension")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
     private Set<Extension> extensions = new HashSet<>();
@@ -134,7 +134,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @XmlElement(name = "Identifier")
     @OrderColumn(name="sortIndex")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
     private List<Identifier> identifiers = new ArrayList<>();
@@ -142,7 +142,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @XmlElementWrapper(name = "Links", nillable = true)
     @XmlElement(name = "Link")
     @OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     private Set<ExternalLink> links = new HashSet<>();
 
@@ -333,12 +333,14 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
         return this.identifiers;
     }
+
     /**
      * @return a set of identifier value strings
      */
     public Set<String> getIdentifierStrings(IdentifierType type){
        return getIdentifierStrings(type == null? null :type.getUuid());
     }
+
     /**
      * @param identifierTypeUuid
      * @return a set of identifier value strings
@@ -353,6 +355,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
         return result;
     }
+
     /**
      * Returns the first identifier value of the given type.
      * <code>null</code> if no such identifier exists.
@@ -362,6 +365,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         Set<Identifier> set = getIdentifiers(identifierTypeUuid);
         return set.isEmpty()? null : set.iterator().next().getIdentifier();
     }
+
     /**
      * Returns the first identifier of the given type.
      * <code>null</code> if no such identifier exists.
@@ -383,14 +387,12 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return result;
     }
 
-    @Override
     public Identifier addIdentifier(String identifier, IdentifierType identifierType){
     	Identifier result = Identifier.NewInstance(identifier, identifierType);
     	addIdentifier(result);
     	return result;
     }
 
-    @Override
     public void addIdentifier(Integer index, Identifier identifier){
         if (identifier != null){
         	//deduplication
@@ -410,27 +412,25 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
     }
 
-    @Override
     public void addIdentifier(Identifier identifier){
         addIdentifier(null, identifier);
     }
 
-    @Override
     public void removeIdentifier(Identifier identifier){
         if (identifier != null){
             getIdentifiers().remove(identifier);
         }
     }
-    @Override
+
     public void removeIdentifier(int index){
     	getIdentifiers().remove(index);
     }
 
-    @Override
     public boolean replaceIdentifier(Identifier newObject, Identifier oldObject){
         return replaceInList(this.identifiers, newObject, oldObject);
     }
 
+//************ EXTENSIONS ********************************************/
 
     @Override
     public Set<Extension> getExtensions(){

@@ -26,6 +26,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequest;
@@ -35,7 +36,7 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RequestCallback;
-import org.springframework.web.client.ResponseErrorHandler;
+import org.springframework.web.client.NoOpResponseErrorHandler;
 import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -292,14 +293,15 @@ public class ServerRunning implements MethodRule {
                 }
             };
         }
-        return client.execute(getUrl(path), HttpMethod.GET, requestCallback,
+        HttpStatusCode statusCode = client.execute(getUrl(path), HttpMethod.GET, requestCallback,
                 new ResponseExtractor<ResponseEntity<Void>>() {
                     @Override
                     public ResponseEntity<Void> extractData(ClientHttpResponse response) throws IOException {
                         FileCopyUtils.copyToByteArray(response.getBody());
-                        return new ResponseEntity<Void>(response.getStatusCode());
+                        return new ResponseEntity<>(response.getStatusCode());
                     }
                 }).getStatusCode();
+        return HttpStatus.valueOf(statusCode.value());
     }
 
     public HttpStatus getStatusCode(String path) {
@@ -315,17 +317,8 @@ public class ServerRunning implements MethodRule {
                 connection.setInstanceFollowRedirects(false);
             }
         });
-        client.setErrorHandler(new ResponseErrorHandler() {
-            // Pass errors through in response entity for status code analysis
-            @Override
-            public boolean hasError(ClientHttpResponse response) throws IOException {
-                return false;
-            }
-
-            @Override
-            public void handleError(ClientHttpResponse response) throws IOException {
-            }
-        });
+        // Pass errors through in response entity for status code analysis
+        client.setErrorHandler(new NoOpResponseErrorHandler());
         return client;
     }
 

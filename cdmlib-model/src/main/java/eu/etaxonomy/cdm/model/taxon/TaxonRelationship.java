@@ -8,17 +8,17 @@
 */
 package eu.etaxonomy.cdm.model.taxon;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlIDREF;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -66,7 +66,9 @@ public class TaxonRelationship
     @XmlElement(name = "RelatedFrom")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch=FetchType.EAGER)
+    // LAZY: EAGER caused Hibernate 6.1 AssertionFailure ("force initializing collection loading")
+    // when loading relationsFrom/To while related taxon's secSource (OneToOne unique-key) initializes
+    @ManyToOne(fetch=FetchType.LAZY)
     //see #5477 at least MAN and proparte synonym relations need to update the TaxonBase index of the
     //related taxon to fully work; reindex when the related taxon's indexed properties (e.g. publish) change
     @IndexedEmbedded(includeDepth=1)
@@ -75,7 +77,8 @@ public class TaxonRelationship
     @XmlElement(name = "RelatedTo")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch=FetchType.EAGER)
+    // LAZY: see relatedFrom
+    @ManyToOne(fetch=FetchType.LAZY)
     @IndexedEmbedded(includeDepth=1)
     private Taxon relatedTo;
 
@@ -91,7 +94,7 @@ public class TaxonRelationship
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne
-    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     private TaxonomicOperation operation;
 
 // *************************** CONSTRUCTOR ********************************/

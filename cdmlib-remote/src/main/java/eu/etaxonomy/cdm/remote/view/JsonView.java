@@ -12,8 +12,8 @@ import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.SuppressPropertiesBeanIntrospector;
@@ -206,6 +206,8 @@ public class JsonView extends BaseView implements View {
             // render
             render(entity, writer, jsonpCallback, request, response);
         } catch (Exception e) {
+            logger.error("Error when rendering a response object of type "
+                    + (entity == null ? "null" : entity.getClass().getCanonicalName()), e);
             if (request.getParameter("debug") != null){
                 writer.write("Error when rendering a response object of type " + (entity == null? "null" :entity.getClass().getCanonicalName()) + System.lineSeparator() + System.lineSeparator());
                 if (e.getCause() != null) {

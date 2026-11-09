@@ -23,10 +23,13 @@ import eu.etaxonomy.cdm.remote.staticSwagger.StaticSwaggerApiDoc;
 
 /**
  * The resources produced by this tests are delivered by the {@link StaticSwaggerApiDoc} controller.
+ * <p>
+ * Ignored until springfox is replaced by springdoc-openapi (Jakarta / Spring 6).
  *
  * @author a.kohlbecker
  * @since Mar 3, 2014
  */
+@Ignore("Requires springfox/swagger profile; blocked on Jakarta until springdoc-openapi migration")
 public class SwaggerStaticIT extends WebServiceTestBase {
 
     private static final Logger logger = LogManager.getLogger();

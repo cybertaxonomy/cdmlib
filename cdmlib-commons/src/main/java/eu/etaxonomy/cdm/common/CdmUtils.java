@@ -472,7 +472,7 @@ public class CdmUtils {
     }
 
     /**
-     * Returns true, if field has an annotation of type javax.persistence.Annotation
+     * Returns true, if field has an annotation of type jakarta.persistence.Annotation
      * @param field
      * @return
      */

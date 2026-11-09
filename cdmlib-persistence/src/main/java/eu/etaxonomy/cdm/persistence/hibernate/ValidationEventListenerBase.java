@@ -30,9 +30,7 @@ import eu.etaxonomy.cdm.persistence.validation.ValidationExecutor;
 /**
  * @author a.mueller
  * @since 13.02.2015
- *
  */
-@SuppressWarnings("serial")
 public abstract class ValidationEventListenerBase implements PostInsertEventListener, PostUpdateEventListener{
 
     private static final Logger logger = LogManager.getLogger();

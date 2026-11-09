@@ -11,32 +11,11 @@ package eu.etaxonomy.cdm.model.reference;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-
 import org.apache.commons.lang3.Strings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.springframework.util.Assert;
 
@@ -44,9 +23,30 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.TimePeriodBase;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlIDREF;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * Abstract base class for classes implementing {@link eu.etaxonomy.cdm.model.reference.IOriginalSource IOriginalSource}.
@@ -88,9 +88,6 @@ public abstract class OriginalSourceBase
 	@XmlAttribute(name ="type")
 	@Column(name="sourceType")
 	@NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-    	parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.reference.OriginalSourceType")}
-    )
 	@Audited
 	private OriginalSourceType type;
 
@@ -114,6 +111,7 @@ public abstract class OriginalSourceBase
 
     //#10057
     @XmlElement(name = "Accessed", type= String.class)
+    @Embedded
     private TimePeriod accessed = TimePeriod.NewInstance();
 
     //#10097
@@ -123,14 +121,16 @@ public abstract class OriginalSourceBase
     @XmlElement(name = "CdmSource")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToOne(fetch = FetchType.EAGER, orphanRemoval=true)  //EAGER to avoid LIEs cdmSource should always be part of the OriginalSource itself
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    // LAZY: EAGER caused Hibernate 6.1 AssertionFailure ("force initializing collection loading")
+    // when cascading deletes load OriginalSourceBase while another collection is initializing
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     private CdmLinkSource cdmSource;
 
     @XmlElementWrapper(name = "Links", nillable = true)
     @XmlElement(name = "Link")
     @OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
 	private Set<ExternalLink> links = new HashSet<>();
 
@@ -195,7 +195,7 @@ public abstract class OriginalSourceBase
         this.citationMicroReference = citationMicroReference;
     }
 
-    public TimePeriod getAccessed() {
+    public TimePeriodBase getAccessed() {
         return accessed;
     }
     public void setAccessed(TimePeriod accessed) {

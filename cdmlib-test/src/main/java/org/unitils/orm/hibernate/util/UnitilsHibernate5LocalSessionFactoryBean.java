@@ -18,13 +18,21 @@ package org.unitils.orm.hibernate.util;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import java.util.Properties;
+
 import org.hibernate.HibernateException;
-import org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl;
+import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.unitils.core.UnitilsException;
 import org.unitils.util.ReflectionUtils;
 
+/**
+ * Unitils SessionFactory bean. Avoids {@code setImplicitNamingStrategy(...)} on
+ * {@link LocalSessionFactoryBean} because Hibernate 6.2+ changed that method to
+ * return {@code Configuration}, which breaks Spring 6.1's void call site.
+ * Naming is set via {@link AvailableSettings#IMPLICIT_NAMING_STRATEGY} instead.
+ */
 public class UnitilsHibernate5LocalSessionFactoryBean extends LocalSessionFactoryBean {
 
 	private Object testObject;
@@ -36,8 +44,10 @@ public class UnitilsHibernate5LocalSessionFactoryBean extends LocalSessionFactor
 	/**
      */
     public UnitilsHibernate5LocalSessionFactoryBean() {
-        //FIXME configure naming strategy via real configuration
-        this.setImplicitNamingStrategy(new ImplicitNamingStrategyComponentPathImpl());
+        Properties props = new Properties();
+        props.setProperty(AvailableSettings.IMPLICIT_NAMING_STRATEGY,
+                "org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl");
+        setHibernateProperties(props);
     }
 
 //****************************** SETTER **********************************/

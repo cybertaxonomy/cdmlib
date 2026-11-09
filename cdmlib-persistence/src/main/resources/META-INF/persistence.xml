@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+  <!--
+    Skeleton PU for Spring LocalContainerEntityManagerFactoryBean.
+    Managed classes / packages are added at runtime from hibernate.cfg.xml
+    (see CdmLocalContainerEntityManagerFactoryBean) so the entity list stays
+    in one place and nested AttributeConverters are not classpath-scanned.
+  -->
+  <persistence-unit name="cdm" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+  </persistence-unit>
+</persistence>

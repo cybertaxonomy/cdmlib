@@ -20,7 +20,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -34,6 +33,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.term.VocabularyEnum;
 import eu.etaxonomy.cdm.model.term.init.TermLoader;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
+import jakarta.annotation.PostConstruct;
 
 /**
  * Spring bean class to initialize the {@link IVocabularyStore IVocabularyStore}.
@@ -78,7 +78,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
         this.transactionManager = transactionManager;
     }
 
-    @Bean(initMethod = "initialize")
+    @PostConstruct
     @Override
     public void initialize() {
         super.initialize();

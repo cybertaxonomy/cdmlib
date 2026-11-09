@@ -9,7 +9,7 @@
 package eu.etaxonomy.cdm.database.types;
 
 import org.hibernate.dialect.Dialect;
-import org.hibernate.dialect.Oracle10gDialect;
+import org.hibernate.dialect.OracleDialect;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
@@ -28,7 +28,7 @@ public class OracleDatabaseType extends DatabaseTypeBase {
     //port
     private int defaultPort = 1521;
     //hibernate dialect
-    private Dialect hibernateDialect = new Oracle10gDialect();
+    private Dialect hibernateDialect = new OracleDialect();
 
     private String dbSeparator = ":";
     

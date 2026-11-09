@@ -11,32 +11,32 @@ package eu.etaxonomy.cdm.model.validation;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintViolation;
-import javax.validation.metadata.ConstraintDescriptor;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Type;
 
+import eu.etaxonomy.cdm.jpa.SeverityConverter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.metadata.ConstraintDescriptor;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * An {@code EntityConstraintViolation} represents a single error resulting from
  * the validation of an entity. It basically is a database model for the
- * {@link ConstraintValidator} class of the javax.validation framework.
+ * {@link ConstraintValidator} class of the jakarta.validation framework.
  *
  * @author ayco_holleman
  */
@@ -108,7 +108,7 @@ public class EntityConstraintViolation extends CdmBase {
     private String invalidValue;
 
     @XmlElement(name = "Severity")
-    @Type(type = "eu.etaxonomy.cdm.hibernate.SeverityUserType")
+    @Convert(converter = SeverityConverter.class)
     private Severity severity = Severity.ERROR;
 
     @XmlElement(name = "Message")

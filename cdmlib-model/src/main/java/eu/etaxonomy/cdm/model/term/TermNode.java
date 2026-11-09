@@ -14,24 +14,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
-import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderColumn;
+import jakarta.persistence.Transient;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlIDREF;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -94,7 +94,7 @@ public class TermNode<T extends DefinedTermBase>
     //see https://dev.e-taxonomy.eu/redmine/issues/3722
     @OrderColumn(name="sortIndex", nullable=true)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent", targetEntity=TermNode.class) //no orphanRemoval (#10101)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})  //TODO , CascadeType.DELETE makes sense but needs testing in TaxEditor first
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})  //TODO , CascadeType.DELETE makes sense but needs testing in TaxEditor first
 	private List<TermNode<T>> children = new ArrayList<>();
 
     @XmlElementWrapper(name = "OnlyApplicableIf")
@@ -102,7 +102,7 @@ public class TermNode<T extends DefinedTermBase>
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @JoinTable(name="TermNode_OnlyApplicableIf")
     private final Set<FeatureState> onlyApplicableIf = new HashSet<>();
 
@@ -111,7 +111,7 @@ public class TermNode<T extends DefinedTermBase>
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @JoinTable(name="TermNode_InapplicableIf")
     private final Set<FeatureState> inapplicableIf = new HashSet<>();
 

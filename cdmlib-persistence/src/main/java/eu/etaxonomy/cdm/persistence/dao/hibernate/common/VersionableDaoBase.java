@@ -77,6 +77,17 @@ public abstract class VersionableDaoBase<T extends VersionableEntity>
 		}
 	}
 
+	@Override
+	public T findByUuidPreferManaged(UUID uuid) {
+		AuditEvent auditEvent = getAuditEventFromContext();
+		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+			return super.findByUuidPreferManaged(uuid);
+		} else {
+			// Prior views have no Session PC for Session.get; fall back to audit findByUuid.
+			return findByUuid(uuid);
+		}
+	}
+
     @Override
     public <S extends T> List<S> findByParam(Class<S> clazz, String param, String queryString, MatchMode matchmode, List<EntityFilter<S>> filter, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
     	checkNotInPriorView("IdentifiableDaoBase.findByParam(Class<? extends T> clazz, String queryString, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");

@@ -11,9 +11,9 @@ package eu.etaxonomy.cdm.model.common;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
-import javax.persistence.Transient;
-import javax.validation.GroupSequence;
-import javax.validation.groups.Default;
+import jakarta.persistence.Transient;
+import jakarta.validation.GroupSequence;
+import jakarta.validation.groups.Default;
 
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.validation.Level2;

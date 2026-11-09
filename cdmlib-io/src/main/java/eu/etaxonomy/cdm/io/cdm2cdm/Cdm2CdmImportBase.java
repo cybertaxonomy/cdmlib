@@ -8,9 +8,11 @@
 */
 package eu.etaxonomy.cdm.io.cdm2cdm;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -219,6 +221,7 @@ public abstract class Cdm2CdmImportBase
             }
             boolean exists = state.getExistingObjects(cdmBase.getClass()).contains(cdmBase.getUuid());
             if (exists){
+                @SuppressWarnings("unchecked")
                 Class<T> clazz = (Class<T>)cdmBase.getClass();
                 if (logger.isDebugEnabled()) {logger.debug("Load existing entity: " + clazz + ";" + cdmBase.getUuid());}
                 T existingObj = getCommonService().findWithoutFlush(clazz, cdmBase.getUuid());
@@ -977,8 +980,10 @@ public abstract class Cdm2CdmImportBase
     protected TermTree<?> handlePersistedTermTree(TermTree tree, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         //TODO TermGraphBase is still missing
         TermTree<?> result = (TermTree<?>)handlePersisted((TermCollection)tree, state);
-        //complete
-        result.getRoot().setUuid(tree.getRoot().getUuid());
+        // After createTransientCopy, result.root still references the source-session node
+        // (termRelations were replaced via handleCollection, the OneToOne root field was not).
+        // Replacing it with the detached/cached root avoids "no row snapshot for TermNode#…".
+        setInvisible(result, TermTree.class, "root", detach(tree.getRoot(), state));
         return result;
     }
 
@@ -1139,7 +1144,7 @@ public abstract class Cdm2CdmImportBase
                 Reference sourceRef = getSourceReference(state);
                 OriginalSourceBase newSource = result.addImportSource(String.valueOf(originalId), sourcedEntity.getClass().getSimpleName(),
                         sourceRef, null);
-                getCommonService().save(newSource);
+//                getCommonService().save(newSource); //newSource will be persisted later via Cascade. Persisting it here will later lead to a detached entity passed to persist exception
                 addExistingObject(newSource, state);
             }
         }
@@ -1535,13 +1540,64 @@ public abstract class Cdm2CdmImportBase
 //            result = getCommonService().find(clazz, source.getUuid());
 //        }
         if (result == null){
-            //Alternative: clone?
-            result = CdmBase.deproxy(source);
-            result.setId(0);
+            T deproxied = CdmBase.deproxy(source);
+            try {
+                // New instance: do not call setId(0) on a previously persisted (source-session)
+                // object. Under H6 that leads to "identifier … altered from 0 to <generatedId>".
+                result = createTransientCopy(deproxied);
+            } catch (ReflectiveOperationException e) {
+                logger.warn("Could not create transient copy of " + deproxied.getClass().getSimpleName()
+                        + "; falling back to setId(0) on source instance", e);
+                result = deproxied;
+                result.setId(0);
+            }
             cache(result, state);
             state.addToSave(result);
         }
         return result;
+    }
+
+    /**
+     * Shallow copy for import: same UUID and field values (collections still shared with
+     * {@code source} until {@link #handleCollection} replaces them), but a fresh Java
+     * instance without Hibernate persistence-context / enhancement state and with id=0.
+     */
+    private <T extends CdmBase> T createTransientCopy(T source) throws ReflectiveOperationException {
+        @SuppressWarnings("unchecked")
+        Class<T> clazz = (Class<T>) source.getClass();
+        T copy = newInstanceForImport(clazz);
+        UUID uuid = source.getUuid();
+        for (Class<?> type = clazz; type != null && type != Object.class; type = type.getSuperclass()) {
+            for (Field field : type.getDeclaredFields()) {
+                int mods = field.getModifiers();
+                if (Modifier.isStatic(mods) || field.isSynthetic()) {
+                    continue;
+                }
+                String name = field.getName();
+                // keep constructor-initialized PropertyChangeSupport; skip Hibernate enhancement fields
+                if ("propertyChangeSupport".equals(name) || name.startsWith("$$_hibernate")) {
+                    continue;
+                }
+                field.setAccessible(true);
+                if (Modifier.isFinal(mods)) {
+                    continue;
+                }
+                if ("id".equals(name)) {
+                    field.setInt(copy, 0);
+                } else {
+                    field.set(copy, field.get(source));
+                }
+            }
+        }
+        // CdmBase() assigns a new UUID; restore source identity
+        copy.setUuid(uuid);
+        return copy;
+    }
+
+    private <T extends CdmBase> T newInstanceForImport(Class<T> clazz) throws ReflectiveOperationException {
+        Constructor<T> ctor = clazz.getDeclaredConstructor();
+        ctor.setAccessible(true);
+        return ctor.newInstance();
     }
 
 // ******************* CACHE *******************************************************/
@@ -1608,6 +1664,7 @@ public abstract class Cdm2CdmImportBase
             }
             getReferenceService().save(result);
             state.putToSessionCache(result);
+            state.getConfig().setSourceRefUuid(result.getUuid());
         }
         return result;
     }

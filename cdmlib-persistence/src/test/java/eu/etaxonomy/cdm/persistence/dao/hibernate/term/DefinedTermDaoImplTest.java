@@ -303,10 +303,10 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be exactly 1 more term now", nExistingTerms + 1 , nTermsNow);
         this.commitAndStartNewTransaction(null);
 
-        //Add German representation
+        // Add German representation in a fresh session: reload the managed term first.
+        newModifier = (DefinedTerm) this.dao.findByUuid(termUuid);
         Representation newRepresentation = Representation.NewInstance("Beschreibung", "Deutscher Modifier", "Abk.", Language.GERMAN());
         newModifier.addRepresentation(newRepresentation);
-        dao.saveOrUpdate(newModifier);
         this.commitAndStartNewTransaction(null);
 
         nNow = this.dao.listByTermType(termType, null, null, null, null).size();

@@ -4,9 +4,9 @@
   xmlns:context="http://www.springframework.org/schema/context"
   xmlns:tx="http://www.springframework.org/schema/tx"
   xsi:schemaLocation="http://www.springframework.org/schema/beans
-    https://www.springframework.org/schema/beans/spring-beans-4.3.xsd
-    http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context-4.3.xsd
-    http://www.springframework.org/schema/tx https://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+    https://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/tx https://www.springframework.org/schema/tx/spring-tx.xsd
     ">
     
   <!-- This xml configuration may be replaced by eu.etaxonomy.cdm.remote.config.CdmRemoteConfiguration in future -->
@@ -23,11 +23,11 @@
     </property>
     <property name="marshallerProperties">
       <map>
-        <entry key="com.sun.xml.bind.namespacePrefixMapper">
+        <!-- Jakarta / Glassfish JAXB RI (was com.sun.xml.bind.*) -->
+        <entry key="org.glassfish.jaxb.namespacePrefixMapper">
           <bean class="eu.etaxonomy.cdm.jaxb.TDWGNamespacePrefixMapper"/>
         </entry>
-        <entry key="com.sun.xml.bind.xmlHeaders" value="&lt;?xml-stylesheet type='text/xsl' href='../xsl/human.xsl'?&gt;"/>
-        <entry key="com.sun.xml.bind.xmlHeaders" value="&lt;?xml-stylesheet type='text/xsl' href='../xsl/oai2.xsl'?&gt;"/>
+        <entry key="org.glassfish.jaxb.xmlHeaders" value="&lt;?xml-stylesheet type='text/xsl' href='../xsl/human.xsl'?&gt;&#10;&lt;?xml-stylesheet type='text/xsl' href='../xsl/oai2.xsl'?&gt;"/>
       </map>
     </property>
   </bean>
@@ -41,7 +41,7 @@
     </property>
     <property name="marshallerProperties">
       <map>
-        <entry key="com.sun.xml.bind.namespacePrefixMapper">
+        <entry key="org.glassfish.jaxb.namespacePrefixMapper">
           <bean class="eu.etaxonomy.cdm.jaxb.TDWGNamespacePrefixMapper"/>
         </entry>
       </map>

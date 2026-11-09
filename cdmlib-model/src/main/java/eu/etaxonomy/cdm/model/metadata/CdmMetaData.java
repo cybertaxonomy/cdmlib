@@ -15,10 +15,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlAttribute;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.validation.constraints.NotNull;
+import jakarta.xml.bind.annotation.XmlAttribute;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -112,9 +112,6 @@ public class CdmMetaData extends CdmBase{
     @XmlAttribute(name ="PropertyName")
     @Column(name="propertyName", length=20)
     @NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName")}
-    )
 	private CdmMetaDataPropertyName propertyName;
 	private String value;
 

@@ -3,9 +3,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
-    https://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+    https://www.springframework.org/schema/beans/spring-beans.xsd
     http://www.springframework.org/schema/context
-    https://www.springframework.org/schema/context/spring-context-4.3.xsd">
+    https://www.springframework.org/schema/context/spring-context.xsd">
     
     
     <bean id="dataSource"  lazy-init="true" class="eu.etaxonomy.cdm.database.SelectableDataSource">
@@ -68,6 +68,8 @@
               <prop key="hibernate.format_sql">false</prop>
               <prop key="hibernate.search.backend.directory.type">local-filesystem</prop>
               <prop key="hibernate.search.backend.directory.root">${user.home}/.cdmLibrary/</prop>
+              <!-- Avoid HSEARCH900016 (Jandex FileSystemAlreadyExistsException on JARs under Tomcat) -->
+              <prop key="hibernate.search.mapping.configurer">eu.etaxonomy.cdm.persistence.hibernate.search.CdmHibernateSearchMappingConfigurer</prop>
             </props>
         </property>
     </bean>

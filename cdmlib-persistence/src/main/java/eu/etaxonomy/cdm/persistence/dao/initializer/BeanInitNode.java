@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.collection.internal.AbstractPersistentCollection;
+import org.hibernate.collection.spi.AbstractPersistentCollection;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 
@@ -179,7 +179,7 @@ public class BeanInitNode implements Comparable<BeanInitNode>{
 		if (Character.isLowerCase(parentParameter.charAt(0))){
 		    parameter = parentParameter + "." + parameter;
 		}
-		putLazyCollection(ownerClass, parameter, collection.getKey());
+		putLazyCollection(ownerClass, parameter, (Serializable) collection.getKey());
 		this.uninitializedCollections.add(collection);
 	}
 

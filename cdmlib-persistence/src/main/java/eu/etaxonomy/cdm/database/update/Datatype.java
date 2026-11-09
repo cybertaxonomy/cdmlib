@@ -10,6 +10,10 @@ package eu.etaxonomy.cdm.database.update;
 
 import java.sql.Types;
 
+import org.hibernate.dialect.Dialect;
+import org.hibernate.type.descriptor.sql.spi.DdlTypeRegistry;
+import org.hibernate.type.spi.TypeConfiguration;
+
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
@@ -46,12 +50,17 @@ public enum Datatype {
         //nvarchar
         if (dbType.equals(DatabaseTypeEnum.PostgreSQL)){  //TODO use PostgeSQL82 Dialect infos
             result = result.replace("nvarchar", "varchar");
-            result = result.replace("float", dbType.getHibernateDialect().getTypeName(Types.FLOAT));
-            result = result.replace("double", dbType.getHibernateDialect().getTypeName(Types.DOUBLE));
-            result = result.replace("bit", dbType.getHibernateDialect().getTypeName(Types.BIT));
-            result = result.replace("datetime", dbType.getHibernateDialect().getTypeName(Types.TIMESTAMP));
-            result = result.replace("date", dbType.getHibernateDialect().getTypeName(Types.DATE));
-            result = result.replace("tinyint", DatabaseTypeEnum.PostgreSQL.getHibernateDialect().getTypeName(Types.TINYINT));
+            DdlTypeRegistry ddlRegistry = new TypeConfiguration().getDdlTypeRegistry();
+            Dialect dialect = dbType.getHibernateDialect();
+
+            result = result.replace("float", ddlRegistry.getTypeName(Types.FLOAT, dialect));
+            result = result.replace("double", ddlRegistry.getTypeName(Types.DOUBLE, dialect));
+            result = result.replace("bit", ddlRegistry.getTypeName(Types.BIT, dialect));
+            result = result.replace("datetime", ddlRegistry.getTypeName(Types.TIMESTAMP, dialect));
+            result = result.replace("date", ddlRegistry.getTypeName(Types.DATE, dialect));
+
+            Dialect pgDialect = DatabaseTypeEnum.PostgreSQL.getHibernateDialect();
+            result = result.replace("tinyint", ddlRegistry.getTypeName(Types.TINYINT, pgDialect));
         }
         //CLOB
         if (this == CLOB){

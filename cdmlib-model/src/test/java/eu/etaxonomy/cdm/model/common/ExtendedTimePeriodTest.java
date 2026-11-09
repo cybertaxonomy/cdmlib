@@ -8,7 +8,10 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
 
@@ -297,7 +300,7 @@ public class ExtendedTimePeriodTest {
         tp1.setExtremeEndDay(endDay2);
         tp1.setExtremeEndMonth(endMonth2);
         tp1.setFreeText(freeText);
-        TimePeriod tpClone = tp1.clone();
+        ExtendedTimePeriod tpClone = tp1.clone();
         Assert.assertEquals("Start year must be 1788.", startYear, tpClone.getStartYear());
         Assert.assertEquals("Start month must be 6.", startMonth, tpClone.getStartMonth());
         Assert.assertEquals("Start day must be 25.", startDay, tpClone.getStartDay());
@@ -305,7 +308,7 @@ public class ExtendedTimePeriodTest {
         Assert.assertEquals("End month must be 12.", endMonth, tpClone.getEndMonth());
         Assert.assertEquals("End day must be 21.", endDay, tpClone.getEndDay());
 
-        ExtendedTimePeriod tpCloneExtended = (ExtendedTimePeriod)tpClone;
+        ExtendedTimePeriod tpCloneExtended = tpClone;
         Assert.assertEquals("Extreme start year must be 1787.", startYear2, tpCloneExtended.getExtremeStartYear());
         Assert.assertEquals("Extreme start month must be 5.", startMonth2, tpCloneExtended.getExtremeStartMonth());
         Assert.assertEquals("Extreme start day must be 24.", startDay2, tpCloneExtended.getExtremeStartDay());

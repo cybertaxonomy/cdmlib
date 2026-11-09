@@ -216,7 +216,7 @@ public class TaxonBaseDto extends IdentifiableDto {
 
     //TODO we shouldn't have @transient on a DTO, try to solve this in a better way
     @Transient
-    @javax.persistence.Transient
+    @jakarta.persistence.Transient
     public TaxonNameDto getName() {
         if (name == null) {
             name = new TaxonNameDto();
