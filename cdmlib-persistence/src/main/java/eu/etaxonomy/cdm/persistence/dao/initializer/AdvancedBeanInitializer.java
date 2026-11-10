@@ -350,7 +350,7 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
 //                    preparePropertyValueForBulkLoadOrStore(node, null, param, value);
 //                }
 //            }
-//        }else{
+        }else{
             //singles
             if (!node.hasWildcardToOneSibling()){  //if wildcard exists the lazies are already prepared there
                 if (! Hibernate.isInitialized(propertyValue)){
