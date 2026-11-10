@@ -340,17 +340,17 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
                 collection.size();  //initialize
                 storeInitializedEnversCollection(collection, node, param);
             }
-        } else if (propertyValue instanceof Collection || propertyValue instanceof Map){
-            //plain (non hibernate) collections, e.g. getters returning a deproxied copy
-            //like TermVocabulary.getTerms(); handle like an initialized persistent collection
-            if (!node.hasWildcardToManySibling()){
-                Collection<?> values = propertyValue instanceof Map ?
-                        ((Map<?,?>)propertyValue).values() : (Collection<?>)propertyValue;
-                for (Object value : values){
-                    preparePropertyValueForBulkLoadOrStore(node, null, param, value);
-                }
-            }
-        }else{
+//        } else if (propertyValue instanceof Collection || propertyValue instanceof Map){
+//            //plain (non hibernate) collections, e.g. getters returning a deproxied copy
+//            //like TermVocabulary.getTerms(); handle like an initialized persistent collection
+//            if (!node.hasWildcardToManySibling()){
+//                Collection<?> values = propertyValue instanceof Map ?
+//                        ((Map<?,?>)propertyValue).values() : (Collection<?>)propertyValue;
+//                for (Object value : values){
+//                    preparePropertyValueForBulkLoadOrStore(node, null, param, value);
+//                }
+//            }
+//        }else{
             //singles
             if (!node.hasWildcardToOneSibling()){  //if wildcard exists the lazies are already prepared there
                 if (! Hibernate.isInitialized(propertyValue)){
