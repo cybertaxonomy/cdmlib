@@ -44,10 +44,13 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
+import eu.etaxonomy.cdm.model.term.VocabularyEnum;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.hibernate.CdmSessionUtils;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
@@ -81,6 +84,9 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
 
     @SpringBeanByType
     private ITaxonDao taxonDao;
+
+    @SpringBeanByType
+    private ITermVocabularyDao vocabularyDao;
 
     @SpringBeanByType
     private AdvancedBeanInitializer<CDM> initializer;
@@ -288,6 +294,21 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
         team = HibernateProxyHelper.deproxy(name.getNomenclaturalReference().getAuthorship(), Team.class);
         assertTrue("members should have been intitialized by the ", Hibernate.isInitialized(team.getTeamMembers()));
 
+    }
+
+    /**
+     * TermVocabulary.getTerms() returns a deproxied copy (a plain Set), not the
+     * hibernate collection. The initializer must handle such plain collections
+     * (same init strategy as VocabularyController.terms()).
+     */
+    @Test
+    public void testPlainCollectionGetter() {
+
+        assureSessionClear();
+
+        List<String> propertyPath = Arrays.asList("terms.$", "terms.includes.$", "includes");
+        TermVocabulary<?> vocabulary = vocabularyDao.load(VocabularyEnum.Rank.getUuid(), propertyPath);
+        assertFalse(vocabulary.getTerms().isEmpty());
     }
 
     // ============================== end of tests ========================= //
