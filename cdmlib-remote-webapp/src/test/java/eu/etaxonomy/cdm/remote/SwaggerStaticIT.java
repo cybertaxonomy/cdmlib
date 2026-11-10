@@ -10,8 +10,8 @@ package eu.etaxonomy.cdm.remote;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
@@ -41,7 +41,6 @@ public class SwaggerStaticIT extends WebServiceTestBase {
     private static final Logger logger = LogManager.getLogger();
 
     @Ignore
-/*
     @Test
     public void fetchOpenApiGroups() {
 
@@ -66,5 +65,4 @@ public class SwaggerStaticIT extends WebServiceTestBase {
             }
         }
     }
-    */
 }
