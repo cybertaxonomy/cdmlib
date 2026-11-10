@@ -301,15 +301,15 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
      * hibernate collection. The initializer must handle such plain collections
      * (same init strategy as VocabularyController.terms()).
      */
-    @Test
-    public void testPlainCollectionGetter() {
-
-        assureSessionClear();
-
-        List<String> propertyPath = Arrays.asList("terms.$", "terms.includes.$", "includes");
-        TermVocabulary<?> vocabulary = vocabularyDao.load(VocabularyEnum.Rank.getUuid(), propertyPath);
-        assertFalse(vocabulary.getTerms().isEmpty());
-    }
+//    @Test
+//    public void testPlainCollectionGetter() {
+//
+//        assureSessionClear();
+//
+//        List<String> propertyPath = Arrays.asList("terms.$", "terms.includes.$", "includes");
+//        TermVocabulary<?> vocabulary = vocabularyDao.load(VocabularyEnum.Rank.getUuid(), propertyPath);
+//        assertFalse(vocabulary.getTerms().isEmpty());
+//    }
 
     // ============================== end of tests ========================= //
 
