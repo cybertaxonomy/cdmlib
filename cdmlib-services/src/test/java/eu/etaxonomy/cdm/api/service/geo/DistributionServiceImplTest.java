@@ -122,9 +122,7 @@ public class DistributionServiceImplTest extends CdmServicesTransactionalSpringI
     private final Map<String, NamedArea> divisions = new HashMap<>();
 
     //TODO move to AreaMapServiceParameterBuilder and simplify dependencies
-
     @Test
-    @Disabled
     public void testGetWebServiceUrlCyprus() throws ClientProtocolException, IOException, CsvException {
         makeCyprusAreas();
         Set<Distribution> distributions = new HashSet<>();
@@ -158,6 +156,7 @@ public class DistributionServiceImplTest extends CdmServicesTransactionalSpringI
         // request map image from webservice
         subTestWithEditMapService(result);
     }
+
 
     private void makeCyprusAreas() throws IOException, CsvException {
 

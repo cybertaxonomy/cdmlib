@@ -40,7 +40,9 @@ public class SwaggerStaticIT extends WebServiceTestBase {
 
     private static final Logger logger = LogManager.getLogger();
 
-    @Ignore
+    @Disabled
+
+
     @Test
     public void fetchOpenApiGroups() {
 
@@ -65,4 +67,5 @@ public class SwaggerStaticIT extends WebServiceTestBase {
             }
         }
     }
+
 }
