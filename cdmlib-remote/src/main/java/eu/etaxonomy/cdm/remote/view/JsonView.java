@@ -12,9 +12,6 @@ import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.SuppressPropertiesBeanIntrospector;
 import org.apache.logging.log4j.LogManager;
@@ -23,7 +20,8 @@ import org.springframework.web.servlet.View;
 
 import eu.etaxonomy.cdm.opt.config.DataSourceProperties;
 import eu.etaxonomy.cdm.remote.json.JsonUtil;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;

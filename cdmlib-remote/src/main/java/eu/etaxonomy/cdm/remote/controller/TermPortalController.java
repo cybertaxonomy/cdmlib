@@ -19,7 +19,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 /**
  * @author a.kohlbecker
  * @since Dec 1, 2016
- *
  */
 @Controller
 @Tag(name = "portal_term")
@@ -36,8 +35,4 @@ public class TermPortalController extends TermController {
     public TermPortalController() {
         setInitializationStrategy(DEFAULT_INIT_STRATEGY);
     }
-
-
-
-
 }

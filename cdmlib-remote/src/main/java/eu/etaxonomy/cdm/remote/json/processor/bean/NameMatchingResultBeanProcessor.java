@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 import java.util.List;
 
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingCombinedResult;
-
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 

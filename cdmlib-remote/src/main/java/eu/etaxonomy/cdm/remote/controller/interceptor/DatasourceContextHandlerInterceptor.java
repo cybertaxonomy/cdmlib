@@ -11,14 +11,13 @@ package eu.etaxonomy.cdm.remote.controller.interceptor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import eu.etaxonomy.cdm.database.NamedContextHolder;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author a.kohlbecker
@@ -38,7 +37,8 @@ public class DatasourceContextHandlerInterceptor implements HandlerInterceptor {
 
 	private final static Pattern basepathPattern = Pattern.compile("^/([^/]+)/.*");
 
-	@Override
+	@Deprecated
+    @Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		Matcher matcher = basepathPattern.matcher(request.getServletPath());
         if (matcher.matches())
@@ -50,7 +50,8 @@ public class DatasourceContextHandlerInterceptor implements HandlerInterceptor {
         return true;
 	}
 
-	@Override
+	@Deprecated
+    @Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
 		NamedContextHolder.clearContextKey();
 		logger.info("datasource context cleared");

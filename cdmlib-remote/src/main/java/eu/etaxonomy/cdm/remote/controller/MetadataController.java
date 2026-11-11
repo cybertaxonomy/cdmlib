@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import eu.etaxonomy.cdm.api.service.IMetadataService;
 import eu.etaxonomy.cdm.config.CdmSourceException;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
@@ -33,10 +32,8 @@ public class MetadataController {
     @Autowired
     private IMetadataService service;
 
-
     @RequestMapping(method = RequestMethod.GET)
     public Map<CdmMetaDataPropertyName, String> getMetadata() throws CdmSourceException {
         return service.getCdmMetadataMap();
     }
-
 }

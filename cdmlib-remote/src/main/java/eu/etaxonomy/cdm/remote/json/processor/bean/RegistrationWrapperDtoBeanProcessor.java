@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import eu.etaxonomy.cdm.api.service.dto.RegistrationWrapperDTO;
-
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 

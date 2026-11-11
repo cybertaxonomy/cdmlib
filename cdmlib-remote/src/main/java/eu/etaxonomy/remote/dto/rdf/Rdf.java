@@ -18,16 +18,15 @@ package eu.etaxonomy.remote.dto.rdf;
 import java.util.HashSet;
 import java.util.Set;
 
+import eu.etaxonomy.cdm.remote.dto.tdwg.BaseThing;
+import eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel;
+import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-
-import eu.etaxonomy.cdm.remote.dto.tdwg.BaseThing;
-import eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel;
-import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {

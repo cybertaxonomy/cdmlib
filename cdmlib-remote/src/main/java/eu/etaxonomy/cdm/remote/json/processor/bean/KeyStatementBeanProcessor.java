@@ -17,14 +17,12 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
 import eu.etaxonomy.cdm.model.description.KeyStatement;
-
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
 /**
  * @author a.kohlbecker
  * @since 24.03.2011
- *
  */
 public class KeyStatementBeanProcessor extends AbstractBeanProcessor<KeyStatement> {
 
@@ -33,9 +31,6 @@ public class KeyStatementBeanProcessor extends AbstractBeanProcessor<KeyStatemen
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.json.processor.bean.AbstractBeanProcessor#processBeanSecondStep(java.lang.Object, net.sf.json.JSONObject, net.sf.json.JsonConfig)
-     */
     @Override
     public JSONObject processBeanSecondStep(KeyStatement bean, JSONObject json,	JsonConfig jsonConfig) {
 
@@ -48,7 +43,4 @@ public class KeyStatementBeanProcessor extends AbstractBeanProcessor<KeyStatemen
 
         return json;
     }
-
-
-
 }

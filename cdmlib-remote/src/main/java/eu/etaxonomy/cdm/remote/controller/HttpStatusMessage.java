@@ -10,11 +10,11 @@ package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
 
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author a.kohlbecker

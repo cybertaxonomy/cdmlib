@@ -16,20 +16,15 @@ import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.facade.MethodNotSupportedByDerivedUnitTypeException;
 import eu.etaxonomy.cdm.model.common.Language;
-
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
 /**
  * @author a.kohlbecker
  * @since 18.10.2010
- *
  */
 public class DerivedUnitFacadeBeanProcessor extends AbstractBeanProcessor<DerivedUnitFacade> {
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.json.processor.bean.AbstractCdmBeanProcessor#getIgnorePropNames()
-	 */
 	@Override
 	public List<String> getIgnorePropNames() {
 		return null;

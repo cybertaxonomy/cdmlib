@@ -12,7 +12,6 @@ import java.util.Map;
 
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
-
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;

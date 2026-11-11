@@ -17,22 +17,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.model.permission.User;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
  * @since Oct 11, 2016
- *
  */
 @Controller
 @Tag(name = "user")
 @RequestMapping(value = {"/user"})
 public class UserController extends AbstractController<User, IUserService> {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Autowired
     public void setService(IUserService service) {
@@ -43,7 +38,4 @@ public class UserController extends AbstractController<User, IUserService> {
     public Principal doGetCurrentUser(Principal principal) {
         return principal;
     }
-
-
-
 }

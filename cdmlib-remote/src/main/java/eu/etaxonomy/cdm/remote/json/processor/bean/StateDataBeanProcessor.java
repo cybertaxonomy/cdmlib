@@ -17,14 +17,12 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
 import eu.etaxonomy.cdm.model.description.StateData;
-
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
 /**
  * @author a.kohlbecker
  * @since Dec 4, 2013
- *
  */
 public class StateDataBeanProcessor extends AbstractModifiableThingBeanProcessor<StateData> implements IMultilanguageTextBeanProcessor {
 

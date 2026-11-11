@@ -6,21 +6,21 @@ import jakarta.xml.bind.annotation.XmlEnumValue;
 @XmlEnum
 public enum MetadataPrefix {
 	@XmlEnumValue("rdf")
-	RDF("rdf"), 
+	RDF("rdf"),
 	@XmlEnumValue("oai_dc")
 	OAI_DC("oai_dc"),
 	@XmlEnumValue("dwc")
 	DWC("dwc");
-	
+
 	private String value;
-	
+
 	private MetadataPrefix(String value) {
 		this.value = value;
 	}
-	
+
 	protected  String value() {
 		return value;
-	}	
+	}
 
 	public static MetadataPrefix value(String string) {
 		for(MetadataPrefix m : MetadataPrefix.values()) {

@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.remote.json.processor.bean;
 
 import java.util.Arrays;
@@ -16,7 +15,6 @@ import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
-
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 

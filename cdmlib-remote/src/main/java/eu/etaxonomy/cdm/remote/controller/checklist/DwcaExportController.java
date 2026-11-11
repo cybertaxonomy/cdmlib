@@ -20,9 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +55,8 @@ import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 import eu.etaxonomy.cdm.remote.view.FileDownloadView;
 import eu.etaxonomy.cdm.remote.view.HtmlView;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * This controller exports taxonomies via Darwin Core Archive
@@ -71,7 +70,6 @@ import eu.etaxonomy.cdm.remote.view.HtmlView;
 public class DwcaExportController
             extends AbstractController<CdmBase,IService<CdmBase>>
             implements ResourceLoaderAware{
-
 
     private static final String DWCATAX = "dwcatax_";
 

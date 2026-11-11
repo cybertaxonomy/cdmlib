@@ -15,9 +15,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import javax.xml.transform.stream.StreamResult;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +28,8 @@ import com.ibm.lsid.http.HTTPConstants;
 import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
 import eu.etaxonomy.cdm.remote.dto.tdwg.BaseThing;
 import eu.etaxonomy.remote.dto.rdf.Rdf;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * This class handles rdf views by mapping data objects to corresponding rdf objects, which are later

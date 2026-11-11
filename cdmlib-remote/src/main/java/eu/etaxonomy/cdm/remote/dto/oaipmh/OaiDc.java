@@ -3,14 +3,13 @@ package eu.etaxonomy.cdm.remote.dto.oaipmh;
 import java.net.URI;
 import java.time.ZonedDateTime;
 
+import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "oai_dcType", namespace = "http://www.openarchives.org/OAI/2.0/oai_dc/", propOrder = {

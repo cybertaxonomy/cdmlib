@@ -14,13 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
  * @since 24.03.2011
- *
  */
 @Controller
 @Tag(name = "polytomousKeyNode")

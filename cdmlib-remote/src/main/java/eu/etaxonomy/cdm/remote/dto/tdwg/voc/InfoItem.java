@@ -13,15 +13,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import eu.etaxonomy.cdm.remote.dto.tdwg.DefinedTerm;
+import eu.etaxonomy.cdm.remote.dto.tdwg.Description;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-
-import eu.etaxonomy.cdm.remote.dto.tdwg.DefinedTerm;
-import eu.etaxonomy.cdm.remote.dto.tdwg.Description;
 
 /**
  * InfoItem class for TDWG Ontology mapping.

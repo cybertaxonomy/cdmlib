@@ -11,22 +11,17 @@ package eu.etaxonomy.cdm.remote.json.processor.matcher;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.remote.json.processor.value.CdmDefaultValueProcessor;
-
 import net.sf.json.processors.DefaultValueProcessor;
 import net.sf.json.processors.DefaultValueProcessorMatcher;
 
 /**
  * @author a.kohlbecker
  * @since Jul 23, 2018
- *
  */
 public class CdmDefaultValueProcessorMatcher extends DefaultValueProcessorMatcher {
 
     public static final DefaultValueProcessor DEFAULT = new CdmDefaultValueProcessor();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getMatch(Class target, Set set) {
         if(Number.class.isAssignableFrom(Number.class)){
@@ -35,6 +30,4 @@ public class CdmDefaultValueProcessorMatcher extends DefaultValueProcessorMatche
             return DefaultValueProcessorMatcher.DEFAULT.getMatch(target, set);
         }
     }
-
-
 }

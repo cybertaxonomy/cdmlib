@@ -8,6 +8,7 @@ package eu.etaxonomy.cdm.remote.dto.oaipmh;
 
 import java.time.ZonedDateTime;
 
+import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
@@ -15,8 +16,6 @@ import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.XmlValue;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 
 /**
  * Define requestType, indicating the protocol request that

@@ -16,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**

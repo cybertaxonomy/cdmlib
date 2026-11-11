@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.remote.json.processor.bean;
 
 import java.util.Arrays;
@@ -18,7 +17,6 @@ import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.Representation;
-
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
@@ -27,6 +25,7 @@ import net.sf.json.JsonConfig;
  */
 public class RepresentationBeanProcessor extends AbstractCdmBeanProcessor<Representation> {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
     private static final List<String> IGNORE_LIST = Arrays.asList(new String[] {

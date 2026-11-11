@@ -8,13 +8,12 @@
 */
 package eu.etaxonomy.cdm.remote.controller.interceptor;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author a.kohlbecker
@@ -29,5 +28,4 @@ public class LocaleContextHandlerInterceptor implements HandlerInterceptor {
 	    localeContext.setLocales(request.getLocales());
         return true;
 	}
-
 }

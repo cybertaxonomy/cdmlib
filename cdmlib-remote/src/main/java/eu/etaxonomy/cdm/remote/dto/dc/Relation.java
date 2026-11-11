@@ -8,12 +8,11 @@
 */
 package eu.etaxonomy.cdm.remote.dto.dc;
 
+import eu.etaxonomy.cdm.remote.dto.tdwg.voc.LinkType;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-
-import eu.etaxonomy.cdm.remote.dto.tdwg.voc.LinkType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Relation", propOrder = {})

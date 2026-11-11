@@ -19,7 +19,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 /**
  * @author a.kohlbecker
  * @since Nov 16, 2015
- *
  */
 @Controller
 @Tag(name = "portal_agent")

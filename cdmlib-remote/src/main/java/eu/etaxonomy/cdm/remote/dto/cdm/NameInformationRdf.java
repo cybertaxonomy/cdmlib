@@ -15,17 +15,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import eu.etaxonomy.cdm.remote.dto.tdwg.BaseThing;
+import eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship;
+import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
+import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept.HasRelationship;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.XmlType;
-
-import eu.etaxonomy.cdm.remote.dto.tdwg.BaseThing;
-import eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship;
-import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
-import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept.HasRelationship;
 
 /**
  * This class is an RDF representation of the {@link eu.etaxonomy.cdm.remote.dto.namecatalogue.NameInformation NameInformation}

@@ -1,10 +1,15 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.view;
 
 import java.util.Enumeration;
 import java.util.Map;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 import javax.xml.transform.stream.StreamResult;
 
@@ -16,6 +21,8 @@ import org.springframework.web.servlet.view.AbstractView;
 import com.github.dozermapper.core.Mapper;
 
 import eu.etaxonomy.cdm.remote.dto.oaipmh.OAIPMH;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * View class which takes a MetadataResponse and returns the Source for serialization

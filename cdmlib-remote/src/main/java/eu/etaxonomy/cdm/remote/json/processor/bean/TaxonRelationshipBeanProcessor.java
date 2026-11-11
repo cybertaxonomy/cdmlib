@@ -18,50 +18,31 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
-
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
 /**
-
  * @author a.kohlbecker
-
  * @since 09.06.2009
-
  * @deprecated unused
-
  */
-
 @Deprecated
-
 public class TaxonRelationshipBeanProcessor extends AbstractCdmBeanProcessor<TaxonRelationship> {
 
-
-
+    @Deprecated
     @Override
 
     public List<String> getIgnorePropNames() {
-
         return null;
-
     }
 
-
-
+    @Deprecated
     @Override
 
     public JSONObject processBeanSecondStep(TaxonRelationship bean, JSONObject json, JsonConfig jsonConfig) {
 
-
-
         json.element("fromTaxon", bean.getFromTaxon(), jsonConfig);
-
         json.element("toTaxon", bean.getToTaxon(), jsonConfig);
-
-
-
         return json;
-
     }
-
 }

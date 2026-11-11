@@ -15,7 +15,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-
 import net.sf.json.CycleSetAccess;
 
 /**
@@ -28,7 +27,8 @@ public class CdmBeanProcessingRegistry extends CycleSetAccess {
 
 	private static final Logger logger = LogManager.getLogger();
 
-	protected static ThreadLocal<Set<CdmBase>> processedBeans = new ThreadLocal<Set<CdmBase>>(){
+	@Deprecated
+    protected static ThreadLocal<Set<CdmBase>> processedBeans = new ThreadLocal<Set<CdmBase>>(){
 
 	        @Override
             protected synchronized Set<CdmBase> initialValue() {
@@ -36,21 +36,24 @@ public class CdmBeanProcessingRegistry extends CycleSetAccess {
 		      }
 		   };
 
-	protected static boolean isBeingProcessed(Object bean) {
+	@Deprecated
+    protected static boolean isBeingProcessed(Object bean) {
 		if(logger.isDebugEnabled()){
 			logger.debug("looking for: " + bean.getClass() + " with hash: " + bean.hashCode());
 		}
 		return processedBeans.get().contains(bean);
 	}
 
-	protected static void register(CdmBase bean){
+	@Deprecated
+    protected static void register(CdmBase bean){
 		if(logger.isDebugEnabled()){
 			logger.debug("registering: " + bean.getClass() + " with hash: " + bean.hashCode());
 		}
 		processedBeans.get().add(bean);
 	}
 
-	protected static void unregister(CdmBase bean){
+	@Deprecated
+    protected static void unregister(CdmBase bean){
 		if(logger.isDebugEnabled()){
 			logger.debug("un-registering: " + bean.getClass() + " with hash: " + bean.hashCode());
 		}

@@ -15,7 +15,6 @@ import jakarta.servlet.http.HttpServletRequest;
  *
  * @author andreas
  * @since Jul 20, 2012
- *
  */
 public class JsonpRedirect {
 

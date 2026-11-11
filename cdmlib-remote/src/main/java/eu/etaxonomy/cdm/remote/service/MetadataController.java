@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.api.service.lsid.LSIDMetadataService;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.remote.editor.LSIDPropertyEditor;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**

@@ -13,17 +13,13 @@ import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 /**
  * @author a.kohlbecker
  * @since Jul 13, 2018
- *
  */
 public class RegistrationStatusList extends EnumTermList<RegistrationStatus> {
 
-    /**
-     *
-     */
+    private static final long serialVersionUID = 8936508095351613591L;
+
     public RegistrationStatusList() {
         super(RegistrationStatus.class);
     }
-
-    private static final long serialVersionUID = 8936508095351613591L;
 
 }

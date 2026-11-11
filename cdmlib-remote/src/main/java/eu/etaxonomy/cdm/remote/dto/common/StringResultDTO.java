@@ -17,18 +17,11 @@ public class StringResultDTO {
 
     private String result;
 
-    /**
-     * @param result
-     */
     public StringResultDTO(String result) {
         this.result = result;
     }
 
-    /**
-     * @return the result
-     */
     public String getResult() {
         return result;
     }
-
 }

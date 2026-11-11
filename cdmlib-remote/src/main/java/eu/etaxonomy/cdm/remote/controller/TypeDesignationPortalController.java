@@ -19,7 +19,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 /**
  * @author a.kohlbecker
  * @since Jul 12, 2019
- *
  */
 @Controller
 @Tag(name = "portal_typeDesignation")

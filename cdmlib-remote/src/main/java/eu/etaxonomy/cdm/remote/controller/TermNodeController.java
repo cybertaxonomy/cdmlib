@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import eu.etaxonomy.cdm.api.service.ITermNodeService;
 import eu.etaxonomy.cdm.model.term.TermNode;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
@@ -28,13 +27,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "termNode")
 @RequestMapping(value = {"/termNode/{uuid}"})
 public class TermNodeController extends BaseController<TermNode, ITermNodeService> {
+
     private static final List<String> TERM_INIT_STRATEGY = Arrays.asList(new String []{
             "vocabulary",
             "includes",
             "terms.$",
             "terms.includes.$",
     });
-
 
     @Override
     @Autowired

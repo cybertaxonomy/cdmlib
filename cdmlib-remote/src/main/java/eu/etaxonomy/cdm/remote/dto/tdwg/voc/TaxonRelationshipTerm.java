@@ -8,12 +8,11 @@
 */
 package eu.etaxonomy.cdm.remote.dto.tdwg.voc;
 
+import eu.etaxonomy.cdm.remote.dto.tdwg.DefinedTerm;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-
-import eu.etaxonomy.cdm.remote.dto.tdwg.DefinedTerm;
 
 /**
  * TaxonRelationshipTerm class for TDWG Ontology mapping.

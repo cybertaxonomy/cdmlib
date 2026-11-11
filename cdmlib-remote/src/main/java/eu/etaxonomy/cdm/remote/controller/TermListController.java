@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**

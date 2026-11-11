@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2009 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -15,14 +15,12 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.KeyStatement;
 
 /**
- * 
- * A row to display each PolytomousKeyNode in a flat data structure for a LinkedStyle display of the PolytomousKey 
+ * A row to display each PolytomousKeyNode in a flat data structure for a LinkedStyle display of the PolytomousKey
  * @author l.morris
  * @since Jan 25, 2013
- * 
  */
 public class LinkedPolytomousKeyNodeRowDto {
-	
+
 	private UUID nodeUuid;//or should we use the entire polytomous key node?
 	private KeyStatement rowQuestion;
 	private Integer nodeNumber = null;
@@ -30,12 +28,12 @@ public class LinkedPolytomousKeyNodeRowDto {
 	private Feature rowFeature;
 	private String childStatement;
 	private List<AbstractLinkDto> links;
-	
-	
+
+
 	public LinkedPolytomousKeyNodeRowDto() {
 	}
-		
-	
+
+
 	/**
 	 * @return the keyNodeUuid
 	 */
@@ -123,7 +121,7 @@ public class LinkedPolytomousKeyNodeRowDto {
 	public void setLinks(List<AbstractLinkDto> links) {
 		this.links = links;
 	}
-	
-	
+
+
 
 }

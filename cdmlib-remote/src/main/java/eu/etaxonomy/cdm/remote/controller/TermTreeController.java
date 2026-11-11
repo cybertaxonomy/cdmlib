@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.model.term.TermTree;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Controller

@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
  *
  * @author a.kohlbecker
  * @since Jun 25, 2013
- *
  */
 public class EnumTermPropertyEditor<T extends IEnumTerm<T>> extends PropertyEditorSupport {
 

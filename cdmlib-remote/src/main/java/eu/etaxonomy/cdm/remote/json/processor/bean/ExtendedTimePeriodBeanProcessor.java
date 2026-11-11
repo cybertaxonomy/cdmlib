@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.common.ExtendedTimePeriod;
-
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
@@ -31,5 +30,4 @@ public class ExtendedTimePeriodBeanProcessor extends AbstractBeanProcessor<Exten
         json.element("label", bean.toString());
         return json;
     }
-
 }

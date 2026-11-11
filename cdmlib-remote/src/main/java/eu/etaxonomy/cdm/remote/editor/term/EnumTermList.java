@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2013 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.editor.term;
 
 import java.util.ArrayList;
@@ -11,7 +19,6 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
 /**
  * @author a.kohlbecker
  * @since Jun 25, 2013
- *
  */
 abstract public class EnumTermList<T extends IEnumTerm<T>> extends ArrayList<T> {
 

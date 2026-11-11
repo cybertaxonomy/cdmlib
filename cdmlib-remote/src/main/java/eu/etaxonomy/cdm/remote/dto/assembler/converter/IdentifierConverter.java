@@ -12,8 +12,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import jakarta.servlet.ServletContext;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,6 +23,7 @@ import com.github.dozermapper.core.MappingException;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
+import jakarta.servlet.ServletContext;
 
 public class IdentifierConverter implements CustomConverter, ServletContextAware{
 

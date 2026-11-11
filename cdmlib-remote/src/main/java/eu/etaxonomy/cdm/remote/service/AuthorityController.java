@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.LSIDAuthority;
 import eu.etaxonomy.cdm.remote.editor.LSIDAuthorityPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.LSIDPropertyEditor;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**

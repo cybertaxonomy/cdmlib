@@ -12,11 +12,10 @@ import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 
 import java.io.IOException;
 
-import jakarta.servlet.http.HttpServletResponse;
-
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.remote.controller.HttpStatusMessage;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -27,7 +26,6 @@ import eu.etaxonomy.cdm.remote.controller.HttpStatusMessage;
  *
  * @author a.kohlbecker
  * @since 22.08.2011
- *
  */
 public class PagerParameters {
 

@@ -19,7 +19,6 @@ import net.sf.json.JsonConfig;
 /**
  * @author Andreas Kohlbecker
  * @since Jan 6, 2012
- *
  */
 public class LuceneDocumentBeanProcessor extends AbstractBeanProcessor<Document> {
 

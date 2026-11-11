@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.List;
 
 import eu.etaxonomy.cdm.common.TreeNode;
-
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -20,7 +19,6 @@ import net.sf.json.JsonConfig;
 /**
  * @author a.kohlbecker
  * @since Nov 21, 2013
- *
  */
 public class TreeNodeBeanProcessor extends AbstractBeanProcessor<TreeNode> {
 

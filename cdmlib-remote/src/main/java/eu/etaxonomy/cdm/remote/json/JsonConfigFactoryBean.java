@@ -18,7 +18,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.FactoryBean;
 
 import eu.etaxonomy.cdm.remote.json.processor.bean.AbstractCdmBeanProcessor;
-
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.DefaultValueProcessor;
 import net.sf.json.processors.DefaultValueProcessorMatcher;

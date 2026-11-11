@@ -2,15 +2,14 @@ package eu.etaxonomy.cdm.remote.view;
 
 import java.util.Map;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import javax.xml.transform.stream.StreamResult;
 
 import org.springframework.oxm.Marshaller;
 import org.springframework.web.servlet.view.AbstractView;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * View class which serializes objects as xml
@@ -29,23 +28,28 @@ public class XmlView extends AbstractView {
 
     private String locationPrefix = "";
 
+    @Deprecated
     public void setLocationHeader(boolean locationHeader) {
         this.locationHeader = locationHeader;
     }
 
+    @Deprecated
     public void setLocationPrefix(String locationPrefix) {
         this.locationPrefix = locationPrefix;
     }
 
+    @Deprecated
     public XmlView() {
 
     }
 
+    @Deprecated
     public void setMarshaller(Marshaller marshaller) {
         this.marshaller = marshaller;
     }
 
 
+    @Deprecated
     @Override
     protected void renderMergedOutputModel(Map model, HttpServletRequest request, HttpServletResponse response)
             throws Exception {

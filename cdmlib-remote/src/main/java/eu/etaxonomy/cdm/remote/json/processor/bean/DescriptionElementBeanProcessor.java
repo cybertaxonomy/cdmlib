@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TextData;
-
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
@@ -31,7 +30,6 @@ import net.sf.json.JsonConfig;
 public class DescriptionElementBeanProcessor extends AbstractModifiableThingBeanProcessor<DescriptionElementBase> {
 
     private static final List<String> IGNORE_LIST = Arrays.asList(new String[]{"modifyingText", "multilanguageText"});
-
 
     @Override
     public JSONObject processBeanSecondStep(DescriptionElementBase bean, JSONObject json, JsonConfig jsonConfig) {

@@ -12,9 +12,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,6 +19,9 @@ import org.json.CDL;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.servlet.View;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * This class is a generic approach to generate a csv output from POJOs.

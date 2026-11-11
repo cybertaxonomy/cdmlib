@@ -15,7 +15,6 @@ import eu.etaxonomy.cdm.api.service.l10n.KeyTerm_L10n;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
 import eu.etaxonomy.cdm.model.term.IKeyTerm;
-
 import net.sf.json.JSONNull;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -26,6 +25,7 @@ import net.sf.json.processors.JsonValueProcessor;
  */
 public class KeyTermValueProcessor implements JsonValueProcessor  {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
     @Override
