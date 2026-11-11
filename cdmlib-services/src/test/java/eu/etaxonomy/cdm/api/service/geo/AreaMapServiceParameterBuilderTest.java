@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.geo;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.Color;
@@ -31,6 +32,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -83,8 +85,9 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
         System.setProperty("ONLY-A-TEST", "TRUE"); // allows EditGeoServiceUtilities to skip some line of code
         editMapServiceUri = new URI(EDIT_MAPSERVICE_URI_STRING);
     }
-/*
+
     @Test
+    @Ignore
     public void testGetWebServiceUrlCountry() {
 
         Set<Distribution> distributions = new HashSet<>();
@@ -110,13 +113,14 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
         Assert.assertTrue("WebServiceUrl must contain country part for Germany, but was " + result,
                 result.matches(".*ad=country_earth(%3A|:)gmi_cntry:.:DEU.*"));
     }
-    */
+    
 
     @Test
+    @Ignore
     public void testGetWebServiceUrlTdwg() throws MalformedURLException, IOException {
         //String webServiceUrl = "http://www.test.de/webservice";
         Set<Distribution> distributions = new HashSet<>();
-        /*
+        
         distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("SPA"), PresenceAbsenceTerm.PRESENT()));
         distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("GER"), PresenceAbsenceTerm.INTRODUCED()));
         distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("14"), PresenceAbsenceTerm.CULTIVATED()));
@@ -163,7 +167,7 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
 
         // request map image from webservice
         subTestWithEditMapService(result);
-        */
+        
     }
 
     private void subTestWithEditMapService(String queryString)throws MalformedURLException, IOException {
@@ -173,7 +177,7 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
             HttpURLConnection connection = (HttpURLConnection) requestUrl.openConnection();
             connection.connect();
 //            connection.setReadTimeout(10000);  //timeout after 10 sec, does not seem to work
-            assertTrue(connection.getResponseCode() == 200);
+            assertEquals("HTTP status of " + requestUrl, 200, connection.getResponseCode());
             InputStream contentStream = connection.getInputStream();
             String content = StreamUtils.readToString(contentStream);
             logger.debug("EditMapService response body:\n" + content);
@@ -186,8 +190,9 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
             assertTrue(content.matches(".*\"geoserver\":.*"));
         }
     }
-/*
+
     @Test
+    @Ignore
     public void testGetWebServiceUrlBangka() throws ClientProtocolException, IOException {
 
         NamedArea areaBangka = NamedArea.NewInstance("Bangka", "Bangka", null);
@@ -226,7 +231,7 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
         // request map image from webservice
         subTestWithEditMapService(result);
     }
-*/
+
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
 }
