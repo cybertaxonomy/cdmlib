@@ -137,12 +137,20 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
             //new
             for (Object bean : parentBeans.get(clazz)){
 
+                // Collections/Maps can appear as parent beans for nested wildcards such as
+                // "terms.includes.$" (VocabularyController TERM_INIT_STRATEGY).
                 if(Collection.class.isAssignableFrom(bean.getClass())){
-//				        old: initializeAllEntries((Collection<?>)bean, true, initToMany);  //TODO is this a possible case at all??
-                    throw new RuntimeException("Collection no longer expected in 'initializeNodeWildcard()'. Therefore an exception is thrown.");
+                    for (Object entry : (Collection<?>) bean) {
+                        if (entry != null) {
+                            prepareBeanWildcardForBulkLoad(node, entry);
+                        }
+                    }
                 } else if(Map.class.isAssignableFrom(bean.getClass())) {
-//				        old: initializeAllEntries(((Map<?,?>)bean).values(), true, initToMany);  ////TODO is this a possible case at all??
-                    throw new RuntimeException("Map no longer expected in 'initializeNodeWildcard()'. Therefore an exception is thrown.");
+                    for (Object entry : ((Map<?,?>) bean).values()) {
+                        if (entry != null) {
+                            prepareBeanWildcardForBulkLoad(node, entry);
+                        }
+                    }
                 } else{
                     prepareBeanWildcardForBulkLoad(node, bean);
                 }
