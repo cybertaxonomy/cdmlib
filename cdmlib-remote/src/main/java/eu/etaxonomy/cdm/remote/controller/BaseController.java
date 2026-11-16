@@ -17,6 +17,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -169,7 +170,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
         if(c instanceof Set){
             // sets need to be sorted to have a defined order
             List<CdmBase> list = new ArrayList<>(c);
-            java.util.Collections.sort(list, (o1, o2)-> {
+            Collections.sort(list, (o1, o2)-> {
                     if (o1 == null && o2 == null){
                         return 0;
                     }else if (o1 == null){
