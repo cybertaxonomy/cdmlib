@@ -767,10 +767,8 @@ public class DescriptionServiceImpl
         return load(description.getUuid()).hasStructuredData();
     }
 
-
     @Override
-   // @Transactional(readOnly = false)
-    public UpdateResult moveDescriptionElementsToDescription(
+    private UpdateResult moveDescriptionElementsToDescription(
             Collection<DescriptionElementBase> descriptionElements,
             DescriptionBase targetDescription,
             boolean isCopy,
@@ -843,24 +841,6 @@ public class DescriptionServiceImpl
         }
         return result;
     }
-
-//    @Override
-//    @Transactional(readOnly = false)
-//    public UpdateResult moveDescriptionElementsToDescription(
-//            Set<UUID> descriptionElementUUIDs,
-//            UUID targetDescriptionUuid,
-//            boolean isCopy, boolean setNameInSource) {
-//        Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
-//        for(UUID deUuid : descriptionElementUUIDs) {
-//            DescriptionElementBase element = descriptionElementDao.load(deUuid);
-//            if (element != null){
-//                descriptionElements.add(element);
-//            }
-//        }
-//        DescriptionBase targetDescription = dao.load(targetDescriptionUuid);
-//
-//        return moveDescriptionElementsToDescription(descriptionElements, targetDescription, isCopy, setNameInSource);
-//    }
 
     @Override
     @Transactional(readOnly = false)

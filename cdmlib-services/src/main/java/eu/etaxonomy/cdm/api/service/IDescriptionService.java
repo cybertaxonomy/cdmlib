@@ -252,18 +252,6 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
     public boolean hasStructuredData(DescriptionBase<?> description);
 
     /**
-     * Add the collection of {@link DescriptionElementBase description elements} to the <code>targetDescription</code>.
-     * Remove the description elements from the description they are currently associated with.
-     *
-     * @param descriptionElements
-     * @param targetDescription
-     * @param isPaste if true, the elements are only copied (cloned) and not removed from the
-     * 	old description
-     * @return
-     */
-    public UpdateResult moveDescriptionElementsToDescription(Collection<DescriptionElementBase> descriptionElements, DescriptionBase targetDescription, boolean isPaste, boolean setNameInSource);
-
-    /**
      * Pager method to get all {@link NamedAreas} instances which are currently used
      * by {@link Distribution} elements.
      *
@@ -293,6 +281,13 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 
     public UpdateResult moveTaxonDescriptions(UUID sourceTaxonUuid, UUID targetTaxonUuid, boolean setNameInSource);
 
+    /**
+     * Add the collection of {@link DescriptionElementBase description elements} to the <code>targetDescription</code>.
+     * Remove the description elements from the description they are currently associated with.
+     *
+     * @param isCopy if <code>true</code>, the elements are only copied (cloned)
+     *           and not removed from the old description
+     */
     public UpdateResult moveDescriptionElementsToDescription(Set<UUID> descriptionElementUUIDs, UUID targetDescriptionUuid,
             boolean isCopy, boolean setNameInSource);
 
