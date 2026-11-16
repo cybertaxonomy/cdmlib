@@ -142,6 +142,7 @@ public class AgentServiceImpl
 	}
 
 	@Override
+	@Transactional(readOnly = false)
 	public UpdateResult convertTeam2Person(Team team) throws MergeException {
         UpdateResult result = new UpdateResult();
         Person newPerson = null;
