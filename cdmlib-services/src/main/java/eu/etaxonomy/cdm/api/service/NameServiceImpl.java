@@ -1078,16 +1078,6 @@ public class NameServiceImpl
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public UpdateResult setAsGroupsBasionym(UUID nameUuid) {
-        TaxonName name = dao.load(nameUuid);
-        UpdateResult result = new UpdateResult();
-        name.setAsGroupsBasionym();
-        result.addUpdatedObject(name);
-        return result;
-    }
-
-    @Override
     @Deprecated //only used by csv export, use property path method instead
     public List<Map<String,String>> getNameRecords(){
 		return dao.getNameRecords();
