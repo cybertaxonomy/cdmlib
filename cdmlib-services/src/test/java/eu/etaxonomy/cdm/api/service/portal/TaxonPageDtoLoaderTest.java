@@ -484,10 +484,11 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         testTaxonInteraction(hostPlantDto);
 
         //quantitative data("introduction")
+        //TODO use some better feature, e.g. altitude (but maybe this needs to be added to the test data)
         FeatureDto introductionDto = features.getItems().get(i++);
         Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically.",
                 "Introduction", introductionDto.getLabel());
-//        testQuantitativeData();
+        testQuantitativeData(introductionDto, isDto);
 
         //...categorical data ("Life-form")
         FeatureDto lifeFormDto = features.getItems().get(i++);
@@ -503,6 +504,16 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         //use data
         //TODO
+    }
+
+    private void testQuantitativeData(FeatureDto altitudeDto, boolean isDto) {
+        Assert.assertEquals(1, altitudeDto.getFacts().getCount());
+        FactDto lifeForm = (FactDto)altitudeDto.getFacts().getItems().get(0);
+        //FIXME implement for dto
+        if (!isDto) {
+            Assert.assertEquals("5" + UTF8.NARROW_NO_BREAK + "– 10 m", lifeForm.getTypedLabel().get(0).getLabel());
+        }
+        //...
     }
 
     private void testCategoricalData(FeatureDto lifeFormDto, boolean isDto) {
@@ -928,6 +939,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         factSet1.addElements(cd);
 
         //quantitative data
+        //TODO save to some other feature which is more quantitiative data like
         Feature feature = Feature.INTRODUCTION();
         QuantitativeData qd = save(QuantitativeData.NewMinMaxInstance(feature,
                 MeasurementUnit.METER(), new BigDecimal(5), new BigDecimal(10)));
