@@ -523,7 +523,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
             //TODO MAN and pp from this taxon
 
             //... to-relations
-            Set<TaxonRelationship> toRels = taxon.getRelationsToThisTaxon();
+            Set<TaxonRelationship> toRels = new HashSet<>(taxon.getRelationsToThisTaxon());
             toRels.removeAll(misappliedRels);
             toRels.removeAll(proParteRels);
             for (TaxonRelationship rel : toRels) {
@@ -533,7 +533,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
             }
 
             //... from-relations
-            Set<TaxonRelationship> fromRels = taxon.getRelationsFromThisTaxon();
+            Set<TaxonRelationship> fromRels = new HashSet<>(taxon.getRelationsFromThisTaxon());
             for (TaxonRelationship rel : fromRels) {
                 boolean inverse = false;
                 boolean withoutName = false;
