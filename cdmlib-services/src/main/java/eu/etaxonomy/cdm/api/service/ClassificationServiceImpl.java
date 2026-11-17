@@ -22,8 +22,6 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import jakarta.persistence.EntityNotFoundException;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -81,6 +79,7 @@ import eu.etaxonomy.cdm.persistence.dto.compare.TaxonNodeDtoComparatorFactory;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+import jakarta.persistence.EntityNotFoundException;
 
 /**
  * @author n.hoffmann

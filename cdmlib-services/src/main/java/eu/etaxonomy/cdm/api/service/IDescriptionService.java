@@ -302,7 +302,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
     public UpdateResult mergeDescriptions(Collection<DescriptionBaseDto> descriptions, UUID descriptiveDataSetUuid);
 
     public UpdateResult moveDescriptionElementsToDescription(Set<UUID> descriptionElementUUIDs,
-            DescriptionBase targetDescription, boolean isCopy, boolean setNameInSource);
+            DescriptionBase<?> targetDescription, boolean isCopy, boolean setNameInSource);
 
     public DeleteResult isDeletable(UUID descriptionUuid);
 

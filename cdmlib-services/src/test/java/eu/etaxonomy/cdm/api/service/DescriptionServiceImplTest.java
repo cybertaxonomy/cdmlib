@@ -115,7 +115,7 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
         DescriptionBase<?> descLoaded2 = service.find(desc2.getUuid());
 
         DescriptionElementBase textDataLoaded = descLoaded1.getElements().iterator().next();
-        Set<DescriptionElementBase> tmpSet = new HashSet<DescriptionElementBase>(descLoaded1.getElements());
+        Set<DescriptionElementBase> tmpSet = new HashSet<>(descLoaded1.getElements());
 
         //test for #4806
         service.moveDescriptionElementsToDescription(getUuidSet(tmpSet), descLoaded2, false, true);
@@ -247,5 +247,5 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
     }
 
     @Override
-    public void createTestDataSet() throws FileNotFoundException {};
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
+}

@@ -705,7 +705,7 @@ public class TermServiceImpl
     @Transactional(readOnly = false)
 	public DeleteResult deleteTerms(List<DefinedTermBase> terms, TermDeletionConfigurator config) {
 		DeleteResult result = new DeleteResult();
-		for (DefinedTermBase term: terms) {
+		for (DefinedTermBase<?> term: terms) {
 			result.includeResult(delete(term, config));
 		}
 		return result;

@@ -8,11 +8,28 @@
 */
 package eu.etaxonomy.cdm.model.molecular;
 
-import org.hibernate.Length;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.Length;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.TermType;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
@@ -33,24 +50,6 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.envers.Audited;
-import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
-import org.springframework.beans.factory.annotation.Configurable;
-
-import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
-import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.model.term.TermType;
 
 /**
  * Alignment of multiple {@link SingleRead single sequences} to a consensus sequence.
@@ -470,7 +469,7 @@ public class Sequence
 	}
 
 	public void removeSingleRead(SingleRead singleRead) {
-		Set<SingleReadAlignment> toRemove = new HashSet<SingleReadAlignment>();
+		Set<SingleReadAlignment> toRemove = new HashSet<>();
 		for (SingleReadAlignment align : this.singleReadAlignments){
 			if (align.getSingleRead() != null && align.getSingleRead().equals(singleRead)){
 				toRemove.add(align);
@@ -490,7 +489,7 @@ public class Sequence
 	@XmlTransient
 	@Transient
 	public Set<SingleRead> getSingleReads(){
-		Set<SingleRead> singleReads = new HashSet<SingleRead>();
+		Set<SingleRead> singleReads = new HashSet<>();
 		for (SingleReadAlignment align : this.singleReadAlignments){
 			if (align.getSingleRead() != null){  // == null should not happen
 				singleReads.add(align.getSingleRead());

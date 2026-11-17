@@ -115,9 +115,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
     public void testEncryptPassword(){
 
         String password = PASSWORD_ADMIN;
-        User user = User.NewInstance("userManager", "");
-
-       String passwordEncrypted = passwordEncoder.encode(password);
+        String passwordEncrypted = passwordEncoder.encode(password);
         logger.info("encrypted password: " + passwordEncrypted );
     }
 

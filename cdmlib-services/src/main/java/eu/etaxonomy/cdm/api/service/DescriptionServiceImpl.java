@@ -769,7 +769,7 @@ public class DescriptionServiceImpl
 
     private UpdateResult moveDescriptionElementsToDescription(
             Collection<DescriptionElementBase> descriptionElements,
-            DescriptionBase targetDescription,
+            DescriptionBase<?> targetDescription,
             boolean isCopy,
             boolean setNameInSource) {
 
@@ -845,8 +845,9 @@ public class DescriptionServiceImpl
     @Transactional(readOnly = false)
     public UpdateResult moveDescriptionElementsToDescription(
             Set<UUID> descriptionElementUUIDs,
-            DescriptionBase targetDescription,
+            DescriptionBase<?> targetDescription,
             boolean isCopy, boolean setNameInSource) {
+
         Set<DescriptionElementBase> descriptionElements = new HashSet<>();
         for(UUID deUuid : descriptionElementUUIDs) {
             DescriptionElementBase element = descriptionElementDao.load(deUuid);
@@ -854,7 +855,7 @@ public class DescriptionServiceImpl
                 descriptionElements.add(element);
             }
         }
-        DescriptionBase newTargetDescription;
+        DescriptionBase<?> newTargetDescription;
         if (targetDescription.isPersisted()){
             newTargetDescription = dao.load(targetDescription.getUuid());
         }else{
@@ -867,7 +868,7 @@ public class DescriptionServiceImpl
                 TaxonName name = nameDao.load(((TaxonNameDescription)targetDescription).getTaxonName().getUuid());
                 newTargetDescription = TaxonNameDescription.NewInstance(name);
             }else {
-                SpecimenOrObservationBase specimen = occurrenceDao.load(((SpecimenDescription)targetDescription).getDescribedSpecimenOrObservation().getUuid());
+                SpecimenOrObservationBase<?> specimen = occurrenceDao.load(((SpecimenDescription)targetDescription).getDescribedSpecimenOrObservation().getUuid());
                 newTargetDescription = SpecimenDescription.NewInstance(specimen);
             }
 
