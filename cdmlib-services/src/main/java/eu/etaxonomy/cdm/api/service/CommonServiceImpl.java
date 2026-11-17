@@ -224,7 +224,7 @@ public class CommonServiceImpl
     @Override
     public <T extends IMergable> void merge(T mergeFirst, T mergeSecond, IMergeStrategy mergeStrategy) throws MergeException {
         if (mergeStrategy == null){
-            mergeStrategy = DefaultMergeStrategy.NewInstance(mergeFirst.getClass());
+            mergeStrategy = DefaultMergeStrategy.NewInstance(((CdmBase)mergeFirst).getClass());
         }
         genericDao.merge((CdmBase)mergeFirst, (CdmBase)mergeSecond, mergeStrategy);
     }
@@ -234,7 +234,7 @@ public class CommonServiceImpl
     public <T extends IMergable> void merge(T mergeFirst, T mergeSecond, Class<? extends CdmBase> clazz) throws MergeException {
         IMergeStrategy mergeStrategy;
         if (clazz == null){
-            mergeStrategy = DefaultMergeStrategy.NewInstance(mergeFirst.getClass());
+            mergeStrategy = DefaultMergeStrategy.NewInstance(((CdmBase)mergeFirst).getClass());
         } else {
             mergeStrategy = DefaultMergeStrategy.NewInstance(clazz);
         }
@@ -260,7 +260,7 @@ public class CommonServiceImpl
     @Override
     @Transactional(readOnly = false)
     public <T extends IMergable> void merge(T mergeFirst, T mergeSecond) throws MergeException {
-        IMergeStrategy mergeStrategy = DefaultMergeStrategy.NewInstance(mergeFirst.getClass());
+        IMergeStrategy mergeStrategy = DefaultMergeStrategy.NewInstance(((CdmBase)mergeFirst).getClass());
         merge(mergeFirst, mergeSecond, mergeStrategy);
     }
 
