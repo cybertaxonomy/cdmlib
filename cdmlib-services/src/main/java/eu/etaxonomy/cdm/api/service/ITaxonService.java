@@ -906,9 +906,6 @@ public interface ITaxonService
 
     public DeleteResult deleteTaxon(UUID taxonUuid, TaxonDeletionConfigurator config, UUID classificationUuid);
 
-	public UpdateResult moveFactualDateToAnotherTaxon(UUID fromTaxonUuid,
-			UUID toTaxonUuid);
-
     public UpdateResult changeSynonymToRelatedTaxon(UUID synonymUuid, UUID toTaxonUuid, TaxonRelationshipType taxonRelationshipType,
             Reference citation, String microcitation);
 

@@ -55,6 +55,9 @@ public class InferredSynonymsServiceImplTest extends CdmTransactionalIntegration
     @SpringBeanByType
     private IClassificationService classificationService;
 
+    @SpringBeanByType
+    private ITaxonNodeService taxonNodeService;
+
     private Classification classification;
 
     boolean includeMisapplied = true;
@@ -258,7 +261,7 @@ public class InferredSynonymsServiceImplTest extends CdmTransactionalIntegration
         Taxon infraGenTaxon = (Taxon)taxonService.find(acherontiaBonsaTaxonUuid);
         TaxonNode newChild = speciesNode.getParent().addChildTaxon(infraGenTaxon, null);
         newChild.addChildNode(speciesNode, null, null);
-        classificationService.saveTreeNode(newChild);
+        taxonNodeService.save(newChild);
 
         //... inferred epithet
         List<Synonym> inferredSynonyms = inferredSynonymService.computeInferredSynonyms(taxonUuid,

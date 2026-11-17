@@ -570,7 +570,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     	nodes.add(classification.addChildTaxon(pinus, null, null));
     	nodes.add(classification.addParentChild(pinus, pinusPampa, null, null));
     	this.taxonNodeService.save(nodes);
-    	classificationService.saveClassification(classification);
+    	classificationService.save(classification);
     	commitAndStartNewTransaction();
 
     	classification = classificationDao.load(classification.getUuid());

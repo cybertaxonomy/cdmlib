@@ -51,6 +51,7 @@ public class SequenceServiceImpl extends AnnotatableServiceBase<Sequence, ISeque
     }
 
     @Override
+    @Transactional(readOnly = false)
     public UpdateResult moveSingleRead(Sequence from, Sequence to, SingleRead singleRead) {
         UpdateResult result = new UpdateResult();
         from.removeSingleRead(singleRead);
@@ -113,6 +114,7 @@ public class SequenceServiceImpl extends AnnotatableServiceBase<Sequence, ISeque
     }
 
     @Override
+    @Transactional(readOnly = false)
     public DeleteResult deleteSingleRead(SingleRead singleRead, Sequence sequence){
         DeleteResult deleteResult = new DeleteResult();
         singleRead = HibernateProxyHelper.deproxy(singleRead, SingleRead.class);

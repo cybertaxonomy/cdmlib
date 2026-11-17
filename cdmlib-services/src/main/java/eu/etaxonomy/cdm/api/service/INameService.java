@@ -500,8 +500,6 @@ public interface INameService
 
     public List<TaggedText> getTaggedName(UUID uuid);
 
-    public UpdateResult setAsGroupsBasionym(UUID nameUuid);
-
     @Deprecated //only used by csv export, use property path method instead
 	public List<Map<String, String>> getNameRecords();
 

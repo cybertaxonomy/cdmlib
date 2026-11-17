@@ -99,31 +99,21 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	 */
 	public UpdateResult convertTeam2Person(Team team) throws MergeException, IllegalArgumentException;
 
-
     /**
-     * @param personUuid
-     * @return
-     * @throws MergeException
-     * @throws IllegalArgumentException
+     * If possible replaces the given person by a new {@link Team}.
+     * <BR>This is only possible if the person is at no place used in person only mode, which
+     * is the case e.g. at User.person or FieldUnit.primaryCollector.
+     * <BR>
+     * If the person can not be replaced a {@link MergeException} is thrown.
+     *
+     * The new team is created by setting the titleCache and nomenclaturalTitle to protected
+     * and copy it. Also supplemental data is copied to the team.
+     * The old person is fully deleted, not added as member to the new team.
+     *
+     * @param personUuid the {@link Person} to be converted
+     * @throws MergeException if anything else goes wrong during merge
      */
     public UpdateResult convertPerson2Team(UUID personUuid) throws MergeException, IllegalArgumentException;
-
-	/**
-	 * If possible replaces the given person by a new {@link Team}.
-	 * <BR>This is only possible if the person is at no place used in person only mode, which
-	 * is the case e.g. at User.person or FieldUnit.primaryCollector.
-	 * <BR>
-	 * If the person can not be replaced a {@link MergeException} is thrown.
-	 *
-	 * The new team is created by setting the titleCache and nomenclaturalTitle to protected
-	 * and copy it. Also supplemental data is copied to the team.
-	 * The old person is fully deleted, not added as member to the new team.
-	 *
-	 * @param person the {@link Person} to be converted
-	 * @return the new team that replaces the given person
-	 * @throws MergeException if anything else goes wrong during merge
-	 */
-	public UpdateResult convertPerson2Team(Person person) throws MergeException, IllegalArgumentException;
 
     public <T extends AgentBase<?>> List<T> findByTitleAndAbbrevTitle(IIdentifiableEntityServiceConfigurator<T> config);
 

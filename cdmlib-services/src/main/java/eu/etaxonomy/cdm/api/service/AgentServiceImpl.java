@@ -181,8 +181,7 @@ public class AgentServiceImpl
 	    return convertPerson2Team(person);
 	}
 
-	@Override
-	public UpdateResult convertPerson2Team(Person person) throws MergeException, IllegalArgumentException {
+    private UpdateResult convertPerson2Team(Person person) throws MergeException, IllegalArgumentException {
 	    if (person == null){
 	        throw new IllegalArgumentException("Person does not exist.");
 	    }

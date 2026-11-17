@@ -767,7 +767,6 @@ public class DescriptionServiceImpl
         return load(description.getUuid()).hasStructuredData();
     }
 
-    @Override
     private UpdateResult moveDescriptionElementsToDescription(
             Collection<DescriptionElementBase> descriptionElements,
             DescriptionBase targetDescription,

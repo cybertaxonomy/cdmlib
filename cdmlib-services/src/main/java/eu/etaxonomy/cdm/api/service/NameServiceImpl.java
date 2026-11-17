@@ -490,6 +490,7 @@ public class NameServiceImpl
 
 
     @Override
+    @Transactional(readOnly = false)
     public void saveTypeDesignation(TypeDesignationBase<?> typeDesignation){
         typeDesignationDao.save(typeDesignation);
     }

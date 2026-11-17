@@ -242,6 +242,7 @@ public class TermServiceImpl
 	}
 
 	@Override
+    @Transactional(readOnly = false)
 	public UUID saveLanguageData(LanguageString languageData) {
 		return languageStringDao.save(languageData).getUuid();
 	}
@@ -271,6 +272,7 @@ public class TermServiceImpl
 	}
 
 	@Override
+	@Transactional(readOnly = false)
 	public DeleteResult delete(DefinedTermBase term, TermDeletionConfigurator config){
 		if (config == null){
 			config = new TermDeletionConfigurator();
@@ -700,6 +702,7 @@ public class TermServiceImpl
 
 
 	@Override
+    @Transactional(readOnly = false)
 	public DeleteResult deleteTerms(List<DefinedTermBase> terms, TermDeletionConfigurator config) {
 		DeleteResult result = new DeleteResult();
 		for (DefinedTermBase term: terms) {

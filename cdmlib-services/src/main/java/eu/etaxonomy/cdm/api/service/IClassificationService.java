@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -241,18 +240,6 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
     //FIXME seems not to be used anymore
     public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(TaxonNode taxonNode, List<String> propertyPaths, int size, int height, int widthOrDuration, String[] mimeTypes);
 
-    /**
-     * @param taxonNodeCollection
-     * @return
-     * @deprecated use TaxonNodeService instead
-     */
-    @Deprecated
-    public Map<UUID, TaxonNode> saveTaxonNodeAll(Collection<TaxonNode> taxonNodeCollection);
-
-    public UUID removeTreeNode(ITaxonTreeNode treeNode);
-
-    public UUID saveTreeNode(ITaxonTreeNode treeNode);
-
     public List<TaxonNode> getAllNodes();
 
 	public UpdateResult createHierarchyInClassification(Classification classification, CreateHierarchyForClassificationConfigurator configurator);
@@ -293,8 +280,6 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
     public TaxonInContextDTO getTaxonInContext(UUID classificationUuid, UUID taxonUuid,
             Boolean doChildren, Boolean doSynonyms, boolean includeUnpublished, List<UUID> ancestorMarkers,
             TaxonNodeSortMode sortMode);
-
-    public UUID saveClassification(Classification classification);
 
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             UUID classificationUuid, Integer limit, String pattern, boolean searchForClassifications);

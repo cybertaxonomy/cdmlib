@@ -21,8 +21,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import jakarta.persistence.EntityNotFoundException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -83,8 +81,6 @@ import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.TaxonRelationshipClassBridge;
 import eu.etaxonomy.cdm.model.CdmBaseType;
-import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -142,6 +138,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
+import jakarta.persistence.EntityNotFoundException;
 
 /**
  * @author a.kohlbecker
@@ -2991,38 +2988,6 @@ public class TaxonServiceImpl
         }
         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, result);
     }
-
-    @Override
-	public UpdateResult moveFactualDateToAnotherTaxon(UUID fromTaxonUuid, UUID toTaxonUuid){
-		UpdateResult result = new UpdateResult();
-
-		Taxon fromTaxon = (Taxon)dao.load(fromTaxonUuid);
-		Taxon toTaxon = (Taxon) dao.load(toTaxonUuid);
-    	for(TaxonDescription description : fromTaxon.getDescriptions()){
-              //reload to avoid session conflicts
-              description = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
-
-              String moveMessage = String.format("Description moved from %s", fromTaxon);
-              if(description.isProtectedTitleCache()){
-                  String separator = "";
-                  if(!StringUtils.isBlank(description.getTitleCache())){
-                      separator = " - ";
-                  }
-                  description.setTitleCache(description.getTitleCache() + separator + moveMessage, true);
-              }
-              Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
-              annotation.setAnnotationType(AnnotationType.INTERNAL());
-              description.addAnnotation(annotation);
-              toTaxon.addDescription(description);
-              dao.saveOrUpdate(toTaxon);
-              dao.saveOrUpdate(fromTaxon);
-              result.addUpdatedObject(toTaxon);
-              result.addUpdatedObject(fromTaxon);
-
-        }
-
-    	return result;
-	}
 
 	@Override
 	@Transactional(readOnly = false)

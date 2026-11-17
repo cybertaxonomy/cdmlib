@@ -339,7 +339,7 @@ public class JaxbImport
 
 			Collection<TaxonNode> nodes = dataSet.getTaxonNodes();
 			Collection<Classification> classifications = dataSet.getClassifications();
-			getClassificationService().saveTaxonNodeAll(nodes);
+			getTaxonNodeService().save(nodes);
 			for (Classification tree: classifications){
 				getClassificationService().saveOrUpdate(tree);
 			}

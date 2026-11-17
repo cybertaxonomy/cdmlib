@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -907,7 +908,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         TaxonDescription description_acherontia_lachesis = t_acherontia_lachesis.getDescriptions().iterator().next();
 
         try {
-            descriptionService.moveDescriptionElementsToDescription(description_acherontia_styx.getElements(), description_acherontia_lachesis, false, true);
+            descriptionService.moveDescriptionElementsToDescription(getUuidSet(description_acherontia_styx.getElements()), description_acherontia_lachesis, false, true);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
@@ -923,6 +924,13 @@ public class SecurityTest extends AbstractSecurityTestBase{
          */
         Assert.assertNull("evaluation should not fail since the user has sufficient permissions", securityException);
 
+    }
+
+    /**
+     * Convert entity set to uuid set
+     */
+    private Set<UUID> getUuidSet(Collection<DescriptionElementBase> factSet) {
+        return factSet.stream().map(f->f.getUuid()).collect(Collectors.toSet());
     }
 
 //    @Ignore // FIXME https://dev.e-taxonomy.eu/redmine/issues/4081 : #4081 (TaxonNodeServiceImpl.makeTaxonNodeASynonymOfAnotherTaxonNode() requires TAXONNAME.[UPDATE])

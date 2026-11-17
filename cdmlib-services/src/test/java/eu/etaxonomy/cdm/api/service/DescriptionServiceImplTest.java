@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -117,12 +118,19 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
         Set<DescriptionElementBase> tmpSet = new HashSet<DescriptionElementBase>(descLoaded1.getElements());
 
         //test for #4806
-        service.moveDescriptionElementsToDescription(tmpSet, descLoaded2, false, true);
+        service.moveDescriptionElementsToDescription(getUuidSet(tmpSet), descLoaded2, false, true);
         try {
             commitAndStartNewTransaction(null);
         } catch (Exception e) {
             Assert.fail("Moving description element should not throw an exception. Exception is " + e.getMessage());
         }
+    }
+
+    /**
+     * Convert entity set to uuid set
+     */
+    private Set<UUID> getUuidSet(Collection<DescriptionElementBase> factSet) {
+        return factSet.stream().map(f->f.getUuid()).collect(Collectors.toSet());
     }
 
     @Test
@@ -162,7 +170,7 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
         sourceCollection.remove(element3Data);  //should work as it works on equal
         Assert.assertEquals(2, sourceCollection.size());
 
-        service.moveDescriptionElementsToDescription(sourceCollection, targetDescription, false, true);
+        service.moveDescriptionElementsToDescription(getUuidSet(sourceCollection), targetDescription, false, true);
 
         Assert.assertEquals("Source description should have 1 element left", 1, sourceDescription.getElements().size());
         Assert.assertEquals("Target description should have 2 new elements", 2, targetDescription.getElements().size());
@@ -177,7 +185,7 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
         assertNotNull(sourceDescription);
         assertNotNull(targetDescription);
         try {
-            service.moveDescriptionElementsToDescription(targetDescription.getElements(), sourceDescription, false, true);
+            service.moveDescriptionElementsToDescription(getUuidSet(targetDescription.getElements()), sourceDescription, false, true);
         } catch (Exception e) {
             //asserting that no ConcurrentModificationException is thrown when the elements collection is passed as a parameter
             e.printStackTrace();
@@ -227,7 +235,7 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
         Assert.assertEquals(3, sourceDescription.getElements().size());
 
         TaxonDescription targetDescription = (TaxonDescription)this.service.find(targetDescriptionData.getId());
-        service.moveDescriptionElementsToDescription(sourceDescription.getElements(), targetDescription, false, true);
+        service.moveDescriptionElementsToDescription(getUuidSet(sourceDescription.getElements()), targetDescription, false, true);
         //the description is not removed anymore to avoid deletion of not persisted description elements
 
 //        TaxonDescription removedDescription = (TaxonDescription) this.service.find(sourceDescription.getUuid());

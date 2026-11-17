@@ -391,40 +391,6 @@ public class ClassificationServiceImpl
     }
 
     @Override
-    public UUID removeTreeNode(ITaxonTreeNode treeNode) {
-        if(treeNode instanceof Classification){
-            return dao.delete((Classification) treeNode);
-        }else if(treeNode instanceof TaxonNode){
-            return taxonNodeDao.delete((TaxonNode)treeNode);
-        }
-        return null;
-    }
-
-    @Override
-    public Map<UUID, TaxonNode> saveTaxonNodeAll(
-            Collection<TaxonNode> taxonNodeCollection) {
-        return taxonNodeDao.saveAll(taxonNodeCollection);
-    }
-
-    @Override
-    public UUID saveClassification(Classification classification) {
-
-       taxonNodeDao.saveOrUpdateAll(classification.getAllNodes());
-       UUID result =dao.saveOrUpdate(classification);
-       return result;
-    }
-
-    @Override
-    public UUID saveTreeNode(ITaxonTreeNode treeNode) {
-        if(treeNode instanceof Classification){
-            return dao.save((Classification) treeNode).getUuid();
-        }else if(treeNode instanceof TaxonNode){
-            return taxonNodeDao.save((TaxonNode)treeNode).getUuid();
-        }
-        return null;
-    }
-
-    @Override
     public List<TaxonNode> getAllNodes(){
         return taxonNodeDao.list(null,null);
     }

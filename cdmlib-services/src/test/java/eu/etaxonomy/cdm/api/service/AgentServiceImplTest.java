@@ -77,7 +77,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 
     	Team team = null;
 	    try {
-	        UpdateResult result = service.convertPerson2Team(person);
+	        UpdateResult result = service.convertPerson2Team(person.getUuid());
 	        team = (Team) result.getCdmEntity();
 	    } catch (MergeException e) {
 	        Assert.fail("No Merge exception should be thrown");
@@ -96,7 +96,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 	    service.save(person2);
 
 	    try{
-	        UpdateResult result = service.convertPerson2Team(person2);
+	        UpdateResult result = service.convertPerson2Team(person2.getUuid());
 	        team = (Team) result.getCdmEntity();
         } catch (MergeException e) {
             Assert.fail("No Merge exception should be thrown, but was: " + e.getMessage());
