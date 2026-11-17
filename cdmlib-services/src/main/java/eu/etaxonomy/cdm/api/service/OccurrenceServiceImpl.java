@@ -1211,9 +1211,8 @@ public class OccurrenceServiceImpl
     /**
      * Use with care, only events that are not referenced anymore
      * should be deleted this way.
-     * @param event
-     * @return
      */
+    @Transactional(readOnly = false)
     public DeleteResult deleteDerivationEvent(DerivationEvent event) {
         DeleteResult result = new DeleteResult();
         try{
@@ -1232,6 +1231,8 @@ public class OccurrenceServiceImpl
      * @param event the gathering event to delete
      * @return the delete result
      */
+    @Transactional(readOnly = false)
+
     public DeleteResult deleteGatheringEvent(GatheringEvent event) {
         DeleteResult result = new DeleteResult();
         try{

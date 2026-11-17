@@ -852,13 +852,14 @@ public interface ITaxonService
     public List<Synonym> createInferredSynonyms(Taxon taxon, Classification tree, SynonymType type, boolean doWithMisappliedNames);
 
     /**
-     * Creates all inferred synonyms for the taxon in the classification, but do not insert it to the database
-     * @param taxon
-     * @param tree
-     * @param iDatabase
+     * Creates all inferred synonyms for the taxon in the classification
+     * Note: still unclear if they are persisted to the DB. Probably they are as
+     *       {@link InferredSynonymsServiceImpl#createInferredEpithets} calls
+     *       taxon.addSynonym() and taxon is in the session.
+     *
      * @return list of inferred synonyms
      */
-    public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree, boolean doWithMisappliedNames, boolean doPersist);
+    public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification classification, boolean doWithMisappliedNames, boolean doPersist);
 
     public Taxon findAcceptedTaxonFor(UUID synonymUuid, UUID classificationUuid, boolean includeUnpublished,
             List<String> propertyPaths) throws UnpublishedException;

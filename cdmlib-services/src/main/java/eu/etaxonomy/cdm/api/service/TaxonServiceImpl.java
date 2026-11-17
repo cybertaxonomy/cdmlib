@@ -2548,6 +2548,7 @@ public class TaxonServiceImpl
     }
 
     @Override
+    @Transactional(readOnly=false)
     public List<Synonym> createInferredSynonyms(Taxon taxon, Classification classification,
             SynonymType inferredSynonymType, boolean doWithMisappliedNames){
 

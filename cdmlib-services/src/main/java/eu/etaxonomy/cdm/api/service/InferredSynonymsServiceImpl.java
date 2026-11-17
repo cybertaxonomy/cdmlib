@@ -64,6 +64,7 @@ public class InferredSynonymsServiceImpl
     private IClassificationDao classificationDao;
 
     @Override
+    @Transactional(readOnly = false)
     public List<Synonym> createAllInferredSynonyms(UUID taxonUuid, UUID classificationUuid,
             boolean doWithMisappliedNames, boolean includeUnpublished, Set<String> excludedNameCaches,
             boolean doPersist){
@@ -101,7 +102,7 @@ public class InferredSynonymsServiceImpl
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = false)
     public List<Synonym> computeInferredSynonyms(UUID taxonUuid, UUID classificationUuid,
             SynonymType inferredSynonymType, boolean doWithMisappliedNames,
             boolean includeUnpublished, Set<String> excludedNameCaches){
