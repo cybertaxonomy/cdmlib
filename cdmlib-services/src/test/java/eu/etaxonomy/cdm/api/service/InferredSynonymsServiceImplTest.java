@@ -54,7 +54,7 @@ public class InferredSynonymsServiceImplTest extends CdmServicesTransactionalSpr
     @Autowired
     private IClassificationService classificationService;
 
-    @SpringBeanByType
+    @Autowired
     private ITaxonNodeService taxonNodeService;
 
     private Classification classification;

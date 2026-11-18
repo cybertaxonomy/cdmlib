@@ -999,7 +999,7 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
      * (EntityFilter/JPA Criteria + Hibernate {@code ilike}), not through {@code findByTitleWithRestrictions}.
      */
     @Test
-    @DataSet
+    @CdmDataSet
     public void testFindByTitle_likeNameListController(){
 
         List<String> initStrategy = Arrays.asList("rank");

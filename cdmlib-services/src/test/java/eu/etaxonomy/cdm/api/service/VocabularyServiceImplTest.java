@@ -8,10 +8,10 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
@@ -21,8 +21,8 @@ import java.util.UUID;
 
 import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -114,7 +114,7 @@ public class VocabularyServiceImplTest extends CdmServicesTransactionalSpringInt
         });
         TermVocabulary<?> loaded = vocabularyService.load(vocabularyUuid, propertyPaths);
         assertNotNull(loaded);
-        assertTrue("terms should be initialized by terms.$", Hibernate.isInitialized(loaded.getTerms()));
+        assertTrue(Hibernate.isInitialized(loaded.getTerms()), "terms should be initialized by terms.$");
         assertEquals(2, loaded.getTerms().size());
 
         DefinedTermBase<?> parentWithPath = findTerm(loaded, parentUuid);

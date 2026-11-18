@@ -83,7 +83,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
     @Autowired
     private ITaxonDao taxonDao;
 
-    @SpringBeanByType
+    @Autowired
     private ITermVocabularyDao vocabularyDao;
 
     @Autowired
