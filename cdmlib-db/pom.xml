@@ -12,6 +12,16 @@
   <name>CDM Database Connectivity</name>
   <description>EDIT CDM database connectivity. Dependencies for database drivers and other database related libraries</description>
   <build>
+    <!--
+      This module has no Java sources. Ensure target/classes exists so Jetty 12
+      (cdmlib-remote-webapp integration tests, useTestScope) can mount the reactor
+      classpath entry. See NoSuchFileException on .../cdmlib-db/target/classes.
+    -->
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
     <plugins>
      </plugins>
   </build>
