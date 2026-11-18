@@ -1232,7 +1232,6 @@ public class OccurrenceServiceImpl
      * @return the delete result
      */
     @Transactional(readOnly = false)
-
     public DeleteResult deleteGatheringEvent(GatheringEvent event) {
         DeleteResult result = new DeleteResult();
         try{
