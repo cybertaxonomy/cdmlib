@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.api.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -24,26 +23,23 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
-import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.spring.CdmServicesSpringIntegrationTest;
 
 /**
+ * Non-transactional integration test (#7138 workaround with transactional base +
+ * {@code commit()} no longer needed after Unitils → Spring Test / {@code @CdmDataSet}).
+ *
  * @author a.kohlbecker
  * @since Jun 23, 2017
  */
 @CdmDataSet(cleanSweep = true) // the dataset cleans up the DerivedUnits created in the tests
-public class DerivedUnitConverterIntegrationTest extends CdmServicesTransactionalSpringIntegrationTest {
+public class DerivedUnitConverterIntegrationTest extends CdmServicesSpringIntegrationTest {
 
     @Autowired
     private IOccurrenceService service;
 
     @Test
     public void toMediaSpecimen_issue7114() throws DerivedUnitConversionException {
-
-        // NOTE:
-        // normally we would run this test as CdmIntegrationTest, but due to bug #7138
-        // this is not possible, so we use CdmTransactionalIntegrationTest as super class
-        // and stop the transaction at the beginning of the test
-        commit();
 
         assertEquals(0, service.list(null, null, null, null, null).size());
 
@@ -55,22 +51,14 @@ public class DerivedUnitConverterIntegrationTest extends CdmServicesTransactiona
         DerivedUnitConverter<MediaSpecimen> converter = new DerivedUnitConverter<>(std);
         SpecimenTypeDesignation newDu = converter.convertTo(MediaSpecimen.class, SpecimenOrObservationType.StillImage);
         assertEquals(du, converter.oldDerivedUnit());
-//        printDataSet(System.err, new String[]{"SpecimenOrObservationBase", "TypeDesignationBase"});
         service.saveOrUpdate(newDu.getTypeSpecimen());
         service.delete(du);
-//        printDataSet(System.err, new String[]{"SpecimenOrObservationBase", "TypeDesignationBase"});
         assertEquals(1, service.list(null, null, null, null, null).size());
         assertEquals(1, service.list(MediaSpecimen.class, null, null, null, null).size());
     }
 
     @Test
     public void toDerivedUnit_issue7114() throws DerivedUnitConversionException {
-
-        // NOTE:
-        // normally we would run this test as CdmIntegrationTest, but due to bug #7138
-        // this is not possible, so we use CdmTransactionalIntegrationTest as super class
-        // and stop the transaction at the beginning of the test
-        commit();
 
         assertEquals(0, service.list(null, null, null, null, null).size());
 
@@ -92,16 +80,10 @@ public class DerivedUnitConverterIntegrationTest extends CdmServicesTransactiona
      */
     @Test
     @CdmDataSet(cleanSweep = true, value = "DerivedUnitConverterIntegrationTest.cascadeDelete.xml")
-    public void cascadeDelete() throws DerivedUnitConversionException{
-
-        // NOTE:
-        // normally we would run this test as CdmIntegrationTest, but due to bug #7138
-        // this is not possible, so we use CdmTransactionalIntegrationTest as super class
-        // and stop the transaction at the beginning of the test
-        commit();
+    public void cascadeDelete() throws DerivedUnitConversionException {
 
         UUID uuid = UUID.fromString("10eceb2c-9b51-458e-8dcd-2cb92cc558a9");
-        MediaSpecimen du = (MediaSpecimen) service.load(uuid, Arrays.asList(new String[]{"*",
+        MediaSpecimen du = (MediaSpecimen) service.load(uuid, Arrays.asList("*",
                 "derivedFrom.*",
                 "derivedFrom.originals.*",
                 "derivedFrom.originals.derivationEvents",
@@ -111,26 +93,18 @@ public class DerivedUnitConverterIntegrationTest extends CdmServicesTransactiona
                 "specimenTypeDesignations.markers",
                 "specimenTypeDesignations.registrations",
                 "specimenTypeDesignations.sources",
-                //
                 "derivedFrom.originals.gatheringEvent.$",
                 "derivedFrom.originals.gatheringEvent.country",
                 "derivedFrom.originals.gatheringEvent.collectingAreas",
                 "derivedFrom.originals.gatheringEvent.actor.teamMembers",
-                "derivedFrom.originals.derivationEvents.derivatives" }));
+                "derivedFrom.originals.derivationEvents.derivatives"));
         SpecimenTypeDesignation specimenTypeDesignation = du.getSpecimenTypeDesignations().iterator().next();
         DerivedUnitConverter<DerivedUnit> duc = new DerivedUnitConverter<>(specimenTypeDesignation);
         SpecimenTypeDesignation newSpecimenTypeDesignation = duc.convertTo(DerivedUnit.class, SpecimenOrObservationType.HumanObservation);
         DerivedUnit target = newSpecimenTypeDesignation.getTypeSpecimen();
 
-        //service.save(target); // save is performed in convertTo()
-
         assertEquals(2, service.list(null, null, null, null, null).size());
         assertEquals(1, service.list(DerivedUnit.class, null, null, null, null).size());
         assertEquals(1, service.list(FieldUnit.class, null, null, null, null).size());
-
     }
-
-    @Override
-    public void createTestDataSet() throws FileNotFoundException {}
-
 }
