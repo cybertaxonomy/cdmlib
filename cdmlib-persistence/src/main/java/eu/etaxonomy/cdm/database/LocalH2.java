@@ -16,24 +16,25 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import javax.sql.DataSource;
-
-import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.h2.tools.Server;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import eu.etaxonomy.cdm.persistence.utils.CdmPersistenceUtils;
 
 /**
+ * H2 datasource bean used in {@code cdm.datasources.xml} / TaxEditor.
+ * <p>
+ * Extends Spring {@link DriverManagerDataSource} (same property names as the former
+ * commons-dbcp {@code BasicDataSource}: {@code driverClassName}, {@code url},
+ * {@code username}, {@code password}). Connection pooling for remote/Hibernate
+ * paths is handled by c3p0, not by this class.
+ *
  * @author a.mueller
- *
- * IN WORK
- *
  */
-public class LocalH2 extends BasicDataSource {
+public class LocalH2 extends DriverManagerDataSource {
 
 	private static final Logger logger = LogManager.getLogger();
 
@@ -68,19 +69,6 @@ public class LocalH2 extends BasicDataSource {
 		super();
 		this.setUrl(url);
 		setDriverClassName(DEFAULT_DRIVER_CLASS_NAME);
-	}
-
-	/* FIXME This is a workaround to solve a problem with dbcp connection pooling.
-	 * Remove this when dbcp connection pool gets configured correctly
-	 *
-	 * (non-Javadoc)
-	 * @see org.apache.commons.dbcp.BasicDataSource#createDataSource()
-	 */
-	@Override
-	protected synchronized DataSource createDataSource() throws SQLException {
-		super.createDataSource();
-		connectionPool.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_GROW);
-		return dataSource;
 	}
 
 	/**
@@ -143,8 +131,6 @@ public class LocalH2 extends BasicDataSource {
 				logger.info("Start H2Server");
 				String[] args = new String[] { "-trace" };
 				h2Server = Server.createTcpServer(args).start();
-//				h2Server.setDatabaseName(0, getDbName());
-//				h2Server.setDatabasePath(0,  getDatabasePath());
 				h2Server.start();
 			} catch (SQLException sqle1) {
 				logger.error("SQL Exception when starting Local H2Server: "+ sqle1);
@@ -195,6 +181,14 @@ public class LocalH2 extends BasicDataSource {
 		this.isStartServer = isStartServer;
 	}
 
+	public boolean isSilent() {
+		return isSilent;
+	}
+
+	public void setSilent(boolean isSilent) {
+		this.isSilent = isSilent;
+	}
+
 	public void setLocalUrl(){
 		String dbName = "cdmLocal";
 		String localUrlString = pureUrl + "file:" + getDefaultPath() + "/" + dbName;
@@ -209,12 +203,4 @@ public class LocalH2 extends BasicDataSource {
 	public String getMode(){
 		return mode;
 	}
-
-    @Override
-    public java.util.logging.Logger getParentLogger() {
-        return java.util.logging.Logger.getLogger("eu.etaxonomy.cdm");
-        //or throw
-        //throw new SQLFeatureNotSupportedException("Log4j is used. JUL is not supported.");
-    }
-
 }

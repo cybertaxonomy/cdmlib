@@ -13,8 +13,8 @@ import javax.sql.DataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.dialect.Dialect;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-import eu.etaxonomy.cdm.database.DbcpSaveDataSource;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 /**
@@ -91,7 +91,7 @@ abstract class DatabaseTypeBase implements IDatabaseType {
 
 	@Override
 	public Class<? extends DataSource> getDataSourceClass() {
-		return DbcpSaveDataSource.class;
+		return DriverManagerDataSource.class;
 	}
 
 	@Override

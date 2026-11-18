@@ -791,20 +791,6 @@
         <version>2.4.9</version>  -->
      <!--    <scope>test</scope>  -->
   <!--    </dependency>   -->
-      <dependency>
-        <!-- currently still needed by cdmlib-persistence, once removed, scope should be set to test -->
-        <groupId>commons-dbcp</groupId>
-        <artifactId>commons-dbcp</artifactId>
-        <version>1.4</version>
-        <!-- <scope>test</scope> -->
-      </dependency>
-      <dependency>
-        <!-- currently still needed by cdmlib-persistence commons-dbcp dependency, once removed, scope should be set to test -->
-        <groupId>commons-pool</groupId>
-        <artifactId>commons-pool</artifactId>
-        <version>1.6</version>
-        <!-- <scope>test</scope> -->
-      </dependency>
 	  <dependency>
 		<groupId>eu.etaxonomy</groupId>
 		<artifactId>cdmlib-test</artifactId>
