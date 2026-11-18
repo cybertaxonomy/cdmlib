@@ -79,7 +79,23 @@ public final class CdmDbUnitSupport {
             // spring test JDBC URL also sets REFERENTIAL_INTEGRITY=FALSE).
             connection.getConnection().createStatement().execute("SET REFERENTIAL_INTEGRITY FALSE");
             for (Resource dataset : datasets) {
-                operation.execute(connection, loadFlatXml(dataset));
+                try {
+                    operation.execute(connection, loadFlatXml(dataset));
+                } catch (Exception ex) {
+                    String url;
+                    try {
+                        url = connection.getConnection().getMetaData().getURL();
+                    } catch (Exception ignored) {
+                        url = "<unknown>";
+                    }
+                    throw new IllegalStateException(
+                            "DBUnit " + operation + " failed for " + dataset
+                                    + " on " + url
+                                    + " (NoSuchTable usually means this DataSource is not the"
+                                    + " Jetty/schema H2 file — check surefire workingDirectory"
+                                    + " and JDBC URL)",
+                            ex);
+                }
             }
         } finally {
             closeQuietly(connection);
