@@ -26,7 +26,7 @@
   </modules>
   <properties>
     <maven-project-info-reports-plugin-artifactId>maven-project-info-reports-plugin</maven-project-info-reports-plugin-artifactId>    
-    <maven.compiler.release>17</maven.compiler.release>
+    <maven.compiler.release>21</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <spring.version>6.2.18</spring.version>
