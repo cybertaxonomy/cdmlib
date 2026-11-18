@@ -77,7 +77,11 @@ public final class CdmDbUnitSupport {
         try {
             // FlatXml fixture order is not always FK-safe. Leave RI off (Unitils dropped FKs;
             // spring test JDBC URL also sets REFERENTIAL_INTEGRITY=FALSE).
-            connection.getConnection().createStatement().execute("SET REFERENTIAL_INTEGRITY FALSE");
+            java.sql.Connection jdbc = connection.getConnection();
+            jdbc.createStatement().execute("SET REFERENTIAL_INTEGRITY FALSE");
+            // Old Jailer fixtures omit columns that are NOT NULL in current Hibernate DDL
+            // (e.g. DescriptionBase.types, TaxonNode.status). Defaults match entity defaults.
+            applyFixtureColumnDefaults(jdbc);
             for (Resource dataset : datasets) {
                 try {
                     operation.execute(connection, loadFlatXml(dataset));
@@ -88,12 +92,13 @@ public final class CdmDbUnitSupport {
                     } catch (Exception ignored) {
                         url = "<unknown>";
                     }
+                    Throwable root = ex;
+                    while (root.getCause() != null) {
+                        root = root.getCause();
+                    }
                     throw new IllegalStateException(
                             "DBUnit " + operation + " failed for " + dataset
-                                    + " on " + url
-                                    + " (NoSuchTable usually means this DataSource is not the"
-                                    + " Jetty/schema H2 file — check surefire workingDirectory"
-                                    + " and JDBC URL)",
+                                    + " on " + url + " — " + root.getMessage(),
                             ex);
                 }
             }
@@ -190,6 +195,37 @@ public final class CdmDbUnitSupport {
             return false;
         }
         return true;
+    }
+
+    private static void applyFixtureColumnDefaults(Connection jdbc) {
+        executeQuietly(jdbc, "ALTER TABLE DESCRIPTIONBASE ALTER COLUMN TYPES SET DEFAULT '#'");
+        executeQuietly(jdbc, "ALTER TABLE TAXONNODE ALTER COLUMN STATUS SET DEFAULT 'INC'");
+        // Jailer/Unitils fixtures often use bare "<LanguageString id='…'/>" (or similar)
+        // only to include a table in CLEAN_INSERT. Current Hibernate DDL has UUID NOT NULL.
+        relaxUuidNotNull(jdbc);
+    }
+
+    private static void relaxUuidNotNull(Connection jdbc) {
+        try {
+            try (java.sql.ResultSet rs = jdbc.getMetaData().getColumns(null, SCHEMA, "%", "UUID")) {
+                while (rs.next()) {
+                    if (rs.getInt("NULLABLE") == java.sql.DatabaseMetaData.columnNoNulls) {
+                        String table = rs.getString("TABLE_NAME");
+                        executeQuietly(jdbc, "ALTER TABLE " + table + " ALTER COLUMN UUID SET NULL");
+                    }
+                }
+            }
+        } catch (SQLException ignored) {
+            // ignore
+        }
+    }
+
+    private static void executeQuietly(Connection jdbc, String sql) {
+        try {
+            jdbc.createStatement().execute(sql);
+        } catch (SQLException ignored) {
+            // table/column may not exist in this schema
+        }
     }
 
     private static void closeQuietly(IDatabaseConnection connection) {
