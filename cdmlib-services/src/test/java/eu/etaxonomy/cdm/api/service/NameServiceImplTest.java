@@ -999,6 +999,67 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         assertTrue(results.getRecords().size() > 0);
     }
 
+    /**
+     * Covers the same service call as {@code NameListController#doFindByName}:
+     * {@code findByTitle(TaxonName.class, query, matchMode, null, pageSize, pageIndex, null, initStrategy)}.
+     * This path goes through {@code IdentifiableDaoBase#findByTitle}/{@code countByTitle}
+     * (EntityFilter/JPA Criteria + Hibernate {@code ilike}), not through {@code findByTitleWithRestrictions}.
+     */
+    @Test
+    @DataSet
+    public void testFindByTitle_likeNameListController(){
+
+        List<String> initStrategy = Arrays.asList("rank");
+        Pager<TaxonName> result;
+
+        // EXACT
+        result = nameService.findByTitle(TaxonName.class, "Name1", MatchMode.EXACT, null, null, null, null, initStrategy);
+        assertEquals(1L, result.getCount().longValue());
+        assertEquals(1, result.getRecords().size());
+        assertEquals("Name1", result.getRecords().get(0).getTitleCache());
+
+        // BEGINNING – typical remote default usage
+        result = nameService.findByTitle(TaxonName.class, "Name", MatchMode.BEGINNING, null, null, null, null, initStrategy);
+        assertEquals(3L, result.getCount().longValue());
+        assertEquals(3, result.getRecords().size());
+
+        // ANYWHERE
+        result = nameService.findByTitle(TaxonName.class, "ame2", MatchMode.ANYWHERE, null, null, null, null, initStrategy);
+        assertEquals(1L, result.getCount().longValue());
+        assertEquals("Name2", result.getRecords().get(0).getTitleCache());
+
+        // END
+        result = nameService.findByTitle(TaxonName.class, "me3", MatchMode.END, null, null, null, null, initStrategy);
+        assertEquals(1L, result.getCount().longValue());
+        assertEquals("Name3", result.getRecords().get(0).getTitleCache());
+
+        // case-insensitive (Hibernate 6 ilike path)
+        result = nameService.findByTitle(TaxonName.class, "name1", MatchMode.EXACT, null, null, null, null, initStrategy);
+        assertEquals(1L, result.getCount().longValue());
+        assertEquals("Name1", result.getRecords().get(0).getTitleCache());
+
+        result = nameService.findByTitle(TaxonName.class, "name", MatchMode.BEGINNING, null, null, null, null, initStrategy);
+        assertEquals(3L, result.getCount().longValue());
+
+        // matchMode null: pattern used as-is with ilike (no automatic wildcards)
+        result = nameService.findByTitle(TaxonName.class, "Name1", null, null, null, null, null, initStrategy);
+        assertEquals(1L, result.getCount().longValue());
+        assertEquals("Name1", result.getRecords().get(0).getTitleCache());
+
+        result = nameService.findByTitle(TaxonName.class, "Name%", null, null, null, null, null, initStrategy);
+        assertEquals(3L, result.getCount().longValue());
+
+        // no hit
+        result = nameService.findByTitle(TaxonName.class, "DoesNotExist", MatchMode.BEGINNING, null, null, null, null, initStrategy);
+        assertEquals(0L, result.getCount().longValue());
+        assertTrue(result.getRecords().isEmpty());
+
+        // paging like remote controller (pageSize/pageIndex)
+        result = nameService.findByTitle(TaxonName.class, "Name", MatchMode.BEGINNING, null, 2, 0, null, initStrategy);
+        assertEquals(3L, result.getCount().longValue());
+        assertEquals(2, result.getRecords().size());
+    }
+
     @Test  //7874 //8030
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="NameServiceImplTest.testUpdateCaches.xml")
     public void testUpdateCaches() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
