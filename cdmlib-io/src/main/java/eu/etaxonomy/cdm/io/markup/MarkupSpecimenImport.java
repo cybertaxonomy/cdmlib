@@ -232,7 +232,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
         			}else{
         			    typeSpecimen = facade.addDuplicate(collection, null, null, null);
         			}
-        			typeSpecimen.setCacheStrategy(DerivedUnitFacadeCacheStrategy.NewInstance());
+        			typeSpecimen.setCacheStrategy(DerivedUnitFacadeCacheStrategy.NewInstance(false));
         			name.addSpecimenTypeDesignation(typeSpecimen, typeStatus,
         			        null, null, null, typeInfo.notDesignated, addToAllNamesInGroup);
         			handleNotSeen(state, typeSpecimen, typeInfo);

@@ -41,26 +41,20 @@ public class DerivedUnitFacadeCacheStrategy
 
 	private static final UUID uuid = UUID.fromString("df4672c1-ce5c-4724-af6d-91e2b326d4a4");
 
-	@Override
+	@Deprecated
+    @Override
 	protected UUID getUuid() {return uuid;}
 
 	private boolean includeEmptySeconds = false;
 	private boolean includeReferenceSystem = true;
 
-	private String collectionAccessionSeperator = ": ";
+	private static final String collectionAccessionSeperator = ": ";
 
 	private boolean addTrailingDot = false;
 
-	public static DerivedUnitFacadeCacheStrategy NewInstance(){
-        return new DerivedUnitFacadeCacheStrategy();
-	}
-
+    @Deprecated
     public static DerivedUnitFacadeCacheStrategy NewInstance(boolean addTrailingDot){
-        return new DerivedUnitFacadeCacheStrategy(addTrailingDot, null);
-    }
-
-    public static DerivedUnitFacadeCacheStrategy NewInstance( boolean addTrailingDot, String collectionAccessionSeperator){
-        return new DerivedUnitFacadeCacheStrategy(addTrailingDot, collectionAccessionSeperator);
+        return new DerivedUnitFacadeCacheStrategy(addTrailingDot);
     }
 
 //******************************* CONSTRUCTOR *******************************************/
@@ -68,19 +62,18 @@ public class DerivedUnitFacadeCacheStrategy
 	 //default value constructor
 	 private DerivedUnitFacadeCacheStrategy() {}
 
-	 private DerivedUnitFacadeCacheStrategy(boolean addTrailingDot, String collectionAccessionSeperator) {
+	 private DerivedUnitFacadeCacheStrategy(boolean addTrailingDot) {
 		 this.addTrailingDot = addTrailingDot;
-	     if (collectionAccessionSeperator != null){
-	    	 this.collectionAccessionSeperator = collectionAccessionSeperator;
-	     }
 	 }
 
-	@Override
+	@Deprecated
+    @Override
     public String getTitleCache(DerivedUnit derivedUnit) {
 	    return getTitleCache(derivedUnit, false);
 	}
 
-	public String getTitleCache(DerivedUnit derivedUnit, boolean skipFieldUnit) {
+	@Deprecated
+    public String getTitleCache(DerivedUnit derivedUnit, boolean skipFieldUnit) {
 
 	    String result = "";
 	    DerivedUnitFacadeFieldUnitCacheStrategy fieldStrategy = new DerivedUnitFacadeFieldUnitCacheStrategy();
@@ -132,6 +125,7 @@ public class DerivedUnitFacadeCacheStrategy
      * @param facade
      * @return
      */
+    @Deprecated
     public String getSpecimenLabel(DerivedUnitFacade facade) {
         String code = getCode(facade);
         String identifier = getUnitNumber(facade /*, code*/);
@@ -208,27 +202,33 @@ public class DerivedUnitFacadeCacheStrategy
 
 // ************************** GETTER / SETTER ******************************************************
 
-	public boolean isIncludeSeconds() {
+	@Deprecated
+    public boolean isIncludeSeconds() {
 		return includeEmptySeconds;
 	}
 
-	public void setIncludeSeconds(boolean includeSeconds) {
+	@Deprecated
+    public void setIncludeSeconds(boolean includeSeconds) {
 		this.includeEmptySeconds = includeSeconds;
 	}
 
-	public void setIncludeReferenceSystem(boolean includeReferenceSystem) {
+	@Deprecated
+    public void setIncludeReferenceSystem(boolean includeReferenceSystem) {
 		this.includeReferenceSystem = includeReferenceSystem;
 	}
 
-	public boolean isIncludeReferenceSystem() {
+	@Deprecated
+    public boolean isIncludeReferenceSystem() {
 		return includeReferenceSystem;
 	}
 
-	public boolean isAddTrailingDot() {
+	@Deprecated
+    public boolean isAddTrailingDot() {
 		return addTrailingDot;
 	}
 
-	public void setAddTrailingDot(boolean addTrailingDot) {
+	@Deprecated
+    public void setAddTrailingDot(boolean addTrailingDot) {
 		this.addTrailingDot = addTrailingDot;
 	}
 

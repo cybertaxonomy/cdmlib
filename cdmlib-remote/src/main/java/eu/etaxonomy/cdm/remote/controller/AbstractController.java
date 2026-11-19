@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -48,9 +47,8 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public abstract class AbstractController<T extends CdmBase, SERVICE extends IService<T>> {
 
-    protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
-            "$"
-    });
+    protected static final List<String> DEFAULT_INIT_STRATEGY = List.of("$");
+
     protected static final Integer DEFAULT_PAGE_SIZE = PagerParameters.DEFAULT_PAGESIZE;
 
     /**

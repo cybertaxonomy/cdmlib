@@ -199,7 +199,6 @@ public class OccurrenceCatalogueController
      * which are in turn initialized using the {@link #OCCURRENCE_INIT_STRATEGY} and {@link #FACADE_INIT_STRATEGY}
      * @throws IOException
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @RequestMapping(value = { "" }, method = RequestMethod.GET, params = {"taxonUuid","pageNumber","pageSize"})
     public ModelAndView doGetOccurrenceSearch(
             @RequestParam(value = "taxonUuid", required = true) String taxonUuid,
@@ -232,7 +231,7 @@ public class OccurrenceCatalogueController
         PagerParameters pagerParams = new PagerParameters(pS, pN);
         pagerParams.normalizeAndValidate(response);
 
-        List<DerivedUnit> records = new ArrayList<DerivedUnit>();
+        List<DerivedUnit> records = new ArrayList<>();
 
         OccurrenceSearch ns = new OccurrenceSearch();
         ns.setRequest(taxonUuid);
@@ -283,18 +282,17 @@ public class OccurrenceCatalogueController
             records = specimenOrObs.getRecords();
 
             DerivedUnit derivedUnit=null;
-            List<DerivedUnitFacade> facades = new ArrayList<DerivedUnitFacade>();
-            for (SpecimenOrObservationBase<?> specimen:records){
-                derivedUnit = CdmBase.deproxy(specimen, DerivedUnit.class);
+            for (DerivedUnit specimen: records){
+                derivedUnit = CdmBase.deproxy(specimen);
                 DerivedUnitFacade derivedUnitFacade =null;
                 try {
                     //TODO : This is a potential performance hurdle (especially for large number
                     //       of derived units).
-                    //       A possible solution is to already initialise the required derived unit facade
-                    //       in the 'pageByAssociatedTaxon' call. This can be done either via the initialisation
-                    //       strategy technique or by writing a new optimised hql query for this.
+                    //       A possible solution is to already initialize the required derived unit facade
+                    //       in the 'pageByAssociatedTaxon' call. This can be done either via the initialization
+                    //       strategy technique or by writing a new optimized hql query for this.
                     //       This will ensure that the DerivedUnits are loaded with required fields already
-                    //       initialised and will not require the loading and initialisation of each DerivedUnit
+                    //       initialized and will not require the loading and initialization of each DerivedUnit
                     //       object as is done in the 'getDerivedUnitFacade' method.
                     derivedUnitFacade = occurrenceService.getDerivedUnitFacade(derivedUnit, FACADE_INIT_STRATEGY);
                     os.addToResponse(taxon.getTitleCache(), taxonUuid, derivedUnitFacade);
@@ -304,7 +302,6 @@ public class OccurrenceCatalogueController
             }
         }
 
-
         if (os.getResponse().isEmpty()){
             ErrorResponse er = new ErrorResponse();
             er.setErrorMessage("No specimen or observation for given taxon uuid");
@@ -312,7 +309,7 @@ public class OccurrenceCatalogueController
             return mv;
         } else {
             DefaultPagerImpl<OccurrenceSearchResponse> dpi =
-                    new DefaultPagerImpl<OccurrenceSearchResponse>(specimenOrObs.getCurrentIndex(),
+                    new DefaultPagerImpl<>(specimenOrObs.getCurrentIndex(),
                                 specimenOrObs.getCount(),
                                 specimenOrObs.getPageSize(),
                                 os.getResponse());

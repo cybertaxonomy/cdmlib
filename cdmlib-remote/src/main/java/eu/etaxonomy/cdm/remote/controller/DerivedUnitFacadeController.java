@@ -93,10 +93,10 @@ public class DerivedUnitFacadeController
 
         logger.info("doGetDerivedUnitMedia() - " + request.getRequestURI());
         ModelAndView mv = new ModelAndView();
-        DerivedUnitFacade duf = newFacadeFrom(occurrenceUuid, response, Arrays.asList(new String []{
-                "derivedUnitMedia", "derivedUnitMedia.title"}));
-        if(duf != null){
-            mv.addObject(duf.getDerivedUnitMedia());
+        DerivedUnitFacade derivedUnitFacade = newFacadeFrom(occurrenceUuid, response, List.of(
+                "derivedUnitMedia", "derivedUnitMedia.title"));
+        if(derivedUnitFacade != null){
+            mv.addObject(derivedUnitFacade.getDerivedUnitMedia());
         }
         return mv;
     }
@@ -193,7 +193,7 @@ public class DerivedUnitFacadeController
      */
     private DerivedUnitFacade newFacadeFrom(UUID occurrenceUuid, HttpServletResponse response, List<String> extendedInitStrategy)
     throws IOException {
-        List<String> initStrategy = new ArrayList<String>(getInitializationStrategy());
+        List<String> initStrategy = new ArrayList<>(getInitializationStrategy());
         if(extendedInitStrategy != null && extendedInitStrategy.size() > 0){
             initStrategy.addAll(extendedInitStrategy);
         }

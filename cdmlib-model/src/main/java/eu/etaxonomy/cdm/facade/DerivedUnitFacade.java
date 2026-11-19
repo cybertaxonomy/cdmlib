@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import jakarta.persistence.Transient;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,6 +57,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
+import jakarta.persistence.Transient;
 
 /**
  * This class is a facade to the eu.etaxonomy.cdm.model.occurrence package from
@@ -692,7 +691,7 @@ public class DerivedUnitFacade {
 	 * @return
 	 * @throws DerivedUnitFacadeNotSupportedException
 	 */
-	private TextData getImageGalleryTextData(SpecimenOrObservationBase specimen, String specimenExceptionText)
+	private TextData getImageGalleryTextData(SpecimenOrObservationBase<?> specimen, String specimenExceptionText)
 			throws DerivedUnitFacadeNotSupportedException {
 		TextData result;
 		SpecimenDescription imageGallery = getImageGalleryWithSupportTest(
@@ -852,7 +851,7 @@ public class DerivedUnitFacade {
 			SpecimenOrObservationBase<?> specimen)
 			throws DerivedUnitFacadeNotSupportedException {
 		List<Media> mediaList = getMediaList(specimen, true);
-		return mediaList == null ? null : mediaList.remove(media);
+		return mediaList == null ? false : mediaList.remove(media);
 	}
 
 	private List<Media> getMediaList(SpecimenOrObservationBase<?> specimen, boolean createIfNotExists)

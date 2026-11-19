@@ -49,7 +49,6 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
 	private FieldUnit fieldUnit;
 	private GatheringEvent gatheringEvent;
 	private Integer absoluteElevation = 40;
-	private Integer absoluteElevationError = 2;
 	private Team collector = Team.NewInstance();
 	private String collectingMethod = "Collection Method";
 	private Double distanceToGround = 22.0;
@@ -75,7 +74,6 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
 	private String accessionNumber = "B 8909756";
 	private String catalogNumber = "UU879873590";
 	private String barcode = "B12345678";
-	private String collectorsNumber = "234589913A34";
 	private Collection collection = Collection.NewInstance();
 
 	private PreservationMethod preservationMethod = PreservationMethod.NewInstance(null, "my prservation");
@@ -102,7 +100,6 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
 		gatheringEvent = GatheringEvent.NewInstance();
 		fieldUnit.setGatheringEvent(gatheringEvent);
 		gatheringEvent.setAbsoluteElevation(absoluteElevation);
-//		gatheringEvent.setAbsoluteElevationError(absoluteElevationError);
 		gatheringEvent.setActor(collector);
 		gatheringEvent.setCollectingMethod(collectingMethod);
 		gatheringEvent.setDistanceToGround(distanceToGround);
