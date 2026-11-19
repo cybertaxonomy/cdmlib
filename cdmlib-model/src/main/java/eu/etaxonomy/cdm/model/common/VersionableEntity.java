@@ -12,6 +12,15 @@ import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+
+import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
+import eu.etaxonomy.cdm.model.permission.User;
+import eu.etaxonomy.cdm.strategy.match.Match;
+import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import jakarta.persistence.Basic;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
@@ -23,16 +32,6 @@ import jakarta.xml.bind.annotation.XmlIDREF;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hibernate.envers.Audited;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
-
-import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
-import eu.etaxonomy.cdm.model.permission.User;
-import eu.etaxonomy.cdm.strategy.match.Match;
-import eu.etaxonomy.cdm.strategy.match.MatchMode;
 
 /**
  * The class keeps track of versions via a full linked list to different version objects, or a simple updated/updatedBy property in the same object.

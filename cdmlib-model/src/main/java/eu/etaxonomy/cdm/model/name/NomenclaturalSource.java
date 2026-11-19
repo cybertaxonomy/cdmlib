@@ -10,6 +10,12 @@ package eu.etaxonomy.cdm.model.name;
 
 import java.beans.PropertyChangeListener;
 
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
+import eu.etaxonomy.cdm.strategy.merge.Merge;
+import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToOne;
@@ -17,13 +23,6 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlIDREF;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.hibernate.envers.Audited;
-
-import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
-import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
-import eu.etaxonomy.cdm.strategy.merge.Merge;
-import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 /**
  * This subclass of {@link NamedSourceBase} exists to

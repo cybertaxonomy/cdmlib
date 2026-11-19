@@ -8,6 +8,14 @@
 */
 package eu.etaxonomy.cdm.model.molecular;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+
+import eu.etaxonomy.cdm.model.common.EventBase;
+import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,15 +27,6 @@ import jakarta.xml.bind.annotation.XmlIDREF;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hibernate.envers.Audited;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
-
-import eu.etaxonomy.cdm.model.common.EventBase;
-import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
 
 /**
  * Cloning is a method used in {@link Amplification DNA amplification} for multiplying the base

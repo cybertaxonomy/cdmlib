@@ -1,5 +1,5 @@
 /**
-* Copyright (C) 2007 EDIT
+* Copyright (C) 2008 EDIT
 * European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 *

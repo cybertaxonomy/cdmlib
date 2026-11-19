@@ -11,15 +11,6 @@ package eu.etaxonomy.cdm.model.description;
 import java.util.Map;
 import java.util.UUID;
 
-import jakarta.persistence.Entity;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlIDREF;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -29,6 +20,14 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
+import jakarta.persistence.Entity;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlIDREF;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(name = "NaturalLanguageTerm")
@@ -44,7 +43,6 @@ public class NaturalLanguageTerm extends DefinedTermBase<NaturalLanguageTerm> {
     private static final Logger logger = LogManager.getLogger();
 
 	protected static Map<UUID, NaturalLanguageTerm> termMap = null;
-
 
 	private static NaturalLanguageTerm FROM = createFROM();
 	private static NaturalLanguageTerm TO = createTO();

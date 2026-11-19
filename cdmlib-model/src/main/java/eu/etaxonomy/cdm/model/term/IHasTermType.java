@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.term;
 /**
  * @author a.mueller
  * @since 22.01.2019
- *
  */
 public interface IHasTermType {
 

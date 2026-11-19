@@ -18,5 +18,4 @@ package eu.etaxonomy.cdm.model.reference;
  */
 public interface ICdDvd extends IAuthoredPublicationBase{
 
-
 }

@@ -8,15 +8,15 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
-import org.hibernate.type.SqlTypes;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.Length;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Length;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+import org.hibernate.type.SqlTypes;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.search.UriBridge;

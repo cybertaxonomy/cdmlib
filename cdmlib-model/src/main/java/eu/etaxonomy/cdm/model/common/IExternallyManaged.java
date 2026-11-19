@@ -17,7 +17,6 @@ package eu.etaxonomy.cdm.model.common;
  */
 public interface IExternallyManaged {
 
-
     /**
      * @return <code>true</code> if this entity is managed externally.
      */

@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class MultilanguageText
         extends HashMap<Language, LanguageString>
-        implements Cloneable, IMultiLanguageText {
+        implements IMultiLanguageText {
 
 	private static final long serialVersionUID = 7876604337076705862L;
     private static final Logger logger = LogManager.getLogger();

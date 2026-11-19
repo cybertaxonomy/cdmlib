@@ -17,7 +17,6 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
  *
  * @author ben
  * @author Ben Alex
- *
  */
 public class AuditEventContextImpl implements AuditEventContext {
     private static final long serialVersionUID = 4477662916416534368L;

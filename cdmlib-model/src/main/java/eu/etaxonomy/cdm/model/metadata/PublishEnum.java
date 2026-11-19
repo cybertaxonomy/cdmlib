@@ -18,7 +18,6 @@ public enum PublishEnum implements IKeyLabel{
     NotPublish("NotPublish", "Don't publish"),
     InheritFromParent("InheritFromParent", "Inherit from parent");
 
-
     private String label;
     private String key;
 

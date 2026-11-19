@@ -387,12 +387,14 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return result;
     }
 
+    @Override
     public Identifier addIdentifier(String identifier, IdentifierType identifierType){
     	Identifier result = Identifier.NewInstance(identifier, identifierType);
     	addIdentifier(result);
     	return result;
     }
 
+    @Override
     public void addIdentifier(Integer index, Identifier identifier){
         if (identifier != null){
         	//deduplication
@@ -412,20 +414,24 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
     }
 
+    @Override
     public void addIdentifier(Identifier identifier){
         addIdentifier(null, identifier);
     }
 
+    @Override
     public void removeIdentifier(Identifier identifier){
         if (identifier != null){
             getIdentifiers().remove(identifier);
         }
     }
 
+    @Override
     public void removeIdentifier(int index){
     	getIdentifiers().remove(index);
     }
 
+    @Override
     public boolean replaceIdentifier(Identifier newObject, Identifier oldObject){
         return replaceInList(this.identifiers, newObject, oldObject);
     }

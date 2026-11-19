@@ -11,13 +11,12 @@ package eu.etaxonomy.cdm.model.common;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
-import jakarta.persistence.Transient;
-import jakarta.validation.GroupSequence;
-import jakarta.validation.groups.Default;
-
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
+import jakarta.persistence.Transient;
+import jakarta.validation.GroupSequence;
+import jakarta.validation.groups.Default;
 
 @GroupSequence({Default.class, Level2.class, Level3.class})
 public interface ICdmBase {

@@ -14,8 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.persistence.Entity;
-
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -27,6 +25,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import jakarta.persistence.Entity;
 
 /**
  * Enumeration of all abstract CDM base types. Each provides a set of all sub types.

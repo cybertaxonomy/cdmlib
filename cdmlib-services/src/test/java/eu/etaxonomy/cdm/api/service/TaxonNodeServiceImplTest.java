@@ -84,9 +84,6 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 	private IReferenceService referenceService;
 
 	@Autowired
-	private IAgentService agentService;
-
-	@Autowired
 	private ITermService termService;
 
 	@Autowired
@@ -121,7 +118,6 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 	private static final UUID node5Uuid = UUID.fromString("c4d5170a-7967-4dac-ab76-ae2019eefde5");
 	private static final UUID node6Uuid = UUID.fromString("b419ba5e-9c8b-449c-ad86-7abfca9a7340");
 	private static final UUID rootNodeUuid = UUID.fromString("324a1a77-689c-44be-8e65-347d835f4111");
-	private static final UUID person1uuid = UUID.fromString("fe660517-8d8e-4dac-8bbb-4fb8f4f4a72e");
 
 	private Taxon t1;
 	private Taxon t2;
@@ -170,7 +166,6 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 		nameService.save(relatedName);
 
 		t1.addHomotypicSynonym(synonym);
-		taxonService.saveOrUpdate(t1);
 		t1 =(Taxon) taxonService.load(t1.getUuid());
 		t1 = HibernateProxyHelper.deproxy(t1);
 		TaxonName nameT1 = t1.getName();
@@ -184,7 +179,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 		t4 = node4.getTaxon();
         UUID uuidT4 = t4.getUuid();
         t4 = (Taxon) taxonService.find(uuidT4);
-        TaxonName name4 = nameService.find(t4.getName().getUuid());
+        nameService.find(t4.getName().getUuid());
         result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node4, node2, synonymType, reference, referenceDetail, null, true);
         if (result.isError() || result.isAbort()){
             fail();
@@ -220,9 +215,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 
 	                assertEquals(taxon, t2);
 				}
-
 			}
-
 		}
 	}
 
@@ -290,7 +283,6 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 		assertNotNull(t1HomotypSynonym);
 
 		keyNode.setTaxon(null);
-		polKeyNodeService.saveOrUpdate(keyNode);
 		t2 =HibernateProxyHelper.deproxy(t2);
 		HibernateProxyHelper.deproxy(t2.getHomotypicGroup());
 		t2.setName(HibernateProxyHelper.deproxy(t2.getName()));
@@ -330,7 +322,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 		String oldTreeIndex = node2.treeIndex();
 
 		TaxonNode newNode = node2.addChildTaxon(taxon, null, null);
-		taxonNodeService.saveOrUpdate(newNode);
+		taxonNodeService.save(newNode);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		newNode = taxonNodeService.load(newNode.getUuid());
 		assertEquals(oldTreeIndex + newNode.getId() + "#", newNode.treeIndex(), "");
@@ -344,7 +336,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 		node1 = taxonNodeService.load(node1Uuid);
 		node2 = taxonNodeService.load(node2Uuid);
 		node2.addChildNode(node1, null, null);
-		taxonNodeService.saveOrUpdate(node1);
+		taxonNodeService.save(node1);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		TaxonNode node6 = taxonNodeService.load(node6Uuid);
 		assertEquals(node2.treeIndex() + "2#4#6#", node6.treeIndex(), "Node6 treeindex is not correct");
@@ -354,7 +346,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 		node1 = taxonNodeService.load(node1Uuid);
 		classification2.setRootNode(HibernateProxyHelper.deproxy(classification2.getRootNode(),TaxonNode.class));
 		classification2.addChildNode(node1, null, null);
-		taxonNodeService.saveOrUpdate(node1);
+		taxonNodeService.save(node1);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		node1 = taxonNodeService.load(node1Uuid);
 		assertEquals("#t2#8#2#", node1.treeIndex(), "Node1 treeindex is not correct");
@@ -365,24 +357,25 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 		node2 = taxonNodeService.load(node2Uuid);
 		TaxonNode node5 = taxonNodeService.load(node5Uuid);
 		node2 =node5.addChildNode(node2, null, null);
-		taxonNodeService.saveOrUpdate(node2);
+		taxonNodeService.save(node2);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		node2 = taxonNodeService.load(node2Uuid);
 		assertEquals("#t2#8#2#5#3#", node2.treeIndex(), "Node3 treeindex is not correct");
-
-}
+	}
 
 	@Test
 	@CdmDataSet(cleanSweep = true, value = "TaxonNodeServiceImplTest-indexing.xml")
 	public final void testIndexDeleteNode() {
-		commitAndStartNewTransaction(new String[]{"TaxonNode"});
-		node1 = taxonNodeService.load(node1Uuid);
+
+	    commitAndStartNewTransaction(/*new String[]{"TaxonNode"}*/);
+
+	    node1 = taxonNodeService.load(node1Uuid);
 		TaxonNode node4 = taxonNodeService.load(node4Uuid);
 		String treeIndex = node1.treeIndex();
 		TaxonNode node6 = taxonNodeService.load(node6Uuid);
-		treeIndex= node6.treeIndex();
+		treeIndex = node6.treeIndex();
 
-		HibernateProxyHelper.deproxy(node1, TaxonNode.class);
+		HibernateProxyHelper.deproxy(node1);
 		node1.deleteChildNode(node4, false);
 		TaxonNode node5 = taxonNodeService.load(node5Uuid);
 		treeIndex = node5.treeIndex();
@@ -391,13 +384,12 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 
 		treeIndex = node6.treeIndex();
 		Taxon newTaxon= Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null);
-		UUID taxonNewUuid = taxonService.save(newTaxon).getUuid();
+		taxonService.save(newTaxon).getUuid();
 
 		node5.addChildTaxon(newTaxon, null, null);
-		String node5TreeIndex =node5.treeIndex();
-		taxonNodeService.saveOrUpdate(node5);
+		String node5TreeIndex = node5.treeIndex();
 
-		commitAndStartNewTransaction(new String[]{"TaxonNode"});
+		commitAndStartNewTransaction(/*new String[]{"TaxonNode"}*/);
 		node5 = taxonNodeService.load(node5Uuid);
 		List<TaxonNode> children =  node5.getChildNodes();
 		TaxonNode node = children.get(0);
@@ -1224,16 +1216,16 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 //        TaxonNode pinusNode = checklist.addChildTaxon(pinus, null, null);
 //        pinusNode.setUuid(pinusNodeUuid);
 //
-//        taxonService.saveOrUpdate(campanula);
-//        taxonService.saveOrUpdate(campanulaPersicifolia);
-//        classificationService.saveOrUpdate(checklist2);
+//        taxonService.save(campanula);
+//        taxonService.save(campanulaPersicifolia);
+//        classificationService.save(checklist2);
 //
-//        taxonService.saveOrUpdate(abies);
-//        taxonService.saveOrUpdate(abiesAlba);
-//        taxonService.saveOrUpdate(abiesAlbaSubBrota);
-//        taxonService.saveOrUpdate(abiesPalma);
-//        taxonService.saveOrUpdate(pinus);
-//        classificationService.saveOrUpdate(checklist);
+//        taxonService.save(abies);
+//        taxonService.save(abiesAlba);
+//        taxonService.save(abiesAlbaSubBrota);
+//        taxonService.save(abiesPalma);
+//        taxonService.save(pinus);
+//        classificationService.save(checklist);
 //
 //
 //        setComplete();
@@ -1401,7 +1393,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         TaxonNode newParentNode = rootNode.getChildNodes().get(1);
         TaxonNode child3 = newParentNode.addChildNode(childMove, null, null);
         TaxonNode child4 =rootNode.addChildTaxon(null, null);
-        taxonNodeService.saveOrUpdate(child4);
+        taxonNodeService.save(child4);
 
         @SuppressWarnings("unused")
         //no removed child to delete here
@@ -1443,7 +1435,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         //replace nodes and merge
         TaxonNode childToRemove = rootNode.getChildNodes().get(0);
         rootNode.deleteChildNode(childToRemove);
-        TaxonNode child3 =rootNode.addChildTaxon(null, null);
+        TaxonNode child3 = rootNode.addChildTaxon(null, null);
         taxonNodeService.saveOrUpdate(rootNode);
         taxonNodeService.delete(childToRemove.getUuid());  //combined method like in merge does not yet exist for saveOrUpdate
         commitAndStartNewTransaction(tableNames);
@@ -1660,16 +1652,16 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         TaxonNode pinusNode = checklist.addChildTaxon(pinus, null, null);
         pinusNode.setUuid(pinusNodeUuid);
 
-        taxonService.saveOrUpdate(campanula);
-        taxonService.saveOrUpdate(campanulaPersicifolia);
-        classificationService.saveOrUpdate(checklist2);
+        taxonService.save(campanula);
+        taxonService.save(campanulaPersicifolia);
+        classificationService.save(checklist2);
 
-        taxonService.saveOrUpdate(abies);
-        taxonService.saveOrUpdate(abiesAlba);
-        taxonService.saveOrUpdate(abiesAlbaSubBrota);
-        taxonService.saveOrUpdate(abiesPalma);
-        taxonService.saveOrUpdate(pinus);
-        classificationService.saveOrUpdate(checklist);
+        taxonService.save(abies);
+        taxonService.save(abiesAlba);
+        taxonService.save(abiesAlbaSubBrota);
+        taxonService.save(abiesPalma);
+        taxonService.save(pinus);
+        classificationService.save(checklist);
 
         setComplete();
         endTransaction();

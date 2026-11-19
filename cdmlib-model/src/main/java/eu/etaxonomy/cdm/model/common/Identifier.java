@@ -8,6 +8,14 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+
+import eu.etaxonomy.cdm.model.term.IdentifierType;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -20,15 +28,6 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlIDREF;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hibernate.envers.Audited;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
-
-import eu.etaxonomy.cdm.model.term.IdentifierType;
-import eu.etaxonomy.cdm.model.term.TermType;
-import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * @author a.mueller

@@ -6,9 +6,13 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.model.permission;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.security.core.GrantedAuthority;
+
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotNull;
@@ -17,12 +21,6 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.security.core.GrantedAuthority;
-
-import eu.etaxonomy.cdm.model.common.CdmBase;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "GrantedAuthority", propOrder = {"authority"})

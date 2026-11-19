@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
  *
  * @author a.mueller
  * @since 2013-09-09
- *
  */
 public enum PreferenceSubjectEnum implements IEnumTerm<PreferenceSubjectEnum>{
 	Database(UUID.fromString("50b25ae6-62fe-46a1-830e-545702e895f7"), "Database", "DB", null),

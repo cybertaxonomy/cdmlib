@@ -12,10 +12,10 @@ import java.io.Serializable;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
+import com.ibm.lsid.MalformedLSIDException;
+
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Transient;
-
-import com.ibm.lsid.MalformedLSIDException;
 
 /**
  * This class is copied from com.ibm.lsid.LSID, I needed to re-implement this since

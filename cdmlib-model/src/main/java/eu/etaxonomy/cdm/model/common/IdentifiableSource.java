@@ -8,9 +8,6 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
-import jakarta.persistence.Entity;
-import jakarta.xml.bind.annotation.XmlType;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -19,6 +16,8 @@ import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import jakarta.persistence.Entity;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * This class represents an {@link eu.etaxonomy.cdm.model.reference.IOriginalSource IOriginalSource}

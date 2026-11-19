@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.model.validation;
 
 /**
@@ -20,7 +19,6 @@ package eu.etaxonomy.cdm.model.validation;
  * object graph the entity was part of.
  *
  * @author ayco_holleman
- *
  */
 public enum CRUDEventType {
     NONE, INSERT, UPDATE, DELETE

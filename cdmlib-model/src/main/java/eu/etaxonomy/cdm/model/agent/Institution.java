@@ -11,6 +11,16 @@ package eu.etaxonomy.cdm.model.agent;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import eu.etaxonomy.cdm.model.media.IHasLink;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.strategy.cache.agent.InstitutionDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -24,17 +34,6 @@ import jakarta.xml.bind.annotation.XmlIDREF;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hibernate.envers.Audited;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
-import org.springframework.beans.factory.annotation.Configurable;
-
-import eu.etaxonomy.cdm.model.media.IHasLink;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.strategy.cache.agent.InstitutionDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * This class represents public or private institutions.

@@ -16,7 +16,6 @@ import org.springframework.util.Assert;
  * context.
  *
  * @author ben
- *
  */
 public class GlobalAuditEventContextHolderStrategy implements
 		AuditEventContextHolderStrategy {

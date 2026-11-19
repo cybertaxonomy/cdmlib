@@ -12,6 +12,14 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter;
+import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter.SetterAdapterException;
+import eu.etaxonomy.cdm.strategy.merge.Merge;
+import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.MappedSuperclass;
@@ -22,15 +30,6 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hibernate.envers.Audited;
-
-import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter;
-import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter.SetterAdapterException;
-import eu.etaxonomy.cdm.strategy.merge.Merge;
-import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 /**
  * Abstract superclass implementing human annotations and machine markers to be assigned to CDM objects.

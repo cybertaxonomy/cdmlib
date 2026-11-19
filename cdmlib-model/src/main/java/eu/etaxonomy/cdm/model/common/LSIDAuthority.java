@@ -8,15 +8,15 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
-import org.hibernate.type.SqlTypes;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.Length;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.wsdl.Definition;
 
+import org.hibernate.Length;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.type.SqlTypes;
 
 import com.ibm.lsid.MalformedLSIDException;
 

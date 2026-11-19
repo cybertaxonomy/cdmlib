@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.common.UTF8;
  * A {@link ORCID} object can only be created by syntactic valid input.
  * It internally stores 1 strings (length=16).
  *
- *
  * @author a.mueller
  * @since 2019-11-08
  */

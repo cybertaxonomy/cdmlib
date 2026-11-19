@@ -54,7 +54,6 @@ import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
 import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
@@ -111,7 +110,7 @@ public class StatisticsDaoHibernateImplTest
 	// ------------------ variables for CLASSIFICATIONS -----------------------
 
 	// int[] anArray = new int[NO_OF_CLASSIFICATIONS];
-	private static List<Long> no_of_all_taxa_c = new ArrayList<Long>(
+	private static List<Long> no_of_all_taxa_c = new ArrayList<>(
 			Collections.nCopies(NO_OF_CLASSIFICATIONS, Long.valueOf(0)));
 	private static List<Long> no_of_accepted_taxa_c = new ArrayList<>(
 			Collections.nCopies(NO_OF_CLASSIFICATIONS, Long.valueOf(0)));
@@ -129,10 +128,10 @@ public class StatisticsDaoHibernateImplTest
 
 	// ........................... constant map ..........................
 
-	private static final Map<String, List<Long>> typeCountMap_CLASSIFICATION = new HashMap<String, List<Long>>() {
+	private static final Map<String, List<Long>> typeCountMap_CLASSIFICATION = new HashMap<>() {
 		{
 			put("CLASSIFICATION",
-					new ArrayList<Long>(Arrays.asList((Long) null, null, null)));
+					new ArrayList<>(Arrays.asList((Long) null, null, null)));
 			put("ALL_TAXA", no_of_all_taxa_c);
 			put("ACCEPTED_TAXA", no_of_accepted_taxa_c);
 			put("SYNONYMS", no_of_synonyms_c);
@@ -158,9 +157,6 @@ public class StatisticsDaoHibernateImplTest
 	private IDescriptionDao descriptionDao;
 	@Autowired
 	private IDescriptionElementDao descriptionElementDao;
-	@Autowired
-	private ITaxonNodeDao taxonNodeDao;
-
 
 	@BeforeEach
 	public void setUp() {
@@ -182,7 +178,7 @@ public class StatisticsDaoHibernateImplTest
 		createDataSet();
 		for (Classification classification : classifications) {
 			TaxonNode root;
-			root= createTaxTree(classification);
+			root = createTaxTree(classification);
 
 			result=statisticsDao.getAllChildNodeIds(root.getUuid());
 		    logger.debug("classification "+ classification.getName()+": ");
@@ -328,7 +324,6 @@ public class StatisticsDaoHibernateImplTest
 					// taxon.add(specimen);
 
 					no_of_descriptive_source_references += descriptiveElementsPerTaxon + 2 + 1;
-
 				}
 
 				// add taxon to classification
@@ -399,13 +394,9 @@ public class StatisticsDaoHibernateImplTest
 					// classifications:
 					secondClassificationForTaxonFlag = true;
 					sharedClassification++;
-					classificationDao.saveOrUpdate(classifications
-							.get(classiCounter + 1));
 				}
 
 				taxonDao.save(taxon);
-				classificationDao.saveOrUpdate(classifications
-						.get(classiCounter));
 
 				// count the data created with this taxon:
 				int c = classiCounter;
@@ -510,24 +501,24 @@ public class StatisticsDaoHibernateImplTest
 	private TaxonNode createTaxTree(Classification classification) {
 		Random rand = new Random();
 
-			Set<TaxonNode> nodes = classification.getAllNodes();
-			ArrayList<TaxonNode> children = new ArrayList<>();
-			TaxonNode parent = nodes.iterator().next();
+		Set<TaxonNode> nodes = classification.getAllNodes();
+		ArrayList<TaxonNode> children = new ArrayList<>();
+		TaxonNode parent = nodes.iterator().next();
 
-			TaxonNode root = parent;
-			nodes.remove(parent);
-			while (!nodes.isEmpty()) {
-				int n = rand.nextInt(2) + 1;
-				for (int i = 1; i <= n && !(nodes.isEmpty()); i++) {
-					TaxonNode nextNode = nodes.iterator().next();
-					nextNode = parent.addChildNode(nextNode, null, null);
-					children.add(nextNode);
-					nodes.remove(nextNode);
-				}
-
-				parent = children.get(0);
-				children.remove(0);
+		TaxonNode root = parent;
+		nodes.remove(parent);
+		while (!nodes.isEmpty()) {
+			int n = rand.nextInt(2) + 1;
+			for (int i = 1; i <= n && !(nodes.isEmpty()); i++) {
+				TaxonNode nextNode = nodes.iterator().next();
+				nextNode = parent.addChildNode(nextNode, null, null);
+				children.add(nextNode);
+				nodes.remove(nextNode);
 			}
+
+			parent = children.get(0);
+			children.remove(0);
+		}
 
 		return root;
 	}

@@ -63,6 +63,5 @@ public class CdmTypeScanner<T> extends ClassPathScanningCandidateComponentProvid
                   || (includeInterfaces && beanDefinition.getMetadata().isInterface())
                  )
                 );
-    }
-
+        }
     }

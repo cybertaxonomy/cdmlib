@@ -16,9 +16,6 @@ import java.util.Set;
  */
 public interface ITermGraph<TERM extends DefinedTermBase, REL extends TermRelationBase> {
 
-    /**
-     * @return
-     */
     Set<REL> getTermRelations();
 
     //not yet pulic

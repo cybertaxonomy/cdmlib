@@ -37,7 +37,6 @@ public class PreferenceSubject {
     public static final String TAX_EDITOR = "taxeditor";
     public static final String DISTR_EDITOR = "distributionEditor";
 
-
     private String subject;
 
     public static PreferenceSubject NewDatabaseInstance(){
@@ -69,7 +68,6 @@ public class PreferenceSubject {
     public static PreferenceSubject NewInstance(String subjectString){
         return new PreferenceSubject(subjectString);
     }
-
 
 // *****************************************************/
 
@@ -128,26 +126,15 @@ public class PreferenceSubject {
         }
     }
 
-    /**
-     * @return
-     */
     public boolean isRoot() {
         return ROOT.equals(subject);
     }
 
-    /**
-     * @param preference
-     * @return
-     */
     public static PreferenceSubject fromPreference(CdmPreference preference) {
         PreferenceSubject result = new PreferenceSubject(preference.getKey().getSubject());
         return result;
     }
 
-    /**
-     * @param key
-     * @return
-     */
     public static PreferenceSubject fromKey(PrefKey key) {
         PreferenceSubject result = new PreferenceSubject(key.getSubject());
         return result;

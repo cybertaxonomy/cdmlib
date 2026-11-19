@@ -8,9 +8,6 @@
 */
 package eu.etaxonomy.cdm.model.metadata;
 
-import org.hibernate.type.SqlTypes;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.Length;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,15 +15,17 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Length;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import eu.etaxonomy.cdm.common.CdmUtils;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Lob;
-
-import org.apache.commons.lang3.StringUtils;
-
-import eu.etaxonomy.cdm.common.CdmUtils;
 
 /**
  * This class holds all preference data for a CDM database.

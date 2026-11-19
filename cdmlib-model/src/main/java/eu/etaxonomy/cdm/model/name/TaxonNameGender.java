@@ -23,7 +23,6 @@ import jakarta.xml.bind.annotation.XmlType;
 /**
  * Enumeration for the gender of a {@link TaxonName taxon name} or rank
  * genus.
- * <P>
  *
  * @author a.mueller
  * @since 18.19.2026

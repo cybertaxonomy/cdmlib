@@ -24,8 +24,6 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.TypeBinderRef;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
@@ -59,6 +57,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.ConceptDefinition.ConceptDefinitionEnumSetConverter;
 import eu.etaxonomy.cdm.model.taxon.ConceptStatus.ConceptStatusEnumSetConverter;
 import eu.etaxonomy.cdm.model.taxon.TaxonType.TaxonTypeEnumSetConverter;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -120,8 +119,7 @@ public class Taxon
 
     @XmlElementWrapper(name = "Descriptions")
     @XmlElement(name = "Description")
-    @OneToMany(mappedBy="taxon", fetch= FetchType.LAZY)
-    @Cascade({CascadeType.DELETE})
+    @OneToMany(mappedBy="taxon", fetch= FetchType.LAZY, cascade = CascadeType.REMOVE)
     @NotNull
     private Set<TaxonDescription> descriptions = new HashSet<>();
 
@@ -138,8 +136,7 @@ public class Taxon
     // all taxa relations with rel.fromTaxon==this
     @XmlElementWrapper(name = "RelationsFromThisTaxon")
     @XmlElement(name = "FromThisTaxonRelationship")
-    @OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @NotNull
 //    @Valid
     private Set<TaxonRelationship> relationsFromThisTaxon = new HashSet<>();
@@ -149,8 +146,7 @@ public class Taxon
     @XmlElement(name = "ToThisTaxonRelationship")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
 //    @Valid
     private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<>();
 
@@ -168,8 +164,7 @@ public class Taxon
     @XmlElement(name = "taxonNode")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToMany(mappedBy="taxon", fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy="taxon", fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     // Deep reindex when TaxonNode.classification / treeIndex change (HS5 ContainedIn on TaxonNode.taxon).
     @IndexedEmbedded
     private Set<TaxonNode> taxonNodes = new HashSet<>();

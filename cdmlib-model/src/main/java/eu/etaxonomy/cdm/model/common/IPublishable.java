@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.common;
 /**
  * @author a.kohlbecker
  * @since Jan 31, 2014
- *
  */
 public interface IPublishable {
 
@@ -24,7 +23,5 @@ public interface IPublishable {
      */
     public boolean isPublish();
 
-
     public void setPublish(boolean isPublish);
-
 }

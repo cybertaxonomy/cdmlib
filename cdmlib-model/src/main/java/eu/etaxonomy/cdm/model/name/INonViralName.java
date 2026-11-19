@@ -11,10 +11,9 @@ package eu.etaxonomy.cdm.model.name;
 import java.util.List;
 import java.util.Set;
 
-import jakarta.persistence.Transient;
-
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import jakarta.persistence.Transient;
 
 /**
  * @author a.mueller

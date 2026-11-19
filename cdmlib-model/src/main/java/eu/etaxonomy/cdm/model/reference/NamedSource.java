@@ -8,12 +8,11 @@
 */
 package eu.etaxonomy.cdm.model.reference;
 
-import jakarta.persistence.Entity;
-import jakarta.xml.bind.annotation.XmlType;
-
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import jakarta.persistence.Entity;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * @author a.mueller

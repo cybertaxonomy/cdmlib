@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.model.view.context;
 
 /**
@@ -15,7 +14,6 @@ package eu.etaxonomy.cdm.model.view.context;
  *
  * @author ben
  * @author Ben Alex
- *
  */
 public interface AuditEventContextHolderStrategy {
 

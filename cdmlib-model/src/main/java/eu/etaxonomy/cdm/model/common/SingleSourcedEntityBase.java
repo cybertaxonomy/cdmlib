@@ -8,6 +8,15 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.model.reference.NamedSource;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.OneToOne;
@@ -19,17 +28,6 @@ import jakarta.xml.bind.annotation.XmlIDREF;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hibernate.envers.Audited;
-
-import jakarta.persistence.CascadeType;
-
-import eu.etaxonomy.cdm.model.reference.NamedSource;
-import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
-import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * Abstract class for all objects that may have a reference

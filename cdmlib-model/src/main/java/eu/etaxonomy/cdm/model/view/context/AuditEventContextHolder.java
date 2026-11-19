@@ -19,7 +19,6 @@ import org.springframework.util.ReflectionUtils;
  *
  * @author ben
  * @author Ben Alex
- *
  */
 public class AuditEventContextHolder {
 	public static final String MODE_THREADLOCAL = "MODE_THREADLOCAL";

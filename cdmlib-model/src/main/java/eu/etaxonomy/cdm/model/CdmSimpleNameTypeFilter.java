@@ -14,19 +14,13 @@ import org.springframework.core.type.filter.AbstractTypeHierarchyTraversingFilte
  * Special implementation for the cdm which allows to also match
  * cdm types be their simple class name
  *
- *
  * @author a.kohlbecker
  * @since Jul 31, 2014
- *
  */
 public class CdmSimpleNameTypeFilter extends AbstractTypeHierarchyTraversingFilter {
 
-
     private final String simpleName;
 
-    /**
-     * @param targetType
-     */
     public CdmSimpleNameTypeFilter(String simpleName) {
         super(false, false);
         this.simpleName = simpleName;
@@ -36,5 +30,4 @@ public class CdmSimpleNameTypeFilter extends AbstractTypeHierarchyTraversingFilt
     protected boolean matchClassName(String className) {
         return className.endsWith("." + simpleName);
     }
-
 }

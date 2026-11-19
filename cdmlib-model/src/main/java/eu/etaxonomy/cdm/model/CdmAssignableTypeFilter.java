@@ -14,15 +14,12 @@ import org.springframework.core.type.filter.AbstractTypeHierarchyTraversingFilte
  * Special implementation for the cdm which allows to also match
  * abstract base types and interfaces in eu.etaxonomy.cdm.model.
  *
- *
  * @author a.kohlbecker
  * @since Jul 31, 2014
- *
  */
 public class CdmAssignableTypeFilter extends AbstractTypeHierarchyTraversingFilter {
 
-
-    private final Class targetType;
+    private final Class<?> targetType;
 
     /**
      * @param targetType
@@ -57,7 +54,7 @@ public class CdmAssignableTypeFilter extends AbstractTypeHierarchyTraversingFilt
         }
         else if (typeName.startsWith("eu.etaxonomy.cdm.model.")) {
             try {
-                Class clazz = getClass().getClassLoader().loadClass(typeName);
+                Class<?> clazz = getClass().getClassLoader().loadClass(typeName);
                 return Boolean.valueOf(this.targetType.isAssignableFrom(clazz));
             }
             catch (ClassNotFoundException ex) {
@@ -66,5 +63,4 @@ public class CdmAssignableTypeFilter extends AbstractTypeHierarchyTraversingFilt
         }
         return null;
     }
-
 }

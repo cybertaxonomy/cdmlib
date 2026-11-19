@@ -8,6 +8,13 @@
 */
 package eu.etaxonomy.cdm.model.reference;
 
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.CdmLinkBase;
+import eu.etaxonomy.cdm.model.common.IntextReference;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
@@ -18,14 +25,6 @@ import jakarta.xml.bind.annotation.XmlIDREF;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.hibernate.envers.Audited;
-
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.CdmLinkBase;
-import eu.etaxonomy.cdm.model.common.IntextReference;
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * Class to link to other CdmBase objects within the context of

@@ -5,8 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
-
+*/
 package eu.etaxonomy.cdm.model.view;
 
 import org.hibernate.envers.RevisionType;
@@ -14,7 +13,7 @@ import org.hibernate.envers.RevisionType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 public class AuditEventRecordImpl<T extends CdmBase> implements AuditEventRecord<T> {
-	
+
 	private AuditEvent auditEvent;
 	private T auditableObject;
 	private RevisionType revisionType;
@@ -25,16 +24,19 @@ public class AuditEventRecordImpl<T extends CdmBase> implements AuditEventRecord
 		auditEvent = (AuditEvent)obj[1];
 		revisionType = (RevisionType)obj[2];
 	}
-	
-	public AuditEvent getAuditEvent() {
+
+	@Override
+    public AuditEvent getAuditEvent() {
 		return auditEvent;
 	}
 
-	public T getAuditableObject() {
+	@Override
+    public T getAuditableObject() {
 		return auditableObject;
 	}
 
-	public RevisionType getRevisionType() {
+	@Override
+    public RevisionType getRevisionType() {
 		return revisionType;
 	}
 

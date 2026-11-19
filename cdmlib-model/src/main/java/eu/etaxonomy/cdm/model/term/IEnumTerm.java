@@ -9,7 +9,6 @@ package eu.etaxonomy.cdm.model.term;
  *
  * @author a.mueller
  * @since 15-Jul-2013
- *
  */
 public interface IEnumTerm<T extends IEnumTerm<T>>
         extends ISimpleTerm<T>, IKeyTerm {

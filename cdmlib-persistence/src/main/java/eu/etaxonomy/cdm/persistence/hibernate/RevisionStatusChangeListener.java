@@ -36,8 +36,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class RevisionStatusChangeListener
         implements PreInsertEventListener, PreUpdateEventListener {
 
-    private static final long serialVersionUID = 1L;
-
     private static final String REVISION_STATUS_PROPERTY = "revisionStatus";
 
     @Override

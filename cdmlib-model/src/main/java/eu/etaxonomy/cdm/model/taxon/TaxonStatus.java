@@ -99,11 +99,11 @@ public enum TaxonStatus
     public String getSymbol() {
         return symbol;
     }
-    
+
     public boolean isDoubtful() {
         return this == DOUBTFUL;
     }
-    
+
     public boolean isProvisionally() {
         return this == PROVISIONALLY_ACCEPTED;
     }

@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Inheritance;
@@ -20,10 +23,6 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlIDREF;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.hibernate.envers.Audited;
-
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * Base class for subclasses linking to other CDM objects.

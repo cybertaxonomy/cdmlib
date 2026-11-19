@@ -41,8 +41,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 public class CdmPreDataChangeListener
         implements PreInsertEventListener, PreUpdateEventListener {
 
-    private static final long serialVersionUID = -7581071903134036209L;
-
     private static final Logger logger = LogManager.getLogger();
 
     @Override

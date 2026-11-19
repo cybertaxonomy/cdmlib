@@ -17,7 +17,6 @@ import org.springframework.util.Assert;
  *
  * @author ben
  * @author Ben Alex
- *
  */
 public class ThreadLocalAuditEventContextHolderStrategy implements
 		AuditEventContextHolderStrategy {

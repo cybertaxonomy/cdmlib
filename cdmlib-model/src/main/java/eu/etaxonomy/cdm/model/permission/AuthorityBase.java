@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.model.permission;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
@@ -16,8 +17,6 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-
-import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * Base class for persistable authorities.

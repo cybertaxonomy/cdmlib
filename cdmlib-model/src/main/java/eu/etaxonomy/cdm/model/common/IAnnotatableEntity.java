@@ -21,7 +21,6 @@ public interface IAnnotatableEntity extends IVersionableEntity {
 	public void addAnnotation(Annotation annotation);
 	public void removeAnnotation(Annotation annotation);
 
-
 	public Set<Marker> getMarkers();
 	public Set<Marker> getMarkers(UUID uuidMarkerType);
 	public void addMarker(Marker marker);
