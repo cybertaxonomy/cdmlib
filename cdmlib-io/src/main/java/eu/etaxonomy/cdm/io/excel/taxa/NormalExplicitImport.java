@@ -63,7 +63,6 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
-import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NameParserResult;
@@ -460,22 +459,21 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
     						acceptedTaxon = taxon;
     						// Add the parent relationship
     						//if (state.getCurrentRow().getParentId() != 0) {
-    						MergeResult result = null;
-    							if (parentTaxon != null) {
-    								//Taxon taxon = (Taxon)state.getTaxonBase(childId);
+							if (parentTaxon != null) {
+								//Taxon taxon = (Taxon)state.getTaxonBase(childId);
 
-    							//	Reference sourceRef = state.getConfig().getSourceReference();
-    								String microCitation = null;
-    								Taxon childTaxon = taxon;
-    								makeParent(state, parentTaxon, childTaxon, null, microCitation);
-    								getTaxonService().saveOrUpdate(childTaxon);
-    								state.putTaxon(parentId, parentTaxon);
-    							} else {
-    								String message = "Taxonomic parent not found for " + taxonNameStr;
-    								logger.warn(message);
-    								fireWarningEvent(message, state, 6);
-    								//state.setUnsuccessfull();
-    							}
+							//	Reference sourceRef = state.getConfig().getSourceReference();
+								String microCitation = null;
+								Taxon childTaxon = taxon;
+								makeParent(state, parentTaxon, childTaxon, null, microCitation);
+								getTaxonService().saveOrUpdate(childTaxon);
+								state.putTaxon(parentId, parentTaxon);
+							} else {
+								String message = "Taxonomic parent not found for " + taxonNameStr;
+								logger.warn(message);
+								fireWarningEvent(message, state, 6);
+								//state.setUnsuccessfull();
+							}
     //						}else{
     //							//do nothing (parent == 0) no parent exists
     //						}

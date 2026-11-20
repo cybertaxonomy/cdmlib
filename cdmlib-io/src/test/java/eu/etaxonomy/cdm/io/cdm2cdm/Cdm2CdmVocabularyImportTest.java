@@ -108,7 +108,7 @@ public class Cdm2CdmVocabularyImportTest extends CdmIoTransactionalSpringIntegra
         voc.addTerm(term);
         voc.setUuid(uuidStructVoc);
 
-        app.getVocabularyService().saveOrUpdate(voc);
+        app.getVocabularyService().save(voc);
         return voc;
     }
 
@@ -119,7 +119,7 @@ public class Cdm2CdmVocabularyImportTest extends CdmIoTransactionalSpringIntegra
         graph.getRoot().addChild(firstStruct);
         graph.setUuid(uuidStructGraph);
 
-        app.getTermTreeService().saveOrUpdate(graph);
+        app.getTermTreeService().save(graph);
     }
 
     //    @AfterAll
@@ -159,7 +159,6 @@ public class Cdm2CdmVocabularyImportTest extends CdmIoTransactionalSpringIntegra
         while (firstChild.getChildCount() > 0) {
             firstChild.removeChild(0);
         }
-        otherRepository.getTermTreeService().saveOrUpdate(graph);
 
         TermVocabulary<DefinedTerm> voc = otherRepository.getVocabularyService().find(uuidStructVoc);
         for (DefinedTerm term : new HashSet<>(voc.getTerms())) {
@@ -207,7 +206,7 @@ public class Cdm2CdmVocabularyImportTest extends CdmIoTransactionalSpringIntegra
         TransactionStatus tx = otherRepository.startTransaction();
         otherVoc = otherRepository.getVocabularyService().find(uuidStructVoc);
         otherVoc.addTerm(secondTerm);
-        otherRepository.getTermService().saveOrUpdate(secondTerm);
+        otherRepository.getTermService().save(secondTerm);
         otherRepository.commitTransaction(tx);
 
         //... to test if added term gets imported
@@ -267,7 +266,7 @@ public class Cdm2CdmVocabularyImportTest extends CdmIoTransactionalSpringIntegra
         @SuppressWarnings("unchecked")
         TermVocabulary<DefinedTerm> otherVoc = otherRepository.getVocabularyService().find(uuidStructVoc);
         otherVoc.addTerm(secondTerm);
-        otherRepository.getTermService().saveOrUpdate(secondTerm);
+        otherRepository.getTermService().save(secondTerm);
         otherGraph = otherRepository.getTermTreeService().find(uuidStructGraph);
         otherGraph.getRoot().getChildAt(0).addChild(secondTerm);
         otherRepository.commitTransaction(tx);

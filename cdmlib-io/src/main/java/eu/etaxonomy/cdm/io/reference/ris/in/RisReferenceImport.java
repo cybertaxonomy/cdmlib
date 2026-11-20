@@ -110,7 +110,7 @@ public class RisReferenceImport
                 }
             }
             getAgentService().save(authorsToSave);
-            getReferenceService().saveOrUpdate(referencesToSave);
+            getReferenceService().save(referencesToSave);
             if (referencesToSave.size() > 0) {
                 Reference sourceRef = config.getSourceReference();
                 if (!sourceRef.isPersisted()) {

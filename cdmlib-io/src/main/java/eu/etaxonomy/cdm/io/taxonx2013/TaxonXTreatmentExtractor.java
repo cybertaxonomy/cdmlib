@@ -616,13 +616,6 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         }
     }
 
-    /**
-     * @param refMods
-     * @param descriptionsFulltext
-     * @param td
-     * @param currentFeature
-     * @param k
-     */
     private void handleTextData(Reference refMods, Map<Integer, String> descriptionsFulltext, TaxonDescription td,
             Feature currentFeature, int k) {
         //logger.info("handleTextData");

@@ -124,7 +124,7 @@ public class AbcdParseUtility {
         else{
             reference = ReferenceFactory.newGeneric();
             reference.setTitle(referenceCitation);
-            cdmAppController.getReferenceService().saveOrUpdate(reference);
+            cdmAppController.getReferenceService().save(reference);
         }
         return reference;
     }

@@ -64,7 +64,7 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
                 Resource rootNode = treeResource.getProperty(OwlUtil.propHasRootNode).getResource();
                 rootNode.listProperties(OwlUtil.propHasSubStructure).forEachRemaining(prop->createNode(featureTree.getRoot(), prop, featureTree.getTitleCache(), state.getModel(), state));
 
-                getTermTreeService().saveOrUpdate(featureTree);
+                getTermTreeService().save(featureTree);
             }
         }
     }
@@ -102,8 +102,6 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
             }
             state.getTermCache().put(termUuid, term);
 
-            getVocabularyService().saveOrUpdate(vocabulary);
-
             termNode = parent.addChild(term);
             termNode.setUuid(nodeUuid);
             // inapplicable if
@@ -133,27 +131,27 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
 
     private FeatureState createFeatureState(Statement statement, Model model, StructureTreeOwlImportState state) {
         Resource featureStateResource = model.createResource(statement.getObject().toString());
-        Resource featureResouce = featureStateResource.getPropertyResourceValue(OwlUtil.propFeatureStateHasFeature);
-        Resource stateResouce = featureStateResource.getPropertyResourceValue(OwlUtil.propFeatureStateHasState);
+        Resource featureResource = featureStateResource.getPropertyResourceValue(OwlUtil.propFeatureStateHasFeature);
+        Resource stateResource = featureStateResource.getPropertyResourceValue(OwlUtil.propFeatureStateHasState);
 
-        UUID featureUuid = UUID.fromString(featureResouce.getProperty(OwlUtil.propUuid).getString());
+        UUID featureUuid = UUID.fromString(featureResource.getProperty(OwlUtil.propUuid).getString());
         Feature feature = (Feature) state.getTermCache().get(featureUuid);
         if (feature == null) {
             feature = (Feature) getTermService().findWithoutFlush(featureUuid);
         }
         if(feature==null){
-            feature = (Feature) OwlImportUtil.createTerm(featureResouce, this, model, state);
-            getTermService().saveOrUpdate(feature);
+            feature = (Feature) OwlImportUtil.createTerm(featureResource, this, model, state);
+            getTermService().save(feature);
         }
         state.getTermCache().put(featureUuid, feature);
-        UUID stateUuid = UUID.fromString(stateResouce.getProperty(OwlUtil.propUuid).getString());
+        UUID stateUuid = UUID.fromString(stateResource.getProperty(OwlUtil.propUuid).getString());
         State stateTerm = (State) state.getTermCache().get(stateUuid);
         if (stateTerm == null) {
             stateTerm = (State) getTermService().findWithoutFlush(stateUuid);
         }
         if(stateTerm==null){
-            stateTerm = (State) OwlImportUtil.createTerm(stateResouce, this, model, state);
-            getTermService().saveOrUpdate(stateTerm);
+            stateTerm = (State) OwlImportUtil.createTerm(stateResource, this, model, state);
+            getTermService().save(stateTerm);
         }
         state.getTermCache().put(stateUuid, stateTerm);
         FeatureState featureState = FeatureState.NewInstance(feature, stateTerm);

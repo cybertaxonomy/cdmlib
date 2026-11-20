@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.descriptive.owl.in;
 
-import java.util.Arrays;
+import java.util.List;
 
 import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.Resource;
@@ -41,7 +41,7 @@ public class CharacterOwlImport
         while(iterator.hasNext()){
             Resource characterResource = iterator.next();
             Character character = OwlImportUtil.findTerm(Character.class, characterResource, this, state.getModel(), state);
-            character = (Character) getTermService().load(character.getUuid(), Arrays.asList(new String[] {
+            character = (Character) getTermService().load(character.getUuid(), List.of(
                     "structure",
                     "structure.term",
                     "property",
@@ -51,10 +51,9 @@ public class CharacterOwlImport
                     "recommendedModifierEnumeration",
                     "recommendedStatisticalMeasures",
                     "recommendedMeasurementUnits",
-                    "supportedCategoricalEnumerations",
-                    }));
+                    "supportedCategoricalEnumerations"
+                    ));
             OwlImportUtil.addCharacterProperties(character, characterResource, this, state.getModel(), state);
-            getTermService().saveOrUpdate(character);
         }
     }
 

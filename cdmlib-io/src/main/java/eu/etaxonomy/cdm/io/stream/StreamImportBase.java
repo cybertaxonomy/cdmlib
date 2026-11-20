@@ -51,7 +51,7 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 
 	protected void makeSourceRef(STATE state) {
 		Reference sourceRef = state.getConfig().getSourceReference();
-		getReferenceService().saveOrUpdate(sourceRef);
+		getReferenceService().save(sourceRef);
 	}
 
 	protected void handleSingleRecord(STATE state, IItemStream recordStream) {
@@ -201,7 +201,9 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 					service = getServiceByClass(cdmBase.getClass());
 					if (service != null){
 						IdentifiableEntity<?> entity = CdmBase.deproxy(cdmBase, IdentifiableEntity.class);
-						service.saveOrUpdate(entity);
+						if(!cdmBase.isPersisted()) {
+						    service.saveOrUpdate(entity);
+						}
 					}
 				}
 			} catch (IllegalArgumentException e) {

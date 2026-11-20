@@ -83,9 +83,6 @@ public class IdentifierImport
             }
             csvReader.close();
 
-            //not needed as the objects update automatically during transactions in handleSingleLine()
-//            getCommonService().saveOrUpdate(entitiesToSave);
-
         } catch (IOException | CsvException e) {
             throw new RuntimeException(e);
         }

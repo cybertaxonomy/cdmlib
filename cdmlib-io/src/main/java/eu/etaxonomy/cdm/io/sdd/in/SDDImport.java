@@ -685,7 +685,7 @@ public class SDDImport
 
 	private void saveAnnotationType() {
 		for (AnnotationType annotationType: annotationTypes){
-		    getTermService().saveOrUpdate(annotationType);
+		    getTermService().save(annotationType);
 		}
 	}
 

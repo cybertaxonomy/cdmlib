@@ -32,7 +32,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-
 import fr.lis.ikeyplus.IO.SDDSaxParser;
 import fr.lis.ikeyplus.model.DataSet;
 import fr.lis.ikeyplus.model.ICharacter;
@@ -122,14 +121,14 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
 
         // persist features
         Collection<Feature> features = featureMap.values();
-        getTermService().saveOrUpdate((Collection)features);
-        getVocabularyService().saveOrUpdate(featureVoc);
+        getTermService().save(features);
+        getVocabularyService().save(featureVoc);
 
         //persist new taxa
         getTaxonService().save(taxa);
 
         // persist the rest
-        getPolytomousKeyService().saveOrUpdate(cdmKey);
+        getPolytomousKeyService().save(cdmKey);
     }
 
     /**

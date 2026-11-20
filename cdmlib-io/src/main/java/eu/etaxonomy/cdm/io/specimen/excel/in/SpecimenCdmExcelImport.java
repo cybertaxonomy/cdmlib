@@ -437,8 +437,10 @@ public class SpecimenCdmExcelImport
 				taxon = commonTaxon;
 			}
 			if (taxon != null){
-				getTaxonService().saveOrUpdate(taxon);
-				if (state.getConfig().isMakeIndividualAssociations() && taxon != null){
+			    if (!taxon.isPersisted()) {
+			        getTaxonService().save(taxon);
+			    }
+				if (state.getConfig().isMakeIndividualAssociations()){
 					IndividualsAssociation indivAssociciation = IndividualsAssociation.NewInstance();
 					DerivedUnit du = facade.innerDerivedUnit();
 					indivAssociciation.setAssociatedSpecimenOrObservation(du);

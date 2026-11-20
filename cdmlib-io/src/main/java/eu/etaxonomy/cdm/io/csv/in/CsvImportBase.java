@@ -207,7 +207,7 @@ public abstract class CsvImportBase<CONFIG extends CsvImportConfiguratorBase, ST
         }
         if (sourceRef.getId() == 0){
             //TODO move to base method for saving
-            getReferenceService().saveOrUpdate(sourceRef);
+            getReferenceService().save(sourceRef);
             state.getResult().addNewRecords(Reference.class.getSimpleName(), 1);
         }
         state.setSourceReference(sourceRef);

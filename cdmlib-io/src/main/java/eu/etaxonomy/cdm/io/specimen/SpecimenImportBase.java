@@ -764,7 +764,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             SpecimenOrObservationBase<?> specimen = CdmBase.deproxy(cdmBase, SpecimenOrObservationBase.class);
             if (specimen instanceof DerivedUnit) {
                 DerivedUnit derivedUnit = (DerivedUnit)specimen;
-                cdmRepository.getNameService().mergeTypeDesignations(new ArrayList(derivedUnit.getSpecimenTypeDesignations()));
+                cdmRepository.getNameService().mergeTypeDesignations(new ArrayList<>(derivedUnit.getSpecimenTypeDesignations()));
             }
             return cdmRepository.getOccurrenceService().saveOrUpdate(specimen);
         }else if (cdmBase.isInstanceOf(Reference.class)){

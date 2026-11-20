@@ -439,10 +439,10 @@ public class GbifImport
             //          /*
             //           * merge AND STORE DATA
             //
-            //          getTermService().saveOrUpdate(areaCountry);// TODO save area sooner
+            //          getTermService().save(areaCountry);// TODO save area sooner
             //
             //          for (NamedArea area : otherAreas) {
-            //              getTermService().saveOrUpdate(area);// merge it sooner (foreach area)
+            //              getTermService().merge(area);// merge it sooner (foreach area)
             //          }
 
             save(unitsGatheringEvent.getLocality(), state);

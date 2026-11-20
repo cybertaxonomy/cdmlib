@@ -83,7 +83,7 @@ public class TaxonListImport extends TaxonExcelImportBase {
         if (!StringUtils.isBlank(taxonDataHolder.getCorrectNameifSynonym() )){
             Taxon taxon = (Taxon)state.getTaxonBase(taxonDataHolder.correctNameifSynonym);
             Synonym syn = taxon.addHeterotypicSynonymName(state.getNameMap().get(taxonDataHolder.name));
-            getTaxonService().saveOrUpdate(taxon);
+            getTaxonService().merge(taxon);
 //            state.putTaxon(nameColumn, syn);
         }else {
             //create parent child relationship

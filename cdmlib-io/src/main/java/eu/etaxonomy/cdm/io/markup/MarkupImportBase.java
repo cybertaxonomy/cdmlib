@@ -264,16 +264,16 @@ public abstract class MarkupImportBase  {
 		T example = collection.iterator().next();
 		if (example.isInstanceOf(TaxonBase.class)){
 			Collection<TaxonBase> typedCollection = (Collection<TaxonBase>)collection;
-			docImport.getTaxonService().saveOrUpdate(typedCollection);
+			docImport.getTaxonService().save(typedCollection);
 		}else if (example.isInstanceOf(Classification.class)){
 			Collection<Classification> typedCollection = (Collection<Classification>)collection;
-			docImport.getClassificationService().saveOrUpdate(typedCollection);
+			docImport.getClassificationService().save(typedCollection);
 		}else if (example.isInstanceOf(PolytomousKey.class)){
 			Collection<PolytomousKey> typedCollection = (Collection<PolytomousKey>)collection;
-			docImport.getPolytomousKeyService().saveOrUpdate(typedCollection);
+			docImport.getPolytomousKeyService().save(typedCollection);
 		}else if (example.isInstanceOf(DefinedTermBase.class)){
 			Collection<DefinedTermBase> typedCollection = (Collection<DefinedTermBase>)collection;
-			getTermService().saveOrUpdate(typedCollection);
+			getTermService().save(typedCollection);
 		}
 
 	}
@@ -289,21 +289,21 @@ public abstract class MarkupImportBase  {
 			String message = "Tried to save a null object.";
 			fireWarningEvent(message, "--location ?? --", 6,1);
 		} else if (cdmBase.isInstanceOf(TaxonBase.class)){
-			docImport.getTaxonService().saveOrUpdate((TaxonBase)cdmBase);
+			docImport.getTaxonService().save((TaxonBase)cdmBase);
 		}else if (cdmBase.isInstanceOf(Classification.class)){
-			docImport.getClassificationService().saveOrUpdate((Classification)cdmBase);
+			docImport.getClassificationService().save((Classification)cdmBase);
 		}else if (cdmBase.isInstanceOf(PolytomousKey.class)){
-			docImport.getPolytomousKeyService().saveOrUpdate((PolytomousKey)cdmBase);
+			docImport.getPolytomousKeyService().save((PolytomousKey)cdmBase);
 		}else if (cdmBase.isInstanceOf(DefinedTermBase.class)){
-			docImport.getTermService().saveOrUpdate((DefinedTermBase<?>)cdmBase);
+			docImport.getTermService().save((DefinedTermBase<?>)cdmBase);
 		}else if (cdmBase.isInstanceOf(Media.class)){
-			docImport.getMediaService().saveOrUpdate((Media)cdmBase);
+			docImport.getMediaService().save((Media)cdmBase);
 		}else if (cdmBase.isInstanceOf(SpecimenOrObservationBase.class)){
-			docImport.getOccurrenceService().saveOrUpdate((SpecimenOrObservationBase<?>)cdmBase);
+			docImport.getOccurrenceService().save((SpecimenOrObservationBase<?>)cdmBase);
 		}else if (cdmBase.isInstanceOf(DescriptionElementBase.class)){
 			docImport.getDescriptionElementService().save((DescriptionElementBase)cdmBase);
 		}else if (cdmBase.isInstanceOf(Reference.class)){
-			docImport.getReferenceService().saveOrUpdate((Reference)cdmBase);
+			docImport.getReferenceService().save((Reference)cdmBase);
 		}else{
 			String message = "Unknown cdmBase type to save: " + cdmBase.getClass();
 			fireWarningEvent(message, "Unknown location", 8);

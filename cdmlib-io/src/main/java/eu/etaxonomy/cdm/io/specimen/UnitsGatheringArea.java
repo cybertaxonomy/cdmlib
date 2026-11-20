@@ -147,12 +147,12 @@ public class UnitsGatheringArea {
         }
 //        for (String areaStr:areaToAdd){
 //            if (areaStr != null){
-//                NamedArea ar = NamedArea.NewInstance(areaStr, areaStr, areaStr);
-//                ar.setTitleCache(areaStr, true);
+//                NamedArea area = NamedArea.NewInstance(areaStr, areaStr, areaStr);
+//                area.setTitleCache(areaStr, true);
 //
-//                termService.saveOrUpdate(ar);
-//                this.areas.add(ar);
-//                addNamedAreaDecision(areaStr,ar.getUuid(), config);
+//                termService.save(area);
+//                this.areas.add(area);
+//                addNamedAreaDecision(areaStr,area.getUuid(), config);
 //            }
 //        }
         if (!areaUuidSet.isEmpty()){
@@ -166,29 +166,29 @@ public class UnitsGatheringArea {
     private void createNamedArea(ImportConfiguratorBase<?, ?> config, ITermService termService,
             IVocabularyService vocabularyService, String namedAreaStr, String namedAreaClass) {
         if (!StringUtils.isBlank(namedAreaStr)){
-            NamedArea ar = NamedArea.NewInstance(namedAreaStr, namedAreaStr, namedAreaStr);
+            NamedArea area = NamedArea.NewInstance(namedAreaStr, namedAreaStr, namedAreaStr);
             if (namedAreaClass != null ){
                 if (namedAreaClass.equalsIgnoreCase("province")){
-                    ar.setLevel(NamedAreaLevel.PROVINCE());
+                    area.setLevel(NamedAreaLevel.PROVINCE());
                 }
                 if (namedAreaClass.equalsIgnoreCase("state")){
-                    ar.setLevel(NamedAreaLevel.STATE());
+                    area.setLevel(NamedAreaLevel.STATE());
                 }
                 if (namedAreaClass.equalsIgnoreCase("departmenet")){
-                    ar.setLevel(NamedAreaLevel.DEPARTMENT());
+                    area.setLevel(NamedAreaLevel.DEPARTMENT());
                 }
                 if (namedAreaClass.equalsIgnoreCase("town")){
-                    ar.setLevel(NamedAreaLevel.TOWN());
+                    area.setLevel(NamedAreaLevel.TOWN());
                 }
                 if (namedAreaClass.equalsIgnoreCase("country")){
-                    ar.setLevel(NamedAreaLevel.COUNTRY());
+                    area.setLevel(NamedAreaLevel.COUNTRY());
                 }
                 if (namedAreaClass.equalsIgnoreCase("nature_reserve")){
-                    ar.setLevel(NamedAreaLevel.NATURE_RESERVE());
+                    area.setLevel(NamedAreaLevel.NATURE_RESERVE());
                 }
             }
 
-            ar.setTitleCache(namedAreaStr, true);
+            area.setTitleCache(namedAreaStr, true);
             if (specimenImportAreaVocabulary == null){
                 specimenImportAreaVocabulary = vocabularyService.load(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
                 if (specimenImportAreaVocabulary == null){
@@ -199,13 +199,13 @@ public class UnitsGatheringArea {
             }
             DefinedTermBase<?> term =  specimenImportAreaVocabulary.getTermByIdInvocabulary(namedAreaStr);
             if (term == null){
-                specimenImportAreaVocabulary.addTerm(ar);
-                termService.saveOrUpdate(ar);
-                this.areas.add(ar);
+                specimenImportAreaVocabulary.addTerm(area);
+                termService.save(area);
+                this.areas.add(area);
             }else{
                 this.areas.add(term);
             }
-            addNamedAreaDecision(namedAreaStr,ar.getUuid(), config);
+            addNamedAreaDecision(namedAreaStr,area.getUuid(), config);
         }
     }
 
@@ -302,12 +302,12 @@ public class UnitsGatheringArea {
 
                 if (areaUUID == null){
                     createNamedArea(config, termService, vocService, fullName, "country");
-                    NamedArea ar = NamedArea.NewInstance(fullName, fullName, null);
+                    NamedArea area = NamedArea.NewInstance(fullName, fullName, null);
                     //FIXME add vocabulary
                     logger.warn("Vocabulary not yet set for new country");
-                    ar.setTitleCache(fullName, true);
-                    termService.saveOrUpdate(ar);
-                    wbc = ar;
+                    area.setTitleCache(fullName, true);
+                    termService.save(area);
+                    wbc = area;
                 } else {
                     wbc = termService.find(areaUUID);
                 }

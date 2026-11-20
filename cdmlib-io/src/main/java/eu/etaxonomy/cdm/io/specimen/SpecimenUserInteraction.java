@@ -234,7 +234,6 @@ public class SpecimenUserInteraction implements ItemListener, Serializable {
                 dess.add(refMap.get(src));
             }
             else{
-                Reference re = null;
                 String titlecache="";
                 String micro="";
                 if (src.indexOf("---")>-1){
@@ -245,19 +244,20 @@ public class SpecimenUserInteraction implements ItemListener, Serializable {
                     titlecache= src.split("---")[0].trim();
                 }
 
+                Reference ref = null;
                 List<Reference> references = iReferenceService.list(Reference.class, null, null, null, null);
                 for (Reference reference:references){
                     if (reference.getTitleCache().equalsIgnoreCase(titlecache)) {
-                        re=reference;
+                        ref = reference;
                     }
                 }
-                if(re == null){
-                    re = ReferenceFactory.newGeneric();
-                    re.setTitleCache(titlecache);
-                    iReferenceService.saveOrUpdate(re);
+                if(ref == null){
+                    ref = ReferenceFactory.newGeneric();
+                    ref.setTitleCache(titlecache, true);
+                    iReferenceService.save(ref);
                 }
 
-                dess.add(IdentifiableSource.NewInstance(OriginalSourceType.Import,null, null, re,micro));
+                dess.add(IdentifiableSource.NewInstance(OriginalSourceType.Import, null, null, ref, micro));
             }
         }
         return dess;

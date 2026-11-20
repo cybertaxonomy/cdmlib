@@ -163,15 +163,15 @@ public class UnmatchedLeads {
 	}
 
 	/**
-	 * SaveOrUpdates all polytomousKeyNodes in the unmatchedLeadsKey map.
+	 * Saves all polytomousKeyNodes in the unmatchedLeadsKey map.
 	 * Used to move nodes from one transaction to another.
 	 */
 	public void saveToSession(IPolytomousKeyNodeService service){
-		Set<PolytomousKeyNode> allNodes = new HashSet<PolytomousKeyNode>();
+		Set<PolytomousKeyNode> allNodes = new HashSet<>();
 		for (Set<PolytomousKeyNode> set :map.values()){
 			allNodes.addAll(set);
 		}
-		service.saveOrUpdate(allNodes);
+		service.save(allNodes);
 	}
 
 //********************** toString()******************************/

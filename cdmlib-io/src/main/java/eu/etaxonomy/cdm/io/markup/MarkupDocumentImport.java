@@ -132,7 +132,7 @@ public class MarkupDocumentImport
 
 		// TODO generally do not store the reference object in the config
 		Reference sourceReference = state.getConfig().getSourceReference();
-		getReferenceService().saveOrUpdate(sourceReference);
+		getReferenceService().save(sourceReference);
 	}
 
 	@Override

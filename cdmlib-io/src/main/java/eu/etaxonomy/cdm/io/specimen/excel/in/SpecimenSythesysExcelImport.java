@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.specimen.excel.in;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -162,7 +161,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                 if (classification ==null){
                     String name = state.getConfig().getClassificationName();
                     classification = Classification.NewInstance(name, ref, Language.DEFAULT());
-                    getClassificationService().saveOrUpdate(classification);
+                    getClassificationService().save(classification);
                 }
                 configreused=true;
             }
@@ -171,7 +170,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                 if (classification ==null){
                     String name = state.getConfig().getClassificationName();
                     classification = Classification.NewInstance(name, ref, Language.DEFAULT());
-                    getClassificationService().saveOrUpdate(classification);
+                    getClassificationService().save(classification);
                 }
                 configreused=true;
             }
@@ -180,7 +179,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                 if (classification ==null){
                     String name = state.getConfig().getClassificationName();
                     classification = Classification.NewInstance(name, ref, Language.DEFAULT());
-                    getClassificationService().saveOrUpdate(classification);
+                    getClassificationService().save(classification);
                 }
                 configreused=true;
             }
@@ -199,7 +198,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                 if (classification ==null){
                     String name = state.getConfig().getClassificationName();
                     classification = Classification.NewInstance(name, ref, Language.DEFAULT());
-                    getClassificationService().saveOrUpdate(classification);
+                    getClassificationService().save(classification);
                 }
                 configreused=true;
             }
@@ -210,7 +209,6 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                 if (state.getConfig().getClassificationUuid() != null) {
                     classification.setUuid(state.getConfig().getClassificationUuid());
                 }
-                getClassificationService().saveOrUpdate(classification);
             }
         }
     }
@@ -329,7 +327,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             //create institution
             institution = Institution.NewInstance();
             institution.setCode(institutionCode);
-            getAgentService().saveOrUpdate(institution);
+            getAgentService().save(institution);
         }
         else{
             logger.debug("Institution (agent) already in the db");
@@ -346,14 +344,15 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
      * @return the Collection (existing or new)
      */
     private Collection getCollection(Institution institution, SpecimenSynthesysExcelImportConfigurator config){
+
         Collection collection =null;
         List<Collection> collections;
         try{
             collections = getCollectionService().searchByCode(collectionCode);
         }catch(Exception e){
-            collections=new ArrayList<Collection>();
+            collections = new ArrayList<>();
         }
-        if (collections.size() ==0 || !config.getReUseExistingMetadata()){
+        if (collections.size() == 0 || !config.getReUseExistingMetadata()){
             logger.debug("Collection not found or do not reuse existing metadata  "+collectionCode);
             //create new collection
             collection= Collection.NewInstance();
@@ -377,8 +376,8 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                 collection.setCode(collectionCode);
                 collection.setCodeStandard("GBIF");
                 collection.setInstitute(institution);
+                getCollectionService().save(collection);
             }
-
         }
         return collection;
     }
@@ -412,15 +411,14 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             if (config.getDoReUseTaxon()){
                 List<? extends TaxonBase> c = null;
                 try {
-                    Taxon cc= getTaxonService().findBestMatchingTaxon(scientificName);
-                    if (cc != null){
-                        if ((cc.getSec() == null || cc.getSec().toString().isEmpty()) || (cc.getSec() != null &&
-                                cc.getSec().getTitleCache().equalsIgnoreCase(ref.getTitleCache()))) {
-                            if(cc.getSec() == null || cc.getSec().toString().isEmpty()){
-                                cc.setSec(ref);
-                                getTaxonService().saveOrUpdate(cc);
+                    Taxon taxon2= getTaxonService().findBestMatchingTaxon(scientificName);
+                    if (taxon2 != null){
+                        if ((taxon2.getSec() == null || taxon2.getSec().toString().isEmpty()) || (taxon2.getSec() != null &&
+                                taxon2.getSec().getTitleCache().equalsIgnoreCase(ref.getTitleCache()))) {
+                            if(taxon2.getSec() == null || taxon2.getSec().toString().isEmpty()){
+                                taxon2.setSec(ref);
                             }
-                            taxon=cc;
+                            taxon = taxon2;
                         }
                     }
                     else{
@@ -467,8 +465,6 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             derivedUnitBase.addDetermination(determinationEvent);
 
             makeIndividualsAssociation(taxon,determinationEvent,config);
-
-            getOccurrenceService().saveOrUpdate(derivedUnitBase);
         }
     }
 
@@ -485,8 +481,6 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         if (!exist){
             taxon = (Taxon) getTaxonService().find(taxon.getUuid());
             classification.addChildTaxon(taxon, ref, null);
-            getClassificationService().saveOrUpdate(classification);
-            //            refreshTransaction();
         }
         return (Taxon) getTaxonService().find(taxon.getUuid());
     }
@@ -658,14 +652,10 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             /*
              * merge AND STORE DATA
              */
-            //            getTermService().saveOrUpdate(areaCountry);// TODO save area sooner
             getTermService().saveLanguageData(unitsGatheringEvent.getLocality());
-
-
 
             //add gathering date
             if (keepAtomisedDate && (!gatheringYear.isEmpty() || !gatheringMonth.isEmpty() || !gatheringDay.isEmpty())){
-                Calendar calendar =  Calendar.getInstance();
                 if (!gatheringYear.isEmpty()) {
                     TimePeriod tp = TimePeriod.NewInstance(Integer.parseInt(gatheringYear));
                     if (!gatheringMonth.isEmpty()) {
@@ -702,7 +692,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                 }
             }
 
-            getOccurrenceService().saveOrUpdate(derivedUnitBase);
+            getOccurrenceService().save(derivedUnitBase);
 
             setTaxonName(config);
 
@@ -746,9 +736,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                         Institution institution = getInstitution(config);
 
                         Collection col = getCollection(institution, config);
-                        getCollectionService().saveOrUpdate(col);
                         derivedUnit.setCollection(col);
-                        getOccurrenceService().saveOrUpdate(derivedUnit);
                         return result;
                     }
                 }
@@ -817,9 +805,6 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         indAssociation.addSource(OriginalSourceType.Import, null,null,config.getDataReference(),null);
 
         taxonDescription.addElement(indAssociation);
-
-        getDescriptionService().saveOrUpdate(taxonDescription);
-        getTaxonService().saveOrUpdate(taxon);
     }
 
     @Override
@@ -850,14 +835,14 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         if (agent != null){
             if (agent.getClass().equals(Team.class)){
                 for (Person p : ((Team) agent).getTeamMembers()){
-                    getAgentService().saveOrUpdate(p);
+                    getAgentService().save(p);
                 }
             }
             if (agent.getClass().equals(Person.class)){
-                getAgentService().saveOrUpdate(agent);
+                getAgentService().save(agent);
             }
         }
-        getReferenceService().saveOrUpdate(ref);
+        getReferenceService().save(ref);
         setClassification(state);
 
         refreshTransaction();
@@ -889,7 +874,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                         taxon, includeUnpublished, taxonOccurrenceRelTypes,
                         null, null, null, null, null);
             }
-            Map<String,String> unit=null;
+            Map<String,String> unit = null;
             MyHashMap<String,String> myunit;
             for (int i=0; i<unitsList.size();i++){
                 //            for (int i=0; i<10;i++){
@@ -898,7 +883,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                     refreshTransaction();
                 }
                 unit = unitsList.get(i);
-                myunit=new MyHashMap<String, String>();
+                myunit = new MyHashMap<>();
                 for (String key :unit.keySet()) {
                     myunit.put(key, unit.get(key));
                 }

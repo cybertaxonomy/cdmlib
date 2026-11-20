@@ -722,7 +722,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			if (collection == null){
 				collection = Collection.NewInstance();
 				collection.setCode(code);
-				this.docImport.getCollectionService().saveOrUpdate(collection);
+				this.docImport.getCollectionService().save(collection);
 			}
 			state.putCollectionByCode(code, collection);
 		}

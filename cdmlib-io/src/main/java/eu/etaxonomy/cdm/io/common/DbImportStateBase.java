@@ -88,7 +88,7 @@ public abstract class DbImportStateBase<CONFIG extends DbImportConfiguratorBase,
 		this.partitionSourceReference = service.find(this.getConfig().getSourceRefUuid());
 		if (this.partitionSourceReference == null){
 			this.partitionSourceReference = this.getConfig().getSourceReference();
-			service.saveOrUpdate(this.partitionSourceReference);
+			service.save(this.partitionSourceReference);
 		}
 	}
 

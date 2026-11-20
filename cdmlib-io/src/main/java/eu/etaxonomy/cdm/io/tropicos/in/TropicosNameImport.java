@@ -359,7 +359,7 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
                 }
             }
             addSourceReference(state, taxon);
-            this.getTaxonService().saveOrUpdate(taxon);
+            this.getTaxonService().save(taxon);
             state.getResult().addNewRecords(Taxon.class.getSimpleName(), 1);
         }
     }

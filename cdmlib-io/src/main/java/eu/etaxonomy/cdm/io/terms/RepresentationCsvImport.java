@@ -91,8 +91,8 @@ public class RepresentationCsvImport
                 i++;
             }
             csvReader.close();
-            getTermService().saveOrUpdate(termsToSave);
-            getVocabularyService().saveOrUpdate(vocsToSave);
+            getTermService().save(termsToSave);
+            getVocabularyService().save(vocsToSave);
 
         } catch (IOException | CsvException e) {
             throw new RuntimeException(e);

@@ -246,7 +246,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 					voc = getVocabulary(state, TermType.ExtensionType, uuidUserDefinedExtensionTypeVocabulary, "User defined vocabulary for extension types", "User Defined Extension Types", null, null, isOrdered, extensionType);
 				}
 				voc.addTerm(extensionType);
-				getTermService().saveOrUpdate(extensionType);
+				getTermService().save(extensionType);
 			}
 			state.putExtensionType(extensionType);
 		}
@@ -270,7 +270,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 					voc = getVocabulary(state, TermType.IdentifierType, uuidUserDefinedIdentifierTypeVocabulary, "User defined vocabulary for identifier types", "User Defined Identifier Types", null, null, isOrdered, identifierType);
 				}
 				voc.addTerm(identifierType);
-				getTermService().saveOrUpdate(identifierType);
+				getTermService().save(identifierType);
 			}
 			state.putIdentifierType(identifierType);
 		}
@@ -510,7 +510,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				namedArea.setType(areaType);
 				namedArea.setLevel(level);
 				namedArea.setUuid(uuid);
-				getTermService().saveOrUpdate(namedArea);
+				getTermService().save(namedArea);
 			}
 			state.putNamedArea(namedArea);
 		}
@@ -1174,6 +1174,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			if (ref != null){
 				result.addImportSource(null, null, ref, null);
 			}
+			getDescriptionService().save(result);
 		}
 		return result;
 	}
@@ -1573,11 +1574,11 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
      */
     protected void saveNameRelations(TaxonName name) {
         for (HybridRelationship rel: name.getHybridChildRelations()){
-            getNameService().saveOrUpdate(rel.getParentName());
+            getNameService().save(rel.getParentName());
         }
         for (NameRelationship rel: name.getNameRelations()){
-            getNameService().saveOrUpdate(rel.getFromName());
-            getNameService().saveOrUpdate(rel.getToName());
+            getNameService().save(rel.getFromName());
+            getNameService().save(rel.getToName());
         }
     }
 

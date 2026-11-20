@@ -288,13 +288,12 @@ public class UnitsGatheringEvent {
      */
     public void setCollector(String collectorName, TaxonXImportConfigurator config, IAgentService agentService){
 
-        Person collector;
-        collector = Person.NewInstance();
+        Person collector = Person.NewInstance();
         collector.setTitleCache(collectorName, true);
         Person collector_db = config.getPersons().get(collector.getTitleCache());
         if (collector_db == null) {
-            UUID uuid = agentService.saveOrUpdate(collector);
-            collector_db=(Person) agentService.find(uuid);
+            UUID uuid = agentService.save(collector).getUuid();
+            collector_db = (Person) agentService.find(uuid);
         }
         this.gatheringEvent.setCollector(collector_db);
     }

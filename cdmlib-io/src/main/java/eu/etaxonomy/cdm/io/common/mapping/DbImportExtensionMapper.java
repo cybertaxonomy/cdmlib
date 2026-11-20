@@ -151,7 +151,6 @@ public class DbImportExtensionMapper
 			IVocabularyService vocService = currentImport.getVocabularyService();
 			TransactionStatus tx = currentImport.startTransaction();
 			TermVocabulary<ExtensionType> voc = vocService.find(uuidExtensionTypeVocabulary);
-			currentImport.getVocabularyService().saveOrUpdate(voc);
 			if (voc != null){
 				voc.addTerm(extensionType);
 			}else{

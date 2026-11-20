@@ -182,18 +182,19 @@ public class AbcdGgbnParser {
                         }
                         else{
                             dnaMarker = DefinedTerm.NewDnaMarkerInstance(amplificationMarker, amplificationMarker, amplificationMarker);
+                            cdmAppController.getTermService().save(dnaMarker);
+
                             List<TermVocabulary<DefinedTerm>> vocs = (List)cdmAppController.getVocabularyService().findByTermType(TermType.DnaMarker, null);
                             TermVocabulary<DefinedTerm> voc = null;
 
                             if (vocs == null || vocs.size() == 0 ){
                                 voc = TermVocabulary.NewInstance(TermType.DnaMarker);
                                 voc.setLabel("Dna Marker");
-                                cdmAppController.getVocabularyService().saveOrUpdate(voc);
+                                cdmAppController.getVocabularyService().save(voc);
                             }else{
                                 voc = vocs.get(0);
                             }
                             voc.addTerm(dnaMarker);
-                            cdmAppController.getTermService().saveOrUpdate(dnaMarker);
                         }
                         amplification.setDnaMarker(dnaMarker);
                     }

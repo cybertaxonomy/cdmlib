@@ -83,7 +83,6 @@ public class TermVocabularyOwlImport
                 ((TermVocabulary)vocabulary).addTerm(term);
                 progressMonitor.worked(1);
             }
-            getVocabularyService().saveOrUpdate(vocabulary);
         }
     }
 
@@ -133,7 +132,6 @@ public class TermVocabularyOwlImport
             ((DefinedTermBase)term).addGeneralizationOf(generalizationOfTerm);
         }
         term.getSources().stream().map(s->s.getCitation()).forEach(ref->save(ref));
-        getTermService().saveOrUpdate(term);
         return term;
     }
 

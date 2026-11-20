@@ -191,7 +191,7 @@ public class JaxbImport
 			if (jaxbImpConfig.isDoAuthors() == true) {
 				if ((agents = dataSet.getAgents()).size() > 0) {
 					logger.info("Agents: " + agents.size());
-					getAgentService().saveOrUpdate((Collection)agents);
+					getAgentService().save(agents);
 				}
 			}
 		} catch (Exception ex) {
@@ -206,7 +206,7 @@ public class JaxbImport
 			if (jaxbImpConfig.getDoReferences() != IImportConfigurator.DO_REFERENCES.NONE) {
 				if ((references = dataSet.getReferences()).size() > 0) {
 					logger.info("References: " + references.size());
-					getReferenceService().saveOrUpdate(references);
+					getReferenceService().save(references);
 					logger.info("ready...");
 				}
 			}
@@ -223,7 +223,7 @@ public class JaxbImport
 			if (jaxbImpConfig.isDoTaxonNames() == true) {
 				if ((taxonomicNames = dataSet.getTaxonomicNames()).size() > 0) {
 					logger.info("Taxonomic names: " + taxonomicNames.size());
-					getNameService().saveOrUpdate(taxonomicNames);
+					getNameService().save(taxonomicNames);
 				}
 			}
 		} catch (Exception ex) {
@@ -252,11 +252,11 @@ public class JaxbImport
 		try {
 			if (jaxbImpConfig.isDoTaxa() == true) {
 				if ( dataSet.getTaxonBases().size() > 0) {
-					List taxa = dataSet.getTaxonBases();
+					List<TaxonBase> taxa = dataSet.getTaxonBases();
 					dataSet.getTaxonBases();
 					logger.info("Taxon bases: " + taxa.size());
 					taxa.iterator();
-					getTaxonService().saveOrUpdate(taxa);
+					getTaxonService().save(taxa);
 					/*while (taxBases.hasNext()){
 						getTaxonService().save(taxBases.next());
 					}*/
@@ -298,7 +298,7 @@ public class JaxbImport
 			if (jaxbImpConfig.isDoOccurrence() == true) {
 				if ((occurrences = dataSet.getOccurrences()).size() > 0) {
 					logger.info("Occurrences: " + occurrences.size());
-					getOccurrenceService().saveOrUpdate(occurrences);
+					getOccurrenceService().save(occurrences);
 				}
 			}
 		} catch (Exception ex) {
@@ -312,7 +312,7 @@ public class JaxbImport
 			if (jaxbImpConfig.isDoFeatureData() == true) {
 				if ((featureTrees = dataSet.getTermTrees()).size() > 0) {
 					logger.info("Feature data: " + featureTrees.size());
-					getTermTreeService().saveOrUpdate(featureTrees);
+					getTermTreeService().save(featureTrees);
 				}
 			}
 		} catch (Exception ex) {
@@ -326,7 +326,7 @@ public class JaxbImport
 			if (jaxbImpConfig.isDoMedia() == true) {
 				if ((media = dataSet.getMedia()).size() > 0) {
 					logger.info("Media: " + media.size());
-					getMediaService().saveOrUpdate(media);
+					getMediaService().save(media);
 				}
 			}
 		} catch (Exception ex) {
@@ -341,7 +341,7 @@ public class JaxbImport
 			Collection<Classification> classifications = dataSet.getClassifications();
 			getTaxonNodeService().save(nodes);
 			for (Classification tree: classifications){
-				getClassificationService().saveOrUpdate(tree);
+				getClassificationService().save(tree);
 			}
 		}
 
@@ -361,7 +361,7 @@ public class JaxbImport
 		boolean success = true;
 		logger.info("Term vocabularies: " + termVocabularies.size());
 		try {
-			getVocabularyService().saveOrUpdate((List)termVocabularies);
+			getVocabularyService().save(termVocabularies);
 		} catch (Exception ex) {
 			logger.error("Error saving term vocabularies");
 			success = false;
