@@ -1651,41 +1651,37 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
 
     @Test
     @CdmDataSet("/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
-    public final void testTaxonDeletionConfiguratorDeleteMarker(){
+    //test childHandling DELETE:
+    public final void testTaxonDeletionConfiguratorDelete(){
 
-        //test childHandling DELETE:
+        //create test data
         Taxon testTaxon = getTestTaxon();
-        UUID uuid = testTaxon.getUuid();
-
+        Iterator<TaxonNode> nodesIterator = testTaxon.getTaxonNodes().iterator();
+        Classification classification = nodesIterator.next().getClassification();
+        //new top most taxon, with test taxon as child
         Taxon topMost = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.FAMILY()), null);
-
-        Iterator<TaxonNode> nodes = testTaxon.getTaxonNodes().iterator();
-        TaxonNode node =nodes.next();
-        Classification classification = node.getClassification();
         classification.addParentChild(topMost, testTaxon, null, null);
         UUID topMostUUID = service.save(topMost).getUuid();
-        Marker marker = Marker.NewInstance(testTaxon, true, MarkerType.IS_DOUBTFUL());
-        testTaxon.addMarker(marker);
+
+        //delete
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
         config.getTaxonNodeConfig().setChildHandling(ChildHandling.DELETE);
-
-        DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, node.getClassification().getUuid());
-
+        DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, classification.getUuid());
         if(!result.isOk()){
          	fail();
        	}
         commitAndStartNewTransaction(null);
-        Taxon tax = (Taxon)service.find(uuid);
-        assertNull(tax);
+
+        Taxon tax = (Taxon)service.find(testTaxon.getUuid());
+        assertNull(tax, "Child taxon should not exist anymore");
+
         tax = (Taxon)service.find(topMostUUID);
         Set<TaxonNode> topMostNodes = tax.getTaxonNodes();
         assertNotNull(topMostNodes);
-        assertEquals(1, topMostNodes.size(), "there should be one taxon node");
-        nodes = topMostNodes.iterator();
-        TaxonNode topMostNode = nodes.next();
-        int size = topMostNode.getChildNodes().size();
+        assertEquals(1, topMostNodes.size(), "there should be one taxon node for top most taxon");
 
-        assertEquals(0, size);
+        int topMostChildrenSize = topMostNodes.iterator().next().getChildNodes().size();
+        assertEquals(0, topMostChildrenSize, "Topmost node should have not children");
     }
 
     @Test
