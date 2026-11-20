@@ -140,10 +140,6 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
     private UUID uuidSyn2;
     private UUID uuidTaxWithSyn;
 
-    private static String[] genera = {"Carex", "Abies", "Belladonna", "Dracula", "Maria", "Calendula", "Polygala", "Vincia"};
-    private static String[] epitheta = {"vulgaris", "magdalena", "officinalis", "alba", "negra", "communa", "alpina", "rotundifolia", "greutheriana", "helventica", "allemania", "franca"};
-    private static String[] ranks = {"subsp", "var", "f"};
-
     public static UUID GENUS_NAME_UUID = UUID.fromString("8d761fc4-b509-42f4-9568-244161934336");
     public static UUID GENUS_UUID = UUID.fromString("bf4298a8-1735-4353-a210-244442e1bd62");
     public static UUID BASIONYM_UUID = UUID.fromString("7911c51d-ccb7-4708-8992-639eae58a0e3");
