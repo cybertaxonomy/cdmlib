@@ -142,7 +142,6 @@ public class TaxonGraphTest extends CdmTransactionalSpringIntegrationTest {
         TaxonName n_trachelomonas_a = nameDao.load(uuid_n_trachelomonas_a);
         Reference oldNomReference = n_trachelomonas_a.getNomenclaturalReference();
         n_trachelomonas_a.setNomenclaturalReference(refX);
-        nameDao.saveOrUpdate(n_trachelomonas_a);
         AbstractHibernateTaxonGraphProcessor processor = taxonGraphProcessor();
         Taxon singleTaxon = processor.assureSingleTaxon(n_trachelomonas_a);
         processor.updateReferenceInEdges(singleTaxon, refX, oldNomReference);
@@ -168,7 +167,6 @@ public class TaxonGraphTest extends CdmTransactionalSpringIntegrationTest {
         assertEquals(1, edges.size(), "One edge from 'Trachelomonas oviformis var. duplex' to 'Trachelomonas' expected");
 
         n_trachelomonas_o_var_d.setRank(Rank.SPECIES());
-        nameDao.saveOrUpdate(n_trachelomonas_o_var_d);
         AbstractHibernateTaxonGraphProcessor processor = taxonGraphProcessor();
         Taxon singleTaxon = processor.assureSingleTaxon(n_trachelomonas_o_var_d);
         processor.updateEdges(singleTaxon);
@@ -197,7 +195,6 @@ public class TaxonGraphTest extends CdmTransactionalSpringIntegrationTest {
         assertEquals(0, edges.size(), "No edges to 'Euglena' expected");
 
         n_trachelomonas_o_var_d.setGenusOrUninomial("Euglena");
-        nameDao.saveOrUpdate(n_trachelomonas_o_var_d);
         AbstractHibernateTaxonGraphProcessor processor = taxonGraphProcessor();
         Taxon singleTaxon = processor.assureSingleTaxon(n_trachelomonas_o_var_d);
         processor.updateEdges(singleTaxon);
@@ -226,7 +223,6 @@ public class TaxonGraphTest extends CdmTransactionalSpringIntegrationTest {
         assertEquals(1, edges.size(), "One edge from 'Trachelomonas oviformis var. duplex' to 'Trachelomonas oviformis' expected");
 
         n_trachelomonas_o_var_d.setSpecificEpithet("alabamensis");
-        nameDao.saveOrUpdate(n_trachelomonas_o_var_d);
         AbstractHibernateTaxonGraphProcessor processor = taxonGraphProcessor();
         Taxon singleTaxon = processor.assureSingleTaxon(n_trachelomonas_o_var_d);
         processor.updateEdges(singleTaxon);

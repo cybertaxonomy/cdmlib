@@ -155,7 +155,6 @@ public class RegistrationDaoHibernateImplTest extends CdmTransactionalSpringInte
         referenceDao.save(otherRef);
         desig2.setCitation(otherRef);
         regWithType.addTypeDesignation(desig2);
-        registrationDao.saveOrUpdate(regWithType);
         registrationList = registrationDao.list(Optional.of(desigRef), null, null, null,null);
         assertEquals(1, registrationList.size(), "List should still have 1 entry");
         assertEquals(regWithType, registrationList.get(0), "");

@@ -270,7 +270,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalSpringInteg
         commitAndStartNewTransaction(null);
 
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
-        this.descriptionDao.saveOrUpdate(description);
+        this.descriptionDao.save(description);
 
         assertTrue(true);
     }
@@ -289,8 +289,6 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalSpringInteg
 
         DefinedTerm scope = DefinedTerm.SEX_FEMALE();
         description.addScope(scope);
-
-        this.descriptionDao.saveOrUpdate(description);
     }
 
     @Test
@@ -384,7 +382,6 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalSpringInteg
 
         DefinedTermBase<?> antarctica = definedTermDao.load(antarcticaUuid);
         antarctica.getRepresentations().add(Representation.NewInstance("Antarktis", "Antarktis", "An", Language.GERMAN()));
-        definedTermDao.saveOrUpdate(antarctica);
         commitAndStartNewTransaction(null);
 
         Collection<TermDto> list = descriptionDao.listNamedAreasInUse(false, null, null);

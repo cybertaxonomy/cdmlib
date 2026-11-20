@@ -115,7 +115,6 @@ public class DescriptionElementDaoHibernateImplTest
 		assertNotNull(germanLanguageText, "German language text should exist");
 
 		singleLanguageTextData.putText(Language.ENGLISH(), singleLanguageTextData.getText(Language.ENGLISH()));
-		descriptionElementDao.saveOrUpdate(singleLanguageTextData);
 
 		setComplete(); endTransaction();
 		try {if (printDatasets){printDataSet(System.out, new String[]{"LanguageString", "DescriptionElementBase", "DESCRIPTIONELEMENTBASE_LANGUAGESTRING"});}
@@ -137,7 +136,6 @@ public class DescriptionElementDaoHibernateImplTest
 		assertTrue(multiLangText.containsKey(Language.ENGLISH()), "The language should be English");
 
 		singleLanguageTextData.putText(Language.ENGLISH(), "A new English text");
-		descriptionElementDao.saveOrUpdate(singleLanguageTextData);
 
 		setComplete(); endTransaction();
 		try {if (printDatasets){printDataSet(System.out, new String[]{"LanguageString", "DescriptionElementBase", "DESCRIPTIONELEMENTBASE_LANGUAGESTRING"});}
@@ -160,7 +158,6 @@ public class DescriptionElementDaoHibernateImplTest
 
 		textDataTwo.removeText(Language.ENGLISH());
 		assertEquals(1, textDataTwo.size(), "There should be only 1 language left");
-		descriptionElementDao.saveOrUpdate(textDataTwo);
 
 		setComplete(); endTransaction();
 		try {if (printDatasets){printDataSet(System.out, new String[]{"LanguageString", "DescriptionElementBase", "DESCRIPTIONELEMENTBASE_LANGUAGESTRING"});}

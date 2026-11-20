@@ -181,7 +181,6 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalSpringIntegr
 
 	    //guarantee that a constraint still exists on OccurrenceStatus.type
 	    status.setCitationMicroReference("222");
-	    dao.saveOrUpdate(specimen);
 	    try {
             commitAndStartNewTransaction(new String[]{/*"OccurrenceStatus","OccurrenceStatus_Annotation","Annotation","SpecimenOrObservationBase" */});
             fail("Updating status without type should throw an exception");

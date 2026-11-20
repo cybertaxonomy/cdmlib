@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -333,21 +332,19 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
 
     @Test
     public void testDeleteTaxon(){
-        TaxonName acherontiaLachesis = CdmBase.deproxy(taxonNameDao.findByUuid(cryptoCoryneGriffithiIiUuid));
-        @SuppressWarnings("rawtypes")
+
+        TaxonName acherontiaLachesis = taxonNameDao.findByUuid(cryptoCoryneGriffithiIiUuid);
         Set<TaxonBase> taxonBases = acherontiaLachesis.getTaxonBases();
         HomotypicalGroup group = acherontiaLachesis.getHomotypicalGroup();
         UUID groupUuid = group.getUuid();
         taxonNameDao.delete(acherontiaLachesis);
 
-        @SuppressWarnings("rawtypes")
-        Iterator<TaxonBase> taxa= taxonBases.iterator();
-        TaxonBase taxon = taxa.next();
+        TaxonBase taxon = taxonBases.iterator().next();
         UUID taxonUuid = taxon.getUuid();
 
         acherontiaLachesis = taxonNameDao.findByUuid(cryptoCoryneGriffithiIiUuid);
         taxon = taxonDao.findByUuid(taxonUuid);
-        group = CdmBase.deproxy(homotypicalGroupDao.findByUuid(groupUuid));
+        group = homotypicalGroupDao.findByUuid(groupUuid);
         assertNull(acherontiaLachesis, "There should be no taxonName with the deleted uuid");
         assertNull(taxon, "There should be no taxon with the deleted uuid");
         assertNull(group, "There should be no homotypicalGroup with the deleted uuid");
@@ -433,7 +430,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
         name1.addTypeDesignation(desig1, true);
 
         typeDesignationDao.save(desig1);
-        taxonNameDao.saveOrUpdate(name1);
+        taxonNameDao.save(name1);
         commitAndStartNewTransaction(new String[]{"TypeDesignationBase", "TypeDesignationBase_AUD"});
 
 //      printDataSet(System.err, new String[]{"TaxonName","TaxonName_AUD",
@@ -573,7 +570,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalSpringIntegra
         newName.setTitleCache("Name used as typified name", true);
         newName.addTypeDesignation(specTypeDesig, false);
 
-        taxonNameDao.saveOrUpdate(newName);
+        taxonNameDao.save(newName);
 
         commitAndStartNewTransaction(null);
         specTypeDesig = genericDao.find(SpecimenTypeDesignation.class, specTypeDesig.getUuid());

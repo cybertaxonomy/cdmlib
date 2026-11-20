@@ -60,7 +60,6 @@ public class RevisionStatusChangeListenerTest extends CdmTransactionalSpringInte
         ZonedDateTime beforeFirstChange = ZonedDateTime.now().minusMinutes(1);
         taxon = (Taxon) taxonDao.findByUuid(taxon.getUuid());
         taxon.setRevisionStatus(RevisionStatusInfo.NewInstance(completed, null));
-        taxonDao.saveOrUpdate(taxon);
         commitAndStartNewTransaction(null);
 
         taxon = (Taxon) taxonDao.findByUuid(taxon.getUuid());
@@ -72,7 +71,6 @@ public class RevisionStatusChangeListenerTest extends CdmTransactionalSpringInte
 
         // unrelated update must not touch changed
         taxon.setConceptId("concept-1");
-        taxonDao.saveOrUpdate(taxon);
         commitAndStartNewTransaction(null);
 
         taxon = (Taxon) taxonDao.findByUuid(taxon.getUuid());
@@ -87,7 +85,6 @@ public class RevisionStatusChangeListenerTest extends CdmTransactionalSpringInte
         }
         ZonedDateTime beforeSecondChange = ZonedDateTime.now().minusMinutes(1);
         taxon.getRevisionStatus().setStatus(inProcess);
-        taxonDao.saveOrUpdate(taxon);
         commitAndStartNewTransaction(null);
 
         taxon = (Taxon) taxonDao.findByUuid(taxon.getUuid());
@@ -100,7 +97,6 @@ public class RevisionStatusChangeListenerTest extends CdmTransactionalSpringInte
         // explicit changed timestamp must be preserved
         ZonedDateTime explicit = ZonedDateTime.parse("2020-01-15T10:00:00+01:00[Europe/Berlin]");
         taxon.setRevisionStatus(RevisionStatusInfo.NewInstance(completed, explicit));
-        taxonDao.saveOrUpdate(taxon);
         commitAndStartNewTransaction(null);
 
         taxon = (Taxon) taxonDao.findByUuid(taxon.getUuid());

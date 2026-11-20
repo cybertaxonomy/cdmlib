@@ -105,7 +105,7 @@ public class MolecularHibernateImplTest  extends CdmTransactionalSpringIntegrati
 
 		PhylogeneticTree phyloTree = PhylogeneticTree.NewInstance();
 		phyloTree.addUsedSequences(sequence);
-		mediaDao.saveOrUpdate(phyloTree);
+		mediaDao.save(phyloTree);
 		phyloTreeUuid = phyloTree.getUuid();
 
 		commitAndStartNewTransaction(new String[]{"SpecimenOrObservationBase"});

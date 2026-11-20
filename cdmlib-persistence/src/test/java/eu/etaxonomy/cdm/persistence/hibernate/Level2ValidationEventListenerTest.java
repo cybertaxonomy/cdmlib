@@ -16,12 +16,15 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
+import eu.etaxonomy.cdm.test.integration.spring.CdmExpectedDataSet;
 import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegrationTest;
 
 public class Level2ValidationEventListenerTest extends CdmTransactionalSpringIntegrationTest {
@@ -50,9 +53,10 @@ public class Level2ValidationEventListenerTest extends CdmTransactionalSpringInt
 		assertNotNull(cdmEntityDaoBase, "cdmEntityDaoBase should exist");
 	}
 
-	//@Test
-	//@CdmDataSet
-	//@CdmExpectedDataSet
+	@Test
+	@CdmDataSet
+	@CdmExpectedDataSet
+	@Disabled
 	public void testSaveOrUpdate(){
 		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
 		cdmBase.setDoubtful(true);
@@ -60,17 +64,19 @@ public class Level2ValidationEventListenerTest extends CdmTransactionalSpringInt
 		commit();
 	}
 
-	//@Test
-	//@CdmDataSet
-	//@CdmExpectedDataSet
+    @Test
+    @CdmDataSet
+    @CdmExpectedDataSet
+    @Disabled
 	public void testSave() throws Exception{
 		cdmEntityDaoBase.save(cdmBase);
 		commit();
 	}
 
-	//@Test
-	//@CdmDataSet
-	//@CdmExpectedDataSet
+    @Test
+    @CdmDataSet
+    @CdmExpectedDataSet
+    @Disabled
 	public void testUpdate(){
 		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
 		cdmBase.setDoubtful(true);
@@ -78,9 +84,10 @@ public class Level2ValidationEventListenerTest extends CdmTransactionalSpringInt
 		commit();
 	}
 
-	//@Test
-	//@CdmDataSet("CdmEntityDaoBaseTest.xml")
-	//@CdmExpectedDataSet
+    @Test
+    @CdmDataSet("CdmEntityDaoBaseTest.xml")
+    @CdmExpectedDataSet
+    @Disabled
 	public void testDelete(){
 		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
 		assertNotNull(cdmBase);

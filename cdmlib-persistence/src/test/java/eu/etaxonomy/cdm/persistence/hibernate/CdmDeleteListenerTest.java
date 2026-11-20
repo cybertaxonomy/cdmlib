@@ -54,7 +54,8 @@ public class CdmDeleteListenerTest extends CdmTransactionalSpringIntegrationTest
 	@CdmDataSet("CdmDeleteListenerTest.xml")
 	@CdmExpectedDataSet
 	public void testOnDelete() throws Exception {
-		TaxonName name = taxonNameDao.findByUuid(uuid);
+
+	    TaxonName name = taxonNameDao.findByUuid(uuid);
 		/**
 		 * Ended up with some horrible hibernate errors otherwise
 		 */
@@ -69,11 +70,7 @@ public class CdmDeleteListenerTest extends CdmTransactionalSpringIntegrationTest
 		Set<HybridRelationship> hybridRels = name.getHybridParentRelations();
 		assertEquals(1, hybridRels.size(), "There must be 1 parent relationship");
 
-		taxonNameDao.saveOrUpdate(name);
-
-		setComplete();
-		endTransaction();
-		startNewTransaction();
+		commitAndStartNewTransaction();
 
 //		nRels = taxonDao.countAllRelationships();
 //		assertEquals(1, nRels, "There should be 1 relationship now");

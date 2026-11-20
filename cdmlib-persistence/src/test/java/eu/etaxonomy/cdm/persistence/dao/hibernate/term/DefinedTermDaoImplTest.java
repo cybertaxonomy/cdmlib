@@ -248,7 +248,7 @@ public class DefinedTermDaoImplTest extends CdmTransactionalSpringIntegrationTes
         //Change English label
         newModifier.setProtectedTitleCache(false);
         newModifier.setLabel("New English label");
-        dao.saveOrUpdate(newModifier);
+        dao.save(newModifier);
         newModifier.setProtectedTitleCache(true);
         assertEquals("New English label", newModifier.getTitleCache(), "English (default language) label should still be the title cache");
 
@@ -256,14 +256,14 @@ public class DefinedTermDaoImplTest extends CdmTransactionalSpringIntegrationTes
         newModifier.setProtectedTitleCache(false);
         Representation newRepresentation = Representation.NewInstance("Beschreibung", "Deutscher Modifier", "Abk.", Language.GERMAN());
         newModifier.addRepresentation(newRepresentation);
-        dao.saveOrUpdate(newModifier);
+        newModifier = (DefinedTerm)dao.merge(newModifier);
         newModifier.setProtectedTitleCache(true);
         assertEquals("New English label", newModifier.getTitleCache(), "English (default language) label should still be the title cache");
 
         //Remove English
         newModifier.setProtectedTitleCache(false);
         newModifier.removeRepresentation(englishRepresentation);
-        dao.saveOrUpdate(newModifier);
+        newModifier = (DefinedTerm)dao.merge(newModifier);
         newVoc.setProtectedTitleCache(true);
         assertEquals("Deutscher Modifier", newModifier.getTitleCache(), "German Label should be the new title cache again as English representation is not there anymore");
     }

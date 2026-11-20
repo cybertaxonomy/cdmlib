@@ -212,8 +212,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
 		Reference ref2 = ReferenceFactory.newBook();
 		Annotation annotation = Annotation.NewInstance("Anno1", null);
 		ref1.addAnnotation(annotation);
-		cdmGenericDao.saveOrUpdate(ref1);
-		cdmGenericDao.saveOrUpdate(ref2);
+		cdmGenericDao.save(ref1);
+		cdmGenericDao.save(ref2);
 		List<Reference> list = cdmGenericDao.list(Reference.class, 10, 0, null, null);
 
 		try {
@@ -985,9 +985,9 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
 		book2.setTitle(title2);
 		book3.setTitle(title1);
 
-		cdmGenericDao.saveOrUpdate((Reference)book1);
-		cdmGenericDao.saveOrUpdate((Reference)book2);
-		cdmGenericDao.saveOrUpdate((Reference)book3);
+		cdmGenericDao.save((Reference)book1);
+		cdmGenericDao.save((Reference)book2);
+		cdmGenericDao.save((Reference)book3);
 
 		IMatchStrategyEqual matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
 		try {
@@ -1022,17 +1022,17 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
 			section3.setInBook(book1);
 			section3.setTitle("SecTitle");
 			section3.setPages("22-33");
-			cdmGenericDao.saveOrUpdate((Reference)section1);
-			cdmGenericDao.saveOrUpdate((Reference)section2);
-			cdmGenericDao.saveOrUpdate((Reference)section3);
+			cdmGenericDao.save((Reference)section1);
+			cdmGenericDao.save((Reference)section2);
+			cdmGenericDao.save((Reference)section3);
 
 			List<IBookSection> sectionResult = cdmGenericDao.findMatching(section3, null);
 			assertEquals(1, sectionResult.size(), "Resultlist must have 1 entries");
 			assertSame(section1, sectionResult.get(0), "Resultlist entry must be section1");
 
 			section2.setInBook(book2 = (IBook)book1.clone());
-			cdmGenericDao.saveOrUpdate((Reference)book2);
-			cdmGenericDao.saveOrUpdate((Reference)book1);
+			cdmGenericDao.save((Reference)book2);
+			cdmGenericDao.save((Reference)book1);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			assertEquals(2, matchResult.size(), "Resultlist must have 2 entries");
 			sectionResult = cdmGenericDao.findMatching(section3, null);
@@ -1108,11 +1108,11 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
 //		bookClone.setEdition(null);
 //		assertTrue(matchStrategy.invoke(book1, bookClone), "Cached book with a defined and a null edition should match");
 
-		cdmGenericDao.saveOrUpdate((Reference)book1);
-		cdmGenericDao.saveOrUpdate((Reference)book2);
-		cdmGenericDao.saveOrUpdate((Reference)book3);
-		cdmGenericDao.saveOrUpdate(team1);
-		cdmGenericDao.saveOrUpdate(team2);
+		cdmGenericDao.save((Reference)book1);
+		cdmGenericDao.save((Reference)book2);
+		cdmGenericDao.save((Reference)book3);
+		cdmGenericDao.save(team1);
+		cdmGenericDao.save(team2);
 
 		IMatchStrategyEqual matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
 

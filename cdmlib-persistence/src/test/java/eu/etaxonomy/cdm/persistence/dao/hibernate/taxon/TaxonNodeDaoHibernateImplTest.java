@@ -147,7 +147,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalSpringIntegra
         taxNode2 = CdmBase.deproxy(taxNode2);
         TaxonNode rootNode = CdmBase.deproxy(classification.getRootNode());
         TaxonNode newNode = rootNode.addChildTaxon(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null), null, null);
-        taxonNodeDao.saveOrUpdate(newNode);
+        taxonNodeDao.save(newNode);
         taxonNodeDao.delete(taxNode3, true);
 
         assertNull(taxonNodeDao.findByUuid(taxNode3.getUuid()));
@@ -277,13 +277,13 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalSpringIntegra
         Taxon taxon1 = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null);
         Taxon taxon2 = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null);
         TaxonNode child = taxNode.addChildTaxon(taxon, null, null);
-        UUID childUuid = taxonNodeDao.saveOrUpdate(child);
+        UUID childUuid = taxonNodeDao.save(child).getUuid();
         child = taxonNodeDao.load(childUuid);
         assertNotNull(child);
         child = taxNode2.addChildTaxon(taxon1, null, null);
-        taxonNodeDao.saveOrUpdate(child);
+        taxonNodeDao.save(child);
         child = taxNode3.addChildTaxon(taxon2, null, null);
-        taxonNodeDao.saveOrUpdate(child);
+        taxonNodeDao.save(child);
 
         List<TaxonNode> taxa = taxonNodeDao.getTaxonOfAcceptedTaxaByClassification(classification, null, null);
         assertEquals(7, taxa.size(), "there should be 7 taxa left");
@@ -309,7 +309,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalSpringIntegra
     	Taxon firstTopLevelTaxon = (Taxon)taxonDao.findByUuid(UUID.fromString("7b8b5cb3-37ba-4dba-91ac-4c6ffd6ac331"));
     	Classification classification = classificationDao.findByUuid(ClassificationUuid);
     	TaxonNode childNode = classification.addParentChild(taxonWithLazyLoadedParentNodeOnTopLevel, firstTopLevelTaxon, null, null);
-    	this.taxonNodeDao.saveOrUpdate(childNode);
+    	this.taxonNodeDao.save(childNode);
     	commitAndStartNewTransaction( new String[]{"TaxonNode"});
     }
 
@@ -325,7 +325,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalSpringIntegra
     	Classification classification = classificationDao.findByUuid(ClassificationUuid);
     	TaxonNode newNode = classification.addChildTaxon(newTaxon, 0, null, null);
     	newNode.setUuid(UUID.fromString("58728644-1155-4520-98f7-309fdb62abd7"));
-    	this.taxonNodeDao.saveOrUpdate(newNode);
+    	this.taxonNodeDao.save(newNode);
     	commitAndStartNewTransaction( new String[]{"TaxonNode"});
     }
 

@@ -423,7 +423,6 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalSpringIn
 	    flatHierarchieClassification.addChildTaxon(t_abies_grandis, null, null);
 	    flatHierarchieClassification.addChildTaxon(t_abies_kawakamii, null, null);
 //	    flatHierarchieClassification.addChildTaxon(t_abies_lasiocarpa, null, null);
-	    classificationDao.saveOrUpdate(flatHierarchieClassification);
 
 	    // 1. create the entities   and save them
 	    Classification fullHierarchieClassification = Classification.NewInstance("European Abies full hierarchie");
@@ -433,8 +432,6 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalSpringIn
 	    fullHierarchieClassification.addParentChild(t_pinaceae, t_abies, null, null);
 	    fullHierarchieClassification.addParentChild(t_abies, t_abies_alba, null, null);
 	    fullHierarchieClassification.addParentChild(t_abies, t_abies_grandis, null, null);
-
-	    classificationDao.saveOrUpdate(fullHierarchieClassification);
 
 	    // 2. end the transaction so that all data is actually written to the db
 	    setComplete();

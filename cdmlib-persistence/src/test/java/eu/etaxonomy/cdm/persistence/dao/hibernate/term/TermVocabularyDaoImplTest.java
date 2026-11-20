@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -42,9 +41,6 @@ public class TermVocabularyDaoImplTest extends CdmTransactionalSpringIntegration
 
 	@Autowired
 	private ITermVocabularyDao dao;
-
-	@BeforeEach
-	public void setUp() {}
 
     @Test
     @CdmDataSet(cleanSweep = true, value = {
@@ -122,9 +118,9 @@ public class TermVocabularyDaoImplTest extends CdmTransactionalSpringIntegration
 	    UUID vocUuid = UUID.fromString("a7a2fbe4-3a35-4ec0-b2b2-2298c3ebdf57");
 	    TermVocabulary<?> newVoc = TermVocabulary.NewInstance(TermType.Modifier);
 	    newVoc.setUuid(vocUuid);
+	    dao.save(newVoc);
 
 	    //default titleCache
-	    dao.save(newVoc);
 	    newVoc.setProtectedTitleCache(true);  //make sure we use the title cache created during save by listeners
 	    String emptyLabel = newVoc.getTitleCache();
 	    //this value may need to be changed when the default cache generation changes
@@ -134,7 +130,7 @@ public class TermVocabularyDaoImplTest extends CdmTransactionalSpringIntegration
 	    newVoc.setProtectedTitleCache(false);
 	    Representation newRepresentation = Representation.NewInstance("Beschreibung", "Deutsches Label", "Abk.", Language.GERMAN());
 	    newVoc.addRepresentation(newRepresentation);
-	    dao.saveOrUpdate(newVoc);
+        newVoc = dao.merge(newVoc);
 	    newVoc.setProtectedTitleCache(true);
 	    assertEquals("Deutsches Label", newVoc.getTitleCache(), "German Label should be new title cache");
 
@@ -142,24 +138,23 @@ public class TermVocabularyDaoImplTest extends CdmTransactionalSpringIntegration
 	    newVoc.setProtectedTitleCache(false);
         Representation englishRepresentation = Representation.NewInstance("Description", "English label", "Abbrev.", Language.DEFAULT());
         newVoc.addRepresentation(englishRepresentation);
-        dao.saveOrUpdate(newVoc);
+        newVoc = dao.merge(newVoc);
         newVoc.setProtectedTitleCache(true);
         assertEquals("English label", newVoc.getTitleCache(), "English Label should be new title cache");
 
         //Change English label
         newVoc.setProtectedTitleCache(false);
         newVoc.setLabel("New English label");
-        dao.saveOrUpdate(newVoc);
+        newVoc = dao.merge(newVoc);
         newVoc.setProtectedTitleCache(true);
         assertEquals("New English label", newVoc.getTitleCache(), "English (default language) label should be new English label");
 
         //Remove English
         newVoc.setProtectedTitleCache(false);
         newVoc.removeRepresentation(englishRepresentation);
-        dao.saveOrUpdate(newVoc);
+        newVoc = dao.merge(newVoc);
         newVoc.setProtectedTitleCache(true);
         assertEquals("Deutsches Label", newVoc.getTitleCache(), "German Label should be new title cache again as English representation is not there anymore");
-
 	}
 
 	@Test

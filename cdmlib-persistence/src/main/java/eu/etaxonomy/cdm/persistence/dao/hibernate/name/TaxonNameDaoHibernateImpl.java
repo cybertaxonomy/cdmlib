@@ -627,7 +627,7 @@ public class TaxonNameDaoHibernateImpl
 
         getSession().saveOrUpdate(persistentObject);
         HomotypicalGroup homotypicalGroup = HibernateProxyHelper.deproxy(
-                persistentObject.getHomotypicalGroup(), HomotypicalGroup.class);
+                persistentObject.getHomotypicalGroup());
         Integer homotypicalGroupId = homotypicalGroup != null ? homotypicalGroup.getId() : null;
 
         for (TaxonBase taxonBase: taxonBases){

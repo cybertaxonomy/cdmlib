@@ -414,13 +414,11 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
     }
 
     protected List<TaxonRelationship> taxonGraphRelationsFrom(Taxon taxon, Reference citation) {
-        List<TaxonRelationship> relations = getTaxonRelationships(taxon, relType(), citation, TaxonRelationship.Direction.relatedFrom);
-        return relations;
+        return getTaxonRelationships(taxon, relType(), citation, TaxonRelationship.Direction.relatedFrom);
     }
 
     protected List<TaxonRelationship> taxonGraphRelationsTo(Taxon taxon, Reference citation) {
-        List<TaxonRelationship> relations = getTaxonRelationships(taxon, relType(), citation, TaxonRelationship.Direction.relatedTo);
-        return relations;
+        return getTaxonRelationships(taxon, relType(), citation, TaxonRelationship.Direction.relatedTo);
     }
 
     protected List<TaxonName> listNamesAtRank(Rank rank, String genusOrUninomial, String specificEpithet){
