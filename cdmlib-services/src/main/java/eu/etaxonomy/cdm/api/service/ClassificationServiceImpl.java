@@ -529,6 +529,7 @@ public class ClassificationServiceImpl
     	//TODO classification clone???
     	Classification newClassification = Classification.NewInstance(titleCache +" "+ APPENDIX);
     	newClassification.setReference(classification.getReference());
+        dao.save(newClassification);
 
     	for(Map.Entry<String, List<TaxonNode>> entry:map.entrySet()){
     		String genus = entry.getKey();
@@ -602,8 +603,7 @@ public class ClassificationServiceImpl
     			}
     		}
     	}
-    	dao.saveOrUpdate(newClassification);
-    	taxonNodeDao.saveOrUpdateAll(taxonNodesToSave);
+    	taxonNodeDao.saveAll(taxonNodesToSave);
     	result.setCdmEntity(newClassification);
     	return result;
     }

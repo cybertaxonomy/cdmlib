@@ -255,7 +255,7 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest
 //        IndividualsAssociation indAssoc = IndividualsAssociation.NewInstance(specimen);
 //        desc.addElement(indAssoc);
 //
-//        this.taxonService.saveOrUpdate(taxon);
+//        this.taxonService.save(taxon);
 //
 //        setComplete();
 //        endTransaction();

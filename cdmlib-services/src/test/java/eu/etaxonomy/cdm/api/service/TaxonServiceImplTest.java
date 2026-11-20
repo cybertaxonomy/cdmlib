@@ -170,23 +170,23 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
      */
     @Test
     public final void testGetTaxonByTitle() {
+
         TaxonName name = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(), "Abies", null, "alba", null, null, null, null, null);
         Taxon expectedTaxon = Taxon.NewInstance(name, null);
         expectedTaxon.setDoubtful(true);
         service.save(expectedTaxon);
-        @SuppressWarnings("rawtypes")
-        IdentifiableServiceConfiguratorImpl<TaxonBase> config = new IdentifiableServiceConfiguratorImpl<TaxonBase>();
+
+        IdentifiableServiceConfiguratorImpl<TaxonBase> config = new IdentifiableServiceConfiguratorImpl<>();
         config.setTitleSearchString("Abies alba*");
         //doubtful taxa should be found
-        @SuppressWarnings("rawtypes")
-        Pager<TaxonBase> actualTaxa = service.findByTitle(config);
-        assertEquals(expectedTaxon, actualTaxa.getRecords().get(0));
+        Pager<TaxonBase> matchingTaxa = service.findByTitle(config);
+        assertEquals(expectedTaxon, matchingTaxa.getRecords().get(0));
 
         //and other taxa as well
         expectedTaxon.setDoubtful(false);
-        service.saveOrUpdate(expectedTaxon);
-        actualTaxa = service.findByTitle(config);
-        assertEquals(expectedTaxon, actualTaxa.getRecords().get(0));
+        service.merge(expectedTaxon);
+        matchingTaxa = service.findByTitle(config);
+        assertEquals(expectedTaxon, matchingTaxa.getRecords().get(0));
     }
 
     /**
@@ -264,14 +264,13 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
 
         createTestDataSet();
         synonym.setSec(ReferenceFactory.newArticle());
-        service.saveOrUpdate(synonym);
+
         UpdateResult result = service.swapSynonymAndAcceptedTaxon(synonym, taxWithSyn, true, false, SecReferenceHandlingSwapEnum.AlwaysDelete, null, null);
 
         // find forces flush
         Taxon tax = (Taxon)service.find(result.getCdmEntity().getUuid());
         MatchingTaxonConfigurator configurator = MatchingTaxonConfigurator.NewInstance();
         configurator.setTaxonNameTitle("Test3");
-        @SuppressWarnings("rawtypes")
         List<TaxonBase> synList = service.findTaxaByName(configurator);
 
         if (synList.size() > 0){
@@ -288,7 +287,6 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
 
         createTestDataSet();
         synonym.setSec(save(ReferenceFactory.newArticle()));
-        service.saveOrUpdate(synonym);
 
         UpdateResult result = service.swapSynonymAndAcceptedTaxon(synonym,
                 taxWithSyn, true, true, SecReferenceHandlingSwapEnum.AlwaysDelete, null, null);
@@ -461,7 +459,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         INonViralName s1n = TaxonNameFactory.NewNonViralInstance(null);
         Synonym s1 = save(Synonym.NewInstance(s1n, reference));
         t1.addSynonym(s1, heteroTypicSynonymType);
-        service.saveOrUpdate(t1);
+        service.save(t1);
 
         Synonym synonym = t1.getSynonyms().iterator().next();
 
@@ -796,6 +794,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
     //test remove synonym from taxon -> synonym and name still in the db and the synonymrelationship to the other taxon
     //test delete synonym -> all relationships are deleted, the name is deleted and the synonym itself
     public final void testDeleteSynonymSynonymTaxonBooleanRelToOneTaxon(){
+
         final String[]tableNames = {"TaxonBase","TaxonBase_AUD", "TaxonName","TaxonName_AUD",
                 "HomotypicalGroup","HomotypicalGroup_AUD"};
 
@@ -827,15 +826,13 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         assertEquals(1, nRelations, "There should be 1 relationship left in the database");
         Marker marker1 = Marker.NewInstance(MarkerType.IMPORTED(), true);
         Marker marker2 = Marker.NewInstance(MarkerType.COMPUTED(), true);
+        synonym1 =(Synonym) service.load(uuidSynonym1);
         synonym1.addMarker(marker1);
         synonym1.addMarker(marker2);
-        service.update(synonym1);
-        synonym1 =(Synonym) service.load(uuidSynonym1);
 
         Set<Marker> markers = synonym1.getMarkers();
         Marker marker = markers.iterator().next();
         UUID markerUUID = marker.getUuid();
-       // taxon2 = (Taxon)service.load(uuidTaxon2);
         synonym1 = (Synonym)service.load(uuidSynonym1);
         //the marker should not prevent the deletion
         DeleteResult result = service.deleteSynonym(synonym1, new SynonymDeletionConfigurator());
@@ -879,7 +876,6 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         synonym1.setSec(save(ReferenceFactory.newArticle()));
 
         taxon2.addSynonym(synonym1, SynonymType.HETEROTYPIC_SYNONYM_OF);
-        service.saveOrUpdate(synonym1);
         long nRelations = service.countSynonyms(true);
         //this was "3" when we still had synonym relationships
         assertEquals(2, nRelations, "There should be 2 relationship left in the database");
@@ -935,7 +931,6 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
 
         Annotation annotation = Annotation.NewDefaultLanguageInstance("test");
         synonym1.addAnnotation(annotation);
-        service.saveOrUpdate(synonym1);
 
         DeleteResult result = service.deleteSynonym(synonym1, new SynonymDeletionConfigurator());
         if (result.isError()){
@@ -1767,7 +1762,6 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
     	UUID uuid = occurenceService.save(specimen).getUuid();
     	DescriptionElementBase element = IndividualsAssociation.NewInstance(specimen);
     	description.addElement(element);
-    	service.saveOrUpdate(taxWithoutSyn);
 
     	Taxon tax = (Taxon)service.find(uuidTaxWithoutSyn);
     	Set<TaxonDescription> descr =  tax.getDescriptions();
@@ -1776,7 +1770,6 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
     	UUID uuidDescr = description.getUuid();
 
     	descriptionService.deleteDescription(description);
-    	service.saveOrUpdate(tax);
 
     	description = (TaxonDescription) descriptionService.find(uuidDescr);
     	SpecimenOrObservationBase<?> specimen2 = occurenceService.find(uuid);
@@ -1792,11 +1785,10 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
 
         TaxonDescription description = TaxonDescription.NewInstance(taxWithoutSyn);
         FieldUnit specimen = FieldUnit.NewInstance();
-        UUID uuid = occurenceService.saveOrUpdate(specimen);
+        UUID uuid = occurenceService.save(specimen).getUuid();
         DescriptionElementBase element = IndividualsAssociation.NewInstance(specimen);
         description.addElement(element);
         descriptionDao.save(description);
-        service.saveOrUpdate(taxWithoutSyn);
 
         Taxon tax = (Taxon)service.find(uuidTaxWithoutSyn);
         Set<TaxonDescription> descriptions =  tax.getDescriptions();
@@ -1805,7 +1797,6 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         UUID uuidDescr = description.getUuid();
 
         tax.removeDescription(description, true);
-        service.saveOrUpdate(tax);
 
         description = (TaxonDescription) descriptionService.find(uuidDescr);
         SpecimenOrObservationBase<?> specimen2 = occurenceService.find(uuid);
@@ -1847,7 +1838,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         basionym.setCombinationAuthorship(deCandolle);
         basionym.setUuid(BASIONYM_UUID);
         botName.addBasionym(basionym, null, null,"216", null);
-        nameService.saveOrUpdate(basionym);
+        nameService.save(basionym);
         //species taxon that is the child of genus taxon
         IBotanicalName botSpecies = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         botSpecies.setTitleCache("Hieracium asturianum Pau", true);

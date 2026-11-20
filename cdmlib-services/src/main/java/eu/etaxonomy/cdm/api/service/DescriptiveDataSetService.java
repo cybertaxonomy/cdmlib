@@ -319,6 +319,7 @@ public class DescriptiveDataSetService
     @Override
     @Transactional(readOnly=false)
     public UpdateResult addRowWrapperToDataset(Collection<SpecimenRowWrapperDTO> wrappers, UUID datasetUuid, boolean addDatasetSource){
+
         UpdateResult result = new UpdateResult();
         DescriptiveDataSet dataSet = load(datasetUuid);
         result.setCdmEntity(dataSet);
@@ -358,7 +359,6 @@ public class DescriptiveDataSetService
                 association = IndividualsAssociation.NewInstance(specimen);
                 taxonDescription.addElement(association);
                 descriptionService.save(taxonDescription);
-                //taxonService.saveOrUpdate(taxon);
                 result.addUpdatedObject(taxonDescription);
             }
 
@@ -368,6 +368,7 @@ public class DescriptiveDataSetService
             //if description already exist use the loaded one and add changed data otherwise create a new one and add to specimen
             if (specimenDescription == null){
                 specimenDescription = SpecimenDescription.NewInstance(specimen);
+                descriptionService.save(specimenDescription);
                 specimenDescription.setUuid(specimenDescriptionUuid);
                 List<DescriptionElementDto> elementDtos = descriptionDto.getElements();
 
@@ -448,17 +449,10 @@ public class DescriptiveDataSetService
             specimenDescription.addDescriptiveDataSet(dataSet);
             //add taxon description with IndividualsAssociation to the specimen to data set
             taxonDescription.addDescriptiveDataSet(dataSet);
-            descriptionService.saveOrUpdate(taxonDescription);
-            descriptionService.saveOrUpdate(specimenDescription);
             result.addUpdatedObject(specimen);
             result.addUpdatedObject(specimenDescription);
             result.addUpdatedObject(taxonDescription);
-
-
         }
-
-
-        saveOrUpdate(dataSet);
 
         return result;
     }

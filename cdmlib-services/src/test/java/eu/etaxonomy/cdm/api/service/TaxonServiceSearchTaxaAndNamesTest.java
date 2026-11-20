@@ -694,7 +694,6 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmServicesTransactional
         Taxon t_abies_kawakamii_sensu_komarov = Taxon.NewInstance(n_abies_kawakamii, sec_sensu);
         taxonService.save(t_abies_kawakamii_sensu_komarov);
         t_abies_kawakamii_sensu_komarov.addTaxonRelation(t_abies_balsamea, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), null, null);
-        taxonService.saveOrUpdate(t_abies_kawakamii_sensu_komarov);
 
         IBotanicalName n_abies_lasiocarpa = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         n_abies_lasiocarpa.setNameCache("Abies lasiocarpa", true);
@@ -704,8 +703,6 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmServicesTransactional
         // add 3 taxa to classifications
         europeanAbiesClassification.addChildTaxon(t_abies_balsamea, null, null);
         alternativeClassification.addChildTaxon(t_abies_lasiocarpa, null, null);
-        classificationService.saveOrUpdate(europeanAbiesClassification);
-        classificationService.saveOrUpdate(alternativeClassification);
 
         //
         // 2 Names without taxa
@@ -752,34 +749,34 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmServicesTransactional
                             "Die Balsam-Tanne (Abies balsamea) ist eine Pflanzenart aus der Gattung der Tannen (Abies). Sie wÃ¤chst im nordÃ¶stlichen Nordamerika, wo sie sowohl Tief- als auch Bergland besiedelt. Sie gilt als relativ anspruchslos gegenÃ¼ber dem Standort und ist frosthart. In vielen Teilen des natÃ¼rlichen Verbreitungsgebietes stellt sie die Klimaxbaumart dar.",
                             Language.GERMAN(), null));
         d_abies_balsamea
-        .addElement(CommonTaxonName
+            .addElement(CommonTaxonName
                 .NewInstance(
                         "Balsam-Tanne",
                         Language.GERMAN(), null));
 
         d_abies_balsamea
-        .addElement(Distribution
+            .addElement(Distribution
                 .NewInstance(
                         canada,
                         PresenceAbsenceTerm.PRESENT()));
 
         d_abies_balsamea
-        .addElement(Distribution
+            .addElement(Distribution
                 .NewInstance(
                         germany,
                         PresenceAbsenceTerm.NATIVE()));
 
         d_abies_balsamea
-                .addElement(TextData
-                        .NewInstance(
-                                TaxonServiceSearchTestUtf8Constants.RUSSIAN_ABIES_ALBA_LONG,
-                                Language.RUSSIAN(), null));
+            .addElement(TextData
+                    .NewInstance(
+                            TaxonServiceSearchTestUtf8Constants.RUSSIAN_ABIES_ALBA_LONG,
+                            Language.RUSSIAN(), null));
         d_abies_balsamea
-        .addElement(CommonTaxonName
+            .addElement(CommonTaxonName
                 .NewInstance(
                         TaxonServiceSearchTestUtf8Constants.RUSSIAN_ABIES_ALBA_SHORT,
                         Language.RUSSIAN(), null));
-        descriptionService.saveOrUpdate(d_abies_balsamea);
+        descriptionService.save(d_abies_balsamea);
 
         setComplete();
         endTransaction();

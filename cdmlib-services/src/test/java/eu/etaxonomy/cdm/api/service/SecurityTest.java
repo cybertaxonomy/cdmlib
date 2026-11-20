@@ -177,13 +177,12 @@ public class SecurityTest extends AbstractSecurityTestBase{
             exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
             logger.debug("Expected failure of evaluation.", e);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
         }
         assertNotNull(exception, "Must fail here!");
-
     }
 
     @Test
@@ -205,7 +204,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
             logger.error("unexpected failure of evaluation.", exception);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -248,7 +247,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         context.setAuthentication(authentication);
         expectedTaxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null);
         expectedTaxon.getName().setTitleCache("Newby taxonEditor", true);
-        uuid = taxonService.saveOrUpdate(expectedTaxon);
+        uuid = taxonService.save(expectedTaxon).getUuid();
         commitAndStartNewTransaction(null);
         actualTaxon = taxonService.load(uuid);
         assertEquals(expectedTaxon, actualTaxon);
@@ -264,7 +263,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         TaxonName newName = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
         newName.setTitleCache("Newby taxonEditor", true);
-        UUID uuid = nameService.saveOrUpdate(newName);
+        UUID uuid = nameService.save(newName).getUuid();
         commitAndStartNewTransaction(null);
         TaxonName savedName = nameService.load(uuid);
         assertEquals(newName, savedName);
@@ -295,7 +294,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             logger.error("Unexpected failure of evaluation.", e);
             exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -326,7 +325,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             logger.error("Unexpected failure of evaluation.", e);
             exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
         }finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -357,7 +356,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             logger.error("Unexpected failure of evaluation.", e);
             exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
         }  finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -379,7 +378,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         GrantedAuthorityImpl referenceUpdate_ga = new CdmAuthority(PermissionClass.REFERENCE, null, EnumSet.of(CRUD.UPDATE), null).asNewGrantedAuthority();
         grantedAuthorities.add(referenceUpdate_ga);
         taxonEditor.setGrantedAuthorities(grantedAuthorities);
-        userService.saveOrUpdate(taxonEditor);
         commitAndStartNewTransaction(null);
 
         authentication = authenticationManager.authenticate(tokenForTaxonEditor);
@@ -390,7 +388,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         book.setTitleCache("Mobydick", true);
         Exception exception = null;
         try {
-            referenceService.saveOrUpdate(book);
             commitAndStartNewTransaction(null);
         } catch (AccessDeniedException e){
             logger.error("Unexpected failure of evaluation.", e);

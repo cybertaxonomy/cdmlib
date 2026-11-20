@@ -258,7 +258,6 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
             boolean isRelToHigherName = relatedHigherNames.contains(rel.getToTaxon().getName());
             if(isRelToHigherName){
                 rel.setCitation(conceptReference);
-                getSession().saveOrUpdate(rel);
             }
         }
     }

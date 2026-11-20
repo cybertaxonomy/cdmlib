@@ -991,31 +991,31 @@ public class StructuredDescriptionAggregationTest extends CdmServicesTransaction
         n_lapsana.setTitleCache("Lapsana", true);
         Taxon t_lapsana = Taxon.NewInstance(n_lapsana, sec);
         t_lapsana.setUuid(T_LAPSANA_UUID);
-        taxonService.saveOrUpdate(t_lapsana);
+        taxonService.save(t_lapsana);
 
         IBotanicalName n_lapsana_communis = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         n_lapsana_communis.setTitleCache("L. communis", true);
         Taxon t_lapsana_communis = Taxon.NewInstance(n_lapsana_communis, sec);
         t_lapsana_communis.setUuid(T_LAPSANA_COMMUNIS_UUID);
-        taxonService.saveOrUpdate(t_lapsana_communis);
+        taxonService.save(t_lapsana_communis);
 
         IBotanicalName n_lapsana_communis_communis = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
         n_lapsana_communis_communis.setTitleCache("L. communis subsp. communis", true);
         Taxon t_lapsana_communis_communis = Taxon.NewInstance(n_lapsana_communis_communis, sec);
         t_lapsana_communis_communis.setUuid(T_LAPSANA_COMMUNIS_COMMUNIS_UUID);
-        taxonService.saveOrUpdate(t_lapsana_communis_communis);
+        taxonService.save(t_lapsana_communis_communis);
 
         IBotanicalName n_lapsana_communis_adenophora = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
         n_lapsana_communis_adenophora.setTitleCache("L. communis subsp. adenophora", true);
         Taxon t_lapsana_communis_adenophora = Taxon.NewInstance(n_lapsana_communis_adenophora, sec);
         t_lapsana_communis_adenophora.setUuid(T_LAPSANA_COMMUNIS_ADENOPHORA_UUID);
-        taxonService.saveOrUpdate(t_lapsana_communis_adenophora);
+        taxonService.save(t_lapsana_communis_adenophora);
 
         IBotanicalName n_lapsana_communis_alpina = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
         n_lapsana_communis_alpina.setTitleCache("L. communis subsp. alpina", true);
         Taxon t_lapsana_communis_alpina = Taxon.NewInstance(n_lapsana_communis_alpina, sec);
         t_lapsana_communis_alpina.setUuid(T_LAPSANA_COMMUNIS_ALPINA_UUID);
-        taxonService.saveOrUpdate(t_lapsana_communis_alpina);
+        taxonService.save(t_lapsana_communis_alpina);
 
         // --- Classification --- //
         Classification classification = Classification.NewInstance("TestClassification");
@@ -1027,7 +1027,6 @@ public class StructuredDescriptionAggregationTest extends CdmServicesTransaction
         node_lapsana_communis.addChildTaxon(t_lapsana_communis_communis, sec, null);
         node_lapsana_communis.addChildTaxon(t_lapsana_communis_adenophora, sec, null);
         node_lapsana_communis.addChildTaxon(t_lapsana_communis_alpina, sec, null);
-        classificationService.saveOrUpdate(classification);
 
         commitAndStartNewTransaction(null);
 

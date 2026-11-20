@@ -104,12 +104,12 @@ public class AgentServiceImpl
 	        result.addException(new Exception("Can't delete object without UUID."));
 	        return result;
 	    }
-		AgentBase<?> base = dao.load(agentUUID);
+		AgentBase<?> agentBase = dao.load(agentUUID);
 		result = isDeletable(agentUUID, null);
 
     	if (result.isOk()){
-			if (base instanceof Team){
-				Team baseTeam = (Team) base;
+			if (agentBase instanceof Team){
+				Team baseTeam = (Team) agentBase;
 				List<Person> members = baseTeam.getTeamMembers();
 				List<Person> temp = new ArrayList<>();
 				for (Person member:members){
@@ -119,11 +119,9 @@ public class AgentServiceImpl
 					members.remove(member);
 				}
 			}
-			saveOrUpdate(base);
 
-			dao.delete(base);
-			result.addDeletedObject(base);
-
+			dao.delete(agentBase);
+			result.addDeletedObject(agentBase);
 		}
 
 		return result;

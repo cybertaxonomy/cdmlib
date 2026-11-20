@@ -229,7 +229,6 @@ public class TaxonServiceSearchTest extends CdmServicesTransactionalSpringIntegr
         for(String rndStr: uniqueRandomStrs){
             description.addElement(CommonTaxonName.NewInstance("Rot" + rndStr, Language.DEFAULT()));
         }
-        descriptionService.saveOrUpdate(description);
         commitAndStartNewTransaction(null);
 
         refreshLuceneIndex();
@@ -266,7 +265,7 @@ public class TaxonServiceSearchTest extends CdmServicesTransactionalSpringIntegr
 
             TaxonDescription description = TaxonDescription.NewInstance(taxon);
             description.addElement(CommonTaxonName.NewInstance("Rot" + rndStr, Language.DEFAULT()));
-            descriptionService.saveOrUpdate(description);
+            descriptionService.save(description);
         }
 
         commitAndStartNewTransaction(new String[]{/*"TAXONBASE"*/});
@@ -313,7 +312,7 @@ public class TaxonServiceSearchTest extends CdmServicesTransactionalSpringIntegr
             text.append(" ").append("Rot");
             TaxonDescription description = TaxonDescription.NewInstance(taxon);
             description.addElement(TextData.NewInstance(text.toString(), Language.DEFAULT(), null));
-            descriptionService.saveOrUpdate(description);
+            descriptionService.save(description);
         }
 
         commitAndStartNewTransaction(null);
@@ -356,7 +355,7 @@ public class TaxonServiceSearchTest extends CdmServicesTransactionalSpringIntegr
             for(int k = 0; k < i; k++){
                 description.addElement(TextData.NewInstance("Rot", Language.DEFAULT(), null));
             }
-            descriptionService.saveOrUpdate(description);
+            descriptionService.save(description);
         }
 
         commitAndStartNewTransaction(null);
@@ -388,7 +387,6 @@ public class TaxonServiceSearchTest extends CdmServicesTransactionalSpringIntegr
         for(String rndStr: uniqueRandomStrs){
             description.addElement(CommonTaxonName.NewInstance("Rot" + rndStr, Language.DEFAULT()));
         }
-        descriptionService.saveOrUpdate(description);
 
         commitAndStartNewTransaction(new String[]{"DESCRIPTIONELEMENTBASE"});
 
@@ -540,8 +538,8 @@ public class TaxonServiceSearchTest extends CdmServicesTransactionalSpringIntegr
                 ((TextData)elm).putText(Language.POLISH(), "Jod"+UTF8.POLISH_L+"a balsamiczna");
             }
         }
-        descriptionService.saveOrUpdate(description);
         commitAndStartNewTransaction(null);
+
         pager = taxonService.findByDescriptionElementFullText(TextData.class, "abeto", null, subtree, null, Arrays.asList(new Language[]{Language.SPANISH_CASTILIAN()}), false, null, null, null, null);
         assertEquals(0, pager.getCount().intValue(), "The spanish 'abeto bals"+UTF8.SMALL_A_ACUTE+"mico' TextData should no longer be indexed");
         pager = taxonService.findByDescriptionElementFullText(TextData.class, "balsamiczna", null, subtree, null, Arrays.asList(new Language[]{Language.POLISH()}), false, null, null, null, null);
@@ -577,6 +575,7 @@ public class TaxonServiceSearchTest extends CdmServicesTransactionalSpringIntegr
 
         // 2.) create new description and add to taxon:
         TaxonDescription d_abies_balsamea_new = TaxonDescription.NewInstance();
+        descriptionService.save(d_abies_balsamea_new);
         d_abies_balsamea_new
                 .addElement(TextData
                         .NewInstance(
@@ -587,7 +586,6 @@ public class TaxonServiceSearchTest extends CdmServicesTransactionalSpringIntegr
         // this is maybe not needed in future,  see ticket #3344
         IBotanicalName abies_balsamea = CdmBase.deproxy(t_abies_balsamea.getName(), TaxonName.class);
         abies_balsamea.setAuthorshipCache(null);
-        descriptionService.saveOrUpdate(d_abies_balsamea_new);
         commitAndStartNewTransaction(null);
 
         pager = taxonService.findByDescriptionElementFullText(TextData.class, "mittelgro"+UTF8.SHARP_S+"er Baum",
@@ -620,10 +618,8 @@ public class TaxonServiceSearchTest extends CdmServicesTransactionalSpringIntegr
         assertEquals(childNode.getClassification().getUuid(), CLASSIFICATION_UUID, "expecting default classification");
 
         // moving the taxon around, the rootnode is only a proxy
-        alternateClassification.setRootNode(HibernateProxyHelper.deproxy(alternateClassification.getRootNode(), TaxonNode.class));
+        alternateClassification.setRootNode(HibernateProxyHelper.deproxy(alternateClassification.getRootNode()));
         alternateClassification.addChildNode(childNode, null, null);
-
-        classificationService.saveOrUpdate(alternateClassification);
         commitAndStartNewTransaction(null);
 
 //        printDataSet(System.out, new String[] {
@@ -637,7 +633,6 @@ public class TaxonServiceSearchTest extends CdmServicesTransactionalSpringIntegr
         assertEquals(1, pager.getCount().intValue(), "GERMAN 'Balsam-Tanne' should now be found in other classification");
 
         classification.getChildNodes().clear();
-        classificationService.saveOrUpdate(classification);
         commitAndStartNewTransaction(null);
 
         pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne",
@@ -685,8 +680,6 @@ public class TaxonServiceSearchTest extends CdmServicesTransactionalSpringIntegr
 
         String newName = "Quercus robur";
         taxon.setTitleCache(newName + " sec. ", true);
-
-        taxonService.saveOrUpdate(taxon);
         commitAndStartNewTransaction(null);
 
         taxon = taxonService.find(taxon.getUuid());
@@ -1210,7 +1203,6 @@ public class TaxonServiceSearchTest extends CdmServicesTransactionalSpringIntegr
         assertEquals(1, relsTo.size());
         TaxonRelationship taxonRelation = relsTo.iterator().next();
         taxonRelation.setType(TaxonRelationshipType.PARTIAL_SYNONYM_FOR());
-        taxonService.saveOrUpdate(t_abies_balsamea);
         commitAndStartNewTransaction(null);
 
         //should give same results as above
@@ -1241,7 +1233,6 @@ public class TaxonServiceSearchTest extends CdmServicesTransactionalSpringIntegr
         taxonRelation = relsTo.iterator().next();
         assertEquals(taxonRelation.getFromTaxon().getUuid(), ABIES_KAWAKAMII_SEC_KOMAROV_UUID);
         taxonRelation.setType(TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR());
-        taxonService.saveOrUpdate(t_abies_balsamea);
         commitAndStartNewTransaction(null);
 
         //should still give the same result
@@ -1261,7 +1252,6 @@ public class TaxonServiceSearchTest extends CdmServicesTransactionalSpringIntegr
         taxonRelation = relsTo.iterator().next();
         assertEquals(taxonRelation.getFromTaxon().getUuid(), ABIES_KAWAKAMII_SEC_KOMAROV_UUID);
         taxonRelation.setType(TaxonRelationshipType.PARTIAL_MISAPPLIED_NAME_FOR());
-        taxonService.saveOrUpdate(t_abies_balsamea);
         commitAndStartNewTransaction(null);
 
         //should still give the same result
@@ -1375,7 +1365,6 @@ public class TaxonServiceSearchTest extends CdmServicesTransactionalSpringIntegr
         assertEquals(1, relsTo.size());
         TaxonRelationship taxonRelation = relsTo.iterator().next();
         t_abies_balsamea.removeTaxonRelation(taxonRelation);
-        taxonService.saveOrUpdate(t_abies_balsamea);
         commitAndStartNewTransaction(null);
 
         pager = taxonService.findTaxaAndNamesByFullText(
@@ -1387,7 +1376,6 @@ public class TaxonServiceSearchTest extends CdmServicesTransactionalSpringIntegr
         Taxon t_abies_kawakamii_sensu_komarov = (Taxon)taxonService.find(ABIES_KAWAKAMII_SEC_KOMAROV_UUID);
         Taxon t_abies_alba = (Taxon)taxonService.find(ABIES_ALBA_UUID);
         t_abies_alba.addMisappliedName(t_abies_kawakamii_sensu_komarov, null, null);
-        taxonService.update(t_abies_kawakamii_sensu_komarov);
         commitAndStartNewTransaction(null);
 
         pager = taxonService.findTaxaAndNamesByFullText(
@@ -1418,19 +1406,6 @@ public class TaxonServiceSearchTest extends CdmServicesTransactionalSpringIntegr
         Taxon t_abies_kawakamii_sensu_komarov = (Taxon)taxonService.find(ABIES_KAWAKAMII_SEC_KOMAROV_UUID); //id=5006
         Taxon t_abies_alba = (Taxon)taxonService.find(ABIES_ALBA_UUID); //id=5001
         t_abies_alba.addMisappliedName(t_abies_kawakamii_sensu_komarov, null, null);
-
-        /* Since the upgrade from hibernate search 4 to 5.5
-         * triggering an update of t_abies_alba is no longer sufficient to also update the
-         * document of t_abies_kawakamii_sensu_komarov in the lucene index.
-         * The last test in testFindTaxaAndNamesByFullText_AreaFilter() failed in this case.
-         * This situation is reproduced here.
-         * In record TaxonBase.id = 5006 there should be 2 fields "relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id", one
-         * with value 5003 and the other one with value 5001. The later should be newly created.
-         * You find this in the index after running refreshLuceneIndex() (see below) but not after
-         * only calling commitAndStartNewTransaction().
-         */
-        taxonService.update(t_abies_alba);
-
         commitAndStartNewTransaction(null);
 
         Pager<SearchResult<TaxonBase>> pager = taxonService.findTaxaAndNamesByFullText(
@@ -1751,7 +1726,6 @@ public class TaxonServiceSearchTest extends CdmServicesTransactionalSpringIntegr
         Taxon t_abies_kawakamii_sensu_komarov = Taxon.NewInstance(n_abies_kawakamii, sec_sensu);
         taxonService.save(t_abies_kawakamii_sensu_komarov);
         t_abies_kawakamii_sensu_komarov.addTaxonRelation(t_abies_balsamea, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), null, null);
-        taxonService.saveOrUpdate(t_abies_kawakamii_sensu_komarov);
 
         IBotanicalName n_abies_lasiocarpa = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         n_abies_lasiocarpa.setNameCache("Abies lasiocarpa", true);
@@ -1761,8 +1735,6 @@ public class TaxonServiceSearchTest extends CdmServicesTransactionalSpringIntegr
         // add taxa to classifications
         europeanAbiesClassification.addChildTaxon(t_abies_balsamea, null, null);
         alternativeClassification.addChildTaxon(t_abies_lasiocarpa, null, null);
-        classificationService.saveOrUpdate(europeanAbiesClassification);
-        classificationService.saveOrUpdate(alternativeClassification);
 
         //
         // Description
@@ -1804,7 +1776,7 @@ public class TaxonServiceSearchTest extends CdmServicesTransactionalSpringIntegr
                         PresenceAbsenceTerm.PRESENT()));
 
         d_abies_balsamea
-        .addElement(Distribution
+            .addElement(Distribution
                 .NewInstance(
                         germany,
                         PresenceAbsenceTerm.NATIVE()));
@@ -1815,11 +1787,11 @@ public class TaxonServiceSearchTest extends CdmServicesTransactionalSpringIntegr
                                 TaxonServiceSearchTestUtf8Constants.RUSSIAN_ABIES_ALBA_LONG,
                                 Language.RUSSIAN(), null));
         d_abies_balsamea
-        .addElement(CommonTaxonName
+            .addElement(CommonTaxonName
                 .NewInstance(
                         TaxonServiceSearchTestUtf8Constants.RUSSIAN_ABIES_ALBA_SHORT,
                         Language.RUSSIAN(), null));
-        descriptionService.saveOrUpdate(d_abies_balsamea);
+        descriptionService.save(d_abies_balsamea);
 
         setComplete();
         endTransaction();

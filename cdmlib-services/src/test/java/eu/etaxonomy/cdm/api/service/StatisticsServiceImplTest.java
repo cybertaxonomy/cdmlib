@@ -447,17 +447,15 @@ public class StatisticsServiceImplTest extends CdmServicesTransactionalSpringInt
 					// classifications:
 					secondClassificationForTaxonFlag = true;
 					sharedClassification++;
-					classificationService.saveOrUpdate(classifications
-							.get(classiCounter + 1));
+					classificationService.save(classifications.get(classiCounter + 1));
 
-					(classificationCounters.get(classiCounter + 1))
-					.addAll(taxonContextCounter);
+					classificationCounters.get(classiCounter + 1).addAll(taxonContextCounter);
 				}
 
 				taxonService.save(taxon);
 				(classificationCounters.get(classiCounter))
 						.addAll(taxonContextCounter);
-				classificationService.saveOrUpdate(classifications
+				classificationService.save(classifications
 						.get(classiCounter));
 				(countAll.classifications)++;
 

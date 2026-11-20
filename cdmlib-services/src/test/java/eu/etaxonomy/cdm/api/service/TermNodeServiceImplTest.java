@@ -152,10 +152,10 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
         DefinedTerm property = DefinedTerm.NewInstance(TermType.Property);
         TermTree<DefinedTerm> propertyTree = TermTree.NewInstance(TermType.Property);
         TermNode<DefinedTerm> nodeProperty = propertyTree.getRoot().addChild(property);
-        termService.saveOrUpdate(property);
-        termService.saveOrUpdate(structure);
-        termTreeService.saveOrUpdate(structureTree);
-        termTreeService.saveOrUpdate(propertyTree);
+        termService.save(property);
+        termService.save(structure);
+        termTreeService.save(structureTree);
+        termTreeService.save(propertyTree);
 
         TermTree<Feature> characterTree = TermTree.NewInstance(TermType.Feature);
         UUID characterTreeUuid = characterTree.getUuid();
@@ -163,8 +163,8 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
         character.setSupportsCategoricalData(false);
 
         characterTree.getRoot().addChild(character);
-        termService.saveOrUpdate(character);
-        termTreeService.saveOrUpdate(characterTree);
+        termService.save(character);
+        termTreeService.save(characterTree);
         commitAndStartNewTransaction();
 
         return characterTreeUuid;
@@ -179,7 +179,7 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
         TermNode<Feature> newNode = featureTree.getRoot().addChild(feature);
         termTreeService.save(featureTree);
 
-        termNodeService.saveOrUpdate(newNode);
+        termNodeService.save(newNode);
 
         commitAndStartNewTransaction(/*new String[]{"FeatureNode"}*/);
         newNode = termNodeService.load(newNode.getUuid());
@@ -196,7 +196,6 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
         String oldTreeIndex = node2.treeIndex();
 
         TermNode<Feature> newNode = node2.addChild(feature);
-        termNodeService.saveOrUpdate(node2);
 
         commitAndStartNewTransaction();
         newNode = termNodeService.load(newNode.getUuid());
@@ -213,7 +212,6 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
         node2 = termNodeService.load(node2Uuid);
         node3 = termNodeService.load(node3Uuid);
         node3.addChild(node2);
-        termNodeService.saveOrUpdate(node2);
         commitAndStartNewTransaction();
         TermNode<?> node6 = termNodeService.load(node6Uuid);
         assertEquals(node3.treeIndex() + "2#4#6#", node6.treeIndex(), "Node6 treeindex is not correct");
@@ -222,7 +220,6 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
         TermTree<Feature> featureTree2 = termTreeService.load(featureTree2Uuid);
         node2 = termNodeService.load(node2Uuid);
         featureTree2.getRoot().addChild(node2);
-        termNodeService.saveOrUpdate(node2);
         commitAndStartNewTransaction();
         node2 = termNodeService.load(node2Uuid);
         assertEquals("#t5002#7#2#", node2.treeIndex(), "Node2 treeindex is not correct");
@@ -233,7 +230,6 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
         node3 = termNodeService.load(node3Uuid);
         TermNode<Feature> node5 = termNodeService.load(node5Uuid);
         node5.addChild(node3);
-        termNodeService.saveOrUpdate(node5);
         commitAndStartNewTransaction(new String[]{"FeatureNode"});
         node3 = termNodeService.load(node3Uuid);
         assertEquals(node5.treeIndex() + node3.getId() + sep, node3.treeIndex(), "Node3 treeindex is not correct");
@@ -478,7 +474,7 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
         //no removed child to delete here
         termTreeService .saveOrUpdate(keyLoaded);
 
-       commitAndStartNewTransaction(tableNames);
+        commitAndStartNewTransaction(tableNames);
 
         rootNode = termNodeService.find(tree.getRoot().getUuid());
         rootNode.getChildNodes();

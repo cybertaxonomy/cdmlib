@@ -149,7 +149,7 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
             exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
             logger.debug("Expected failure of evaluation.", exception);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -228,8 +228,6 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
         Set<GrantedAuthority> grantedAuthorities = user.getGrantedAuthorities();
         grantedAuthorities.add(rolePublish);
         user.setGrantedAuthorities(grantedAuthorities);
-        userService.saveOrUpdate(user);
-
         commitAndStartNewTransaction(null);
 
         // 2. add to existing group
@@ -237,7 +235,6 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
         String groupSpecialEditor_Name = group_special_editor.getName();
         rolePublish = grantedAuthorityService.load(Role.ROLE_PUBLISH.getUuid());
         group_special_editor.addGrantedAuthority(rolePublish);
-        groupService.saveOrUpdate(group_special_editor);
 
         commitAndStartNewTransaction(null);
 
@@ -245,7 +242,7 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
         Group groupNewPublishers = Group.NewInstance(newGroupName);
         rolePublish = grantedAuthorityService.load(Role.ROLE_PUBLISH.getUuid());
         groupNewPublishers.addGrantedAuthority(rolePublish);
-        groupService.saveOrUpdate(groupNewPublishers);
+        groupService.save(groupNewPublishers);
         groupService.addUserToGroup(user.getUsername(), newGroupName);
 
         commitAndStartNewTransaction(null);

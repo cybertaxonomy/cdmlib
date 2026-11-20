@@ -83,7 +83,6 @@ public class TestModelUpdate {
     		    TemporalData td = (TemporalData)appCtr.getDescriptionElementService().find(
     		            UUID.fromString("9a1c91c0-fc58-4310-94cb-8c26115985d3"));
     		    td.getFeature().setSupportsCategoricalData(true);
-    		    appCtr.getTermService().saveOrUpdate(td.getFeature());
     		    System.out.println(td.getPeriod());
                 appCtr.commitTransaction(tx);
     		}

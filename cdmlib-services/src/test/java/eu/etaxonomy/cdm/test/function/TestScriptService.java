@@ -240,11 +240,11 @@ public class TestScriptService {
 //		t3.setTitleCache("Taxon3", true);
 //		TaxonNode node3 = node1.addChildTaxon(t3, 0, null, null);
 //
-//		appCtr.getTaxonNodeService().saveOrUpdate(node1);
+//		appCtr.getTaxonNodeService().save(node1);
 //
 //		cl.addChildNode(node3, 0, null, null);
-//		appCtr.getTaxonNodeService().saveOrUpdate(node3);
-//		appCtr.getClassificationService().saveOrUpdate(cl);
+//		appCtr.getTaxonNodeService().save(node3);
+//		appCtr.getClassificationService().save(cl);
 //
 //		TermTree<Feature> ft1 = TermTree.NewInstance();
 //		FeatureNode fn1 = TermNode.NewInstance((Feature)null);
@@ -257,11 +257,11 @@ public class TestScriptService {
 //		TermNode fn3 = TermNode.NewInstance((Feature)null);
 //		fn1.addChild(fn2, 0);
 //
-//		appCtr.getTermNodeService().saveOrUpdate(fn1);
+//		appCtr.getTermNodeService().save(fn1);
 //
 //		ft1.getRoot().addChild(fn3, 0);
-//		appCtr.getTermNodeService().saveOrUpdate(fn3);
-//		appCtr.getTermTreeService().saveOrUpdate(ft1);
+//		appCtr.getTermNodeService().save(fn3);
+//		appCtr.getTermTreeService().save(ft1);
 //	}
 
 	private void testDatabaseChange() throws DataSourceNotFoundException{
@@ -423,7 +423,7 @@ public class TestScriptService {
 				botName2.addHybridParent(hybridName, HybridRelationshipType.FIRST_PARENT(), null);
 
 				TransactionStatus tx = appCtr.startTransaction();
-				appCtr.getNameService().saveOrUpdate(botName2);
+				appCtr.getNameService().save(botName2);
 				rs = ds.executeQuery("Select count(*) as n FROM NameRelationship");
 				rs.next();
 				c = rs.getInt("n");
@@ -431,7 +431,7 @@ public class TestScriptService {
 
 				appCtr.commitTransaction(tx);
 
-				appCtr.getNameService().saveOrUpdate(botName1);
+				appCtr.getNameService().save(botName1);
 
 				rs = ds.executeQuery("Select count(*) as n FROM NameRelationship");
 				rs.next();
@@ -443,7 +443,6 @@ public class TestScriptService {
 				e.printStackTrace();
 			}
 
-
 			//Agent agent = new Agent();
 			//appCtr.getAgentService().saveAgent(agent);
 			appCtr.close();
@@ -452,7 +451,6 @@ public class TestScriptService {
 			logger.error("Runtime Exception");
 			e.printStackTrace();
 			appCtr.close();
-
 		}
 		return false;
 	}

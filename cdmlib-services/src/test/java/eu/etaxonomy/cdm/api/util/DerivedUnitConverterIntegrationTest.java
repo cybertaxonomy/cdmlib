@@ -51,7 +51,7 @@ public class DerivedUnitConverterIntegrationTest extends CdmServicesSpringIntegr
         DerivedUnitConverter<MediaSpecimen> converter = new DerivedUnitConverter<>(std);
         SpecimenTypeDesignation newDu = converter.convertTo(MediaSpecimen.class, SpecimenOrObservationType.StillImage);
         assertEquals(du, converter.oldDerivedUnit());
-        service.saveOrUpdate(newDu.getTypeSpecimen());
+        service.save(newDu.getTypeSpecimen());
         service.delete(du);
         assertEquals(1, service.list(null, null, null, null, null).size());
         assertEquals(1, service.list(MediaSpecimen.class, null, null, null, null).size());
