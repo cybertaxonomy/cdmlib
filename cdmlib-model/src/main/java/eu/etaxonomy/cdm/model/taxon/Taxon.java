@@ -602,6 +602,7 @@ public class Taxon
     }
 
     public boolean removeTaxonNode(TaxonNode taxonNode, boolean deleteChildren){
+
         TaxonNode parent = taxonNode.getParent();
         boolean success = true;
 
@@ -611,7 +612,7 @@ public class Taxon
 
         } else if (!taxonNode.isTopmostNode()){
 
-            List<TaxonNode> nodes = new ArrayList<TaxonNode> (taxonNode.getChildNodes());
+            List<TaxonNode> nodes = new ArrayList<> (taxonNode.getChildNodes());
             for (TaxonNode childNode: nodes){
                 taxonNode.getChildNodes().remove(childNode);
                 parent.addChildNode(childNode, null, null);

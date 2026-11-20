@@ -84,7 +84,6 @@ import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.test.integration.spring.CdmDataSet;
 import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIntegrationTest;
 
@@ -109,9 +108,6 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
 
     @Autowired
     private IClassificationService classificationService;
-
-    @Autowired
-    private ITaxonNodeDao taxonNodeDao;
 
     @Autowired
     private ITaxonNodeService nodeService;
@@ -343,6 +339,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
 
     @Test
     public final void testChangeSynonymToAcceptedTaxonWithSecHandlingAlwaysDelete(){
+
         Taxon genus = getTestTaxon();
         TaxonNode node = genus.getTaxonNodes().iterator().next();
 
@@ -365,6 +362,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
     }
 
     @Test
+    @CdmDataSet("/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testChangeSynonymToAcceptedTaxonWithSecHandlingUseNewParentSec(){
 
         Taxon genus = getTestTaxon();
@@ -374,7 +372,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         Reference sec = save(ReferenceFactory.newBook());
         sec.setTitleCache("Flora Cuba", true);
         syn.setSec(sec);
-        service.saveOrUpdate(syn);
+
         try {
             result = service.changeSynonymToAcceptedTaxon(SYNONYM2_UUID, SPECIES2_UUID, node.getUuid(), null, null, SecReferenceHandlingEnum.UseNewParentSec, true);
         } catch (HomotypicalGroupChangeException e) {
@@ -391,7 +389,6 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         assertNotNull(taxNew);
         assertNotNull(taxNew.getSec());
         assertEquals(taxWithSyn.getSec(), taxNew.getSec());
-
     }
 
     @Test
@@ -826,7 +823,6 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         assertEquals(2, nRelations, "There should be 2 relationship left in the database");
 
         taxon2.removeSynonym(synonym1, false);
-        service.saveOrUpdate(taxon2);
 
         commitAndStartNewTransaction(null);
 
@@ -976,8 +972,6 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         TaxonName name3 = nameService.load(name3Uuid);
         name3.addRelationshipFromName(name2, NameRelationshipType.LATER_HOMONYM(), null, null);
 
-        service.saveOrUpdate(synonym1);
-
         long nRelations = nameService.listNameRelationships(null, 1000, 0, null, null).size();
         logger.info("number of name relations: " + nRelations);
         assertEquals(1, nRelations, "There should be 1 name relationship left in the database");
@@ -1009,6 +1003,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
     @Test
     @CdmDataSet(cleanSweep = true, value = "TaxonServiceImplTest.testDeleteSynonym.xml")
     public final void testDeleteSynonymSynonymTaxonBooleanWithRelatedNameDeleteAllNameRelations(){
+
         final String[]tableNames = {"TaxonBase","TaxonBase_AUD", "TaxonName","TaxonName_AUD",
                 "HomotypicalGroup","HomotypicalGroup_AUD"};
 
@@ -1025,8 +1020,6 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         UUID name3Uuid = synonym1.getName().getUuid();
         TaxonName name3 = nameService.load(name3Uuid);
         name3.addRelationshipFromName(name2, NameRelationshipType.LATER_HOMONYM(), null, null);
-
-        service.saveOrUpdate(synonym1);
 
         long nRelations = nameService.listNameRelationships(null, 1000, 0, null, null).size();
         logger.info("number of name relations: " + nRelations);
@@ -1070,8 +1063,6 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         UUID name3Uuid = synonym1.getName().getUuid();
         TaxonName synName1 = nameService.load(name3Uuid);
         synName1.addRelationshipFromName(synName2, NameRelationshipType.BASIONYM(), null, null);
-
-        service.saveOrUpdate(synonym1);
 
         long nRelations = nameService.listNameRelationships(null, 1000, 0, null, null).size();
         logger.info("number of name relations: " + nRelations);
@@ -1161,7 +1152,6 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         TaxonName name2 = nameService.load(uuidSynonymName2);
         synonym1.getName().addRelationshipFromName(name2, NameRelationshipType.LATER_HOMONYM(), null, null);
 
-        service.saveOrUpdate(synonym1);
         nRelations = service.countSynonyms(true);
         assertEquals(2, nRelations, "There should be two relationships in the database");
         this.setComplete();
@@ -1298,8 +1288,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
     public final void testDeleteTaxon(){
 
         //create a small classification
-        Taxon testTaxon = getTestTaxon();
-        service.save(testTaxon).getUuid();
+        getTestTaxon();
 
         //test
         Taxon speciesTaxon = (Taxon)service.find(SPECIES1_UUID);
@@ -1347,8 +1336,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
     public final void testDeleteTaxonWithAnnotations(){
 
         //create a small classification
-        Taxon testTaxon = getTestTaxon();
-        service.save(testTaxon).getUuid();
+        getTestTaxon();
 
         Taxon speciesTaxon = (Taxon)service.find(SPECIES1_UUID);
         Iterator<TaxonDescription> descriptionIterator = speciesTaxon.getDescriptions().iterator();
@@ -1397,8 +1385,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
     public final void testDeleteTaxonUsedInTaxonRelation(){
 
         //create a small classification
-        Taxon testTaxon = getTestTaxon();
-        service.save(testTaxon).getUuid();
+        getTestTaxon();
 
         Taxon speciesTaxon = (Taxon)service.find(SPECIES1_UUID);
         Taxon speciesTaxon2 = (Taxon)service.find(SPECIES2_UUID);
@@ -1454,8 +1441,8 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
     	commitAndStartNewTransaction(tableNames);
 
     	//create a small classification
-        Taxon testTaxon = getTestTaxon();
-        service.save(testTaxon).getUuid();
+        getTestTaxon();
+
         Taxon speciesTaxon = (Taxon)service.find(SPECIES2_UUID);
 
         Synonym synonym = speciesTaxon.getSynonyms().iterator().next();
@@ -1486,8 +1473,8 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
     public final void testDeleteTaxonNameUsedInOtherContext(){
 
         //create a small classification
-        Taxon testTaxon = getTestTaxon();
-        service.save(testTaxon).getUuid();
+        getTestTaxon();
+
         Taxon speciesTaxon = (Taxon)service.find(SPECIES1_UUID);
 
         IBotanicalName taxonName = nameService.find(SPECIES1_NAME_UUID);
@@ -1514,13 +1501,13 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
     @Test
     @CdmDataSet("/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testDeleteTaxonNameUsedInTwoClassificationsDeleteAllNodes(){
+
         commitAndStartNewTransaction(null);
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
         //create a small classification
         Taxon testTaxon = getTestTaxon();
+        UUID uuid = testTaxon.getUuid();
 
-        UUID uuid = service.save(testTaxon).getUuid();
-        //BotanicalName name = nameService.find(uuid);
         Set<TaxonNode> nodes = testTaxon.getTaxonNodes();
         TaxonNode node = nodes.iterator().next();
         List<TaxonNode> childNodes = node.getChildNodes();
@@ -1551,7 +1538,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
 
         // delete the taxon only in second classification, this should delete only the nodes, not the taxa
         Taxon testTaxon = getTestTaxon();
-        UUID uuid = service.save(testTaxon).getUuid();
+        UUID uuid = testTaxon.getUuid();
         Classification secondClassification = getTestClassification("secondClassification");
         Set<TaxonNode> nodes = testTaxon.getTaxonNodes();
         TaxonNode node = nodes.iterator().next();
@@ -1581,16 +1568,17 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         Taxon childTaxon = (Taxon)service.find(childUUID);
         assertNotNull(childTaxon);
         //when calling delete taxon and the taxon can not be deleted the children should not be deleted as well. If children should be deleted call delete taxonnode
-        node = nodeService.find(childNodeUUID);
-        assertNotNull(node);
+        childNode = nodeService.find(childNodeUUID);
+        assertNotNull(childNode);
     }
 
     @Test
     @CdmDataSet("/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testTaxonNodeDeletionConfiguratorMoveToParent(){
+
         //test childHandling MOVE_TO_PARENT:
         Taxon testTaxon = getTestTaxon();
-        UUID uuid = service.save(testTaxon).getUuid();
+        UUID uuid = testTaxon.getUuid();
 
         Taxon topMost = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.FAMILY()), null);
 
@@ -1627,7 +1615,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
     public final void testTaxonNodeDeletionConfiguratorDeleteChildren(){
         //test childHandling DELETE:
         Taxon testTaxon = getTestTaxon();
-        UUID uuid = service.save(testTaxon).getUuid();
+        UUID uuid = testTaxon.getUuid();
 
         Taxon topMost = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.FAMILY()), null);
 
@@ -1667,7 +1655,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
 
         //test childHandling DELETE:
         Taxon testTaxon = getTestTaxon();
-        UUID uuid = service.save(testTaxon).getUuid();
+        UUID uuid = testTaxon.getUuid();
 
         Taxon topMost = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.FAMILY()), null);
 
@@ -1705,7 +1693,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
     public final void testTaxonDeletionConfiguratorTaxonWithMisappliedName(){
 
         Taxon testTaxon = getTestTaxon();
-        UUID uuid = service.save(testTaxon).getUuid();
+        UUID uuid = testTaxon.getUuid();
 
         Taxon misappliedName = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null);
 
@@ -1734,7 +1722,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
     public final void testTaxonDeletionConfiguratorTaxonWithMisappliedNameDoNotDelete(){
 
         Taxon testTaxon = getTestTaxon();
-        UUID uuid = service.save(testTaxon).getUuid();
+        UUID uuid = testTaxon.getUuid();
 
         Taxon misappliedName = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null);
 
@@ -1763,7 +1751,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
     public final void testTaxonDeletionConfiguratorTaxonMisappliedName(){
 
         Taxon testTaxon = getTestTaxon();
-        UUID uuid = service.save(testTaxon).getUuid();
+        UUID uuid = testTaxon.getUuid();
 
         Taxon misappliedNameTaxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null);
         testTaxon.addMisappliedName(misappliedNameTaxon, null, null);
@@ -1806,36 +1794,36 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
     	Taxon c1SubSpecies1 = Taxon.NewInstance(null, null);c1SubSpecies1.setUuid(UUID.fromString("96ae2fad-76df-429f-b179-42e00838fea4"));
     	Taxon c1SubSpecies2 = Taxon.NewInstance(null, null);c1SubSpecies2.setUuid(UUID.fromString("5d3f6147-ca72-40e0-be8a-6c835a09a579"));
     	TaxonNode c1childNodeSpecies1 = cl1.addParentChild(c1Genus, c1Species, null, null);
-    	nodeService.saveOrUpdate(c1childNodeSpecies1.getParent());
-    	nodeService.saveOrUpdate(c1childNodeSpecies1);
+    	nodeService.save(c1childNodeSpecies1.getParent());
+    	nodeService.save(c1childNodeSpecies1);
     	TaxonNode c1childNodeSubSpecies1 =cl1.addParentChild(c1Species, c1SubSpecies1, null, null);
-    	nodeService.saveOrUpdate(c1childNodeSubSpecies1);
+    	nodeService.save(c1childNodeSubSpecies1);
     	TaxonNode c1childNodeSubSpecies2 =cl1.addParentChild(c1Species, c1SubSpecies2, null, null);
-    	nodeService.saveOrUpdate(c1childNodeSubSpecies2);
+    	nodeService.save(c1childNodeSubSpecies2);
 
     	Taxon c2Genus = Taxon.NewInstance(null, null);c2Genus.setUuid(UUID.fromString("ed0ec006-3ac8-4a12-ae13-fdf2a13dedbe"));
     	Taxon c2Species = Taxon.NewInstance(null, null);c2Species.setUuid(UUID.fromString("1027eb18-1c26-450e-a299-981b775ebc3c"));
     	Taxon c2SubSpecies1 = Taxon.NewInstance(null, null);c2SubSpecies1.setUuid(UUID.fromString("61f039c8-01f3-4f5d-8e16-1602139774e7"));
     	Taxon c2SubSpecies2 = Taxon.NewInstance(null, null);c2SubSpecies2.setUuid(UUID.fromString("2ed6b6f8-05f9-459a-a075-2bca57e3013e"));
     	TaxonNode c2childNodeSpecies1 = cl2.addParentChild(c2Genus, c2Species, null, null);
-    	nodeService.saveOrUpdate(c2childNodeSpecies1.getParent());
-        nodeService.saveOrUpdate(c2childNodeSpecies1);
+    	nodeService.save(c2childNodeSpecies1.getParent());
+        nodeService.save(c2childNodeSpecies1);
     	TaxonNode c2childNodeSubSpecies1 = cl2.addParentChild(c2Species, c2SubSpecies1, null, null);
-    	nodeService.saveOrUpdate(c2childNodeSubSpecies1);
+    	nodeService.save(c2childNodeSubSpecies1);
     	TaxonNode c2childNodeSubSpecies2 = cl2.addParentChild(c2Species, c2SubSpecies2, null, null);
-    	nodeService.saveOrUpdate(c2childNodeSubSpecies2);
+    	nodeService.save(c2childNodeSubSpecies2);
 
     	Taxon c3Genus = Taxon.NewInstance(null, null);c3Genus.setUuid(UUID.fromString("407dfc8d-7a4f-4370-ada4-76c1a8279d1f"));
     	Taxon c3Species = Taxon.NewInstance(null, null);c3Species.setUuid(UUID.fromString("b6d34fc7-4aa7-41e5-b633-86f474edbbd5"));
     	Taxon c3SubSpecies1 = Taxon.NewInstance(null, null);c3SubSpecies1.setUuid(UUID.fromString("01c07585-a422-40cd-9339-a74c56901d9f"));
     	Taxon c3SubSpecies2 = Taxon.NewInstance(null, null);c3SubSpecies2.setUuid(UUID.fromString("390c8e23-e05f-4f89-b417-50cf080f4c91"));
     	TaxonNode c3childNodeSpecies1 = cl3.addParentChild(c3Genus, c3Species, null, null);
-    	nodeService.saveOrUpdate(c3childNodeSpecies1.getParent());
-        nodeService.saveOrUpdate(c3childNodeSpecies1);
+    	nodeService.save(c3childNodeSpecies1.getParent());
+        nodeService.save(c3childNodeSpecies1);
     	TaxonNode c3childNodeSubSpecies1 = cl3.addParentChild(c3Species, c3SubSpecies1, null, null);
-    	nodeService.saveOrUpdate(c3childNodeSubSpecies1);
+    	nodeService.save(c3childNodeSubSpecies1);
     	TaxonNode c3childNodeSubSpecies2 = cl3.addParentChild(c3Species, c3SubSpecies2, null, null);
-    	nodeService.saveOrUpdate(c3childNodeSubSpecies2);
+    	nodeService.save(c3childNodeSubSpecies2);
 
       	Taxon c4Genus = Taxon.NewInstance(null, null);c4Genus.setUuid(UUID.fromString("bfd6bbdd-0116-4ab2-a781-9316224aad78"));
     	Taxon c4Species = Taxon.NewInstance(null, null);c4Species.setUuid(UUID.fromString("9347a3d9-5ece-4d64-9035-e8aaf5d3ee02"));
@@ -1846,8 +1834,8 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
     	c1Species.addTaxonRelation(c4Species, TaxonRelationshipType.INCLUDES(), citation, microcitation);
     	c2Species.addTaxonRelation(c1SubSpecies2, TaxonRelationshipType.INCLUDES(), citation, microcitation);
 
-    	service.saveOrUpdate(c1Species);
-       	service.saveOrUpdate(c2Species);
+    	service.save(c1Species);
+       	service.save(c2Species);
        	service.save(c4Species);
        	commitAndStartNewTransaction();
 
@@ -1884,7 +1872,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
 
     	TaxonDescription description = save(TaxonDescription.NewInstance(taxWithoutSyn));
     	FieldUnit specimen = FieldUnit.NewInstance();
-    	UUID uuid = occurenceService.saveOrUpdate(specimen);
+    	UUID uuid = occurenceService.save(specimen).getUuid();
     	DescriptionElementBase element = IndividualsAssociation.NewInstance(specimen);
     	description.addElement(element);
     	service.saveOrUpdate(taxWithoutSyn);
@@ -1960,6 +1948,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         Taxon genusTaxon = Taxon.NewInstance(botName, sec);
         genusTaxon.setUuid(GENUS_UUID);
         service.save(genusTaxon);
+
         //a name that is the basionym of genusTaxon's name
         TaxonName basionym = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
         basionym.setTitleCache("Hieracilla DC.", true);
@@ -1980,7 +1969,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         childTaxon.setUuid(SPECIES1_UUID);
         TaxonDescription taxDesc = getTestDescription(descrIndex++);
         childTaxon.addDescription(taxDesc);
-        service.saveOrUpdate(childTaxon);
+        service.save(childTaxon);
 
         Classification classification = getTestClassification("TestClassification");
         classification.addParentChild(genusTaxon, childTaxon, citationRef, "456");
@@ -1994,7 +1983,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         botSpecies4.setUuid(SYNONYM_NAME_UUID);
         Synonym homoSynonym = save(Synonym.NewInstance(botSpecies4, sec));
         childTaxon.addSynonym(homoSynonym, SynonymType.HOMOTYPIC_SYNONYM_OF);
-        service.saveOrUpdate(childTaxon);
+
         //2nd child species taxon that is the child of genus taxon
         IBotanicalName botSpecies2= TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         botSpecies2.setTitleCache("Hieracium wolffii Zahn", true);
@@ -2006,7 +1995,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         Taxon childTaxon2 = Taxon.NewInstance(botSpecies2, sec);
         childTaxon2.setUuid(SPECIES2_UUID);
         classification.addParentChild(genusTaxon, childTaxon2, citationRef, "499");
-        service.saveOrUpdate(childTaxon2);
+        service.save(childTaxon2);
         //heterotypic synonym of childTaxon2
         IBotanicalName botSpecies3= TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         botSpecies3.setTitleCache("Hieracium lupium DC.", true);
@@ -2018,7 +2007,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         heteroSynonym.setUuid(SYNONYM2_UUID);
         save(heteroSynonym);
         childTaxon2.addSynonym(heteroSynonym, SynonymType.HETEROTYPIC_SYNONYM_OF);
-        service.saveOrUpdate(childTaxon2);
+
         //missaplied Name for childTaxon2
         IBotanicalName missName= TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         missName.setTitleCache("Hieracium lupium DC.", true);
@@ -2030,9 +2019,9 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         childTaxon2.addMisappliedName(misappliedNameTaxon, citationRef, "125");
         taxDesc = getTestDescription(descrIndex++);
         genusTaxon.addDescription(taxDesc);
-        service.saveOrUpdate(genusTaxon);
         service.save(misappliedNameTaxon);
 
+        commitAndStartNewTransaction();
         return genusTaxon;
     }
 
