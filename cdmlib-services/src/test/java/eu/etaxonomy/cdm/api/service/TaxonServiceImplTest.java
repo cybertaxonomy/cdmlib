@@ -2017,7 +2017,6 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         genusTaxon.addDescription(taxDesc);
         service.save(misappliedNameTaxon);
 
-        commitAndStartNewTransaction();
         return genusTaxon;
     }
 
