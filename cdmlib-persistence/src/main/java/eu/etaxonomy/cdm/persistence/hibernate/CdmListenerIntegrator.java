@@ -50,13 +50,11 @@ public class CdmListenerIntegrator implements Integrator {
 //      l3Listener.setValidationExecutor(validationExecutor);
 
         // prepend to register before or append to register after
-        // SAVE/SAVE_UPDATE/UPDATE: legacy Session.save* API
-        // PERSIST/MERGE: JPA Session.persist()/merge() (DAO migrated off save/saveOrUpdate)
+        // this example will register a persist event listener
+        //SaveEntityListener does not exist anymore
         eventRegistry.prependListeners(EventType.SAVE, new CacheStrategyGenerator() /*, new SaveEntityListener()*/);
         eventRegistry.prependListeners(EventType.UPDATE, new CacheStrategyGenerator(), new UpdateEntityListener());
         eventRegistry.prependListeners(EventType.SAVE_UPDATE, new CacheStrategyGenerator() /*, new SaveOrUpdateEntityListener()*/);
-        eventRegistry.prependListeners(EventType.PERSIST, new CacheStrategyGenerator());
-        eventRegistry.prependListeners(EventType.MERGE, new CacheStrategyGenerator());
         eventRegistry.appendListeners(EventType.MERGE, new PostMergeEntityListener());
 //      eventRegistry.appendListeners(EventType.DELETE, new CdmDeleteListener());
         eventRegistry.appendListeners(EventType.POST_LOAD, new CdmPostDataChangeObservableListener());
