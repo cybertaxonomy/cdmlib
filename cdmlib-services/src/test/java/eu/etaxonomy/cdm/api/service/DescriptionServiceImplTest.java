@@ -79,7 +79,7 @@ public class DescriptionServiceImplTest extends CdmServicesTransactionalSpringIn
                 }
             }
         }
-        service.saveOrUpdate(descBase);
+
         Pager<DescriptionElementBase> allElements = service.pageDescriptionElements(null, null, null, null, false, null, null, null);
         assertEquals(1, allElements.getCount().intValue());
         DescriptionElementBase test = allElements.getRecords().get(0);
@@ -105,12 +105,12 @@ public class DescriptionServiceImplTest extends CdmServicesTransactionalSpringIn
         TaxonDescription desc1 = TaxonDescription.NewInstance(taxon);
         TextData textData1 = TextData.NewInstance(Feature.HABITAT(), "My habitat", Language.GERMAN(), null);
         desc1.addElement(textData1);
-        service.saveOrUpdate(desc1);
+        service.save(desc1);
 
         TaxonDescription desc2 = TaxonDescription.NewInstance(taxon);
         TextData textData2 = TextData.NewInstance(Feature.HABITAT(), "My habitat2", Language.GERMAN(), null);
         desc2.addElement(textData2);
-        service.saveOrUpdate(desc2);
+        service.save(desc2);
         commitAndStartNewTransaction(null);
 
         DescriptionBase<?> descLoaded1 = service.find(desc1.getUuid());

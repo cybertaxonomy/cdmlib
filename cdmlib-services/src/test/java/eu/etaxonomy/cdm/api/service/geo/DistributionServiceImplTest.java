@@ -164,7 +164,7 @@ public class DistributionServiceImplTest extends CdmServicesTransactionalSpringI
         NamedAreaType areaType = NamedAreaType.NATURAL_AREA();
         NamedAreaLevel areaLevel = NamedAreaLevel.NewInstance("Cyprus Division", "Cyprus Division", null);
 
-        termService.saveOrUpdate(areaLevel);
+        termService.save(areaLevel);
 
         TermVocabulary<NamedArea> areaVocabulary = TermVocabulary.NewInstance(TermType.NamedArea,
                 NamedArea.class, "Cyprus devisions", "Cyprus divisions", null, null);
@@ -183,7 +183,7 @@ public class DistributionServiceImplTest extends CdmServicesTransactionalSpringI
             divisions.put(String.valueOf(i), division);
         }
 
-        vocabService.saveOrUpdate(areaVocabulary);
+        vocabService.save(areaVocabulary);
         commitAndStartNewTransaction(null);
 
         // import and map shapefile attributes from csv

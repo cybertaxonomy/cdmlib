@@ -129,11 +129,11 @@ public class ClassificationServiceDeepTest extends CdmServicesTransactionalSprin
     	TaxonNode p3 = classification.addChildTaxon(tp3, null, null);
     	TaxonNode p4 = classification.addChildTaxon(tp4, null, null);
 
-    	taxonNodeService.saveOrUpdate(p1);
-    	taxonNodeService.saveOrUpdate(p2);
-    	taxonNodeService.saveOrUpdate(p3);
-    	taxonNodeService.saveOrUpdate(p4);
-    	service.saveOrUpdate(classification);
+    	taxonNodeService.save(p1);
+    	taxonNodeService.save(p2);
+    	taxonNodeService.save(p3);
+    	taxonNodeService.save(p4);
+    	service.save(classification);
 
     	//create children
     	Taxon tc1 = map.get("Garstig alter subsp. ekel");
@@ -142,13 +142,11 @@ public class ClassificationServiceDeepTest extends CdmServicesTransactionalSprin
     	Taxon tc4 = map.get("Genus genus subsp. genus");
 
     	//add to parent node
-    	taxonNodeService.saveOrUpdate(p1.addChildTaxon(tc1, null, null));
-    	taxonNodeService.saveOrUpdate(p3.addChildTaxon(tc2, null, null));
-    	taxonNodeService.saveOrUpdate(p3.addChildTaxon(tc3, null, null));
-    	taxonNodeService.saveOrUpdate(p3.addChildTaxon(tc4, null, null));
+    	taxonNodeService.save(p1.addChildTaxon(tc1, null, null));
+    	taxonNodeService.save(p3.addChildTaxon(tc2, null, null));
+    	taxonNodeService.save(p3.addChildTaxon(tc3, null, null));
+    	taxonNodeService.save(p3.addChildTaxon(tc4, null, null));
 
-    	//save classification
-    	service.saveOrUpdate(classification);
         commitAndStartNewTransaction(null);
 
         setComplete();

@@ -117,9 +117,6 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
                 .fromString("09496534-efd0-44c8-b1ce-01a34a8a0229"));
         DnaSample dnaSample = (DnaSample) occurrenceService.load(UUID
                 .fromString("5995f852-0e78-405c-b849-d923bd6781d9"));
-        occurrenceService.saveOrUpdate(specimenA);
-        occurrenceService.saveOrUpdate(specimenB);
-        occurrenceService.saveOrUpdate(dnaSample);
 
         Person derivationActor = Person.NewTitledInstance("Derivation Actor");
         agentService.save(derivationActor);
@@ -166,11 +163,11 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
     @Test
     @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testMoveDerivateNoParent() {
+
         DerivedUnit derivedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
         FieldUnit fieldUnit = FieldUnit.NewInstance();
-
-        occurrenceService.saveOrUpdate(fieldUnit);
-        occurrenceService.saveOrUpdate(derivedUnit);
+        occurrenceService.save(fieldUnit);
+        occurrenceService.save(derivedUnit);
 
         assertEquals(0, fieldUnit.getDerivationEvents().size(), "DerivationEvent not moved to source!");
         occurrenceService.moveDerivate(null, fieldUnit, derivedUnit);
@@ -194,10 +191,6 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
                 .fromString("85fccc2f-c796-46b3-b2fc-6c9a4d68cfda"));
         String consensusSequence = "ATTCG";
         Sequence sequence = sequenceService.load(UUID.fromString("6da4f378-9861-4338-861b-7b8073763e7a"));
-
-        occurrenceService.saveOrUpdate(dnaSampleA);
-        occurrenceService.saveOrUpdate(dnaSampleB);
-        sequenceService.saveOrUpdate(sequence);
 
         dnaSampleA.addSequence(sequence);
 
@@ -255,7 +248,7 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
         // //add another taxon description to taxon which is not associated with
         // a specimen thus should not be taken into account
         // taxon.addDescription(TaxonDescription.NewInstance());
-        // taxonService.saveOrUpdate(taxon);
+        // taxonService.save(taxon);
         //
         //
         // commitAndStartNewTransaction(null);
@@ -370,7 +363,7 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
         // //add another taxon description to taxon which is not associated with
         // a specimen thus should not be taken into account
         // taxon.addDescription(TaxonDescription.NewInstance());
-        // taxonService.saveOrUpdate(taxon);
+        // taxonService.save(taxon);
         //
         // commitAndStartNewTransaction(null);
         //
@@ -519,7 +512,7 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
         // //add another taxon description to taxon which is not associated with
         // a specimen thus should not be taken into account
         // taxon.addDescription(TaxonDescription.NewInstance());
-        // taxonService.saveOrUpdate(taxon);
+        // taxonService.save(taxon);
         //
         //
         // commitAndStartNewTransaction(null);
@@ -589,7 +582,7 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
         // //add another taxon description to taxon which is not associated with
         // a specimen thus should not be taken into account
         // taxon.addDescription(TaxonDescription.NewInstance());
-        // taxonService.saveOrUpdate(taxon);
+        // taxonService.save(taxon);
         //
         //
         // commitAndStartNewTransaction(null);
@@ -660,7 +653,7 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
         // //add type designation to name
         // name.addTypeDesignation(typeDesignation, false);
         //
-        // nameService.saveOrUpdate(name);
+        // nameService.save(name);
         //
         // commitAndStartNewTransaction(null);
         //
@@ -841,7 +834,7 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
 //      taxonDescription.addElement(IndividualsAssociation.NewInstance(associatedSpecimen));
 //      taxon.addDescription(taxonDescription);
 //
-//      taxonService.saveOrUpdate(taxon);
+//      taxonService.save(taxon);
 //
 //      commitAndStartNewTransaction(null);
 //
@@ -979,7 +972,7 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
         // taxonDescription.addElement(IndividualsAssociation.NewInstance(derivedUnit));
         // taxonDescription.addElement(IndividualsAssociation.NewInstance(tissue));
         // taxon.addDescription(taxonDescription);
-        // taxonService.saveOrUpdate(taxon);
+        // taxonService.save(taxon);
         //
         // commitAndStartNewTransaction(null);
         //
@@ -1491,7 +1484,7 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
 //        taxonName.addTypeDesignation(specimenTypeDesignation, false);
 //
 //        classificationService.save(classification);
-//        taxonService.saveOrUpdate(taxon);
+//        taxonService.save(taxon);
 //        taxonNodeService.save(taxonNode);
 //
 //        commitAndStartNewTransaction(null);
@@ -1537,7 +1530,6 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
 
         //change identifier, save and reload
         identifier.setIdentifier("WB10");
-        occurrenceService.saveOrUpdate(dnaSample);
         SpecimenOrObservationBase<?> dnaSampleReloaded = occurrenceService.load(dnaSampleUuid);
         assertEquals(1, dnaSample.getIdentifiers().size());
         Identifier identifierReloaded = dnaSample.getIdentifiers().iterator().next();
@@ -1677,10 +1669,6 @@ public class OccurrenceServiceTest extends CdmServicesTransactionalSpringIntegra
       SpecimenTypeDesignation specimenTypeDesignation = SpecimenTypeDesignation.NewInstance();
       specimenTypeDesignation.setTypeSpecimen(fossilTypeDesignation);
       taxonName.addTypeDesignation(specimenTypeDesignation, false);
-
-      classificationService.saveOrUpdate(classification);
-      taxonService.saveOrUpdate(taxon);
-      taxonNodeService.saveOrUpdate(taxonNode);
 
       commitAndStartNewTransaction(null);
 

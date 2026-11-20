@@ -304,21 +304,21 @@ public class IdentifiableServiceBaseTest extends CdmServicesTransactionalSpringI
 		termService.save(identifierType2);
 
     	IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-        Taxon tb = Taxon.NewInstance(name, null);
-        tb.addIdentifier("ext-1234", identifierType1);
+        Taxon taxonBase = Taxon.NewInstance(name, null);
+        taxonBase.addIdentifier("ext-1234", identifierType1);
         name.addIdentifier("ext-name12", identifierType2);
-        taxonService.saveOrUpdate(tb);
+        taxonService.save(taxonBase);
 
-        Taxon tb2 = Taxon.NewInstance(null, null);
-        tb2.setTitleCache("Cached taxon", true);
-        tb2.addIdentifier("ext-cache1", identifierType2);
-        taxonService.saveOrUpdate(tb2);
+        Taxon taxonBase2 = Taxon.NewInstance(null, null);
+        taxonBase2.setTitleCache("Cached taxon", true);
+        taxonBase2.addIdentifier("ext-cache1", identifierType2);
+        taxonService.save(taxonBase2);
 
         Classification classification = Classification.NewInstance("My classification");
-        classification.addChildTaxon(tb, null, null);
-        classificationService.saveOrUpdate(classification);
+        classification.addChildTaxon(taxonBase, null, null);
+        classificationService.save(classification);
 
-        tb2.addSynonymName(null, SynonymType.HOMOTYPIC_SYNONYM_OF);
+        taxonBase2.addSynonymName(null, SynonymType.HOMOTYPIC_SYNONYM_OF);
 
         commitAndStartNewTransaction(null);
 
@@ -332,7 +332,5 @@ public class IdentifiableServiceBaseTest extends CdmServicesTransactionalSpringI
 		        "HOMOTYPICALGROUP",
 		        "TERMVOCABULARY"
 		 }, "xxxx", true);
-
     }
-
 }

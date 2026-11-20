@@ -446,7 +446,7 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         taxonDescription.addElement(textData);
         DescriptionElementSource source = DescriptionElementSource.NewPrimarySourceInstance(null, null, name1, "");
         textData.addSource(source);
-        taxonService.saveOrUpdate(taxon);
+        taxonService.save(taxon);
         nameService.save(name1);
         try {
             commitAndStartNewTransaction(tableNames);
@@ -468,7 +468,6 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         assertNotNull(name1, "Taxon should still be in database");
         source = taxon.getDescriptions().iterator().next().getElements().iterator().next().getSources().iterator().next();
         source.setNameUsedInSource(null);
-        taxonService.saveOrUpdate(taxon);
 
         nameService.delete(name1);  //should throw now exception
 
@@ -531,7 +530,7 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         //TaxonNameDescription
         name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         save(TaxonNameDescription.NewInstance(name1));
-        nameService.saveOrUpdate(name1);
+        nameService.save(name1);
         commitAndStartNewTransaction(tableNames);
 
         name1 = nameService.find(name1.getUuid());
@@ -549,7 +548,7 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         NomenclaturalStatusType nomStatusType = (NomenclaturalStatusType)termService.find(NomenclaturalStatusType.ILLEGITIMATE().getUuid());
         NomenclaturalStatus status = NomenclaturalStatus.NewInstance(nomStatusType);
         name1.addStatus(status);
-        nameService.saveOrUpdate(name1);
+        nameService.save(name1);
         commitAndStartNewTransaction(tableNames);
 
         name1 = nameService.find(name1.getUuid());
@@ -611,7 +610,7 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         boolean addToAllNames = true;
         name1.addTypeDesignation(typeDesignation, addToAllNames);
         typeDesignationDao.save(typeDesignation);
-        nameService.saveOrUpdate(name1);
+        nameService.save(name1);
         commitAndStartNewTransaction(tableNames);
 
         name1 = nameService.find(name1.getUuid());
@@ -770,7 +769,7 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         setAuthentication(submiterToken);
         Registration registration = Registration.NewInstance("abc", "abc", name3, null);
         registration.addTypeDesignation(desigNew);
-        registrationService.saveOrUpdate(registration);
+        registrationService.save(registration);
         unsetAuthentication();
         commitAndStartNewTransaction(/*tableNames*/);
 

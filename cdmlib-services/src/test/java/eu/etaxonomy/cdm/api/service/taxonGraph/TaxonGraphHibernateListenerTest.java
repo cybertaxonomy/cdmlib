@@ -266,7 +266,7 @@ public class TaxonGraphHibernateListenerTest extends CdmServicesTransactionalSpr
             // printDataSet(System.err,"TaxonRelationship");
             TaxonName n_trachelomonas_a = nameDao.load(uuid_n_trachelomonas_a);
             n_trachelomonas_a.setNomenclaturalReference(refX);
-            // !!!! >>>> nameDao.saveOrUpdate(n_trachelomonas_a); <<<< no save or update here, testing with pure session flush!!! This must never be changed
+            // !!!! >>>> nameDao.save(n_trachelomonas_a); <<<< no save or update here, testing with pure session flush!!! This must never be changed
             commitAndStartNewTransaction();
 
             // printDataSet(System.err,"TaxonRelationship");
@@ -295,7 +295,7 @@ public class TaxonGraphHibernateListenerTest extends CdmServicesTransactionalSpr
             Reference ref_ts = n_trachelomonas_s.getNomenclaturalSource().getCitation();
             n_trachelomonas_a.getNomenclaturalSource().setCitation(ref_ts);
             n_trachelomonas_s.getNomenclaturalSource().setCitation(ref_ta);
-            // !!!! >>>> nameDao.saveOrUpdate(n_trachelomonas_a); <<<< no save or update here, testing with pure session flush!!! This must never be changed
+            // !!!! >>>> nameDao.save(n_trachelomonas_a); <<<< no save or update here, testing with pure session flush!!! This must never be changed
             commitAndStartNewTransaction();
             // printDataSet(System.err,"TaxonRelationship");
 
@@ -336,7 +336,7 @@ public class TaxonGraphHibernateListenerTest extends CdmServicesTransactionalSpr
             assertEquals(nomSource_ta_clone.getCitation().getUuid(), n_trachelomonas_s.getNomenclaturalReference().getUuid(), "nomref should be set to the cloned one");
             assertEquals(n_trachelomonas_a.getNomenclaturalReference(), nomSource_ts.getCitation(), "nomref was not swapped as expected");
             assertEquals(n_trachelomonas_s.getNomenclaturalReference(), nomSource_ta.getCitation(), "nomref was not swapped as expected");
-            // !!!! >>>> nameDao.saveOrUpdate(n_trachelomonas_a); <<<< no save or update here, testing with pure session flush!!! This must never be changed
+            // !!!! >>>> nameDao.save(n_trachelomonas_a); <<<< no save or update here, testing with pure session flush!!! This must never be changed
             commitAndStartNewTransaction();
             //printDataSet(System.err,"TaxonRelationship");
 
@@ -376,7 +376,7 @@ public class TaxonGraphHibernateListenerTest extends CdmServicesTransactionalSpr
             // printDataSet(System.err,"TaxonRelationship");
             TaxonName n_trachelomonas_a = nameDao.load(uuid_n_trachelomonas_a);
             n_trachelomonas_a.getNomenclaturalSource().setCitation(refX);
-            // !!!! >>>> nameDao.saveOrUpdate(n_trachelomonas_a); <<<< no save or update here, testing with pure session flush!!! This must never be changed
+            // !!!! >>>> nameDao.save(n_trachelomonas_a); <<<< no save or update here, testing with pure session flush!!! This must never be changed
             commitAndStartNewTransaction();
 
             // printDataSet(System.err,"TaxonRelationship");
@@ -403,7 +403,7 @@ public class TaxonGraphHibernateListenerTest extends CdmServicesTransactionalSpr
             // printDataSet(System.err,"TaxonRelationship");
             TaxonName n_trachelomonas_a = nameDao.load(uuid_n_trachelomonas_a);
             n_trachelomonas_a.setNomenclaturalReference(null);
-            // !!!! >>>> nameDao.saveOrUpdate(n_trachelomonas_a); <<<< no save or update here, testing with pure session flush!!! This must never be changed
+            // !!!! >>>> nameDao.save(n_trachelomonas_a); <<<< no save or update here, testing with pure session flush!!! This must never be changed
             commitAndStartNewTransaction();
 
             // printDataSet(System.err,"TaxonRelationship");
@@ -429,7 +429,7 @@ public class TaxonGraphHibernateListenerTest extends CdmServicesTransactionalSpr
             // printDataSet(System.err,"TaxonRelationship");
             TaxonName n_trachelomonas_a = nameDao.load(uuid_n_trachelomonas_a);
             n_trachelomonas_a.getNomenclaturalSource().setCitation(null);
-            // !!!! >>>> nameDao.saveOrUpdate(n_trachelomonas_a); <<<< no save or update here, testing with pure session flush!!! This must never be changed
+            // !!!! >>>> nameDao.save(n_trachelomonas_a); <<<< no save or update here, testing with pure session flush!!! This must never be changed
             commitAndStartNewTransaction();
 
             // printDataSet(System.err,"TaxonRelationship");
@@ -456,7 +456,6 @@ public class TaxonGraphHibernateListenerTest extends CdmServicesTransactionalSpr
             assertEquals(1, edges.size(), "One edge from 'Trachelomonas oviformis var. duplex' to 'Trachelomonas' expected");
 
             n_trachelomonas_o_var_d.setRank(Rank.SPECIES());
-            nameDao.saveOrUpdate(n_trachelomonas_o_var_d);
             commitAndStartNewTransaction();
 
             // printDataSet(System.err,"TaxonRelationship");
@@ -488,7 +487,6 @@ public class TaxonGraphHibernateListenerTest extends CdmServicesTransactionalSpr
             assertEquals(0, edges.size(), "No edges to 'Euglena' expected");
 
             n_trachelomonas_o_var_d.setGenusOrUninomial("Euglena");
-            nameDao.saveOrUpdate(n_trachelomonas_o_var_d);
             commitAndStartNewTransaction();
 
             // printDataSet(System.err,"TaxonRelationship");
@@ -519,7 +517,6 @@ public class TaxonGraphHibernateListenerTest extends CdmServicesTransactionalSpr
             assertEquals(1, edges.size(), "One edge from 'Trachelomonas oviformis var. duplex' to 'Trachelomonas oviformis' expected");
 
             n_trachelomonas_o_var_d.setSpecificEpithet("alabamensis");
-            nameDao.saveOrUpdate(n_trachelomonas_o_var_d);
             commitAndStartNewTransaction();
 
             // printDataSet(System.err,"TaxonRelationship");
@@ -551,8 +548,8 @@ public class TaxonGraphHibernateListenerTest extends CdmServicesTransactionalSpr
             assertEquals(1, edges.size(), "One edge from 'Trachelomonas oviformis' to 'Trachelomonas' expected");
 
             n_trachelomonas_o.setSpecificEpithet("robusta");
-            nameDao.saveOrUpdate(n_trachelomonas_o);
             commitAndStartNewTransaction();
+
             n_trachelomonas_o = nameDao.load(n_trachelomonas_o.getUuid());
 
             // printDataSet(System.err,"TaxonRelationship");

@@ -134,7 +134,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalSpringIntegrationTestW
             logger.error("Unexpected failure of evaluation.", e);
             fail();
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -151,7 +151,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalSpringIntegrationTestW
             logger.error("Unexpected failure of evaluation.", e);
             fail();
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -178,7 +178,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalSpringIntegrationTestW
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -199,7 +199,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalSpringIntegrationTestW
             securityException   = findSecurityRuntimeException(e);
             logger.error("Unexpected failure of evaluation.", securityException);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -233,7 +233,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalSpringIntegrationTestW
             securityException    = findSecurityRuntimeException(e);
             logger.error("Unexpected failure of evaluation.", securityException);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();

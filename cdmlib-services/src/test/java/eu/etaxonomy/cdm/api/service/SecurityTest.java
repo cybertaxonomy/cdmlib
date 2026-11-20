@@ -396,7 +396,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             logger.error("Unexpected failure of evaluation.", e);
             exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -428,7 +428,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
             logger.debug("Expected failure of evaluation.", e);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -477,7 +477,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
             logger.error("Unexpected failure of evaluation.", exception);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -517,7 +517,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
             logger.debug("Expected failure of evaluation.", e);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -567,7 +567,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             securityException  = findSecurityRuntimeException(e);
             logger.error("Unexpected failure of evaluation.", e);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -602,7 +602,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             securityException  = findSecurityRuntimeException(e);
             logger.error("Unexpected failure of evaluation.", e);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -636,7 +636,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             securityException = findSecurityRuntimeException(e);
             logger.debug("Expected failure of evaluation.", securityException);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -668,7 +668,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             securityException  = findSecurityRuntimeException(e);
             logger.error("Unexpected failure of evaluation.", e);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -702,7 +702,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             securityException  = findSecurityRuntimeException(e);
             logger.error("Unexpected failure of evaluation.", e);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -736,7 +736,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             securityException = findSecurityRuntimeException(e);
             logger.debug("Expected failure of evaluation.", securityException);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -798,7 +798,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             securityException  = findSecurityRuntimeException(e);
             logger.error("Unexpected failure of evaluation.", e);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -864,7 +864,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             securityException = findSecurityRuntimeException(e);
             logger.debug("Expected failure of evaluation.", securityException);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -900,7 +900,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             securityException = findSecurityRuntimeException(e);
             logger.debug("Unexpected failure of evaluation.", securityException);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -950,7 +950,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             logger.error("Unexpected Exception ", e);
             fail("Unexpected Exception: " + e.getMessage());
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -994,7 +994,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             logger.error("RuntimeException caught");
             logger.debug("Expected failure of evaluation.", securityException);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -1032,7 +1032,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             securityException = findSecurityRuntimeException(e);
             logger.debug("Expected failure of evaluation.", securityException);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -1070,7 +1070,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             securityException = findSecurityRuntimeException(e);
             logger.error("Unexpected failure of evaluation.", e);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -1104,7 +1104,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             securityException = findSecurityRuntimeException(e);
             logger.error("Unexpected failure of evaluation.", e);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -1131,7 +1131,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             securityException = findSecurityRuntimeException(e);
             logger.debug("Expected failure of evaluation: " + securityException.getClass());
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -1161,7 +1161,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             securityException = findSecurityRuntimeException(e);
             logger.error("Unexpected failure of evaluation.", securityException);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
@@ -1193,7 +1193,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             securityException = findSecurityRuntimeException(e);
             logger.debug("Expected failure of evaluation.", securityException);
         } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();

@@ -270,7 +270,7 @@ public class RegistrationServiceTest extends CdmServicesTransactionalSpringInteg
         species2.setUuid(NAME2_UUID);
         TaxonName genus = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Digitalus", null, null, null, null, book1, "33", null);
         genus.setUuid(NAME2_UUID);
-        repo.getNameService().save(Arrays.asList(species1, species2, genus));
+        repo.getNameService().save(List.of(species1, species2, genus));
 
         SpecimenTypeDesignation std1 = SpecimenTypeDesignation.NewInstance();
         std1.setCitation(book1);
@@ -292,10 +292,8 @@ public class RegistrationServiceTest extends CdmServicesTransactionalSpringInteg
         species1.addTypeDesignation(std1, false);
         species2.addTypeDesignation(std2, false);
 
-        repo.getNameService().saveOrUpdate(Arrays.asList(species1, species2, genus));
-
         repo.authenticate("user1", "00000");
-        Registration reg1 = Registration.NewInstance("test/1000", "1000", species1, new HashSet(Arrays.asList(std1))); // --> book1
+        Registration reg1 = Registration.NewInstance("test/1000", "1000", species1, new HashSet<>(Arrays.asList(std1))); // --> book1
         reg1.setStatus(RegistrationStatus.PUBLISHED);
         // the authenticated user will be set as submitter in new Registrations
         // see RegistrationServiceImpl.prepareForSave(Registration reg)
