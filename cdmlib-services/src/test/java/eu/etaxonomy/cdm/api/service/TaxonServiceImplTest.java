@@ -1538,38 +1538,26 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
 
         // delete the taxon only in second classification, this should delete only the nodes, not the taxa
         Taxon testTaxon = getTestTaxon();
-        UUID uuid = testTaxon.getUuid();
         Classification secondClassification = getTestClassification("secondClassification");
-        Set<TaxonNode> nodes = testTaxon.getTaxonNodes();
-        TaxonNode node = nodes.iterator().next();
-        List<TaxonNode> childNodes = node.getChildNodes();
-        TaxonNode childNode = childNodes.iterator().next();
-        UUID childUUID = childNode.getTaxon().getUuid();
-        childNode = secondClassification.addChildTaxon(testTaxon, null, null);
-        UUID childNodeUUID = childNode.getUuid();
+        UUID childTaxonUuid = testTaxon.getTaxonNodes().iterator().next()
+                .getChildNodes().iterator().next().getTaxon().getUuid();
+        TaxonNode newChildNode = secondClassification.addChildTaxon(testTaxon, null, null);
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
         config.setDeleteInAllClassifications(false);
-        //     try {
         DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, secondClassification.getUuid());
-/*                fail("The taxon should not be deletable because it is used in a second classification and the configuration is set to deleteInAllClassifications = false");
-            } catch (DataChangeNoRollbackException e) {
-                logger.debug(e.getMessage());
-            }
-  */
-
         if (result.isOk()){
            	fail("The taxon should not be deletable because it is used in a second classification and the configuration is set to deleteInAllClassifications = false");
         }
 
         //commitAndStartNewTransaction(null);
-        Taxon tax = (Taxon)service.find(uuid);
+        Taxon tax = (Taxon)service.find(testTaxon.getUuid());
         assertNotNull(tax);
-        Taxon childTaxon = (Taxon)service.find(childUUID);
+        Taxon childTaxon = (Taxon)service.find(childTaxonUuid);
         assertNotNull(childTaxon);
         //when calling delete taxon and the taxon can not be deleted the children should not be deleted as well. If children should be deleted call delete taxonnode
-        childNode = nodeService.find(childNodeUUID);
-        assertNotNull(childNode);
+        newChildNode = nodeService.find(newChildNode.getUuid());
+        assertNotNull(newChildNode);
     }
 
     @Test
@@ -1656,8 +1644,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
 
         //create test data
         Taxon testTaxon = getTestTaxon();
-        Iterator<TaxonNode> nodesIterator = testTaxon.getTaxonNodes().iterator();
-        Classification classification = nodesIterator.next().getClassification();
+        Classification classification = testTaxon.getTaxonNodes().iterator().next().getClassification();
         //new top most taxon, with test taxon as child
         Taxon topMost = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.FAMILY()), null);
         classification.addParentChild(topMost, testTaxon, null, null);
@@ -1668,10 +1655,11 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         config.getTaxonNodeConfig().setChildHandling(ChildHandling.DELETE);
         DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, classification.getUuid());
         if(!result.isOk()){
-         	fail();
+         	fail("Delete should not fail");
        	}
         commitAndStartNewTransaction(null);
 
+        //test correct delete
         Taxon tax = (Taxon)service.find(testTaxon.getUuid());
         assertNull(tax, "Child taxon should not exist anymore");
 
