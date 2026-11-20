@@ -13,6 +13,25 @@ import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang3.Strings;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.envers.Audited;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.CreditableEntity;
+import eu.etaxonomy.cdm.model.common.IHasCredits;
+import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.IHasLink;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.strategy.cache.description.PolytomousKeyDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -29,26 +48,6 @@ import jakarta.xml.bind.annotation.XmlIDREF;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.apache.commons.lang3.Strings;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.envers.Audited;
-
-import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.model.common.CreditableEntity;
-import eu.etaxonomy.cdm.model.common.IHasCredits;
-import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.media.IHasLink;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.strategy.cache.description.PolytomousKeyDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
 
 /**
  * This class represents a fixed single-access key (dichotomous or

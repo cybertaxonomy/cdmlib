@@ -8,14 +8,14 @@
 */
 package eu.etaxonomy.cdm.model.molecular;
 
-import org.hibernate.type.SqlTypes;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.Length;
 import java.io.Serializable;
 
+import org.hibernate.Length;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.envers.Audited;
+import org.hibernate.type.SqlTypes;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.jpa.ShiftConverter;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
