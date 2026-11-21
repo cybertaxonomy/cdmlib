@@ -184,7 +184,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
 
         //and other taxa as well
         expectedTaxon.setDoubtful(false);
-        service.merge(expectedTaxon);
+        service.save(expectedTaxon);
         matchingTaxa = service.findByTitle(config);
         assertEquals(expectedTaxon, matchingTaxa.getRecords().get(0));
     }
