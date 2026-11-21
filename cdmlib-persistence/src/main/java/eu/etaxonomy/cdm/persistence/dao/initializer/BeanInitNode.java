@@ -52,12 +52,13 @@ public class BeanInitNode implements Comparable<BeanInitNode>{
 
 	public static BeanInitNode createInitTree(List<String> propertyPaths) {
 
-		//sort paths  //TODO needed?
-		Collections.sort(propertyPaths);
+		//sort paths on a mutable copy (callers may pass immutable lists, e.g. List.of)
+		List<String> sortedPaths = new ArrayList<>(propertyPaths);
+		Collections.sort(sortedPaths);
 
 	    BeanInitNode root = new BeanInitNode(null, "");
 
-	    for (String fullPath : propertyPaths){
+	    for (String fullPath : sortedPaths){
 	    	String[] parts = fullPath.split("\\.");
 	    	BeanInitNode lastNode = root;
 	    	for (String part : parts){
