@@ -13,6 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -123,12 +124,13 @@ public abstract class AbstractBeanInitializer<CDM extends CdmBase> implements IB
             return;
         }
 
-        Collections.sort(propertyPaths);
+        List<String> sortedPaths = new ArrayList<>(propertyPaths);
+        Collections.sort(sortedPaths);
         //long startTime1 = System.nanoTime();
         if(logger.isDebugEnabled()){
             logger.debug(">> starting to initialize " + bean + " ;class:" + bean.getClass().getSimpleName());
         }
-        for(String propPath : propertyPaths){
+        for(String propPath : sortedPaths){
             initializePropertyPath(bean, propPath);
         }
         //long estimatedTime1 = System.nanoTime() - startTime1;

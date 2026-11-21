@@ -17,7 +17,6 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -88,14 +87,8 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
         rootPath.addBeans(beanList);
         initializeNodeRecursive(rootPath);
 
-        //old - keep for safety (this may help to initialize those beans that are not yet correctly initialized by the AdvancedBeanInitializer
-        if(logger.isTraceEnabled()){logger.trace("Start old initalizer ... ");};
-        for (Object bean :beanList){
-            Collections.sort(propertyPaths);
-            for(String propPath : propertyPaths){
-//		            initializePropertyPath(bean, propPath);
-            }
-        }
+        // formerly a fallback loop called initializePropertyPath here; left disabled
+        // because AdvancedBeanInitializer covers the cases (and must not sort immutable List.of paths)
 
         if(logger.isDebugEnabled()){ logger.debug("   Completed initialization of beanlist "); }
         return beanList;
