@@ -202,7 +202,7 @@ public abstract class StreamImportBase<CONFIG extends StreamImportConfiguratorBa
 					if (service != null){
 						IdentifiableEntity<?> entity = CdmBase.deproxy(cdmBase, IdentifiableEntity.class);
 						if(!cdmBase.isPersisted()) {
-						    service.saveOrUpdate(entity);
+						    service.save(entity);  //TODO test if save is really correct here (#11083)
 						}
 					}
 				}

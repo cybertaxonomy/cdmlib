@@ -146,8 +146,8 @@ public class TaxonXExtractor {
 
             sourceHandler.addSource(refMods, taxonDescription);
 
-            importer.getTaxonService().saveOrUpdate(acceptedTaxon);
-            //                        logger.warn("BWAAHHHH: "+nameToBeFilled.getParsingProblems()+", "+ref);
+            importer.getTaxonService().save(acceptedTaxon);  //TODO test if save is really correct here (#11083)
+            //    logger.warn("BWAAHHHH: "+nameToBeFilled.getParsingProblems()+", "+ref);
             nbRef++;
         }
     }

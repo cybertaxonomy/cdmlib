@@ -766,24 +766,24 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 DerivedUnit derivedUnit = (DerivedUnit)specimen;
                 cdmRepository.getNameService().mergeTypeDesignations(new ArrayList<>(derivedUnit.getSpecimenTypeDesignations()));
             }
-            return cdmRepository.getOccurrenceService().saveOrUpdate(specimen);
+            return cdmRepository.getOccurrenceService().save(specimen).getUuid();  //TODO test if save is really correct here (#11083)
         }else if (cdmBase.isInstanceOf(Reference.class)){
-            return cdmRepository.getReferenceService().saveOrUpdate(CdmBase.deproxy(cdmBase, Reference.class));
+            return cdmRepository.getReferenceService().save(CdmBase.deproxy(cdmBase, Reference.class)).getUuid();  //TODO test if save is really correct here (#11083)
         }else if (cdmBase.isInstanceOf(Classification.class)){
-            return cdmRepository.getClassificationService().saveOrUpdate(CdmBase.deproxy(cdmBase, Classification.class));
+            return cdmRepository.getClassificationService().save(CdmBase.deproxy(cdmBase, Classification.class)).getUuid();  //TODO test if save is really correct here (#11083)
         }else if (cdmBase.isInstanceOf(AgentBase.class)){
-            return cdmRepository.getAgentService().saveOrUpdate(CdmBase.deproxy(cdmBase, AgentBase.class));
+            return cdmRepository.getAgentService().save(CdmBase.deproxy(cdmBase, AgentBase.class)).getUuid();  //TODO test if save is really correct here (#11083)
         }else if (cdmBase.isInstanceOf(Collection.class)){
-            return cdmRepository.getCollectionService().saveOrUpdate(CdmBase.deproxy(cdmBase, Collection.class));
+            return cdmRepository.getCollectionService().save(CdmBase.deproxy(cdmBase, Collection.class)).getUuid();  //TODO test if save is really correct here (#11083)
         }else if (cdmBase.isInstanceOf(DescriptionBase.class)){
             DescriptionBase<?> description = CdmBase.deproxy(cdmBase, DescriptionBase.class);
-            return cdmRepository.getDescriptionService().saveOrUpdate(description);
+            return cdmRepository.getDescriptionService().save(description).getUuid();  //TODO test if save is really correct here (#11083)
         }else if (cdmBase.isInstanceOf(TaxonBase.class)){
-            return cdmRepository.getTaxonService().saveOrUpdate(CdmBase.deproxy(cdmBase, TaxonBase.class));
+            return cdmRepository.getTaxonService().save(CdmBase.deproxy(cdmBase, TaxonBase.class)).getUuid();  //TODO test if save is really correct here (#11083);
         }else if (cdmBase.isInstanceOf(TaxonName.class)){
-            return cdmRepository.getNameService().saveOrUpdate(CdmBase.deproxy(cdmBase, TaxonName.class));
+            return cdmRepository.getNameService().save(CdmBase.deproxy(cdmBase, TaxonName.class)).getUuid();  //TODO test if save is really correct here (#11083)
         }else if (cdmBase.isInstanceOf(TaxonNode.class)){
-            return cdmRepository.getTaxonNodeService().saveOrUpdate(CdmBase.deproxy(cdmBase, TaxonNode.class));
+            return cdmRepository.getTaxonNodeService().save(CdmBase.deproxy(cdmBase, TaxonNode.class)).getUuid();  //TODO test if save is really correct here (#11083)
         }else{
             throw new IllegalArgumentException("Class not supported in save method: " + CdmBase.deproxy(cdmBase, CdmBase.class).getClass().getSimpleName());
         }
@@ -802,7 +802,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             Set<DescriptionBase> descriptionsToSave = new HashSet<>();
             set.stream().forEach(p -> descriptionsToSave.add(CdmBase.deproxy(p, DescriptionBase.class)));
            // DescriptionBase<?> description = CdmBase.deproxy(cdmBase, DescriptionBase.class);
-            return cdmRepository.getDescriptionService().saveOrUpdate(descriptionsToSave);
+            return cdmRepository.getDescriptionService().save(descriptionsToSave);  //TODO test if save is really correct here (#11083)
         }else{
             throw new IllegalArgumentException("List of descriptions is empty");
         }
@@ -1641,13 +1641,13 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
         Map<UUID, AgentBase> map;
         if (!newPersons.isEmpty()) {
-            map = getAgentService().saveOrUpdate((java.util.Collection)newPersons);
+            map = getAgentService().save(newPersons);  //TODO test if save is really correct here (#11083)
             map.forEach((k, v) -> personStore.put(isCollector?((Person)v).getCollectorTitleCache():((Person)v).getTitleCache(), (Person)v));
         }
         List<Team> newTeams = new ArrayList<>();
         teamStore.values().stream().filter(p -> p.getId() == 0).forEach(n -> newTeams.add(n));
         if (!newTeams.isEmpty()) {
-            map = getAgentService().saveOrUpdate((java.util.Collection) newTeams);
+            map = getAgentService().save(newTeams);  //TODO test if save is really correct here (#11083)
             map.forEach((k,v) -> teamStore.put(isCollector?((Team)v).getCollectorTitleCache():((Team)v).getTitleCache(), (Team)v));
         }
     }

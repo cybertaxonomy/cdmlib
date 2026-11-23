@@ -87,11 +87,11 @@ public class Cdm2CdmTaxonNodeImport
                         .filter(s->s.isInstanceOf(DefinedTermBase.class))
                         .map(s->CdmBase.deproxy(s, DefinedTermBase.class))
                         .collect(Collectors.toSet());
-                getTermService().saveOrUpdate(termsToSave);
+                getTermService().save(termsToSave);  //TODO test if save is really correct here (#11083)
 
-                getTaxonNodeService().saveOrUpdate(saveCascading(node));
+                getTaxonNodeService().save(saveCascading(node));   //TODO test if save is really correct here (#11083)
                 Set<CdmBase> remainingToSave = state.getToSave().stream().filter(s->!s.isPersisted()).collect(Collectors.toSet());
-                getCommonService().saveOrUpdate(remainingToSave);
+                getCommonService().save(remainingToSave);   //TODO test if save is really correct here (#11083)
                 state.clearToSave();
             }
         } catch (Exception e) {

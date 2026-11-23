@@ -167,7 +167,6 @@ public class Cdm2CdmVocabularyImportTest extends CdmIoTransactionalSpringIntegra
                 otherRepository.getTermService().delete(term.getUuid());
             }
         }
-        otherRepository.getVocabularyService().saveOrUpdate(voc);
         otherRepository.commitTransaction(tx);
     }
 

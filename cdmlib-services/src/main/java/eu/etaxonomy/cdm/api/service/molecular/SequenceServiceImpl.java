@@ -55,9 +55,9 @@ public class SequenceServiceImpl extends AnnotatableServiceBase<Sequence, ISeque
     public UpdateResult moveSingleRead(Sequence from, Sequence to, SingleRead singleRead) {
         UpdateResult result = new UpdateResult();
         from.removeSingleRead(singleRead);
-        saveOrUpdate(from);
+        save(from);
         to.addSingleRead(singleRead);
-        saveOrUpdate(to);
+        save(to);
         result.setStatus(Status.OK);
         result.addUpdatedObject(from);
         result.addUpdatedObject(to);

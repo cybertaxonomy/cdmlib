@@ -160,8 +160,8 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         }
         //        logger.info("saveUpdateNames");
         if (maxRankRespected){
-            importer.getNameService().saveOrUpdate(namesToSave);
-            importer.getClassificationService().saveOrUpdate(classification);
+            importer.getNameService().save(namesToSave);  //TODO test if save is really correct here (#11083)
+            importer.getClassificationService().save(classification);
             //logger.info("saveUpdateNames-ok");
         }
 
@@ -336,7 +336,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         for (Feature feature:featuresMap.values()) {
             root2.addChild(feature);
         }
-        importer.getTermTreeService().saveOrUpdate(proiBiosphereTree);
+        importer.getTermTreeService().save(proiBiosphereTree);
 
     }
 
@@ -410,8 +410,8 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 }
             }
         }
-        importer.getPolytomousKeyNodeService().saveOrUpdate(polyNodes);
-        importer.getPolytomousKeyService().saveOrUpdate(poly);
+        importer.getPolytomousKeyNodeService().save(polyNodes);
+        importer.getPolytomousKeyService().save(poly);
     }
 */
 
@@ -469,7 +469,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         if (cl != null){
             classification = cl;
         }else{
-            importer.getClassificationService().saveOrUpdate(classification);
+            importer.getClassificationService().save(classification);
             classification = importer.getClassificationService().find(classification.getUuid());
         }
     }
@@ -608,7 +608,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 if (descriptionsFulltext.keySet().contains(k) || specimenOrObservations.keySet().contains(k)){
                     acceptedTaxon.addDescription(td);
                     sourceHandler.addAndSaveSource(refMods, td, null);
-                    importer.getTaxonService().saveOrUpdate(acceptedTaxon);
+                    importer.getTaxonService().save(acceptedTaxon);
                 }
             }
         }
@@ -643,7 +643,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
         taxonDescription.addElement(indAssociation);
         sourceHandler.addAndSaveSource(refMods, taxonDescription,null);
-        importer.getTaxonService().saveOrUpdate(acceptedTaxon);
+        importer.getTaxonService().save(acceptedTaxon);
         //removed for #10669 - not checked if this could create any issues
         //td.setDescribedSpecimenOrObservation(soo.getDerivedUnitBase());
     }
@@ -819,8 +819,8 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                         //                            taxonDescription.addSource(OriginalSourceType.Import,null,null,refMods,null);
                         //                        }*/
                         //
-                        //                        importer.getDescriptionService().saveOrUpdate(taxonDescription);
-                        importer.getTaxonService().saveOrUpdate(acceptedTaxon);
+                        //                        importer.getDescriptionService().save(taxonDescription);
+                        importer.getTaxonService().save(acceptedTaxon);
 
                         rawAssociation="";
                     }
@@ -867,7 +867,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
         taxonDescription.addElement(indAssociation);
         sourceHandler.addAndSaveSource(refMods, taxonDescription,null);
-        importer.getTaxonService().saveOrUpdate(acceptedTaxon);
+        importer.getTaxonService().save(acceptedTaxon);
     }
 
 
@@ -909,7 +909,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
         taxonDescription.addElement(indAssociation);
         sourceHandler.addAndSaveSource(refMods, taxonDescription,null);
-        importer.getTaxonService().saveOrUpdate(acceptedTaxon);
+        importer.getTaxonService().save(acceptedTaxon);
 
         return derivedUnitBase.getTitleCache();
 
@@ -1206,7 +1206,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             if(featureName.equalsIgnoreCase(notMarkedUp)){
                 currentFeature.setUuid(NotMarkedUpUUID);
             }
-            importer.getTermService().saveOrUpdate(currentFeature);
+            importer.getTermService().save(currentFeature);
         }
         return currentFeature;
     }
@@ -1371,7 +1371,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             acceptedTaxon.addDescription(td);
 
             sourceHandler.addAndSaveSource(refMods, td, null);
-            importer.getTaxonService().saveOrUpdate(acceptedTaxon);
+            importer.getTaxonService().save(acceptedTaxon);
         }
 
         if(! descr.isEmpty() && (acceptedTaxon == null) && (defaultTaxon != null)){
@@ -1380,7 +1380,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 if (tmp!=null) {
                     defaultTaxon=CdmBase.deproxy(tmp,Taxon.class);
                 }else{
-                    importer.getTaxonService().saveOrUpdate(defaultTaxon);
+                    importer.getTaxonService().save(defaultTaxon);
                 }
             }catch(Exception e){
                 logger.debug("TAXON EXISTS"+defaultTaxon);
@@ -1390,7 +1390,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             defaultTaxon.addDescription(td);
             td.addElement(textData);
             sourceHandler.addAndSaveSource(refMods, td, null);
-            importer.getTaxonService().saveOrUpdate(defaultTaxon);
+            importer.getTaxonService().save(defaultTaxon);
         }
     }
 
@@ -1435,7 +1435,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             acceptedTaxon.addDescription(td);
 
             sourceHandler.addAndSaveSource(refMods, td, currentRef);
-            importer.getTaxonService().saveOrUpdate(acceptedTaxon);
+            importer.getTaxonService().save(acceptedTaxon);
         }
 
         if(! descr.isEmpty() && (acceptedTaxon == null) && (defaultTaxon != null)){
@@ -1444,7 +1444,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 if (tmp!=null) {
                     defaultTaxon=CdmBase.deproxy(tmp,Taxon.class);
                 }else{
-                    importer.getTaxonService().saveOrUpdate(defaultTaxon);
+                    importer.getTaxonService().save(defaultTaxon);
                 }
             }catch(Exception e){
                 logger.debug("TAXON EXISTS"+defaultTaxon);
@@ -1454,7 +1454,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             defaultTaxon.addDescription(td);
             td.addElement(textData);
             sourceHandler.addAndSaveSource(currentRef, td,currentRef);
-            importer.getTaxonService().saveOrUpdate(defaultTaxon);
+            importer.getTaxonService().save(defaultTaxon);
         }
     }
 
@@ -1555,7 +1555,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF);
             }
         }
-        importer.getTaxonService().saveOrUpdate(acceptedTaxon);
+        importer.getTaxonService().save(acceptedTaxon);
     }
 
 
@@ -1651,8 +1651,8 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             currentFeature.setUuid(NotMarkedUpUUID);
             //TODO use userDefined Feature Vocabulary
             Feature.DISTRIBUTION().getVocabulary().addTerm(currentFeature);
-//            importer.getTermService().saveOrUpdate(currentFeature);
-            importer.getVocabularyService().saveOrUpdate(currentFeature.getVocabulary());
+//            importer.getTermService().save(currentFeature);
+            importer.getVocabularyService().save(currentFeature.getVocabulary());
         }
         return currentFeature;
     }
@@ -1781,7 +1781,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     //                            textData.addSource(null, null, refS, null);
                     //                            td.addElement(textData);
                     //                            td.addSource(refSource);
-                    //                            importer.getDescriptionService().saveOrUpdate(td);
+                    //                            importer.getDescriptionService().save(td);
 
 
                     if (!currentMyName.getIdentifier().isEmpty() && (currentMyName.getIdentifier().length()>2)){
@@ -1836,7 +1836,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     }
                 }
             }
-            importer.getTaxonService().saveOrUpdate(acceptedTaxon);
+            importer.getTaxonService().save(acceptedTaxon);
         }
     }
 
@@ -1867,7 +1867,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         if(re == null){
             re = ReferenceFactory.newGeneric();
             re.setTitleCache(source, true);
-            importer.getReferenceService().saveOrUpdate(re);
+            importer.getReferenceService().save(re);
         }
         re=CdmBase.deproxy(re, Reference.class);
 
@@ -2125,7 +2125,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                                 }
 
 
-                                importer.getTaxonService().saveOrUpdate(acceptedTaxon);
+                                importer.getTaxonService().save(acceptedTaxon);
                                 acceptedTaxon = CdmBase.deproxy(acceptedTaxon, Taxon.class);
                             }
 
@@ -2143,7 +2143,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                                 //logger.info("SET SECUNDUM "+configState.getConfig().getSecundum());
                                 //System.out.println("SET SECUNDUM "+configState.getConfig().getSecundum());
                             }
-                            importer.getTaxonService().saveOrUpdate(acceptedTaxon);
+                            importer.getTaxonService().save(acceptedTaxon);
 
                             if (!sourcelinked){
                                 sourceHandler.addSource(refMods, acceptedTaxon);
@@ -2154,7 +2154,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                                     //FIXME are these identifiers really related to taxa, not names? Exiting LSIDs come from Zoobank, urn:lsid:biosci.ohio-state.edu:osuc_concepts:134826 (Ants)
                                 	setLSID(currentMyName.getIdentifier(), acceptedTaxon);
                                 }
-                                importer.getTaxonService().saveOrUpdate(acceptedTaxon);
+                                importer.getTaxonService().save(acceptedTaxon);
                             }
                         }
                     }else{
@@ -2202,7 +2202,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             }
 
         }
-        //importer.getClassificationService().saveOrUpdate(classification);
+        //importer.getClassificationService().save(classification);
         return acceptedTaxon;
     }
 
@@ -3475,7 +3475,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             if (author != null) {
                 if (!getIdentifier().isEmpty() && (getIdentifier().length()>2)){
                     setLSID(getIdentifier(), tmpTaxonBase);
-                    importer.getTaxonService().saveOrUpdate(tmpTaxonBase);
+                    importer.getTaxonService().save(tmpTaxonBase);
                     tmpTaxonBase = CdmBase.deproxy(tmpTaxonBase, TaxonBase.class);
                 }
             }
@@ -3541,7 +3541,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 	                            logger.info("Found the same name but from another type (taxon/synonym)");
 	                            TaxonName existingTnb = getTaxon().getName();
                                 tmpTaxonBase = Synonym.NewInstance(existingTnb, refMods);
-                                importer.getTaxonService().saveOrUpdate(tmpTaxonBase);
+                                importer.getTaxonService().save(tmpTaxonBase);
                                 exist =true;
                             }
 	                    }else if (nodeNameReplaceable){
@@ -3634,7 +3634,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                                 } else {
                                     classification.addChildTaxon((Taxon)tmpTaxonBase, refMods, null);
                                 }
-                                importer.getClassificationService().saveOrUpdate(classification);
+                                importer.getClassificationService().save(classification);
                             }
                         }
                         //                        Set<TaxonNode> nodeList = classification.getAllNodes();
@@ -3643,14 +3643,14 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                         //                        }
                     }
                 }
-                importer.getClassificationService().saveOrUpdate(classification);
+                importer.getClassificationService().save(classification);
                  if(isSynonym) {
                     try{
                         Synonym castTest = CdmBase.deproxy(tmpTaxonBase, Synonym.class);
                     }catch(Exception e){
                         TaxonName existingTnb = tmpTaxonBase.getName();
                         Synonym castTest = Synonym.NewInstance(existingTnb, refMods);
-                        importer.getTaxonService().saveOrUpdate(castTest);
+                        importer.getTaxonService().save(castTest);
                         tmpTaxonBase=CdmBase.deproxy(castTest, Synonym.class);
                     }
                 }
@@ -3733,7 +3733,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             if(hierarchy.containsKey(Rank.SUBGENUS())&& !state2.getConfig().getMaxRank().equals(Rank.SUBGENUS())){
                 higherTaxon=saveAndGetHigherTaxon(Rank.SUBGENUS(),higherTaxon);
             }
-            importer.getClassificationService().saveOrUpdate(classification);
+            importer.getClassificationService().save(classification);  //TODO test if save is really correct here (#11083)
             return higherTaxon;
         }
 
@@ -3998,7 +3998,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     	TaxonXTreatmentExtractor.this.sourceHandler.addSource(refMods, tmp);
                     }
 
-                    importer.getClassificationService().saveOrUpdate(classification);
+                    importer.getClassificationService().save(classification);  //TODO test if save is really correct here (#11083)
                 }
 
             }
@@ -4007,7 +4007,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             if (rank.equals(globalrank) && author != null) {
                 if (!getIdentifier().isEmpty() && (getIdentifier().length()>2)){
                     setLSID(getIdentifier(), tmp);
-                    importer.getTaxonService().saveOrUpdate(tmp);
+                    importer.getTaxonService().save(tmp);  //TODO test if save is really correct here (#11083)
                     tmp = CdmBase.deproxy(tmp, Taxon.class);
                 }
             }
@@ -4421,10 +4421,10 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     return CdmBase.deproxy(existing, Person.class);
                 }
             }
-            Person p = Person.NewInstance();
-            p.setTitleCache(author2,true);
-            importer.getAgentService().saveOrUpdate(p);
-            return CdmBase.deproxy(p, Person.class);
+            Person person = Person.NewInstance();
+            person.setTitleCache(author2,true);
+            importer.getAgentService().save(person);
+            return person;
         }
         /**
          * @param author the author to set

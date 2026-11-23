@@ -212,7 +212,7 @@ public class TaxonXAddSources {
             taxonDescription.addSource(id3);
         }
 
-        importer.getDescriptionService().saveOrUpdate(taxonDescription);
+        importer.getDescriptionService().save(taxonDescription);  //TODO test if save is really correct here (#11083)
     }
 
     protected void addAndSaveSource(Reference refMods, DerivedUnit derivedUnitBase) {
@@ -232,8 +232,8 @@ public class TaxonXAddSources {
         if(!configState.getConfig().doKeepOriginalSecundum() &&  id3!=null) {
             derivedUnitBase.addSource(id3);
         }
-        importer.getOccurrenceService().saveOrUpdate(derivedUnitBase);
-        derivedUnitBase= CdmBase.deproxy(derivedUnitBase, DerivedUnit.class);
+        importer.getOccurrenceService().save(derivedUnitBase);  //TODO test if save is really correct here (#11083)
+        derivedUnitBase= CdmBase.deproxy(derivedUnitBase);
     }
 
     public void addSource(Reference refMods, TaxonDescription taxonDescription) {
@@ -253,8 +253,6 @@ public class TaxonXAddSources {
         if(!configState.getConfig().doKeepOriginalSecundum() &&  id3!=null) {
             taxonDescription.addSource(id3);
         }
-        importer.getDescriptionService().saveOrUpdate(taxonDescription);
-
     }
 
     public void addSource(Reference reference, TextData textData, TaxonName name, Reference refMods) {

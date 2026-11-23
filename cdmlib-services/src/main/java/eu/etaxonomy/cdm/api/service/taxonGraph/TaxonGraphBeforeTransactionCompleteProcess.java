@@ -395,7 +395,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
                 }
                 Taxon taxon = assureSingleTaxon(taxonName);
                 updateEdges(taxon);
-                getSession().saveOrUpdate(taxon);
+                getSession().persist(taxon);
             } finally {
                 if(runAs != null){
                     runAs.restore();
@@ -441,7 +441,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
                 }
                 Taxon taxon = assureSingleTaxon(taxonName);
                 updateConceptReferenceInEdges(taxon, oldNomReference);
-                getSession().saveOrUpdate(taxon);
+                getSession().persist(taxon);
             } finally {
                 if(runAs != null){
                     runAs.restore();
@@ -477,7 +477,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
             }
             Taxon taxon = assureSingleTaxon(taxonName);
             updateEdges(taxon, nomReference);
-            getSession().saveOrUpdate(taxon);
+            getSession().persist(taxon);
         } finally {
             if(runAs != null){
                 runAs.restore();
@@ -508,7 +508,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
                 if(taxon != null) {
                     removeEdges(taxon, oldNomReference);
                 }
-                getSession().saveOrUpdate(taxon);
+                getSession().persist(taxon);
             } finally {
                 if(runAs != null){
                     runAs.restore();
@@ -536,9 +536,9 @@ public class TaxonGraphBeforeTransactionCompleteProcess
             Taxon taxon = assureSingleTaxon(taxonName, false);
             if(taxon != null) {
                 removeEdges(taxon, reference);
-                getSession().delete(taxon);
+                getSession().remove(taxon);
             }
-            getSession().saveOrUpdate(taxon);
+            getSession().persist(taxon);
         } finally {
             if(runAs != null){
                 runAs.restore();

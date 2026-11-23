@@ -337,7 +337,7 @@ public class TaxonServiceImpl
             }else if(toTaxon == oldAcceptedTaxon){
                fromTaxon.addTaxonRelation(newTaxon, taxonRelationship.getType(),
                         taxonRelationship.getCitation(), taxonRelationship.getCitationMicroReference());
-               saveOrUpdate(fromTaxon);
+               save(fromTaxon); //TODO test if save is really correct here (#11083)
 
             }else{
                 logger.warn("Taxon is not part of its own Taxonrelationship");
@@ -452,9 +452,9 @@ public class TaxonServiceImpl
             }
         }
         if (!sourcesToUpdate.isEmpty()) {
-            sourceDao.saveOrUpdateAll(sourcesToUpdate);
+            sourceDao.saveAll(sourcesToUpdate);  //needed at all?
         }
-        dao.saveOrUpdate(acceptedTaxon);
+        dao.save(acceptedTaxon);
         dao.save(newAcceptedTaxon);
         result.addUpdatedObject(acceptedTaxon);
         if (deleteSynonym){
@@ -1344,7 +1344,6 @@ public class TaxonServiceImpl
              }
              TaxonName name = taxon.getName();
              taxon.setName(null);
-             this.saveOrUpdate(taxon);
 
              if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0)  && result.isOk()){
                  try{
@@ -1428,10 +1427,8 @@ public class TaxonServiceImpl
             if (accTaxon != null){
                 accTaxon = HibernateProxyHelper.deproxy(accTaxon);
                 accTaxon.removeSynonym(synonym, false);
-                this.saveOrUpdate(accTaxon);
                 result.addUpdatedObject(accTaxon);
             }
-            this.saveOrUpdate(synonym);
             //#6281
             dao.flush();
 
@@ -1593,37 +1590,7 @@ public class TaxonServiceImpl
             SynonymType newSynonymType, UUID newSecundumUuid, String newSecundumDetail,
             boolean keepSecundumIfUndefined) throws HomotypicalGroupChangeException {
 
-        UpdateResult result = new UpdateResult();
         Taxon newTaxon = CdmBase.deproxy(dao.load(newTaxonUUID), Taxon.class);
-        result = moveSynonymToAnotherTaxon(oldSynonym, newTaxon, moveHomotypicGroup, newSynonymType,
-                newSecundumUuid, newSecundumDetail, keepSecundumIfUndefined);
-
-        return result;
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public UpdateResult moveSynonymToAnotherTaxon(Synonym oldSynonym,
-            Taxon newTaxon,
-            boolean moveHomotypicGroup,
-            SynonymType newSynonymType) throws HomotypicalGroupChangeException {
-        return moveSynonymToAnotherTaxon(oldSynonym, newTaxon, moveHomotypicGroup,
-                newSynonymType,
-                oldSynonym.getSec()!= null? oldSynonym.getSec().getUuid(): null,
-                oldSynonym.getSecMicroReference(),
-                true);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public UpdateResult moveSynonymToAnotherTaxon(Synonym oldSynonym,
-            Taxon newTaxon,
-            boolean moveHomotypicGroup,
-            SynonymType newSynonymType,
-            UUID newSecundumUuid,
-            String newSecundumDetail,
-            boolean keepSecundumIfUndefined) throws HomotypicalGroupChangeException {
-
         Synonym synonym = CdmBase.deproxy(dao.load(oldSynonym.getUuid()), Synonym.class);
         Taxon oldTaxon = CdmBase.deproxy(dao.load(synonym.getAcceptedTaxon().getUuid()), Taxon.class);
         //TODO what if there is no name ?? Concepts may be cached (e.g. via TCS import)
@@ -1684,8 +1651,6 @@ public class TaxonServiceImpl
         result.addUpdatedObject(newTaxon);
         result.addUpdatedObject(homotypicGroup);
         result.addUpdatedObject(synonym);
-        saveOrUpdate(oldTaxon);
-        saveOrUpdate(newTaxon);
 
         return result;
     }
@@ -2623,20 +2588,10 @@ public class TaxonServiceImpl
 
         Taxon fromTaxon = (Taxon) dao.load(fromTaxonUuid);
         Taxon toTaxon = (Taxon) dao.load(toTaxonUuid);
-        result = changeRelatedTaxonToSynonym(fromTaxon, toTaxon, oldRelationshipType, synonymType);
 
         result.addUpdatedObject(toTaxon);
         result.addUpdatedObject(result.getCdmEntity());
 
-        return result;
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public UpdateResult changeRelatedTaxonToSynonym(Taxon fromTaxon, Taxon toTaxon, TaxonRelationshipType oldRelationshipType,
-            SynonymType synonymType) throws DataChangeNoRollbackException {
-
-        UpdateResult result = new UpdateResult();
         // Create new synonym using concept name
         TaxonName synonymName = fromTaxon.getName();
 
@@ -2654,8 +2609,7 @@ public class TaxonServiceImpl
         }
         //keep the publish flag
         synonym.setPublish(fromTaxon.isPublish());
-        this.saveOrUpdate(toTaxon);
-        this.saveOrUpdate(synonym);
+
         //TODO: configurator and classification
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
         config.setDeleteNameIfPossible(false);

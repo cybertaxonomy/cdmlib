@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
-import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.TermTreeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -76,13 +75,9 @@ public class TermTreeServiceImpl
     }
 
     @Override
-    public Map<UUID, TermNode> saveOrUpdateNodesAll(Collection<TermNode> nodeCollection) {
-        return termNodeDao.saveOrUpdateAll(nodeCollection);
-    }
-
-    @Override
     @Transactional(readOnly = false)
-    public UpdateResult saveOrUpdateTermTreeDtoList(List<TermTreeDto> dtos){
+    public UpdateResult updateTermTreeDtoList(List<TermTreeDto> dtos){
+
         UpdateResult result = new UpdateResult();
 
         List<UUID> uuids = new ArrayList<>();
@@ -99,8 +94,7 @@ public class TermTreeServiceImpl
                     tree.setOrderRelevant(dto.isOrderRelevant());
                 }
 
-                UUID uuid = dao.saveOrUpdate(tree);
-                result.addUpdatedObject(dao.findByUuid(uuid));
+                result.addUpdatedObject(tree);
             }
         }
         return result;

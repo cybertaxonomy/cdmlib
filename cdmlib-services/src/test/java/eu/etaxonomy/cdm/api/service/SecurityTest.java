@@ -309,14 +309,11 @@ public class SecurityTest extends AbstractSecurityTestBase{
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
-        Reference book = referenceService.load(BOOK1_UUID);
-
-        TaxonNode n_acherontia_styx = taxonNodeService.find(ACHERONTIA_STYX_NODE_UUID);
-        TaxonNode n_acherontia_lachersis = taxonNodeService.find(ACHERONTIA_LACHESIS_NODE_UUID);
-
         Exception exception = null;
         try {
-            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_styx, n_acherontia_lachersis, SynonymType.HETEROTYPIC_SYNONYM_OF, book , "33", SecReferenceHandlingEnum.KeepOrWarn, true);
+            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(
+                    ACHERONTIA_STYX_NODE_UUID, ACHERONTIA_LACHESIS_NODE_UUID, SynonymType.HETEROTYPIC_SYNONYM_OF,
+                    BOOK1_UUID , "33", SecReferenceHandlingEnum.KeepOrWarn, true);
             commitAndStartNewTransaction(null);
         } catch (AccessDeniedException e){
             logger.error("Unexpected failure of evaluation.", e);
@@ -340,14 +337,11 @@ public class SecurityTest extends AbstractSecurityTestBase{
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
-        Reference book = referenceService.load(BOOK1_UUID);
-
-        TaxonNode n_acherontia_styx = taxonNodeService.find(ACHERONTIA_STYX_NODE_UUID);
-        TaxonNode n_acherontia_lachersis = taxonNodeService.find(ACHERONTIA_LACHESIS_NODE_UUID);
-
         Exception exception = null;
         try {
-            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachersis, n_acherontia_styx, SynonymType.HOMOTYPIC_SYNONYM_OF, book , "33", null, true);
+            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(
+                    ACHERONTIA_LACHESIS_NODE_UUID, ACHERONTIA_STYX_NODE_UUID,
+                    SynonymType.HOMOTYPIC_SYNONYM_OF, BOOK1_UUID , "33", null, true);
             commitAndStartNewTransaction(null);
         } catch (AccessDeniedException e){
             logger.error("Unexpected failure of evaluation.", e);
@@ -419,7 +413,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         nomRef.setTitleCache("Mobydick", true);
         Exception exception = null;
         try {
-            taxonService.saveOrUpdate(taxon);
             commitAndStartNewTransaction(null);
         } catch (AccessDeniedException e){
             logger.debug("Expected failure of evaluation.", e);
@@ -549,7 +542,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
      * test with admin account - should succeed
      */
     @Test
-    public final void testTaxonSaveOrUpdateAllow_1() {
+    public final void testTaxonUpdateAllow_1() {
 
         SecurityContext context = SecurityContextHolder.getContext();
 
@@ -561,7 +554,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         assertFalse(taxon.isDoubtful());
         taxon.setDoubtful(true);
         try{
-            taxonService.saveOrUpdate(taxon);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException  = findSecurityRuntimeException(e);
@@ -582,7 +574,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
      * test with taxonEditor account - should succeed
      */
     @Test
-    public final void testTaxonSaveOrUpdateAllow_2() {
+    public final void testTaxonUpdateAllow_2() {
 
         RuntimeException securityException= null;
         SecurityContext context = SecurityContextHolder.getContext();
@@ -596,7 +588,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         assertFalse(taxon.isDoubtful());
         taxon.setDoubtful(true);
         try{
-            taxonService.saveOrUpdate(taxon);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException  = findSecurityRuntimeException(e);
@@ -617,7 +608,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
      * test with tokenForDescriptionEditor account - should fail
      */
     @Test
-    public final void testTaxonSaveOrUpdateDeny_2() {
+    public final void testTaxonUpdateDeny_2() {
 
         SecurityContext context = SecurityContextHolder.getContext();
         RuntimeException securityException = null;
@@ -630,7 +621,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         assertFalse(taxon.isDoubtful());
         taxon.setDoubtful(true);
         try {
-            taxonService.saveOrUpdate(taxon);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
@@ -662,7 +652,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         boolean lastIsPublish = taxon.isPublish();
         taxon.setPublish(!lastIsPublish);
         try{
-            taxonService.saveOrUpdate(taxon);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException  = findSecurityRuntimeException(e);
@@ -696,7 +685,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         boolean lastIsPublish = taxon.isPublish();
         taxon.setPublish(!lastIsPublish);
         try{
-            taxonService.saveOrUpdate(taxon);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException  = findSecurityRuntimeException(e);
@@ -730,7 +718,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         boolean lastIsPublish = taxon.isPublish();
         taxon.setPublish(!lastIsPublish);
         try {
-            taxonService.saveOrUpdate(taxon);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
@@ -858,7 +845,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
         description.setTitleCache("test", true);
         try {
-            descriptionService.saveOrUpdate(description);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
@@ -932,7 +918,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         Taxon t_acherontia_lachesis = (Taxon)taxonService.load(ACHERONTIA_LACHESIS_UUID);
         UUID name_acherontia_lachesis_uuid = t_acherontia_lachesis.getName().getUuid();
         Taxon t_acherontia_styx = (Taxon)taxonService.load(UUID_ACHERONTIA_STYX);
-        int countSynsBefore = t_acherontia_styx.getSynonyms().size();
 
         TaxonNode n_acherontia_lachesis = t_acherontia_lachesis.getTaxonNodes().iterator().next();
         TaxonNode n_acherontia_styx = t_acherontia_styx.getTaxonNodes().iterator().next();
@@ -941,9 +926,9 @@ public class SecurityTest extends AbstractSecurityTestBase{
         int numOfSynonymsBefore_lachesis = t_acherontia_lachesis.getSynonyms().size();
 
         try {
-            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachesis, n_acherontia_styx, SynonymType.SYNONYM_OF, null, null, null, true);
-//            synonymUuid = synonym.getUuid();
-//            taxonService.saveOrUpdate(synonym);
+            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(
+                    n_acherontia_lachesis.getUuid(), n_acherontia_styx.getUuid(),
+                    SynonymType.SYNONYM_OF, null, null, null, true);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
@@ -987,7 +972,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         assertTrue(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
         try{
-            descriptionService.saveOrUpdate(description);
+            descriptionService.save(description);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
@@ -1026,7 +1011,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         assertTrue(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
         try{
-            descriptionService.saveOrUpdate(description);
+            descriptionService.save(description);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
@@ -1064,7 +1049,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         assertTrue(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
         try{
-            descriptionService.saveOrUpdate(description);
+            descriptionService.save(description);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
@@ -1097,8 +1082,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         UUID synUuid = UUID.randomUUID();
         syn.setUuid(synUuid);
         try{
-            taxonService.saveOrUpdate(syn);
-            logger.debug("will commit ...");
+            taxonService.save(syn);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
@@ -1124,8 +1108,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         Synonym syn = Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null);
         UUID synUuid = syn.getUuid();
         try{
-            taxonService.saveOrUpdate(syn);
-            logger.debug("will commit ...");
+            taxonService.save(syn);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
@@ -1155,7 +1138,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         TaxonNode acherontia_child_node = acherontia_node.addChildTaxon(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null), null, null);
 
         try{
-            taxonNodeService.saveOrUpdate(acherontia_child_node);
+            taxonNodeService.save(acherontia_child_node);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
@@ -1186,8 +1169,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         acherontiini_node.addChildTaxon(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null), null, null);
 
         try{
-            logger.debug("==============================");
-            taxonNodeService.saveOrUpdate(acherontiini_node);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);

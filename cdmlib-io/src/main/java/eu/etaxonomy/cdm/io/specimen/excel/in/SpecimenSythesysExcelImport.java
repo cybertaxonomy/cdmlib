@@ -188,7 +188,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                 if (classification ==null){
                     String name = state.getConfig().getClassificationName();
                     classification = Classification.NewInstance(name, ref, Language.DEFAULT());
-                    getClassificationService().saveOrUpdate(classification);
+                    getClassificationService().save(classification);
                 }
                 configreused=true;
             }

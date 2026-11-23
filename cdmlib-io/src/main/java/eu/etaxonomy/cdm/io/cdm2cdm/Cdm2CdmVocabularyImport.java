@@ -100,8 +100,8 @@ public class Cdm2CdmVocabularyImport
         try {
             if (thisVoc != null){
                 source.commitTransaction(otherTx);
-                getVocabularyService().saveOrUpdate(thisVoc);
-                getCommonService().saveOrUpdate(state.getToSave());
+                getVocabularyService().save(thisVoc);  //TODO test if save is really correct here (#11083)
+                getCommonService().save(state.getToSave());  //TODO test if save is really correct here (#11083)
                 state.clearToSave();
             }
         } catch (Exception e) {
@@ -149,8 +149,8 @@ public class Cdm2CdmVocabularyImport
         try {
             if (thisGraph != null){
                 source.commitTransaction(otherTx);
-                getTermTreeService().saveOrUpdate(thisGraph);
-                getCommonService().saveOrUpdate(state.getToSave());
+                getTermTreeService().save(thisGraph);  //TODO test if save is really correct here (#11083)
+                getCommonService().save(state.getToSave());  //TODO test if save is really correct here (#11083)
                 state.clearToSave();
             }
         } catch (Exception e) {
@@ -169,7 +169,8 @@ public class Cdm2CdmVocabularyImport
                 thisNode = this.detach(otherNode, state);
                 thisParent.addChild(thisNode);
                 state.addToSave(thisNode);
-                getTermService().saveOrUpdate(thisNode.getTerm());  //state.addToSave() may throw LIE due to linked term during a flush
+                getTermService().save(thisNode.getTerm());  //state.addToSave() may throw LIE due to linked term during a flush
+                                                            //TODO test if save is really correct here (#11083)
                 if (logger.isDebugEnabled()) {logger.debug("Added term: " + thisNode.getTerm().getTitleCache() + "/" + thisNode.getTerm().getVocabulary().getTitleCache());}
                 //do recursive
             }else {

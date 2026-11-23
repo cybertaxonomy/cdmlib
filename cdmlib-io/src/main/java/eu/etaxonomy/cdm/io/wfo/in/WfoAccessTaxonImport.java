@@ -105,7 +105,7 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
         if (!name.isPersisted()){
             state.getResult().addNewRecords(TaxonName.class.getSimpleName(), 1);
         }
-        getNameService().saveOrUpdate(name);
+        getNameService().save(name);  //TODO test if save is really correct here (#11083)
         saveHybridNames(state, name);
         makeTaxon(state, name);
     }
@@ -116,8 +116,7 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
             if (!parent.isPersisted()){
                 state.getResult().addNewRecords(TaxonName.class.getSimpleName(), 1);
             }
-            getNameService().saveOrUpdate(parent);
-
+            getNameService().save(parent);  //TODO test if save is really correct here (#11083)
         }
     }
 

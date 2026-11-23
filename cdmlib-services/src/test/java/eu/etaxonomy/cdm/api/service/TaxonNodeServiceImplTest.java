@@ -175,11 +175,11 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 		assertEquals(2,t1.getSynonyms().size());
 		DeleteResult result;
 
-		t4 = node4.getTaxon();
-        UUID uuidT4 = t4.getUuid();
+        UUID uuidT4 = node4.getTaxon().getUuid();
         t4 = (Taxon) taxonService.find(uuidT4);
         nameService.find(t4.getName().getUuid());
-        result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node4, node2, synonymType, reference, referenceDetail, null, true);
+        result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(
+                node4Uuid, node2Uuid, synonymType, referenceUuid, referenceDetail, null, true);
         if (result.isError() || result.isAbort()){
             fail();
         }
@@ -187,7 +187,8 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         assertNull(t4);
 
 		//Taxon can't be deleted because of the polytomous key node
-		result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymType, reference, referenceDetail,null, true);
+		result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1Uuid, node2Uuid,
+		        synonymType, referenceUuid, referenceDetail,null, true);
 		if (result.isError() || result.isAbort()){
 			fail();
 		}
@@ -268,7 +269,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 
 		//run operation
 		DeleteResult result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode
-		        (node1, node2, synonymType, reference, referenceDetail, null, true);
+		        (node1Uuid, node2Uuid, synonymType, referenceUuid, referenceDetail, null, true);
 
 		//test
 		if (!result.getUpdatedObjects().iterator().hasNext()){
@@ -407,7 +408,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 		UUID taxUUID = newNode.getTaxon().getUuid();
 		UUID nameUUID = newNode.getTaxon().getName().getUuid();
 
-		DeleteResult result = taxonNodeService.deleteTaxonNode(node1, null);
+		DeleteResult result = taxonNodeService.deleteTaxonNode(node1Uuid, null);
 		if (!result.isOk()){
 			fail();
 		}
@@ -449,7 +450,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         UUID taxUUID = newNode.getTaxon().getUuid();
         UUID nameUUID = newNode.getTaxon().getName().getUuid();
 
-        DeleteResult result = taxonNodeService.deleteTaxonNode(node1, null);
+        DeleteResult result = taxonNodeService.deleteTaxonNode(node1Uuid, null);
         if (!result.isOk()){
             fail();
         }
@@ -1294,7 +1295,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
     }
 
     @Test  //8127  //5536 //10101
-    @Disabled // see #10101
+    @Disabled // see #10101  disabled due to null value exception
     @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testMergeDetached(){
 
@@ -1307,10 +1308,12 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         taxonNodeService.save(child2);
         commitAndStartNewTransaction();
 
-        //load root node and make it detached
+        //load root node and make it detached (but sufficiently initialized)
         TaxonNode rootNode = taxonNodeService.find(tree.getRootNode().getUuid());
         rootNode.getChildNodes().get(0).getChildNodes().size();  //initialize children
         rootNode.getChildNodes().get(1).getChildNodes().size();  //initialize children
+        rootNode.getChildNodes().get(0).getTaxon().getTaxonNodes().size();  //initialize necessary for rootNode.deleteChildNode()
+        CdmBase.deproxy(rootNode.getClassification());  //initialize
         commitAndStartNewTransaction(); //detach
 
         //replace nodes and merge
@@ -1318,11 +1321,13 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         rootNode.deleteChildNode(childToRemove);
         TaxonNode child3 = rootNode.addChildTaxon(null, null);
         taxonNodeService.merge(rootNode, childToRemove);
+        taxonNodeService.merge(child3);
         commitAndStartNewTransaction(tableNames);
 
         //test result
         rootNode = taxonNodeService.find(tree.getRootNode().getUuid());
         rootNode.getChildNodes();
+        //FIXME: throws "Illegal null value for list index encountered" exception
         assertEquals(2, rootNode.getChildNodes().size());
         assertEquals(child2.getUuid(), rootNode.getChildNodes().get(0).getUuid());
         assertEquals(child3.getUuid(), rootNode.getChildNodes().get(1).getUuid());
@@ -1362,8 +1367,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         assertEquals(3, taxonNodeService.count(TaxonNode.class), "Should be root + 2 children");
     }
 
-    @Test   //#10101
-    @Disabled //see #10101
+    @Test   //#10101  (works now with merge(grandChild)
     @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testMergeDetachedWithMove() {
 
@@ -1387,9 +1391,11 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         //...make child1 a child of child2
         TaxonNode childMove = rootNode.getChildNodes().get(0);
         TaxonNode newParentNode = rootNode.getChildNodes().get(1);
-        TaxonNode child3 = newParentNode.addChildNode(childMove, null, null);
-        TaxonNode child4 =rootNode.addChildTaxon(null, null);
-        taxonNodeService.save(child4);
+        TaxonNode grandChild = newParentNode.addChildNode(childMove, null, null);
+        taxonNodeService.merge(grandChild);
+        //add a 3rd child
+        TaxonNode child3 = rootNode.addChildTaxon(null, null);
+        taxonNodeService.save(child3);
 
         @SuppressWarnings("unused")
         //no removed child to delete here
@@ -1402,14 +1408,14 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         assertEquals(2, rootNode.getChildNodes().size());
         TaxonNode firstChild = rootNode.getChildNodes().get(0);
         assertEquals(child2.getUuid(), firstChild.getUuid());
-        assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
+        assertEquals(child3.getUuid(), rootNode.getChildNodes().get(1).getUuid());
         assertEquals(1, firstChild.getChildNodes().size());
         assertEquals(child1.getUuid(), firstChild.getChildNodes().get(0).getUuid());
         assertEquals(4, taxonNodeService.count(TaxonNode.class), "Should be root + 2 children + 1 grandchild");
     }
 
     @Test //#10101
-    @Disabled  //see #10101
+    @Disabled // see #10101  disabled due to null value exception
     @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public final void testSaveDetached(){
 
@@ -1426,19 +1432,22 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         TaxonNode rootNode = taxonNodeService.find(tree.getRootNode().getUuid());
         rootNode.getChildNodes().get(0).getChildNodes().size();  //initialize children
         rootNode.getChildNodes().get(1).getChildNodes().size();  //initialize children
+        rootNode.getChildNodes().get(0).getTaxon().getTaxonNodes().size();  //initialize necessary for rootNode.deleteChildNode()
+        CdmBase.deproxy(rootNode.getClassification());  //initialize
         commitAndStartNewTransaction(); //detach
 
         //replace nodes and merge
         TaxonNode childToRemove = rootNode.getChildNodes().get(0);
         rootNode.deleteChildNode(childToRemove);
         TaxonNode child3 = rootNode.addChildTaxon(null, null);
-        taxonNodeService.saveOrUpdate(rootNode);
-        taxonNodeService.delete(childToRemove.getUuid());  //combined method like in merge does not yet exist for saveOrUpdate
+        taxonNodeService.merge(child3);
+        taxonNodeService.delete(childToRemove.getUuid());  //combined method like in merge does not yet exist for save_Or_Update
         commitAndStartNewTransaction(tableNames);
 
         //test result
         rootNode = taxonNodeService.find(tree.getRootNode().getUuid());
         rootNode.getChildNodes();
+        //FIXME: throws "Illegal null value for list index encountered" exception
         assertEquals(2, rootNode.getChildNodes().size());
         assertEquals(child2.getUuid(), rootNode.getChildNodes().get(0).getUuid());
         assertEquals(child3.getUuid(), rootNode.getChildNodes().get(1).getUuid());

@@ -64,17 +64,17 @@ public class PolytomousKeyNodeServiceImpl
             for (PolytomousKeyNode child: children){
                 if (!child.equals(node)){
                     parent.addChild(child);
-                    dao.saveOrUpdate(child);
+                    dao.save(child);
                     result.addUpdatedObject(child);
                 }
             }
 
-            dao.saveOrUpdate(node);
+            dao.save(node);
             result.addUpdatedObject(node);
         }
         if (parent != null){
             parent.removeChild(node);
-            dao.saveOrUpdate(parent);
+            dao.save(parent);
         }
         if (node.getKey() != null && key != null){
             key.setRoot(null);
@@ -88,10 +88,10 @@ public class PolytomousKeyNodeServiceImpl
             result.addDeletedObject(node);
         }
         if (parent != null){
-            dao.saveOrUpdate(parent);
+            dao.save(parent);
             result.addUpdatedObject(parent);
         } else{
-            keyDao.saveOrUpdate(key);
+            keyDao.save(key);
             result.addUpdatedObject(key);
         }
 

@@ -466,7 +466,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 								String microCitation = null;
 								Taxon childTaxon = taxon;
 								makeParent(state, parentTaxon, childTaxon, null, microCitation);
-								getTaxonService().saveOrUpdate(childTaxon);
+								getTaxonService().save(childTaxon);  //TODO test if save is really correct here (#11083)
 								state.putTaxon(parentId, parentTaxon);
 							} else {
 								String message = "Taxonomic parent not found for " + taxonNameStr;
@@ -489,7 +489,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
     								fireWarningEvent(message, state, 8);
     							}else{
     							   acceptedTaxon.addSynonym(synonym, SynonymType.SYNONYM_OF);
-							       getTaxonService().saveOrUpdate(acceptedTaxon);
+							       getTaxonService().save(acceptedTaxon);  //TODO test if save is really correct here (#11083)
 
     							}
     						} catch (Exception e) {
@@ -507,7 +507,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
                                 String microCitation = null;
                                 Taxon childTaxon = taxon;
                                 makeParent(state, parentTaxon, childTaxon, null, microCitation);
-                                getTaxonService().saveOrUpdate(parentTaxon);
+                                getTaxonService().save(parentTaxon);  //TODO test if save is really correct here (#11083)
                                 state.putTaxon(parentId, parentTaxon);
                             } else {
                                 String message = "Taxonomic parent not found for " + taxonNameStr;

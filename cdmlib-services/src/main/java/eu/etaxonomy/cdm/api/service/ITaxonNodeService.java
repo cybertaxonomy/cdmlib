@@ -117,18 +117,16 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
     public TaxonNodeDto parentDto(UUID taxonNodeUuid);
 
 	/**
-	 * Changes the taxon associated with the given taxon node into a synonym of the new accepted taxon node.
-	 * All data associated with the former taxon are moved to the newly accepted taxon.
-	 */
-	public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymType synonymType, Reference citation,  String microReference, SecReferenceHandlingEnum secHandling, boolean setNameInSource) ;
-
-	/**
 	 * Changes the taxa associated with the given taxon nodes into synonyms of the new accepted taxon node.
 	 * All data associated with the former taxa are moved to the newly accepted taxon.
 	 */
 	public DeleteResult makeTaxonNodeSynonymsOfAnotherTaxonNode(Set<UUID> oldTaxonNodeUuids, UUID newAcceptedTaxonNodeUUIDs,
 			SynonymType synonymType, UUID citationUuid, String microReference, SecReferenceHandlingEnum secHandling, boolean setNameInSource);
 
+    /**
+     * Changes the taxon associated with the given taxon node into a synonym of the new accepted taxon node.
+     * All data associated with the former taxon are moved to the newly accepted taxon.
+     */
 	public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(UUID oldTaxonNodeUuid,
 	        UUID newAcceptedTaxonNodeUUID,
 	        SynonymType synonymType,
@@ -140,26 +138,19 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
     public DeleteResult deleteTaxonNodes(Collection<UUID> nodeUuids, TaxonDeletionConfigurator config);
 
 	/**
-	 * deletes the given taxon node the configurator defines whether the children will be deleted too or not
+	 * Deletes the given taxon node.
+	 * The configurator defines whether the children will be deleted too or not
 	 */
-	public DeleteResult deleteTaxonNode(TaxonNode node, TaxonDeletionConfigurator config);
-
-	/**
-	 * Returns a List of all TaxonNodes of a given Classification.
-	 *
-	 * @param classification - according to the given classification the TaxonNodes are filtered.
-	 * @param start -  beginning of wanted row set, i.e. 0 if one want to start from the beginning.
-	 * @param end  - limit of how many rows are to be pulled from the database, i.e. 1000 rows.
-	 * @return filtered List of TaxonNode according to the classification provided
-	 */
-
-    /**
-     * @param nodeUuid
-     * @param config
-     * @return
-     */
     public DeleteResult deleteTaxonNode(UUID nodeUuid, TaxonDeletionConfigurator config);
 
+    /**
+     * Returns a List of all TaxonNodes of a given Classification.
+     *
+     * @param classification - according to the given classification the TaxonNodes are filtered.
+     * @param start -  beginning of wanted row set, i.e. 0 if one want to start from the beginning.
+     * @param end  - limit of how many rows are to be pulled from the database, i.e. 1000 rows.
+     * @return filtered List of TaxonNode according to the classification provided
+     */
 	public List<TaxonNode> listAllNodesForClassification(Classification classification, Integer start, Integer end);
 
 	/**

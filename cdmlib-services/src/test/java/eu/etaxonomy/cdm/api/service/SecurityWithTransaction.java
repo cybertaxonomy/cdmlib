@@ -106,7 +106,7 @@ public class SecurityWithTransaction extends CdmServicesTransactionalSpringInteg
     }
 
     @Test
-    public void testSaveOrUpdateDescription(){
+    public void testUpdateDescription(){
 
         authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("descriptionEditor", "test"));
         SecurityContext context = SecurityContextHolder.getContext();
@@ -126,8 +126,6 @@ public class SecurityWithTransaction extends CdmServicesTransactionalSpringInteg
         textData.addMedia(media);
 
         description.addElement(textData);
-
-        descriptionService.saveOrUpdate(description);
 
         Taxon taxon = (Taxon) taxonService.find(UUID.fromString("7b8b5cb3-37ba-4dba-91ac-4c6ffd6ac331"));
         Set<TaxonDescription> descriptions = taxon.getDescriptions();
@@ -159,7 +157,6 @@ public class SecurityWithTransaction extends CdmServicesTransactionalSpringInteg
         assertTrue(permissionEvaluator.hasPermission(authentication, node, "UPDATE"));
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
 
-        taxonNodeService.saveOrUpdate(node);
         assertFalse(permissionEvaluator.hasPermission(authentication, description, "UPDATE"));
     }
 

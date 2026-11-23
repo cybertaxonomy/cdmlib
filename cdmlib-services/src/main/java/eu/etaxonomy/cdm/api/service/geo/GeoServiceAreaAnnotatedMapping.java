@@ -84,7 +84,7 @@ public class GeoServiceAreaAnnotatedMapping implements IGeoServiceAreaMapping {
         }
         area.addAnnotation(annotation);
 
-        termService.saveOrUpdate(area);
+        termService.save(area);
     }
 
     @Override
@@ -102,6 +102,6 @@ public class GeoServiceAreaAnnotatedMapping implements IGeoServiceAreaMapping {
         for(Annotation  remove : removeCandidates){
             area.removeAnnotation(remove);
         }
-        termService.saveOrUpdate(area);
+        termService.save(area);
     }
 }

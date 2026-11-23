@@ -809,7 +809,7 @@ public class DescriptionServiceImpl
             targetDescription.addElement(newElement);
             if (! isCopy){
                 description.removeElement(element);
-                dao.saveOrUpdate(description);
+                dao.save(description);
                 result.addUpdatedObject(description);
                 result.addUpdatedObject(taxon);
 //                if (description.getElements().isEmpty()){
@@ -822,12 +822,12 @@ public class DescriptionServiceImpl
 //                    dao.delete(description);
 //
 //                }//else{
-//                    dao.saveOrUpdate(description);
+//                    dao.save(description);
 //                    result.addUpdatedObject(description);
 //                }
             }
         }
-        dao.saveOrUpdate(targetDescription);
+        dao.save(targetDescription);
         result.addUpdatedObject(targetDescription);
         if (targetDescription instanceof TaxonDescription){
             result.addUpdatedObject(((TaxonDescription)targetDescription).getTaxon());

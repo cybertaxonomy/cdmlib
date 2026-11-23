@@ -625,7 +625,7 @@ public class DescriptiveDataSetService
         Taxon taxon = (Taxon) taxonService.load(taxonUuid);
         key.addTaxonomicScope(taxon);
 
-        polytomousKeyService.saveOrUpdate(key);
+        polytomousKeyService.save(key);
 
         result.setCdmEntity(key);
         result.addUpdatedObject(taxon);
@@ -761,9 +761,9 @@ public class DescriptiveDataSetService
         newTaxonDescription.setTitleCache(dataSet.getLabel()+": "+newTaxonDescription.generateTitle(), true); //$NON-NLS-2$
         newTaxonDescription.getTypes().add(descriptionType);
         dataSet.addDescription(newTaxonDescription);
-        descriptionService.saveOrUpdate(newTaxonDescription);
-        taxonService.saveOrUpdate(taxonNode.getTaxon());
-        saveOrUpdate(dataSet);
+        descriptionService.save(newTaxonDescription);
+        taxonService.save(taxonNode.getTaxon());
+        save(dataSet);
         return createTaxonRowWrapper(newTaxonDescription.getUuid(), dataSet.getUuid(), lang);
     }
 

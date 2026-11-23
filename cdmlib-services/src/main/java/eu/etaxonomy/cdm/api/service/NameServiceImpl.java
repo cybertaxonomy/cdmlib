@@ -209,7 +209,7 @@ public class NameServiceImpl
 
             try{
                 if (!namesToUpdate.isEmpty()){
-                    Map<UUID, TaxonName> updatedNames = dao.saveOrUpdateAll(namesToUpdate);
+                    Map<UUID, TaxonName> updatedNames = dao.saveAll(namesToUpdate);
                     Set<TaxonName> names = new HashSet<>(updatedNames.values());
                     result.addUpdatedObjects(names);
                 }
@@ -264,7 +264,7 @@ public class NameServiceImpl
         typeDesignation.setTypeSpecimen(duplicate);
         typeDesignation.setTypeStatus(typeStatus);
         typeDesignation.getTypeSpecimen().setPreferredStableUri(preferredStableUri);
-        this.typeDesignationDao.saveOrUpdate(typeDesignation);
+        this.typeDesignationDao.save(typeDesignation);
 
         TaxonName name = load(nameUuid);
         name.getTypeDesignations().add(typeDesignation);

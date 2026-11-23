@@ -187,7 +187,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                 }
 
                 if (!personMap.containsKey(authorship.getTitleCache()) && (authorship.getTeamMembers().size()>0)){
-                    UUID uuid = importer.getAgentService().saveOrUpdate(authorship);
+                    UUID uuid = importer.getAgentService().save(authorship).getUuid();
                     personMap.put(authorship.getTitleCache(),uuid);
                 }else{
                     if(authorship.getTeamMembers().size()>1) {
@@ -279,7 +279,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
             if ((person != null) && role.equals(AUTHOR)) {
                 UUID uuid = null;
                 if (!personMap.containsKey(person.getTitleCache())){
-                    uuid = importer.getAgentService().saveOrUpdate(person);
+                    uuid = importer.getAgentService().save(person).getUuid();
                     person = (Person) importer.getAgentService().find(uuid);
                     personMap.put(person.getTitleCache(),uuid);
                 }else{

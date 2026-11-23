@@ -239,7 +239,7 @@ public class ConcurrentSessionTest extends CdmServicesSpringIntegrationTest {
         conversationHolder1.commit();
         Set<TaxonBase> taxonBases = taxonBase1.getName().getTaxonBases();
         name.removeTaxonBase(syn);
-        taxonService.saveOrUpdate(taxonBase1);
+        taxonService.save(taxonBase1);
         conversationHolder1.commit();
         conversationHolder2.bind();
         conversationHolder2.startTransaction();
@@ -648,13 +648,8 @@ public class ConcurrentSessionTest extends CdmServicesSpringIntegrationTest {
     private void persistTerm(DefinedTermBase<?> term, ITermService termService, ConversationHolder conversation){
         if(term != null){
             //if the term does not exist in the DB save it
-            if(termService.find(term.getUuid())==null){
-                termService.saveOrUpdate(term);
-            }
-            //if it does exist but is not bound to the current session re-load and save it
-            else if(!conversation.getSession().contains(term)){
-                term = termService.load(term.getUuid());
-                termService.saveOrUpdate(term);
+            if(termService.find(term.getUuid()) == null){
+                termService.save(term);
             }
         }
     }
@@ -822,8 +817,8 @@ public class ConcurrentSessionTest extends CdmServicesSpringIntegrationTest {
     @Disabled //see #4528
     @Test
     @CdmDataSet("ConcurrentSessionTest.xml")
-    public void testSaveOrUpdate() {
-        // this test deals with calling a save or saveOrUpdate after binding a conversation holder
+    public void testSave() {   //  was testSaveOrUpdate (#11083)
+        // this test deals with calling a save after binding a conversation holder
 
         // initialise the conversation holders
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -831,7 +826,7 @@ public class ConcurrentSessionTest extends CdmServicesSpringIntegrationTest {
 
         // bind the first one
         conversationHolder1.bind();
-        // This is the call that makes sure that the 'taxonService.saveOrUpdate(taxonBase1);' call
+        // This is the call that makes sure that the 'taxonService.save(taxonBase1);' call
         // later on does not flush the entire session.
         // The method to look at is 'processCommit(DefaultTransactionStatus status)' from
         // the class 'org.springframework.transaction.support.AbstractPlatformTransactionManager'
@@ -855,9 +850,9 @@ public class ConcurrentSessionTest extends CdmServicesSpringIntegrationTest {
         logger.info("Taxon 2 Title Cache Updated: " + taxonBase2.getTitleCache());
 
         // NOTE : Without the earlier 'conversationHolder1.startTransaction()' call, the
-        // saveOrUpdate method will flush the entire session, in this case both
+        // save method will flush the entire session, in this case both
         // taxonBase1 and taxonBase2
-        taxonService.saveOrUpdate(taxonBase1);
+        taxonService.save(taxonBase1);
 
         conversationHolder2.bind();
 

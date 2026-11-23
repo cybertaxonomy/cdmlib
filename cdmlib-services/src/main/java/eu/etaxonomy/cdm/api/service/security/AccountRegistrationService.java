@@ -134,7 +134,7 @@ public class AccountRegistrationService
                     }
 
                     //save
-                    userDao.saveOrUpdate(newUser);
+                    userDao.save(newUser);
 
                     accountRegistrationTokenStore.remove(token);
                     sendEmail(creationRequest.get().getUserEmail(), userName,

@@ -141,11 +141,11 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
                     //TODO
                     Classification classification = getClassification(state);
                     newNode = classification.addParentChild(parentTaxon, taxon, sec, null);
-                    getTaxonNodeService().saveOrUpdate(newNode.getParent());
+                    getTaxonNodeService().save(newNode.getParent());
                 }else if (parentNodes.size() == 1){
                     Classification classification = getClassification(state);
                     newNode = classification.addParentChild(parentTaxon, taxon, sec, null);
-                    getTaxonNodeService().saveOrUpdate(newNode.getParent());
+                    getTaxonNodeService().save(newNode.getParent());  //TODO test if save is really correct here (#11083)
 //                    newNode = parentNodes.iterator().next().addChildTaxon(taxon, sec, null);
                 }else{//multiple nodes for parent taxon
                     String message = "Parent taxon belongs to multiple nodes. This is unexpected and not handled. Add new node to classification";
@@ -374,7 +374,7 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
 //                synonym.setDoubtful(true);
 //                addSourceReference(state, synonym);
             }
-            getTaxonNodeService().saveOrUpdate(newChild);
+            getTaxonNodeService().save(newChild);
 
         }
     }

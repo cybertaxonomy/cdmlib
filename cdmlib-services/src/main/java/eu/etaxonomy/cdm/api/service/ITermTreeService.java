@@ -42,8 +42,6 @@ public interface ITermTreeService extends IIdentifiableEntityService<TermTree> {
 
 	public Map<UUID, TermNode> saveNodesAll(Collection<TermNode> featureNodeCollection);
 
-	public Map<UUID, TermNode> saveOrUpdateNodesAll(Collection<TermNode> featureNodeCollection);
-
 	public <S extends TermTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(
 	        Class<S> clazz, TermType termType, Integer limit, String pattern);
 
@@ -53,7 +51,7 @@ public interface ITermTreeService extends IIdentifiableEntityService<TermTree> {
 
     public TermTreeDto getTermTreeDtoByUuid(UUID uuid);
 
-    public UpdateResult saveOrUpdateTermTreeDtoList(List<TermTreeDto> dtos);
+    public UpdateResult updateTermTreeDtoList(List<TermTreeDto> dtos);
 
 
     List<TermTreeDto> getTermTreeDtosByUuids(List<UUID> uuid);

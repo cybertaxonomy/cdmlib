@@ -929,9 +929,9 @@ public class OccurrenceServiceImpl
         }
         UpdateResult result = new UpdateResult();
         from.removeSequence(sequence);
-        saveOrUpdate(from);
+        save(from);
         to.addSequence(sequence);
-        saveOrUpdate(to);
+        save(to);
         result.setStatus(Status.OK);
         result.addUpdatedObject(from);
         result.addUpdatedObject(to);
@@ -995,10 +995,10 @@ public class OccurrenceServiceImpl
                 derivate.setDerivedFrom(derivedFromNewOriginalEvent);
             }
 
-            if(from!=null){
-                saveOrUpdate(from);
+            if(from != null){
+                save(from);
             }
-            saveOrUpdate(to);
+            save(to);
             result.setStatus(Status.OK);
             result.addUpdatedObject(from);
             result.addUpdatedObject(to);

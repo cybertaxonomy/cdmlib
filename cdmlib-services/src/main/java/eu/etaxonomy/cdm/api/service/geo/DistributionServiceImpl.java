@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
@@ -276,7 +275,7 @@ public class DistributionServiceImpl implements IDistributionService {
 
         ShpAttributesToNamedAreaMapper mapper = new ShpAttributesToNamedAreaMapper(areas, areaMapping);
         Map<NamedArea, String> resultMap = mapper.readCsv(csvReader, idSearchFields, wmsLayerName);
-        termDao.saveOrUpdateAll((Collection)areas);
+        termDao.saveAll(areas);
         return resultMap;
     }
 }

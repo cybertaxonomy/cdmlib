@@ -174,8 +174,6 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
 
     public Language getLanguageByLabel(String label);
 
-    public Map<UUID, Representation> saveOrUpdateRepresentations(Collection<Representation> representations);
-
     /**
      * Returns all terms that are included in the given parent term resp. a part of the given term.
      * @param parentTerm the parent term

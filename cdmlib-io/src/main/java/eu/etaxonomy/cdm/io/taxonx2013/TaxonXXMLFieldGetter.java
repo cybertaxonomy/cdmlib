@@ -71,7 +71,7 @@ public class TaxonXXMLFieldGetter {
                 for (int j=0; j< nodes2.getLength();j++){
                     if (nodes2.item(j).getNodeName().equalsIgnoreCase("mods:mods")){
                         ref = modsextractor.extractMods(nodes2.item(j));
-                        importer.getReferenceService().saveOrUpdate(ref);
+                        importer.getReferenceService().save(ref);
                     }
                 }
             }

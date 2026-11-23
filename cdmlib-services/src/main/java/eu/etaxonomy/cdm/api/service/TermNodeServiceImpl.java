@@ -260,7 +260,7 @@ public class TermNodeServiceImpl
                     updateAnnotationAndMarkers(node, dto);
                 }
 
-                UUID mergeResult = dao.saveOrUpdate(node);
+                UUID mergeResult = dao.save(node).getUuid();
                 result.addUpdatedObject(dao.findByUuid(mergeResult));
             }
         }

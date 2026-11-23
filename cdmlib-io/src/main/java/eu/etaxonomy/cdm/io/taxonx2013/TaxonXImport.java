@@ -161,7 +161,7 @@ public class TaxonXImport
             }
             //new classification
             classification = Classification.NewInstance(classificationName, classificationReference,   Language.DEFAULT());
-            getClassificationService().saveOrUpdate(classification);
+            getClassificationService().save(classification);
             refreshTransaction();
         }
         else{
@@ -173,7 +173,7 @@ public class TaxonXImport
             if (taxonXstate.getConfig().getClassificationUuid() != null) {
                 classification.setUuid(taxonXstate.getConfig().getClassificationUuid());
             }
-            getClassificationService().saveOrUpdate(classification);
+            getClassificationService().save(classification);
             refreshTransaction();
         }
     }
@@ -229,7 +229,7 @@ public class TaxonXImport
             secundum = CdmBase.deproxy(secundum, Reference.class);
             taxonXstate.getConfig().setSecundum(secundum);
         } else {
-            this.getReferenceService().saveOrUpdate(secundum);
+            this.getReferenceService().save(secundum);  //TODO test if save is really correct here (#11083)
             taxonXstate.getConfig().setSecundum(secundum);
         }
 
@@ -239,7 +239,7 @@ public class TaxonXImport
                 urlRef=re;
             }
         }
-        this.getReferenceService().saveOrUpdate(urlRef);
+        this.getReferenceService().save(urlRef);  //TODO test if save is really correct here (#11083)
         urlRef=getReferenceService().find(urlRef.getUuid());
 
         if(!taxonXstate.getConfig().hasAskedForHigherRank()){

@@ -298,7 +298,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
 
         UUID secRefUuid = getSecReferenceUUID();
         Session session = getSession();
-        TaxonName taxonNamePersisted = session.load(TaxonName.class, taxonName.getId());
+        TaxonName taxonNamePersisted = session.getReference(TaxonName.class, taxonName.getId());
 
         // filter by secRefUuid
         Taxon taxon = null;
@@ -314,7 +314,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
                 if(taxonNamePersisted != null){
                     Reference secRef = secReference();
                     taxon = Taxon.NewInstance(taxonNamePersisted, secRef);
-                    session.saveOrUpdate(taxon);
+                    session.persist(taxon);
                 } else {
                     throw new TaxonGraphException("Can't create taxon for deleted name: " + taxonName);
                 }
@@ -328,7 +328,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         } else {
             throw new TaxonGraphException("A name to be used in a taxon graph must only have one taxon with the default sec reference [secRef uuid: "+ secRefUuid.toString() +"]");
         }
-        return taxon != null ? session.load(Taxon.class, taxon.getId()) : null;
+        return taxon != null ? session.getReference(Taxon.class, taxon.getId()) : null;
     }
 
     /**

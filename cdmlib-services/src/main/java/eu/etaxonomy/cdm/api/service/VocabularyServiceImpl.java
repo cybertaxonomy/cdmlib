@@ -225,7 +225,7 @@ public class VocabularyServiceImpl
         termService.save(term);
         TermVocabulary vocabulary = dao.load(vocabularyUUID);
         vocabulary.addTerm(term);
-        dao.saveOrUpdate(vocabulary);
+        dao.save(vocabulary);
         return TermDto.fromTerm(term, true);
     }
 

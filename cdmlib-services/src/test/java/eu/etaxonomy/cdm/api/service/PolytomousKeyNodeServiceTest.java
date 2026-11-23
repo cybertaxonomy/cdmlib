@@ -201,110 +201,112 @@ public class PolytomousKeyNodeServiceTest extends CdmServicesTransactionalSpring
         assertEquals(4, service.count(PolytomousKeyNode.class), "Should be root + 2 children + 1 grandchild");
     }
 
-    @Test //10101 same as testMerge but with saveOrUpdate
-    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
-    public final void testSaveDetached(){
+    //not relevant more since migrating to hibernate 7 (#11083)
+//    @Test //10101 same as testMerge but with saveOrUpdate
+//    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+//    public final void testSaveDetached(){
+//
+//        //create key with 2 child nodes
+//        PolytomousKey key = PolytomousKey.NewTitledInstance("TestPolytomousKey");
+//        PolytomousKeyNode child1 = PolytomousKeyNode.NewInstance("Test statement child1");
+//        PolytomousKeyNode child2 = PolytomousKeyNode.NewInstance("Test statement child2");
+//        key.getRoot().addChild(child1);
+//        key.getRoot().addChild(child2);
+//        keyService.save(key);
+//        commitAndStartNewTransaction();
+//
+//        //load root node and make it detached
+//        PolytomousKeyNode rootNode = service.find(key.getRoot().getUuid());
+//        rootNode.getChildren().get(0);  //initialize children
+//        commitAndStartNewTransaction(); //detach
+//
+//        //replace nodes and merge
+//        PolytomousKeyNode childToRemove = rootNode.getChildren().get(0);
+//        rootNode.removeChild(childToRemove);
+//        PolytomousKeyNode child3 = PolytomousKeyNode.NewInstance("Test statement child3");
+//        rootNode.addChild(child3);
+//        service.saveOrUpdate(rootNode);   //TODO childToRemove
+//        service.delete(childToRemove.getUuid(), false);
+//        commitAndStartNewTransaction(tableNames);
+//
+//        //test result
+//        rootNode = service.find(key.getRoot().getUuid());
+//        rootNode.getChildren();
+//        assertEquals(2, rootNode.getChildren().size());
+//        assertEquals(child2.getUuid(), rootNode.getChildren().get(0).getUuid());
+//        assertEquals(child3.getUuid(), rootNode.getChildren().get(1).getUuid());
+//        assertEquals(3, service.count(PolytomousKeyNode.class), "Should be root + 2 children");
+//        commitAndStartNewTransaction();
+//
+////        System.out.println("NEXT");
+//        //same with key
+//        //load root node and make it detached
+//        PolytomousKey keyLoaded = keyService.find(key.getUuid());
+//        rootNode = keyLoaded.getRoot();
+//        rootNode.getChildren().get(0);  //initialize children
+//        commitAndStartNewTransaction(); //detach
+//
+//        //replace nodes and merge
+//        childToRemove = rootNode.getChildren().get(0);
+//        rootNode.removeChild(childToRemove);
+//        PolytomousKeyNode child4 = PolytomousKeyNode.NewInstance("Test statement child4");
+//        rootNode.addChild(child4);
+//
+//        @SuppressWarnings("unused")
+//        UUID mergedKey = keyService.saveOrUpdate(keyLoaded);
+//        service.delete(childToRemove.getUuid(), false);
+//
+//        commitAndStartNewTransaction(tableNames);
+//
+//        rootNode = service.find(key.getRoot().getUuid());
+//        rootNode.getChildren();
+//        assertEquals(2, rootNode.getChildren().size());
+//        assertEquals(child3.getUuid(), rootNode.getChildren().get(0).getUuid());
+//        assertEquals(child4.getUuid(), rootNode.getChildren().get(1).getUuid());
+//        assertEquals(3, service.count(PolytomousKeyNode.class), "Should be root + 2 children");
+//    }
 
-        //create key with 2 child nodes
-        PolytomousKey key = PolytomousKey.NewTitledInstance("TestPolytomousKey");
-        PolytomousKeyNode child1 = PolytomousKeyNode.NewInstance("Test statement child1");
-        PolytomousKeyNode child2 = PolytomousKeyNode.NewInstance("Test statement child2");
-        key.getRoot().addChild(child1);
-        key.getRoot().addChild(child2);
-        keyService.save(key);
-        commitAndStartNewTransaction();
-
-        //load root node and make it detached
-        PolytomousKeyNode rootNode = service.find(key.getRoot().getUuid());
-        rootNode.getChildren().get(0);  //initialize children
-        commitAndStartNewTransaction(); //detach
-
-        //replace nodes and merge
-        PolytomousKeyNode childToRemove = rootNode.getChildren().get(0);
-        rootNode.removeChild(childToRemove);
-        PolytomousKeyNode child3 = PolytomousKeyNode.NewInstance("Test statement child3");
-        rootNode.addChild(child3);
-        service.saveOrUpdate(rootNode);   //TODO childToRemove
-        service.delete(childToRemove.getUuid(), false);
-        commitAndStartNewTransaction(tableNames);
-
-        //test result
-        rootNode = service.find(key.getRoot().getUuid());
-        rootNode.getChildren();
-        assertEquals(2, rootNode.getChildren().size());
-        assertEquals(child2.getUuid(), rootNode.getChildren().get(0).getUuid());
-        assertEquals(child3.getUuid(), rootNode.getChildren().get(1).getUuid());
-        assertEquals(3, service.count(PolytomousKeyNode.class), "Should be root + 2 children");
-        commitAndStartNewTransaction();
-
-//        System.out.println("NEXT");
-        //same with key
-        //load root node and make it detached
-        PolytomousKey keyLoaded = keyService.find(key.getUuid());
-        rootNode = keyLoaded.getRoot();
-        rootNode.getChildren().get(0);  //initialize children
-        commitAndStartNewTransaction(); //detach
-
-        //replace nodes and merge
-        childToRemove = rootNode.getChildren().get(0);
-        rootNode.removeChild(childToRemove);
-        PolytomousKeyNode child4 = PolytomousKeyNode.NewInstance("Test statement child4");
-        rootNode.addChild(child4);
-
-        @SuppressWarnings("unused")
-        UUID mergedKey = keyService.saveOrUpdate(keyLoaded);
-        service.delete(childToRemove.getUuid(), false);
-
-        commitAndStartNewTransaction(tableNames);
-
-        rootNode = service.find(key.getRoot().getUuid());
-        rootNode.getChildren();
-        assertEquals(2, rootNode.getChildren().size());
-        assertEquals(child3.getUuid(), rootNode.getChildren().get(0).getUuid());
-        assertEquals(child4.getUuid(), rootNode.getChildren().get(1).getUuid());
-        assertEquals(3, service.count(PolytomousKeyNode.class), "Should be root + 2 children");
-    }
-
-    @Test
-    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
-    public void testSaveDetachedWithMove() {
-
-        //create key with 2 child nodes
-        PolytomousKey key = PolytomousKey.NewTitledInstance("Move test PolytomousKey");
-        PolytomousKeyNode child1 = PolytomousKeyNode.NewInstance("Test statement child1");
-        PolytomousKeyNode child2 = PolytomousKeyNode.NewInstance("Test statement child2");
-        key.getRoot().addChild(child1);
-        key.getRoot().addChild(child2);
-        keyService.save(key);
-        commitAndStartNewTransaction();
-
-        //load root node and make it detached
-        PolytomousKey keyLoaded = keyService.find(key.getUuid());
-        PolytomousKeyNode rootNode = keyLoaded.getRoot();
-        rootNode.getChildren().get(1).getChildren().size();  //initialize children
-        commitAndStartNewTransaction(); //detach
-
-        //replace nodes and merge
-        PolytomousKeyNode childMove = rootNode.getChildren().get(0);
-        PolytomousKeyNode newParentNode = rootNode.getChildren().get(1);
-        newParentNode.addChild(childMove);
-        PolytomousKeyNode child4 = PolytomousKeyNode.NewInstance("Test statement child3");
-        rootNode.addChild(child4);
-        //no removed child to delete here
-        keyService.saveOrUpdate(keyLoaded) ;
-
-        commitAndStartNewTransaction(tableNames);
-
-        rootNode = service.find(key.getRoot().getUuid());
-        rootNode.getChildren();
-        assertEquals(2, rootNode.getChildren().size());
-        PolytomousKeyNode firstChild = rootNode.getChildren().get(0);
-        assertEquals(child2.getUuid(), firstChild.getUuid());
-        assertEquals(child4.getUuid(), rootNode.getChildren().get(1).getUuid());
-        assertEquals(1, firstChild.getChildren().size());
-        assertEquals(child1.getUuid(), firstChild.getChildren().get(0).getUuid());
-        assertEquals(4, service.count(PolytomousKeyNode.class), "Should be root + 2 children + 1 grandchild");
-    }
+    //not relevant anymore since migrating to hibernate 7 (#11083)
+//    @Test
+//    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+//    public void testSaveDetachedWithMove() {
+//
+//        //create key with 2 child nodes
+//        PolytomousKey key = PolytomousKey.NewTitledInstance("Move test PolytomousKey");
+//        PolytomousKeyNode child1 = PolytomousKeyNode.NewInstance("Test statement child1");
+//        PolytomousKeyNode child2 = PolytomousKeyNode.NewInstance("Test statement child2");
+//        key.getRoot().addChild(child1);
+//        key.getRoot().addChild(child2);
+//        keyService.save(key);
+//        commitAndStartNewTransaction();
+//
+//        //load root node and make it detached
+//        PolytomousKey keyLoaded = keyService.find(key.getUuid());
+//        PolytomousKeyNode rootNode = keyLoaded.getRoot();
+//        rootNode.getChildren().get(1).getChildren().size();  //initialize children
+//        commitAndStartNewTransaction(); //detach
+//
+//        //replace nodes and merge
+//        PolytomousKeyNode childMove = rootNode.getChildren().get(0);
+//        PolytomousKeyNode newParentNode = rootNode.getChildren().get(1);
+//        newParentNode.addChild(childMove);
+//        PolytomousKeyNode child4 = PolytomousKeyNode.NewInstance("Test statement child3");
+//        rootNode.addChild(child4);
+//        //no removed child to delete here
+//        keyService.saveOrUpdate(keyLoaded) ;
+//
+//        commitAndStartNewTransaction(tableNames);
+//
+//        rootNode = service.find(key.getRoot().getUuid());
+//        rootNode.getChildren();
+//        assertEquals(2, rootNode.getChildren().size());
+//        PolytomousKeyNode firstChild = rootNode.getChildren().get(0);
+//        assertEquals(child2.getUuid(), firstChild.getUuid());
+//        assertEquals(child4.getUuid(), rootNode.getChildren().get(1).getUuid());
+//        assertEquals(1, firstChild.getChildren().size());
+//        assertEquals(child1.getUuid(), firstChild.getChildren().get(0).getUuid());
+//        assertEquals(4, service.count(PolytomousKeyNode.class), "Should be root + 2 children + 1 grandchild");
+//    }
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}

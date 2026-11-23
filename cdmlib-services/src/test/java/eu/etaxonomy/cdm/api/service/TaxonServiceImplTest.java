@@ -201,22 +201,25 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
     }
 
     @Test
-    public final void testSaveOrUpdateTaxon() {
+    public final void testUpdateTaxon() {
         Taxon expectedTaxon = Taxon.NewInstance(null, null);
         UUID uuid = service.save(expectedTaxon).getUuid();
         TaxonBase actualTaxon = service.find(uuid);
         assertEquals(expectedTaxon, actualTaxon);
 
-        actualTaxon.setName(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()));
+        TaxonName newName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        actualTaxon.setName(newName);
         try{
-            service.saveOrUpdate(actualTaxon);
+            commitAndStartNewTransaction();
+            TaxonName persistedName = nameService.find(newName.getUuid());
+            assertNotNull(persistedName, "Name should be perstisted with taxon update");
         }catch(Exception e){
             fail();
         }
     }
 
     @Test
-    public final void testSaveOrUpdateTaxonWithMisappliedName() {
+    public final void testUpdateTaxonWithMisappliedName() {
 
         Taxon expectedTaxon = Taxon.NewInstance(null, null);
         TaxonName misappliedNameName = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(), "Abies", null, "alba", null, null, null, null, null);
@@ -241,7 +244,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         misappliedName.setSec(save(ReferenceFactory.newArticle()));
 
         try{
-            service.saveOrUpdate(actualTaxon);
+            commitAndStartNewTransaction();
             misappliedName = (Taxon)service.find(misappliedNameUuid);
             assertNotNull(misappliedName.getSec());
         }catch(Exception e){
@@ -251,7 +254,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         actualTaxon = service.find(uuid);
         ((Taxon)actualTaxon).getTaxonRelations(misappliedName).iterator().next().getFromTaxon().setSec(null);
         try{
-            service.saveOrUpdate(actualTaxon);
+            commitAndStartNewTransaction();
             misappliedName = (Taxon)service.find(misappliedNameUuid);
             assertNull(misappliedName.getSec());
         }catch(Exception e){
@@ -455,6 +458,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         Taxon t1 = Taxon.NewInstance(t1n, reference);
         INonViralName t2n = TaxonNameFactory.NewNonViralInstance(null);
         Taxon t2 = Taxon.NewInstance(t2n, reference);
+        service.save(t2);
         INonViralName s1n = TaxonNameFactory.NewNonViralInstance(null);
         Synonym s1 = save(Synonym.NewInstance(s1n, reference));
         t1.addSynonym(s1, heteroTypicSynonymType);
@@ -465,7 +469,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         boolean keepReference = false;
         boolean moveHomotypicGroup = false;
         try {
-            service.moveSynonymToAnotherTaxon(synonym, t2, moveHomotypicGroup, heteroTypicSynonymType, reference.getUuid(), referenceDetail, keepReference);
+            service.moveSynonymToAnotherTaxon(synonym, t2.getUuid(), moveHomotypicGroup, heteroTypicSynonymType, reference.getUuid(), referenceDetail, keepReference);
         } catch (HomotypicalGroupChangeException e) {
             fail("Method call should not throw exception");
         }
@@ -507,7 +511,6 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         Reference newReference = null;
         String newReferenceDetail = null;
 
-        Taxon newTaxon = (Taxon)service.load(uuidNewTaxon);
         Synonym homotypicSynonym = (Synonym)service.load(uuidSyn1);
         assertNotNull(homotypicSynonym, "Synonym should exist");
         assertNotNull(homotypicSynonym.getAcceptedTaxon(), "Synonym should have 1 relation");
@@ -515,7 +518,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         Taxon oldTaxon = homotypicSynonym.getAcceptedTaxon();
 
         try {
-            service.moveSynonymToAnotherTaxon(homotypicSynonym, newTaxon, moveHomotypicGroup, newSynonymType, null, newReferenceDetail, keepReference);
+            service.moveSynonymToAnotherTaxon(homotypicSynonym, uuidNewTaxon, moveHomotypicGroup, newSynonymType, null, newReferenceDetail, keepReference);
             fail("Homotypic synonym move to other taxon should throw an exception");
         } catch (HomotypicalGroupChangeException e) {
             if (e.getMessage().contains("Synonym is in homotypic group with accepted taxon and other synonym(s). First remove synonym from homotypic group of accepted taxon before moving to other taxon")){
@@ -532,7 +535,6 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         assertEquals(oldTaxon, homotypicSynonym.getAcceptedTaxon(), "Accepted taxon of single relation should be the old taxon");
 
         //test heterotypic synonym with other synonym in homotypic group
-        newTaxon = (Taxon)service.load(uuidNewTaxon);
         Synonym heterotypicSynonym = (Synonym)service.load(uuidSyn3);
         assertNotNull(heterotypicSynonym, "Synonym should exist");
         assertNotNull(heterotypicSynonym.getAcceptedTaxon(), "Synonym should have 1 relation");
@@ -541,7 +543,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         moveHomotypicGroup = false;
 
         try {
-            service.moveSynonymToAnotherTaxon(heterotypicSynonym, newTaxon, moveHomotypicGroup, newSynonymType, null, newReferenceDetail, keepReference);
+            service.moveSynonymToAnotherTaxon(heterotypicSynonym, uuidNewTaxon, moveHomotypicGroup, newSynonymType, null, newReferenceDetail, keepReference);
             fail("Heterotypic synonym move to other taxon should throw an exception");
         } catch (HomotypicalGroupChangeException e) {
             if (e.getMessage().contains("Synonym is in homotypic group with other synonym(s). Either move complete homotypic group or remove synonym from homotypic group prior to moving to other taxon")){
@@ -560,7 +562,6 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         //test heterotypic synonym with no other synonym in homotypic group
         //+ keep reference
 
-        newTaxon = (Taxon)service.load(uuidNewTaxon);
         heterotypicSynonym = (Synonym)service.load(uuidSyn5);
         assertNotNull(heterotypicSynonym, "Synonym should exist");
         assertNotNull(heterotypicSynonym.getAcceptedTaxon(), "Synonym should have accepted taxon");
@@ -569,13 +570,14 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         moveHomotypicGroup = false;
 
         try {
-            service.moveSynonymToAnotherTaxon(heterotypicSynonym, newTaxon, moveHomotypicGroup, newSynonymType, null, newReferenceDetail, keepReference);
+            service.moveSynonymToAnotherTaxon(heterotypicSynonym, uuidNewTaxon, moveHomotypicGroup, newSynonymType, null, newReferenceDetail, keepReference);
         } catch (HomotypicalGroupChangeException e) {
             fail("Move of single heterotypic synonym should not throw exception: " + e.getMessage());
         }
         //Asserts
         commitAndStartNewTransaction(tableNames);
 
+        Taxon newTaxon = (Taxon)service.load(uuidNewTaxon);
         heterotypicSynonym = (Synonym)service.load(uuidSyn5);
         assertNotNull(heterotypicSynonym, "Synonym should still exist");
         assertNotNull(heterotypicSynonym.getAcceptedTaxon(), "Synonym should have accepted taxon");
@@ -584,7 +586,6 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
 
         //test heterotypic synonym with other synonym in homotypic group and moveHomotypicGroup="true"
         //+ new detail
-        newTaxon = (Taxon)service.load(uuidNewTaxon);
         heterotypicSynonym = (Synonym)service.load(uuidSyn3);
         Reference ref1 = referenceDao.load(uuidRef1);
         assertNotNull(heterotypicSynonym, "Synonym should exist");
@@ -605,7 +606,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         keepReference = false;
 
         try {
-            service.moveSynonymToAnotherTaxon(heterotypicSynonym4, newTaxon, moveHomotypicGroup, newSynonymType, null, newReferenceDetail, keepReference);
+            service.moveSynonymToAnotherTaxon(heterotypicSynonym4, uuidNewTaxon, moveHomotypicGroup, newSynonymType, null, newReferenceDetail, keepReference);
         } catch (HomotypicalGroupChangeException e) {
             fail("Move with 'moveHomotypicGroup = true' should not throw exception: " + e.getMessage());
         }
@@ -630,7 +631,6 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
 
         //test single heterotypic synonym to homotypic synonym of new taxon
         //+ new reference
-        newTaxon = (Taxon)service.load(uuidNewTaxon);
         Reference ref2 = referenceDao.load(uuidRef2);
         heterotypicSynonym = (Synonym)service.load(uuidSyn6);
         assertNotNull(heterotypicSynonym, "Synonym should exist");
@@ -644,7 +644,7 @@ public class TaxonServiceImplTest extends CdmServicesTransactionalSpringIntegrat
         newSynonymType = SynonymType.HOMOTYPIC_SYNONYM_OF;
 
         try {
-            service.moveSynonymToAnotherTaxon(heterotypicSynonym, newTaxon, moveHomotypicGroup, newSynonymType, newReference.getUuid(), newReferenceDetail, keepReference);
+            service.moveSynonymToAnotherTaxon(heterotypicSynonym, uuidNewTaxon, moveHomotypicGroup, newSynonymType, newReference.getUuid(), newReferenceDetail, keepReference);
         } catch (HomotypicalGroupChangeException e) {
             fail("Move of single heterotypic synonym should not throw exception: " + e.getMessage());
         }

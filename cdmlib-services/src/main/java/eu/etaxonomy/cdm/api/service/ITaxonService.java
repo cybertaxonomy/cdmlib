@@ -169,9 +169,9 @@ public interface ITaxonService
      *
      * Change a related concept into synonym
      *
-     * @param synonym
+     * @param fromTaxonUuid
      * 				the concept taxon to change into a synonym
-     * @param toTaxon
+     * @param toTaxonUuid
      * 				the taxon the newly created synonym should be related to
      * @param oldRelationshipType
      *              the type of old concept relationship
@@ -182,9 +182,9 @@ public interface ITaxonService
      * 				update result with the newly created synonym
      * @throws DataChangeNoRollbackException
      */
-  public 	UpdateResult changeRelatedTaxonToSynonym(Taxon fromTaxon, Taxon toTaxon,
-             TaxonRelationshipType oldRelationshipType,
-            SynonymType synonymType) throws DataChangeNoRollbackException;
+  public UpdateResult changeRelatedTaxonToSynonym(UUID fromTaxonUuid, UUID toTaxonUuid,
+          TaxonRelationshipType oldRelationshipType,
+          SynonymType synonymType) throws DataChangeNoRollbackException;
 
     /**
      * Changes the homotypic group of a synonym into the new homotypic group.
@@ -205,18 +205,6 @@ public interface ITaxonService
      */
     public void changeHomotypicalGroupOfSynonym(Synonym synonym, HomotypicalGroup newHomotypicalGroup,
             Taxon targetTaxon, boolean setBasionymRelationIfApplicable);
-
-    /**
-     * See {@link #moveSynonymToAnotherTaxon(Synonym, Taxon, boolean, SynonymType, Reference, String, boolean)}
-     * @param oldSynonym
-     * @param newTaxon
-     * @param moveHomotypicGroup
-     * @param newSynonymType
-     * @return
-     * @throws HomotypicalGroupChangeException
-     */
-    public UpdateResult moveSynonymToAnotherTaxon(Synonym oldSynonym, Taxon newTaxon, boolean moveHomotypicGroup,
-            SynonymType newSynonymType) throws HomotypicalGroupChangeException;
 
     /**
      * Moves a synonym to another taxon and removes the old synonym relationship.
@@ -240,13 +228,6 @@ public interface ITaxonService
      * 		created new synonym relationships must be retrieved separately from the new taxon.
      * @throws HomotypicalGroupChangeException Exception is thrown if (1) synonym is homotypic to the old accepted taxon or
      * 		(2) synonym is in homotypic group with other synonyms and <code>moveHomotypicGroup</code> is false
-     */
-    public UpdateResult moveSynonymToAnotherTaxon(Synonym oldSynonym, Taxon newTaxon, boolean moveHomotypicGroup,
-            SynonymType newSynonymType, UUID newSecundumUuid,
-            String newSecundumDetail, boolean keepSecundumIfUndefined) throws HomotypicalGroupChangeException;
-
-    /**
-     * @see {@link #moveSynonymToAnotherTaxon(Synonym, Taxon, boolean, SynonymType, Reference, String, boolean)}
      */
     public UpdateResult moveSynonymToAnotherTaxon(Synonym oldSynonym,
             UUID newTaxonUUID, boolean moveHomotypicGroup,
@@ -909,9 +890,6 @@ public interface ITaxonService
 
     public UpdateResult changeSynonymToRelatedTaxon(UUID synonymUuid, UUID toTaxonUuid, TaxonRelationshipType taxonRelationshipType,
             Reference citation, String microcitation);
-
-    public UpdateResult changeRelatedTaxonToSynonym(UUID fromTaxonUuid, UUID toTaxonUuid,
-            TaxonRelationshipType oldRelationshipType, SynonymType synonymType) throws DataChangeNoRollbackException;
 
     /**
      * Returns a list of taxon relationships for a given taxon as DTO.

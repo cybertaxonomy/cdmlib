@@ -309,12 +309,52 @@ public class TaxonNodeServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode,
-            SynonymType synonymType, Reference citation, String microReference, SecReferenceHandlingEnum secHandling, boolean setNameInSource)  {
+    public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(UUID oldTaxonNodeUuid,
+            UUID newAcceptedTaxonNodeUUID,
+            SynonymType synonymType,
+            UUID citationUuid,
+            String microReference,
+            SecReferenceHandlingEnum secHandling,
+            boolean setNameInSource) {
+
+        TaxonNode oldTaxonNode = dao.load(oldTaxonNodeUuid);
+        TaxonNode oldTaxonParentNode = oldTaxonNode.getParent();
+        TaxonNode newAcceptedTaxonNode = dao.load(newAcceptedTaxonNodeUUID);
+        Reference citation = referenceDao.load(citationUuid);
+        Reference synSec;
+
+        if (secHandling == null) {
+            secHandling = SecReferenceHandlingEnum.Keep;
+        }
+        switch (secHandling){
+            case AlwaysDelete:
+                citation = null;
+                break;
+            case UseNewParentSec:
+                citation = newAcceptedTaxonNode.getTaxon() != null ? newAcceptedTaxonNode.getTaxon().getSec(): null;
+                break;
+            case KeepOrWarn:
+                synSec = oldTaxonNode.getTaxon().getSec();
+                if (synSec != null ){
+                    citation = CdmBase.deproxy(synSec);
+                }
+                break;
+            case Keep:
+                synSec = oldTaxonNode.getTaxon().getSec();
+                if (synSec != null ){
+                    citation = CdmBase.deproxy(synSec);
+                }
+                break;
+            case KeepOrSelect:
+
+                break;
+            default:
+                break;
+        }
 
         // TODO at the moment this method only moves synonym-, concept relations and descriptions to the new accepted taxon
         // in a future version we also want to move cdm data like annotations, marker, so., but we will need a policy for that
-        if (oldTaxonNode == null || newAcceptedTaxonNode == null || oldTaxonNode.getTaxon().getName() == null){
+        if (newAcceptedTaxonNode == null || oldTaxonNode.getTaxon().getName() == null){
             throw new IllegalArgumentException("A mandatory parameter was null.");
         }
 
@@ -346,10 +386,10 @@ public class TaxonNodeServiceImpl
         boolean uuidsEqual = (secNewAccepted != null && secOldAccepted != null && secNewAccepted.equals(secOldAccepted)) || (secNewAccepted == null && secOldAccepted == null);
         Reference newSec = citation;
         //keep when same only warns in ui, the sec still
-        if (secHandling != null &&  (secHandling.equals(SecReferenceHandlingEnum.KeepOrWarn) || secHandling.equals(SecReferenceHandlingEnum.Keep))){
+        if (secHandling.equals(SecReferenceHandlingEnum.KeepOrWarn) || secHandling.equals(SecReferenceHandlingEnum.Keep)){
             newSec = oldTaxon.getSec();
         }
-        if (secHandling != null && secHandling.equals(SecReferenceHandlingEnum.AlwaysDelete)){
+        if (secHandling.equals(SecReferenceHandlingEnum.AlwaysDelete)){
             newSec = null;
         }
 
@@ -360,8 +400,7 @@ public class TaxonNodeServiceImpl
             newSyn.setSec(newSec);
         }
         newSyn.setPublish(oldTaxon.isPublish());
-        sourceDao.saveOrUpdate(newSyn.getSecSource());
-        save(newSyn);
+        taxonService.save(newSyn);
 
         // Move Synonyms to new Taxon
         // From ticket 3163 we can move taxon with accepted name having homotypic synonyms
@@ -391,13 +430,11 @@ public class TaxonNodeServiceImpl
                     srt = synonym.getType();
                 }
             }
-            if (secHandling != null &&  !(secHandling.equals(SecReferenceHandlingEnum.KeepOrWarn)|| secHandling.equals(SecReferenceHandlingEnum.Keep))){
+            if (!(secHandling.equals(SecReferenceHandlingEnum.KeepOrWarn)|| secHandling.equals(SecReferenceHandlingEnum.Keep))){
                 synonym.setSec(newSec);
-                sourceDao.saveOrUpdate(synonym.getSecSource());
             }
             newAcceptedTaxon.addSynonym(synonym, srt);
         }
-        taxonService.saveOrUpdate(new HashSet(syns));
 
         // CHILD NODES
         if(oldTaxonNode.getChildNodes() != null && oldTaxonNode.getChildNodes().size() != 0){
@@ -421,8 +458,6 @@ public class TaxonNodeServiceImpl
             }else if(toTaxon == oldTaxon){
                fromTaxon.addTaxonRelation(newAcceptedTaxon, taxonRelationship.getType(),
                         taxonRelationship.getCitation(), taxonRelationship.getCitationMicroReference());
-               taxonService.saveOrUpdate(fromTaxon);
-
             }else{
                 logger.warn("Taxon is not part of its own Taxonrelationship");
             }
@@ -456,9 +491,9 @@ public class TaxonNodeServiceImpl
         }
         oldTaxon.clearDescriptions();
 
-        taxonService.saveOrUpdate(newAcceptedTaxon);
+        taxonService.save(newAcceptedTaxon);  //not tested yet, if necessary (for cascading)
 
-        taxonService.saveOrUpdate(oldTaxon);
+        taxonService.save(oldTaxon);  //not tested yet, if necessary (for cascading)
         try {
             taxonService.getSession().flush();
         }catch(Exception e) {
@@ -487,7 +522,10 @@ public class TaxonNodeServiceImpl
 
         result.addUpdatedObject(newAcceptedTaxon);
 
-        //oldTaxonNode.delete();
+        result.addUpdatedCdmId(CdmEntityIdentifier.NewInstance(oldTaxonParentNode));
+        result.addUpdatedCdmId(CdmEntityIdentifier.NewInstance(newAcceptedTaxonNode));
+        result.setCdmEntity(oldTaxonParentNode);
+
         return result;
     }
 
@@ -505,60 +543,6 @@ public class TaxonNodeServiceImpl
     		result.includeResult(makeTaxonNodeASynonymOfAnotherTaxonNode(nodeUuid, newAcceptedTaxonNodeUUIDs, synonymType, citation, microReference, secHandling, setNameInSource));
     	}
     	return result;
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(UUID oldTaxonNodeUuid,
-            UUID newAcceptedTaxonNodeUUID,
-            SynonymType synonymType,
-            UUID citationUuid,
-            String microReference,
-            SecReferenceHandlingEnum secHandling,
-            boolean setNameInSource) {
-
-        TaxonNode oldTaxonNode = dao.load(oldTaxonNodeUuid);
-        TaxonNode oldTaxonParentNode = oldTaxonNode.getParent();
-        TaxonNode newTaxonNode = dao.load(newAcceptedTaxonNodeUUID);
-        Reference citation = referenceDao.load(citationUuid);
-        Reference synSec;
-        switch (secHandling){
-            case AlwaysDelete:
-                citation = null;
-                break;
-            case UseNewParentSec:
-                citation = newTaxonNode.getTaxon() != null? newTaxonNode.getTaxon().getSec(): null;
-                break;
-            case KeepOrWarn:
-                synSec = oldTaxonNode.getTaxon().getSec();
-                if (synSec != null ){
-                    citation = CdmBase.deproxy(synSec);
-                }
-                break;
-            case Keep:
-                synSec = oldTaxonNode.getTaxon().getSec();
-                if (synSec != null ){
-                    citation = CdmBase.deproxy(synSec);
-                }
-                break;
-            case KeepOrSelect:
-
-                break;
-            default:
-                break;
-        }
-
-        DeleteResult result = makeTaxonNodeASynonymOfAnotherTaxonNode(oldTaxonNode,
-                newTaxonNode,
-                synonymType,
-                citation,
-                microReference,
-                secHandling, setNameInSource);
-
-        result.addUpdatedCdmId(CdmEntityIdentifier.NewInstance(oldTaxonParentNode));
-        result.addUpdatedCdmId(CdmEntityIdentifier.NewInstance(newTaxonNode));
-        result.setCdmEntity(oldTaxonParentNode);
-        return result;
     }
 
     @Override
@@ -695,9 +679,8 @@ public class TaxonNodeServiceImpl
     	return deleteTaxonNode(node, config);
     }
 
-    @Override
-    @Transactional(readOnly = false)
-    public DeleteResult deleteTaxonNode(TaxonNode node, TaxonDeletionConfigurator config) {
+    private DeleteResult deleteTaxonNode(TaxonNode node, TaxonDeletionConfigurator config) {
+
         DeleteResult result = new DeleteResult();
         if (node == null){
             result.setAbort();
@@ -750,9 +733,9 @@ public class TaxonNodeServiceImpl
     	boolean success = true;
     	if (taxon != null){
     	    success = taxon.removeTaxonNode(node);
-    	    taxonService.saveOrUpdate(taxon);
+    	    taxonService.save(taxon);  //necessary?
     	}
-    	dao.saveOrUpdate(parent);
+    	dao.save(parent);  //necessary?
 
     	result.addUpdatedObject(parent);
 
@@ -895,8 +878,7 @@ public class TaxonNodeServiceImpl
             monitor.subTask("saving and reindex");
             IProgressMonitor subMonitor = SubProgressMonitor.NewInstance(monitor, nodes.size());
             try {
-                referenceDao.saveOrUpdate(sec);
-                dao.saveOrUpdateAll(nodes);
+                dao.saveAll(nodes);   //necessary?
                 subMonitor.internalWorked(nodes.size());
                 subMonitor.done();
             }catch(Exception e) {
@@ -963,7 +945,7 @@ public class TaxonNodeServiceImpl
                     Set<CdmBase> transientObjects = new HashSet<>();
                     transientObjects.addAll(NonViralNameParserImpl.getTransientEntitiesOfParsedName(name));
                     genericDao.saveAll(transientObjects);
-                    UUID nameUuid = nameService.saveOrUpdate(name);
+                    UUID nameUuid = nameService.save(name).getUuid();
                     name = nameService.load(nameUuid);
                 }
                 Reference sec = null;
@@ -1502,7 +1484,7 @@ public class TaxonNodeServiceImpl
         for (TaxonNode taxonNode : rootNodes) {
             cloneTaxonRecursive(taxonNode, classificationClone.getRootNode(), config);
         }
-        classificationDao.saveOrUpdate(classificationClone);
+        classificationDao.save(classificationClone);
         result.setCdmEntity(classificationClone);
         return result;
     }
@@ -1543,7 +1525,7 @@ public class TaxonNodeServiceImpl
             }
 
             //probably necessary as taxon nodes do not cascade
-            dao.saveOrUpdate(childNodeClone);
+            dao.save(childNodeClone);
 
         }else{
             childNodeClone = parentNodeClone;
@@ -1581,11 +1563,6 @@ public class TaxonNodeServiceImpl
     @Override
     public List<TaxonNodeDto> getTaxonNodeDtosFromTaxon(UUID taxonUuid, String subTreeIndex) {
         return dao.getTaxonNodeDtosFromTaxon(taxonUuid, subTreeIndex);
-    }
-
-    private Synonym save(Synonym syn) {
-        taxonService.saveOrUpdate(syn);
-        return syn;
     }
 
 }

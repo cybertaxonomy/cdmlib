@@ -104,7 +104,7 @@ public class PasswordResetService extends AccountSelfManagementService implement
                    User user = userService.loadUserByUsernameAsUser(resetRequest.get().getUserName());
                    Assert.isAssignable(user.getClass(), User.class);
                    userService.encodeUserPassword(user, newPassword);
-                   userDao.saveOrUpdate(user);
+                   userDao.save(user);
                    passwordResetTokenStore.remove(token);
                    sendEmail(resetRequest.get().getUserEmail(), resetRequest.get().getUserName(),
                            UserAccountEmailTemplates.RESET_SUCCESS_EMAIL_SUBJECT_TEMPLATE,

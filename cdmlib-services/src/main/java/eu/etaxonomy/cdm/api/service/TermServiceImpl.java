@@ -377,7 +377,7 @@ public class TermServiceImpl
 				if (true){
 					dao.delete(term);
 					result.addDeletedObject(term);
-					dao.saveOrUpdateAll(termsToSave);
+					dao.saveAll(termsToSave); //TODO test if save is really correct here (#11083)
 				}
 			}
 		} catch (DataChangeNoRollbackException e) {
@@ -454,12 +454,6 @@ public class TermServiceImpl
             result.setAbort();
         }
         return result;
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public Map<UUID, Representation> saveOrUpdateRepresentations(Collection<Representation> representations){
-        return representationDao.saveOrUpdateAll(representations);
     }
 
     @Override
@@ -563,8 +557,8 @@ public class TermServiceImpl
                 result.addUpdatedObject(term);
                 result.addUpdatedObject(vocabulary);
                 result.addUpdatedObject(parentVocabulary);
+                vocabularyService.save(parentVocabulary);
             }
-            vocabularyService.saveOrUpdate(parentVocabulary);
         }
         else {
             DefinedTermBase term = CdmBase.deproxy(dao.load(termDto.getUuid()));
@@ -608,7 +602,7 @@ public class TermServiceImpl
             result.addUpdatedObject(term);
             result.addUpdatedObject(parent);
             result.addUpdatedObject(vocabulary);
-            vocabularyService.saveOrUpdate(parent.getVocabulary());
+            vocabularyService.save(parent.getVocabulary());
         }
         return result;
     }
@@ -627,7 +621,7 @@ public class TermServiceImpl
             parent.addIncludes(term);
         }
         parent.getVocabulary().addTerm(term);
-        dao.saveOrUpdate(parent);
+        dao.save(parent);
         return TermDto.fromTerm(term, true);
     }
 

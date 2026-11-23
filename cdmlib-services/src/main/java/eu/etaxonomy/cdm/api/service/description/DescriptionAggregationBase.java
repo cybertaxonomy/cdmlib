@@ -408,7 +408,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
                     getResult().addDeletedObject(descriptionElement);
                 }
             }
-            getDescriptionService().saveOrUpdate(aggregationDescription);
+            getDescriptionService().save(aggregationDescription);
         }
     }
 

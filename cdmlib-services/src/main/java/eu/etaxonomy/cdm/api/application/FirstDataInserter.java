@@ -260,7 +260,7 @@ public class FirstDataInserter extends AbstractDataInserter {
             }
         }
 
-        groupService.saveOrUpdate(group);
+        groupService.save(group);
         logger.info("Check of group  '" + groupName + "' done");
     }
 
@@ -312,10 +312,10 @@ public class FirstDataInserter extends AbstractDataInserter {
             GrantedAuthorityImpl roleRemoting = assureRole(Role.ROLE_REMOTING);
             Group groupEditor = groupService.load(Group.GROUP_EDITOR_UUID);
             groupEditor.addGrantedAuthority(roleRemoting);
-            groupService.saveOrUpdate(groupEditor);
+            groupService.save(groupEditor);
             Group groupEditorExtendedCreate = groupService.load(Group.GROUP_EDITOR_EXTENDED_CREATE_UUID);
             groupEditorExtendedCreate.addGrantedAuthority(roleRemoting);
-            groupService.saveOrUpdate(groupEditorExtendedCreate);
+            groupService.save(groupEditorExtendedCreate);
         }
     }
 
@@ -335,7 +335,7 @@ public class FirstDataInserter extends AbstractDataInserter {
             authorities.add(assureRole(Role.ROLE_ADMIN));
             admin.setGrantedAuthorities(authorities);
             progressMonitor.subTask("Creating Admins Role");
-            userService.saveOrUpdate(admin);
+            userService.save(admin);
             logger.info("Role " + Role.ROLE_ADMIN.getAuthority() + " for user '" + Configuration.adminLogin + "' created and added");
         }
     }
