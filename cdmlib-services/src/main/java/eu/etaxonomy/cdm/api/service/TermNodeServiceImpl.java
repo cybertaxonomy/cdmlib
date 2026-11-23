@@ -258,7 +258,6 @@ public class TermNodeServiceImpl
                     updateFeatureStates(node, dto, false);
 
                     updateAnnotationAndMarkers(node, dto);
-
                 }
 
                 UUID mergeResult = dao.saveOrUpdate(node);

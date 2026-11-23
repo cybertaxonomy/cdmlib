@@ -125,7 +125,6 @@ public class SecurityWithTransaction extends CdmServicesTransactionalSpringInteg
         Media media = Media.NewInstance();
         textData.addMedia(media);
 
-        //descriptionService.saveDescriptionElement(textData);
         description.addElement(textData);
 
         descriptionService.saveOrUpdate(description);
@@ -148,8 +147,7 @@ public class SecurityWithTransaction extends CdmServicesTransactionalSpringInteg
 
         Taxon tribe = (Taxon)taxonService.find(UUID.fromString("928a0167-98cd-4555-bf72-52116d067625"));
         Taxon taxon = (Taxon)taxonService.find(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
-        Iterator<TaxonNode> it = tribe.getTaxonNodes().iterator();
-        TaxonNode node = it.next();
+        TaxonNode node = tribe.getTaxonNodes().iterator().next();
 
         assertFalse(permissionEvaluator.hasPermission(authentication, node, "UPDATE"));
         node = node.getChildNodes().iterator().next();

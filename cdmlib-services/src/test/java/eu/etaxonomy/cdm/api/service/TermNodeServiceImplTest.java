@@ -322,7 +322,7 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
         rootNode.removeChild(childToRemove);
         TermNode<Feature> child4 = rootNode.addChild(Feature.DESCRIPTION());
 
-        @SuppressWarnings("unused")
+        @SuppressWarnings({ "unused", "unchecked" })
         TermTree<Feature> mergedKey = termTreeService.merge(treeLoaded, childToRemove);
 
         //NOTE: maybe interesting to know, that if not using orphan removal
@@ -356,6 +356,7 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
         commitAndStartNewTransaction();
 
         //load root node and make it detached
+        @SuppressWarnings({ "unchecked" })
         TermTree<Feature> keyLoaded = termTreeService.find(tree.getUuid());
         TermNode<Feature> rootNode = keyLoaded.getRoot();
         rootNode.getChildNodes().get(1).getChildNodes().size();  //initialize children
@@ -367,7 +368,7 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
         newParentNode.addChild(childMove);
         TermNode<Feature> child4 =rootNode.addChild(Feature.ANATOMY());
 
-        @SuppressWarnings("unused")
+        @SuppressWarnings({ "unused", "unchecked" })
         //no removed child to delete here
         TermTree<Feature> mergedTree = termTreeService.merge(keyLoaded, new CdmBase[]{});
 
@@ -398,8 +399,9 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
         commitAndStartNewTransaction();
 
         //load root node and make it detached
+        @SuppressWarnings("unchecked")
         TermNode<Feature> rootNode = termNodeService.find(tree.getRoot().getUuid());
-        TermNode<?> r = rootNode.getChildNodes().get(0).getGraph().getRoot();  //initialize children
+        rootNode.getChildNodes().get(0).getGraph().getRoot();  //initialize children
 //        termTreeService.find(tree.getRoot().getUuid());  //initialize tree as it is used later for term type comparison when adding a child
         commitAndStartNewTransaction(); //detach
 
@@ -420,7 +422,6 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
         assertEquals(3 + termNodesAtStart, termNodeService.count(TermNode.class), "Should be root + 2 children");
         commitAndStartNewTransaction();
 
-//      System.out.println("NEXT");
         //same with tree
         //load root node and make it detached
         TermTree<Feature> treeLoaded = termTreeService.find(tree.getUuid());
@@ -460,8 +461,8 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
         commitAndStartNewTransaction();
 
         //load root node and make it detached
-        TermTree<Feature> keyLoaded = termTreeService.find(tree.getUuid());
-        TermNode<Feature> rootNode = keyLoaded.getRoot();
+        TermTree<Feature> treeLoaded = termTreeService.find(tree.getUuid());
+        TermNode<Feature> rootNode = treeLoaded.getRoot();
         rootNode.getChildNodes().get(1).getChildNodes().size();  //initialize children
         commitAndStartNewTransaction(); //detach
 
@@ -472,7 +473,7 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
         TermNode<Feature> child4 =rootNode.addChild(Feature.ANATOMY());
 
         //no removed child to delete here
-        termTreeService .saveOrUpdate(keyLoaded);
+        termTreeService.saveOrUpdate(treeLoaded);
 
         commitAndStartNewTransaction(tableNames);
 

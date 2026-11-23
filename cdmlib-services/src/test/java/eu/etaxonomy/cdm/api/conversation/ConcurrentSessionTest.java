@@ -247,7 +247,7 @@ public class ConcurrentSessionTest extends CdmServicesSpringIntegrationTest {
         TaxonBase taxonBase2 = taxonService.find(taxonUuid1);
         taxonBases = taxonBase2.getName().getTaxonBases();
 
-        assertEquals(taxonBases.size(), 1, "There should be only one taxon left");
+        assertEquals(1, taxonBases.size(), "There should be only one taxon left");
         assertNotSame(taxonBase1, taxonBase2, "The objects should not be the same");
     }
 
@@ -646,7 +646,7 @@ public class ConcurrentSessionTest extends CdmServicesSpringIntegrationTest {
     }
 
     private void persistTerm(DefinedTermBase<?> term, ITermService termService, ConversationHolder conversation){
-        if(term!=null){
+        if(term != null){
             //if the term does not exist in the DB save it
             if(termService.find(term.getUuid())==null){
                 termService.saveOrUpdate(term);

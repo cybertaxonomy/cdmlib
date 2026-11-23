@@ -174,6 +174,7 @@ public class NameServiceImpl
     @Override
     @Transactional(readOnly = false)
     public DeleteResult delete(TaxonName name, NameDeletionConfigurator config) {
+
         DeleteResult result = new DeleteResult();
 
         if (name == null){
@@ -198,9 +199,9 @@ public class NameServiceImpl
             deleteTypeDesignation(name, null);
             //if original spellings should be deleted, remove it from the nomenclatural source
             Set<TaxonName> namesToUpdate = new HashSet<>();
-            for (Object o: result.getRelatedObjects()){
-                if (o instanceof NomenclaturalSource && ((NomenclaturalSource)o).getNameUsedInSource() != null && ((NomenclaturalSource)o).getNameUsedInSource().equals(name)){
-                    NomenclaturalSource nomSource = (NomenclaturalSource)o;
+            for (Object relObj: result.getRelatedObjects()){
+                if (relObj instanceof NomenclaturalSource && ((NomenclaturalSource)relObj).getNameUsedInSource() != null && ((NomenclaturalSource)relObj).getNameUsedInSource().equals(name)){
+                    NomenclaturalSource nomSource = (NomenclaturalSource)relObj;
                     nomSource.setNameUsedInSource(null);
                     namesToUpdate.add(nomSource.getSourcedName());
                 }

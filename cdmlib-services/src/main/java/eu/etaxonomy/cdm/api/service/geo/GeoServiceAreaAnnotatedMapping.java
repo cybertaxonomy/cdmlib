@@ -69,7 +69,7 @@ public class GeoServiceAreaAnnotatedMapping implements IGeoServiceAreaMapping {
         } catch (XMLStreamException e) {
             throw new RuntimeException(e);
         }
-        Annotation annotation =null;
+        Annotation annotation = null;
         for (Annotation existingAnnotation : area.getAnnotations()){
             if (AnnotationType.INTERNAL().equals(existingAnnotation.getAnnotationType())){
                 if (GeoServiceArea.isAreaMapping(existingAnnotation.getText())){

@@ -323,13 +323,13 @@ public class TaxonNodeServiceImpl
         }
 
         Classification classification = oldTaxonNode.getClassification();
-        Taxon oldTaxon = HibernateProxyHelper.deproxy(oldTaxonNode.getTaxon());
+        Taxon oldTaxon = oldTaxonNode.getTaxon();
         Taxon newAcceptedTaxon = (Taxon)this.taxonService.find(newAcceptedTaxonNode.getTaxon().getUuid());
-        newAcceptedTaxon = HibernateProxyHelper.deproxy(newAcceptedTaxon);
+
         // Move oldTaxon to newTaxon
         //TaxonName synonymName = oldTaxon.getName();
-        TaxonName newSynonymName = CdmBase.deproxy(oldTaxon.getName());
-        HomotypicalGroup group = CdmBase.deproxy(newSynonymName.getHomotypicalGroup());
+        TaxonName newSynonymName = oldTaxon.getName();
+        HomotypicalGroup group = newSynonymName.getHomotypicalGroup();
         if (synonymType == null){
             if (newSynonymName.isHomotypic(newAcceptedTaxon.getName())){
                 synonymType = SynonymType.HOMOTYPIC_SYNONYM_OF;
@@ -339,7 +339,7 @@ public class TaxonNodeServiceImpl
         }
 
         //set homotypic group
-        TaxonName newAcceptedTaxonName = HibernateProxyHelper.deproxy(newAcceptedTaxon.getName());
+        TaxonName newAcceptedTaxonName = newAcceptedTaxon.getName();
         newAcceptedTaxon.setName(newAcceptedTaxonName);
         Reference secNewAccepted = newAcceptedTaxon.getSec();
         Reference secOldAccepted = oldTaxon.getSec();
@@ -412,8 +412,8 @@ public class TaxonNodeServiceImpl
 
         //Move Taxon RelationShips to new Taxon
         for(TaxonRelationship taxonRelationship : oldTaxon.getTaxonRelations()){
-            Taxon fromTaxon = HibernateProxyHelper.deproxy(taxonRelationship.getFromTaxon());
-            Taxon toTaxon = HibernateProxyHelper.deproxy(taxonRelationship.getToTaxon());
+            Taxon fromTaxon = taxonRelationship.getFromTaxon();
+            Taxon toTaxon = taxonRelationship.getToTaxon();
             if (fromTaxon == oldTaxon){
                 newAcceptedTaxon.addTaxonRelation(taxonRelationship.getToTaxon(), taxonRelationship.getType(),
                         taxonRelationship.getCitation(), taxonRelationship.getCitationMicroReference());
@@ -572,11 +572,9 @@ public class TaxonNodeServiceImpl
         Classification classification = null;
         List<TaxonNode> taxonNodes = new ArrayList<>(list);
 
-        for (TaxonNode treeNode:taxonNodes){
-        	if (treeNode != null){
+        for (TaxonNode taxonNode: taxonNodes){
+        	if (taxonNode != null){
 
-        		TaxonNode taxonNode;
-	            taxonNode = CdmBase.deproxy(treeNode);
 	            TaxonNode parent = taxonNode.getParent();
 	            	//check whether the node has children or the children are already deleted
 	            if(taxonNode.hasChildNodes()) {
@@ -706,15 +704,13 @@ public class TaxonNodeServiceImpl
             result.addException(new Exception("The TaxonNode was already deleted."));
             return result;
         }
-        Taxon taxon = null;
-        try{
-            taxon = HibernateProxyHelper.deproxy(node.getTaxon());
-        }catch(NullPointerException e){
+        Taxon taxon = node.getTaxon();
+        if(taxon == null) {
             result.setAbort();
             result.addException(new Exception("The Taxon was already deleted."));
         }
 
-    	TaxonNode parent = HibernateProxyHelper.deproxy(node.getParent(), TaxonNode.class);
+    	TaxonNode parent = node.getParent();
     	if (config == null){
     		config = new TaxonDeletionConfigurator();
     	}
@@ -950,11 +946,11 @@ public class TaxonNodeServiceImpl
             }else{
                 if (taxonDto.getNameUuid() != null){
                     name = nameService.load(taxonDto.getNameUuid());
-                    if (taxonDto.getWfoIdentifierString() != null) {
-                        name.addIdentifier(taxonDto.getWfoIdentifierString(), IdentifierType.IDENTIFIER_NAME_WFO());
-                    }
                     if (name == null){
                         throw new RuntimeException("Taxon name not found for id " + taxonDto.getTaxonUuid());
+                    }
+                    if (taxonDto.getWfoIdentifierString() != null) {
+                        name.addIdentifier(taxonDto.getWfoIdentifierString(), IdentifierType.IDENTIFIER_NAME_WFO());
                     }
                 } else {
                     UpdateResult tmpResult = nameService.parseName(taxonDto.getTaxonNameString(),
@@ -1185,7 +1181,6 @@ public class TaxonNodeServiceImpl
             SubProgressMonitor subMonitor = SubProgressMonitor.NewStarted(monitor, 90, "Updating secundum for subtree", count);
             if (includeAcceptedTaxa){
                 monitor.subTask("Update Accepted Taxa");
-                @SuppressWarnings("rawtypes")
                 Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex,
                         publish, includeSharedTaxa, includeHybrids, subMonitor);
                 result.addUpdatedObjects(updatedTaxa);
@@ -1195,7 +1190,6 @@ public class TaxonNodeServiceImpl
             }
             if (includeSynonyms){
                 monitor.subTask("Update Synonyms");
-                @SuppressWarnings("rawtypes")
                 Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex,
                         publish, includeSharedTaxa, includeHybrids, subMonitor);
                 result.addUpdatedObjects(updatedSynonyms);
@@ -1212,7 +1206,6 @@ public class TaxonNodeServiceImpl
                 if (config.isIncludeProParteSynonyms()){
                     relationTypes.addAll(TaxonRelationshipType.proParteOrPartialSynonymUuids());
                 }
-                @SuppressWarnings("rawtypes")
                 Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeRelatedTaxa(subTreeIndex, publish,
                         relationTypes, includeSharedTaxa, includeHybrids, subMonitor);
                 result.addUpdatedObjects(updatedTaxa);

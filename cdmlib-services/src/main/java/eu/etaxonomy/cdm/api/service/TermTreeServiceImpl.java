@@ -16,8 +16,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.persistence.EntityNotFoundException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +37,7 @@ import eu.etaxonomy.cdm.persistence.dto.TermTreeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 @Transactional(readOnly = false)
@@ -85,12 +84,12 @@ public class TermTreeServiceImpl
     @Transactional(readOnly = false)
     public UpdateResult saveOrUpdateTermTreeDtoList(List<TermTreeDto> dtos){
         UpdateResult result = new UpdateResult();
-        MergeResult<TermTree> mergeResult;
+
         List<UUID> uuids = new ArrayList<>();
         dtos.stream().forEach(dto -> uuids.add(dto.getUuid()));
         List<TermTree> trees = dao.list(uuids, null, 0, null, null);
         //check all attributes for changes and adapt
-        for (TermTree tree: trees){
+        for (TermTree<?> tree: trees){
             for (TermTreeDto dto: dtos){
 
                 if (dto.getUuid().equals(tree.getUuid())){

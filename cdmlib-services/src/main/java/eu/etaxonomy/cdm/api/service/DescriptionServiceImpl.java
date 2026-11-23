@@ -779,7 +779,6 @@ public class DescriptionServiceImpl
             return result;
         }
 
-
         if (! isCopy && descriptionElements == descriptionElements.iterator().next().getInDescription().getElements()){
             //if the descriptionElements collection is the elements set of a description, put it in a separate set before to avoid concurrent modification exceptions
             descriptionElements = new HashSet<DescriptionElementBase>(descriptionElements);
@@ -797,8 +796,6 @@ public class DescriptionServiceImpl
                     taxon = (Taxon) taxonDao.load(taxonDescription.getTaxon().getUuid());
                     name = taxon.getName();
                 }
-
-
             }
             DescriptionElementBase newElement = element.clone();
             if (setNameInSource) {
@@ -829,8 +826,6 @@ public class DescriptionServiceImpl
 //                    result.addUpdatedObject(description);
 //                }
             }
-
-
         }
         dao.saveOrUpdate(targetDescription);
         result.addUpdatedObject(targetDescription);
@@ -887,6 +882,7 @@ public class DescriptionServiceImpl
             UUID targetTaxonUuid,
             String moveMessage,
             boolean isCopy, boolean setNameInSource, boolean useDefaultDescription, boolean createNewCurrentDeterminations) {
+
         Taxon targetTaxon = CdmBase.deproxy(taxonDao.load(targetTaxonUuid), Taxon.class);
         TaxonDescription targetDescription = null;
         if (useDefaultDescription && targetTaxon.hasDefaultDescription()) {
@@ -916,7 +912,7 @@ public class DescriptionServiceImpl
             DescriptionElementBase descEl = descriptionElementDao.load(deUuid);
             descriptionElements.add(descEl);
             if (createNewCurrentDeterminations && descEl instanceof IndividualsAssociation && ((IndividualsAssociation)descEl).getAssociatedSpecimenOrObservation()!= null){
-                SpecimenOrObservationBase specimen = HibernateProxyHelper.deproxy(((IndividualsAssociation)descEl).getAssociatedSpecimenOrObservation());
+                SpecimenOrObservationBase<?> specimen = HibernateProxyHelper.deproxy(((IndividualsAssociation)descEl).getAssociatedSpecimenOrObservation());
                 DeterminationEvent event = specimen.getDeterminationsForTaxonOrName(targetTaxon, targetTaxon.getName());
                 if (event != null) {
                     specimen.setPreferredDetermination(event);

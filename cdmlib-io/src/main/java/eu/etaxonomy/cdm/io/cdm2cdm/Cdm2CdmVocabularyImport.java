@@ -82,6 +82,7 @@ public class Cdm2CdmVocabularyImport
 
         ICdmApplication source = sourceRepo(state);
         TransactionStatus otherTx = source.startTransaction(true);
+        @SuppressWarnings("unchecked")
         TermVocabulary<T> otherVoc = source.getVocabularyService().find(vocUuid);
         TermVocabulary<T> thisVoc = null;
         try {

@@ -16,9 +16,9 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.envers.Audited;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -81,7 +81,7 @@ public class TermTree<T extends DefinedTermBase>
 	//translations should be synchronized all over the system (there is a ticket for this)
 
 	@XmlElement(name = "Root")
-	@OneToOne(fetch = FetchType.LAZY, targetEntity=TermNode.class)
+	@OneToOne(fetch = FetchType.LAZY, targetEntity = TermNode.class)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
 	private TermNode<T> root;
 

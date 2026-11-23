@@ -167,7 +167,6 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 
 		t1.addHomotypicSynonym(synonym);
 		t1 =(Taxon) taxonService.load(t1.getUuid());
-		t1 = HibernateProxyHelper.deproxy(t1);
 		TaxonName nameT1 = t1.getName();
 		t2 = node2.getTaxon();
 		assertEquals(2, t1.getDescriptions().size());
@@ -267,11 +266,11 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 		taxonService.save(relatedTaxon);
 		nameService.save(relatedName);
 
-		//do it
+		//run operation
 		DeleteResult result = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode
 		        (node1, node2, synonymType, reference, referenceDetail, null, true);
 
-		//post conditions
+		//test
 		if (!result.getUpdatedObjects().iterator().hasNext()){
 			fail("Some updates must have taken place");
 		}
@@ -283,9 +282,6 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 		assertNotNull(t1HomotypSynonym);
 
 		keyNode.setTaxon(null);
-		t2 =HibernateProxyHelper.deproxy(t2);
-		HibernateProxyHelper.deproxy(t2.getHomotypicGroup());
-		t2.setName(HibernateProxyHelper.deproxy(t2.getName()));
 
 		assertFalse(t2.getSynonyms().isEmpty(), "taxon 2 must have a synonym now");
 		assertEquals(3, t2.getSynonyms().size(), "taxon 2 must have 3 synonyms now, the old taxon 1 and it's 2 synonyms");
@@ -404,7 +400,6 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 		classification = classificationService.load(classificationUuid);
 		node1 = taxonNodeService.load(node1Uuid);
 		node2 = taxonNodeService.load(rootNodeUuid);
-		node1 = HibernateProxyHelper.deproxy(node1);
 
 		TaxonNode newNode = node1.addChildTaxon(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null), null, null);
 		UUID uuidNewNode = taxonNodeService.save(newNode).getUuid();
@@ -1321,7 +1316,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         //replace nodes and merge
         TaxonNode childToRemove = rootNode.getChildNodes().get(0);
         rootNode.deleteChildNode(childToRemove);
-        TaxonNode child3 =rootNode.addChildTaxon(null, null);
+        TaxonNode child3 = rootNode.addChildTaxon(null, null);
         taxonNodeService.merge(rootNode, childToRemove);
         commitAndStartNewTransaction(tableNames);
 
@@ -1373,22 +1368,23 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
     public void testMergeDetachedWithMove() {
 
         //create classification with 2 child nodes
-        Classification tree = Classification.NewInstance("Classification");
-        TaxonNode child1 = tree.getRootNode().addChildTaxon(null, null);
-        TaxonNode child2 = tree.getRootNode().addChildTaxon(null, null);
-        classificationService.save(tree);
+        Classification classification = Classification.NewInstance("Classification");
+        TaxonNode child1 = classification.getRootNode().addChildTaxon(null, null);
+        TaxonNode child2 = classification.getRootNode().addChildTaxon(null, null);
+        classificationService.save(classification);
         taxonNodeService.save(child1);
         taxonNodeService.save(child2);
         commitAndStartNewTransaction();
 
         //load root node and make it detached
-        Classification keyLoaded = classificationService.find(tree.getUuid());
-        TaxonNode rootNode = keyLoaded.getRootNode();
+        Classification loadedClassification = classificationService.find(classification.getUuid());
+        TaxonNode rootNode = loadedClassification.getRootNode();
         rootNode.getChildNodes().get(0).getChildNodes().size();  //initialize children
         rootNode.getChildNodes().get(1).getChildNodes().size();  //initialize children
         commitAndStartNewTransaction(); //detach
 
         //replace nodes and merge
+        //...make child1 a child of child2
         TaxonNode childMove = rootNode.getChildNodes().get(0);
         TaxonNode newParentNode = rootNode.getChildNodes().get(1);
         TaxonNode child3 = newParentNode.addChildNode(childMove, null, null);
@@ -1397,11 +1393,11 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
 
         @SuppressWarnings("unused")
         //no removed child to delete here
-        Classification mergedTree = classificationService.merge(keyLoaded, new CdmBase[]{});
+        Classification mergedTree = classificationService.merge(loadedClassification, new CdmBase[]{});
 
         commitAndStartNewTransaction(tableNames);
 
-        rootNode = taxonNodeService.find(tree.getRootNode().getUuid());
+        rootNode = taxonNodeService.find(classification.getRootNode().getUuid());
         rootNode.getChildNodes();
         assertEquals(2, rootNode.getChildNodes().size());
         TaxonNode firstChild = rootNode.getChildNodes().get(0);

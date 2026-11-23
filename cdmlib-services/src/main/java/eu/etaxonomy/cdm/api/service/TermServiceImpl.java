@@ -283,7 +283,6 @@ public class TermServiceImpl
 		if (result.isAbort()) {
             return result;
         }
-		//CdmBase.deproxy(dao.merge(term), DefinedTermBase.class);
 
 		try {
 			//generalization of
@@ -547,15 +546,15 @@ public class TermServiceImpl
     @Transactional(readOnly = false)
     @Override
     public UpdateResult moveTerm(TermDto termDto, UUID parentUuid, TermMovePosition termMovePosition) {
-        boolean isKindOf = termDto.getKindOfUuid()!=null && termDto.getKindOfUuid().equals(parentUuid);
+        boolean isKindOf = termDto.getKindOfUuid() != null && termDto.getKindOfUuid().equals(parentUuid);
         TermVocabulary vocabulary = HibernateProxyHelper.deproxy(vocabularyService.load(termDto.getVocabularyUuid()));
         DefinedTermBase parent = HibernateProxyHelper.deproxy(dao.load(parentUuid));
         UpdateResult result = new UpdateResult();
         if(parent == null){
             //new parent is a vocabulary
-            TermVocabulary parentVocabulary = HibernateProxyHelper.deproxy(vocabularyService.load(parentUuid));
-            DefinedTermBase term = HibernateProxyHelper.deproxy(dao.load(termDto.getUuid()));
-            if(parentVocabulary!=null){
+            TermVocabulary parentVocabulary = CdmBase.deproxy(vocabularyService.load(parentUuid));
+            DefinedTermBase term = CdmBase.deproxy(dao.load(termDto.getUuid()));
+            if(parentVocabulary != null){
                 term.setKindOf(null);
                 term.setPartOf(null);
 
@@ -568,14 +567,14 @@ public class TermServiceImpl
             vocabularyService.saveOrUpdate(parentVocabulary);
         }
         else {
-            DefinedTermBase term = HibernateProxyHelper.deproxy(dao.load(termDto.getUuid()));
+            DefinedTermBase term = CdmBase.deproxy(dao.load(termDto.getUuid()));
             //new parent is a term
             if(parent.isOrderRelevant()
                     && term.isOrderRelevant()
                     && termMovePosition!=null
                     && parent.getVocabulary().isInstanceOf(OrderedTermVocabulary.class)) {
                 //new parent is an ordered term
-                OrderedTermVocabulary otVoc = HibernateProxyHelper.deproxy(parent.getVocabulary(), OrderedTermVocabulary.class);
+                OrderedTermVocabulary otVoc = CdmBase.deproxy(parent.getVocabulary(), OrderedTermVocabulary.class);
                 if(termMovePosition.equals(TermMovePosition.BEFORE)) {
                     term.getVocabulary().removeTerm(term);
                     otVoc.addTermAbove(term, parent);

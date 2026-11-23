@@ -949,13 +949,13 @@ public class OccurrenceServiceImpl
     public UpdateResult moveDerivate(UUID specimenFromUuid, UUID specimenToUuid, UUID derivateUuid) {
         // reload specimens to avoid session conflicts
         SpecimenOrObservationBase<?> from = null;
-        if(specimenFromUuid!=null){
+        if(specimenFromUuid != null){
             from = load(specimenFromUuid);
         }
         SpecimenOrObservationBase<?> to = load(specimenToUuid);
         DerivedUnit derivate = (DerivedUnit) load(derivateUuid);
 
-        if ((specimenFromUuid!=null && from == null) || to == null || derivate == null) {
+        if ((specimenFromUuid != null && from == null) || to == null || derivate == null) {
             throw new TransientObjectException("One of the CDM entities has not been saved to the data base yet. Moving only works for persisted/saved CDM entities.\n" +
                     "Operation was move "+derivate+ " from "+from+" to "+to);
         }
@@ -966,7 +966,7 @@ public class OccurrenceServiceImpl
         if(toType==SpecimenOrObservationType.FieldUnit //moving to FieldUnit always works
                 || derivateType==SpecimenOrObservationType.Media //moving media always works
                 || (derivateType.isKindOf(toType) && toType!=derivateType)){ //moving only to parent derivate type
-            if(from!=null){
+            if(from != null){
                 // remove derivation event from parent specimen of dragged object
                 DerivationEvent eventToRemove = null;
                 for (DerivationEvent event : from.getDerivationEvents()) {

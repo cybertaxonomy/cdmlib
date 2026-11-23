@@ -110,11 +110,6 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
         makeTaxon(state, name);
     }
 
-
-    /**
-     * @param state
-     * @param name
-     */
     private void saveHybridNames(STATE state, TaxonName name) {
         for (HybridRelationship hybridRel : name.getHybridChildRelations()){
             TaxonName parent = hybridRel.getParentName();
@@ -124,9 +119,7 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
             getNameService().saveOrUpdate(parent);
 
         }
-
     }
-
 
     /**
      * @param record

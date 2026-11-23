@@ -103,7 +103,7 @@ public class Cdm2CdmTaxonNodeImport
     }
 
     private TaxonNode saveCascading(TaxonNode node) {
-        node.getAgentRelations().forEach(ar->getAgentService().saveOrUpdate(ar.getAgent()));
+        node.getAgentRelations().forEach(agRel->getAgentService().save(agRel.getAgent()));  //TODO test if save is really correct here (#11083)
         return node;
     }
 

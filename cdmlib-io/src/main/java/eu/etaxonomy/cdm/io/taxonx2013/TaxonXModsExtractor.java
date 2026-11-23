@@ -48,9 +48,9 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
     public Reference extractMods(Node node){
 
     	//TODO needed? currently only filled but never read
-        Map<String, String> modsMap = new HashMap<String, String>();
+        Map<String, String> modsMap = new HashMap<>();
         NodeList children = node.getChildNodes();
-        List<String> roleList = new ArrayList<String>();
+        List<String> roleList = new ArrayList<>();
         String content="";
 
         Reference ref = tryMakeReferenceByClassification(children);
@@ -154,10 +154,10 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
 
     private void handleModsNames(NodeList children, Reference ref) {
 
-        List<String> roleList = new ArrayList<String>();
+        List<String> roleList = new ArrayList<>();
 
-        List<Person> persons = new ArrayList<Person>();
-        List<String> editors= new ArrayList<String>();
+        List<Person> persons = new ArrayList<>();
+        List<String> editors= new ArrayList<>();
 
 
     	//handle all mods:name
@@ -236,7 +236,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
     private void handleNameTypePersonal(Node node, List<String> roleList, List<Person> persons, List<String> editors) {
     	boolean newRole=false;
         String content="";
-        String role =null;
+        String role = null;
 
         List<String> nameParts = new ArrayList<>();
 
@@ -257,41 +257,40 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                             roleList.add(content);
                             //                                p.setNomenclaturalTitle(content);
                             if (content.equalsIgnoreCase(EDITOR)) {
-                                role=EDITOR;
+                                role = EDITOR;
                             }
                             else if (content.equalsIgnoreCase(AUTHOR)) {
-                                role=AUTHOR;
+                                role = AUTHOR;
                             }
                             newRole=true;
                         }
                     }
                 }
             }
-
         }
 
-        Person p=null;
+        Person person = null;
         if (! nameParts.isEmpty()){
-            p = Person.NewInstance();
-            p.setTitleCache(StringUtils.join(nameParts.toArray(), " "), true);
+            person = Person.NewInstance();
+            person.setTitleCache(StringUtils.join(nameParts.toArray(), " "), true);
         }
 
         if (newRole){
-            if ((p!=null) && role.equals(AUTHOR)) {
+            if ((person != null) && role.equals(AUTHOR)) {
                 UUID uuid = null;
-                if (!personMap.containsKey(p.getTitleCache())){
-                    uuid = importer.getAgentService().saveOrUpdate(p);
-                    p = (Person) importer.getAgentService().find(uuid);
-                    personMap.put(p.getTitleCache(),uuid);
+                if (!personMap.containsKey(person.getTitleCache())){
+                    uuid = importer.getAgentService().saveOrUpdate(person);
+                    person = (Person) importer.getAgentService().find(uuid);
+                    personMap.put(person.getTitleCache(),uuid);
                 }else{
-                    uuid = personMap.get(p.getTitleCache());
-                    p = (Person) importer.getAgentService().find(uuid);
+                    uuid = personMap.get(person.getTitleCache());
+                    person = (Person) importer.getAgentService().find(uuid);
                 }
                 //                        logger.info("ADD PERSON "+p);
-                persons.add(p);
+                persons.add(person);
             }
-            else if ((p!=null) && role.equals(EDITOR)) {
-                editors.add(p.getTitleCache());
+            else if ((person !=null) && role.equals(EDITOR)) {
+                editors.add(person.getTitleCache());
             }
         }
 	}

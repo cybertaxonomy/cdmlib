@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyDao;
@@ -46,7 +45,6 @@ public class PolytomousKeyNodeServiceImpl
 
 	    DeleteResult result = new DeleteResult();
         PolytomousKeyNode node = dao.findByUuid(nodeUUID);
-        node = HibernateProxyHelper.deproxy(node);
         if (node == null) {
            // result.addException(new Exception("The polytomouskey node was already deleted."));
             return result;
@@ -57,11 +55,9 @@ public class PolytomousKeyNodeServiceImpl
             children.add(child);
         }
         PolytomousKeyNode parent = node.getParent();
-        parent = HibernateProxyHelper.deproxy(parent);
         PolytomousKey key = null;
         if (parent == null){
             key = node.getKey();
-            key = HibernateProxyHelper.deproxy(key);
         }
 
         if(!deleteChildren){
@@ -76,7 +72,7 @@ public class PolytomousKeyNodeServiceImpl
             dao.saveOrUpdate(node);
             result.addUpdatedObject(node);
         }
-        if (parent!= null){
+        if (parent != null){
             parent.removeChild(node);
             dao.saveOrUpdate(parent);
         }

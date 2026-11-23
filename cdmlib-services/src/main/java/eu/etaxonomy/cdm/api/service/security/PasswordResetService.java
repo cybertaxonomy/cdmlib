@@ -85,10 +85,10 @@ public class PasswordResetService extends AccountSelfManagementService implement
             } catch (MailException e) {
                 throw e;
             }
-            return new AsyncResult<Boolean>(true);
+            return new AsyncResult<>(true);
         } else {
             logger.trace("blocked by rate limiter");
-            return new AsyncResult<Boolean>(false);
+            return new AsyncResult<>(false);
         }
     }
 
@@ -109,7 +109,7 @@ public class PasswordResetService extends AccountSelfManagementService implement
                    sendEmail(resetRequest.get().getUserEmail(), resetRequest.get().getUserName(),
                            UserAccountEmailTemplates.RESET_SUCCESS_EMAIL_SUBJECT_TEMPLATE,
                            UserAccountEmailTemplates.RESET_SUCCESS_EMAIL_BODY_TEMPLATE, null);
-                   return new AsyncResult<Boolean>(true);
+                   return new AsyncResult<>(true);
                } catch (DataAccessException | IllegalArgumentException | UsernameNotFoundException e) {
                    logger.error("Failed to change password of User " + resetRequest.get().getUserName(), e);
                    sendEmail(resetRequest.get().getUserEmail(), resetRequest.get().getUserName(),

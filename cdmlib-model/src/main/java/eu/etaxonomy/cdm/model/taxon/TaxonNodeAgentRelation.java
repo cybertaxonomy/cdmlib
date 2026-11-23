@@ -50,6 +50,7 @@ import jakarta.xml.bind.annotation.XmlType;
 @Entity
 @Audited
 public class TaxonNodeAgentRelation extends AnnotatableEntity {
+
     private static final long serialVersionUID = -1476342569350403356L;
     private static final Logger logger = LogManager.getLogger();
 

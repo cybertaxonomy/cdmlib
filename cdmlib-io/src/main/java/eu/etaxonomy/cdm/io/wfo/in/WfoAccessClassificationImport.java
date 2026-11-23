@@ -377,7 +377,6 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
             getTaxonNodeService().saveOrUpdate(newChild);
 
         }
-//        }
     }
 
     private TaxonName makeDoubtfulBasionym(STATE state, String attrName, Reference sec) {

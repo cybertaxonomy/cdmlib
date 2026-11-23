@@ -108,12 +108,12 @@ public class ShpAttributesToNamedAreaMapper {
 
         String matchIdCode;
         String matchColName;
-        for(NamedArea a : areas){
+        for(NamedArea area : areas){
 
-            if(a.getIdInVocabulary() == null){
+            if(area.getIdInVocabulary() == null){
                 String message = "has no IdInVocabulary";
-                resultMap.put(a, message);
-                logger.warn(a.getTitleCache() + " " + message);
+                resultMap.put(area, message);
+                logger.warn(area.getTitleCache() + " " + message);
                 continue;
             }
             matchIdCode = null;
@@ -125,7 +125,7 @@ public class ShpAttributesToNamedAreaMapper {
 
                 for(String[] row : data){
                     String fieldData = row[idx].trim();
-                    if(a.getIdInVocabulary().equals(fieldData)){
+                    if(area.getIdInVocabulary().equals(fieldData)){
                         // FOUND!
                         matchIdCode = fieldData;
                         break;
@@ -143,30 +143,28 @@ public class ShpAttributesToNamedAreaMapper {
             if(matchIdCode != null){
                 //TODO need to clear the area mapping since the mapping impl can not distinguish multiple layers
                 //     see https://dev.e-taxonomy.eu/redmine/issues/4263
-                areaMapping.clear(a);
+                areaMapping.clear(area);
 
                 GeoServiceArea geoServiceArea;
-                geoServiceArea = areaMapping.valueOf(a);
+                geoServiceArea = areaMapping.valueOf(area);
                 if(geoServiceArea == null){
                     geoServiceArea = new GeoServiceArea();
                 }
                 geoServiceArea.add(wmsLayerName, matchColName, matchIdCode);
-                areaMapping.set(a, geoServiceArea );
+                areaMapping.set(area, geoServiceArea );
 
                 String message = matchColName + ": " + matchIdCode;
-                resultMap.put(a, message);
+                resultMap.put(area, message);
                 if(logger.isDebugEnabled()){
-                    logger.debug(a.getIdInVocabulary() + ": " + message);
+                    logger.debug(area.getIdInVocabulary() + ": " + message);
                 }
             } else {
-                String message = "no match for " + a.getIdInVocabulary();
-                resultMap.put(a, message);
+                String message = "no match for " + area.getIdInVocabulary();
+                resultMap.put(area, message);
                 logger.warn(message);
             }
-
 
         } // END of areas loop
         return resultMap;
     }
-
 }

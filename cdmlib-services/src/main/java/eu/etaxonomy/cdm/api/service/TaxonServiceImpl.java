@@ -411,6 +411,7 @@ public class TaxonServiceImpl
     @Override
     @Transactional(readOnly = false)
     public UpdateResult changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, Reference newSecRef, String microRef, SecReferenceHandlingEnum secHandling, boolean deleteSynonym) {
+
         UpdateResult result = new UpdateResult();
         TaxonName acceptedName = acceptedTaxon.getName();
         TaxonName synonymName = synonym.getName();
@@ -1419,13 +1420,13 @@ public class TaxonServiceImpl
 
         if (result.isOk()){
 
-            synonym = HibernateProxyHelper.deproxy(synonym, Synonym.class);
+            synonym = HibernateProxyHelper.deproxy(synonym);
 
             //remove synonym
             Taxon accTaxon = synonym.getAcceptedTaxon();
 
             if (accTaxon != null){
-                accTaxon = HibernateProxyHelper.deproxy(accTaxon, Taxon.class);
+                accTaxon = HibernateProxyHelper.deproxy(accTaxon);
                 accTaxon.removeSynonym(synonym, false);
                 this.saveOrUpdate(accTaxon);
                 result.addUpdatedObject(accTaxon);
@@ -1662,8 +1663,7 @@ public class TaxonServiceImpl
         Reference newSecundum = referenceService.load(newSecundumUuid);
         for (Synonym synRelation: homotypicSynonyms){
 
-            newTaxon = HibernateProxyHelper.deproxy(newTaxon, Taxon.class);
-            oldTaxon = HibernateProxyHelper.deproxy(oldTaxon, Taxon.class);
+            newTaxon = HibernateProxyHelper.deproxy(newTaxon);
             oldTaxon.removeSynonym(synRelation, false);
             newTaxon.addSynonym(synRelation, newSynonymType);
 
@@ -2618,7 +2618,9 @@ public class TaxonServiceImpl
             UUID toTaxonUuid,
             TaxonRelationshipType oldRelationshipType,
             SynonymType synonymType) throws DataChangeNoRollbackException {
+
         UpdateResult result = new UpdateResult();
+
         Taxon fromTaxon = (Taxon) dao.load(fromTaxonUuid);
         Taxon toTaxon = (Taxon) dao.load(toTaxonUuid);
         result = changeRelatedTaxonToSynonym(fromTaxon, toTaxon, oldRelationshipType, synonymType);
