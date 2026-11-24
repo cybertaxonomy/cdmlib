@@ -817,7 +817,7 @@ public class ConcurrentSessionTest extends CdmServicesSpringIntegrationTest {
     @Disabled //see #4528
     @Test
     @CdmDataSet("ConcurrentSessionTest.xml")
-    public void testSave() {   //  was testSaveOrUpdate (#11083)
+    public void testSave() {   //  was testSave_Or_Update (#11083)
         // this test deals with calling a save after binding a conversation holder
 
         // initialise the conversation holders

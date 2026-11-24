@@ -196,12 +196,6 @@ public class RegistrationServiceImpl
     }
 
     @Override
-    public UUID saveOrUpdate(Registration transientObject) {
-        transientObject = assureIsPersisted(transientObject);
-        return super.saveOrUpdate(transientObject);
-    }
-
-    @Override
     public Map<UUID, Registration> save(Collection<? extends Registration> newInstances) {
         Map<UUID, Registration> regs = new HashMap<>();
         for(Registration newInstance : newInstances) {
@@ -211,18 +205,7 @@ public class RegistrationServiceImpl
         return regs;
     }
 
-    @Override
-    public Map<UUID, Registration> saveOrUpdate(Collection<Registration> transientInstances) {
-        Map<UUID, Registration> regs = new HashMap<>();
-        for(Registration transientInstance : transientInstances) {
-            UUID uuid = saveOrUpdate(transientInstance);
-            regs.put(uuid, transientInstance);
-        }
-        return regs;
-    }
-
     // ============= functionality to be moved into a "RegistrationManagerBean" => RegistrationServiceImpl ? ==================
-
 
     /**
      * Factory Method

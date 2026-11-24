@@ -444,7 +444,7 @@ public class TermNodeServiceImplTest  extends CdmServicesTransactionalSpringInte
         assertEquals(2, rootNode.getChildNodes().size());
         assertEquals(child3.getUuid(), rootNode.getChildNodes().get(0).getUuid());
         assertEquals(child4.getUuid(), rootNode.getChildNodes().get(1).getUuid());
-        //FIXME does not yet work with merge (maybe because we have no cascading on Delete in TermTree), did work with saveOrUpdate
+        //FIXME does not yet work with merge (maybe because we have no cascading on Delete in TermTree), did work with save_Or_Update
         assertEquals(3 + termNodesAtStart, termNodeService.count(TermNode.class), "Should be root + 2 children");
     }
 

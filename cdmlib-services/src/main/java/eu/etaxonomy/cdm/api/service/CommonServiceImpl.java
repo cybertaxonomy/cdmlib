@@ -368,24 +368,10 @@ public class CommonServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public UUID saveOrUpdate(CdmBase newInstance) {
-        return genericDao.saveOrUpdate(newInstance);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
     public <T extends CdmBase> Map<UUID,T> save(Collection<T> newInstances) {
         //this is very ugly, I know, but for now I do not want to copy the saveAll method from CdmEntityDaoBase to genericDao
         //and generally the saveAll method should work for other CdmBase types with generics removed
         return originalSourceDao.saveAll((Collection)newInstances);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public <T extends CdmBase> Map<UUID,T> saveOrUpdate(Collection<T> newInstances) {
-        //this is very ugly, I know, but for now I do not want to copy the saveAll method from CdmEntityDaoBase to genericDao
-        //and generally the saveAll method should work for other CdmBase types with generics removed
-        return originalSourceDao.saveOrUpdateAll((Collection)newInstances);
     }
 
     @Override

@@ -1454,7 +1454,6 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         assertEquals(3, taxonNodeService.count(TaxonNode.class), "Should be root + 2 children");
         commitAndStartNewTransaction();
 
-//      System.out.println("NEXT");
         //same with classification
         //load root node and make it detached
         Classification treeLoaded = classificationService.find(tree.getUuid());
@@ -1468,7 +1467,7 @@ public class TaxonNodeServiceImplTest extends CdmServicesTransactionalSpringInte
         TaxonNode child4 = rootNode.addChildTaxon(null, null);
 
         //TODO can't work yet as TaxonNodes are not cascaded on purpose
-        classificationService.saveOrUpdate(treeLoaded);
+        classificationService.save(treeLoaded);
         taxonNodeService.delete(childToRemove.getUuid());
 
         commitAndStartNewTransaction(tableNames);

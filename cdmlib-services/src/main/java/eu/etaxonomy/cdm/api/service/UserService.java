@@ -323,12 +323,6 @@ public class UserService
 
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-    public UUID saveOrUpdate(User transientObject) {
-        return super.saveOrUpdate(transientObject);
-    }
-
-    @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     @Transactional(readOnly=false)
     public User merge(User detachedObject) {
         return super.merge(detachedObject);
@@ -339,12 +333,6 @@ public class UserService
     @Transactional(readOnly=false)
     public List<User> merge(List<User> detachedObjects) {
         return super.merge(detachedObjects);
-    }
-
-    @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-    public Map<UUID, User> saveOrUpdate(Collection<User> transientInstances) {
-        return super.saveOrUpdate(transientInstances);
     }
 
 }

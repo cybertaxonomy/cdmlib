@@ -533,9 +533,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         userService.updateUser(user);
         userService.update(user);
-        userService.saveOrUpdate(user);
         commitAndStartNewTransaction(null);
-
     }
 
     /**

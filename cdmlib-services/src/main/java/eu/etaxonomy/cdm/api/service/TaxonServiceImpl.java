@@ -1204,7 +1204,6 @@ public class TaxonServiceImpl
     	    result.addException(new Exception("The taxon was already deleted."));
     	    return result;
     	}
-    	taxon = HibernateProxyHelper.deproxy(taxon);
     	Classification classification = HibernateProxyHelper.deproxy(classificationDao.load(classificationUuid));
     	config.setClassificationUuid(classificationUuid);
         result = isDeletable(taxonUUID, config);

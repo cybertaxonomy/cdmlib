@@ -202,7 +202,7 @@ public class PolytomousKeyNodeServiceTest extends CdmServicesTransactionalSpring
     }
 
     //not relevant more since migrating to hibernate 7 (#11083)
-//    @Test //10101 same as testMerge but with saveOrUpdate
+//    @Test //10101 same as testMerge but with save_Or_Update
 //    @CdmDataSet(cleanSweep = true, value = "/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
 //    public final void testSaveDetached(){
 //
@@ -225,7 +225,7 @@ public class PolytomousKeyNodeServiceTest extends CdmServicesTransactionalSpring
 //        rootNode.removeChild(childToRemove);
 //        PolytomousKeyNode child3 = PolytomousKeyNode.NewInstance("Test statement child3");
 //        rootNode.addChild(child3);
-//        service.saveOrUpdate(rootNode);   //TODO childToRemove
+//        service.save(rootNode);   //TODO childToRemove
 //        service.delete(childToRemove.getUuid(), false);
 //        commitAndStartNewTransaction(tableNames);
 //
@@ -253,7 +253,7 @@ public class PolytomousKeyNodeServiceTest extends CdmServicesTransactionalSpring
 //        rootNode.addChild(child4);
 //
 //        @SuppressWarnings("unused")
-//        UUID mergedKey = keyService.saveOrUpdate(keyLoaded);
+//        UUID mergedKey = keyService.save(keyLoaded);
 //        service.delete(childToRemove.getUuid(), false);
 //
 //        commitAndStartNewTransaction(tableNames);
@@ -293,7 +293,7 @@ public class PolytomousKeyNodeServiceTest extends CdmServicesTransactionalSpring
 //        PolytomousKeyNode child4 = PolytomousKeyNode.NewInstance("Test statement child3");
 //        rootNode.addChild(child4);
 //        //no removed child to delete here
-//        keyService.saveOrUpdate(keyLoaded) ;
+//        keyService.save(keyLoaded) ;
 //
 //        commitAndStartNewTransaction(tableNames);
 //

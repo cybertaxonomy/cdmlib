@@ -613,8 +613,8 @@ public class TaxonNodeServiceImpl
 	            	if (taxon != null){
 
 	            		if (config.getTaxonNodeConfig().isDeleteTaxon()){
-	            		    taxonService.saveOrUpdate(taxon);
-	            		    saveOrUpdate(taxonNode);
+	            		    taxonService.save(taxon);
+	            		    save(taxonNode);
 
 			            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), config, classification.getUuid());
 			            	if (!resultTaxon.isOk()){
@@ -633,8 +633,8 @@ public class TaxonNodeServiceImpl
 	            	if (taxon != null){
 	            		taxon.removeTaxonNode(taxonNode);
 	            		if (config.getTaxonNodeConfig().isDeleteTaxon()){
-			            	saveOrUpdate(taxonNode);
-			            	taxonService.saveOrUpdate(taxon);
+			            	save(taxonNode);
+			            	taxonService.save(taxon);
 			            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), config, classification.getUuid());
 
                             if (!resultTaxon.isOk()){
@@ -715,7 +715,7 @@ public class TaxonNodeServiceImpl
             .filter(obj->obj instanceof DescriptiveDataSet)
             .forEach(dataSet->{
                 ((DescriptiveDataSet)dataSet).removeTaxonSubtree(node);
-                dataSetService.saveOrUpdate((DescriptiveDataSet) dataSet);
+                dataSetService.save((DescriptiveDataSet) dataSet);
         });
 
     	if (taxon != null){

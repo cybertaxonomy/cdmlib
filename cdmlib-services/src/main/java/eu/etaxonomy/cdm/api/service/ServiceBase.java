@@ -358,22 +358,9 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     }
 
     @Override
-    @Transactional(readOnly = false)
-    public UUID saveOrUpdate(T transientObject) {
-        return dao.saveOrUpdate(transientObject);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public Map<UUID, T> saveOrUpdate(Collection<T> transientInstances) {
-        return dao.saveOrUpdateAll(transientInstances);
-    }
-
-    @Override
     public void setApplicationContext(ApplicationContext appContext){
         this.appContext = appContext;
     }
-
 
     protected abstract void setDao(DAO dao);
 

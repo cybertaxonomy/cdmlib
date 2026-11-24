@@ -329,24 +329,6 @@ public interface IService<T extends ICdmBase>{
     public void save(T newInstance1, T newInstance2);
 
     /**
-     * Save a new entity or update the persistent state of an existing
-     * transient entity that has been persisted previously
-     *
-     * @param transientObject the entity to be persisted
-     * @return The unique identifier of the persisted entity
-     */
-    public UUID saveOrUpdate(T transientObject);
-
-    /**
-     * Save new entities or update the persistent state of existing
-     * transient entities that have been persisted previously
-     *
-     * @param transientObjects the entities to be persisted
-     * @return The unique identifier of the persisted entity
-     */
-    public Map<UUID,T> saveOrUpdate(Collection<T> transientObjects);
-
-    /**
      * Update the persistent state of an existing transient entity
      * that has been persisted previously
      *
