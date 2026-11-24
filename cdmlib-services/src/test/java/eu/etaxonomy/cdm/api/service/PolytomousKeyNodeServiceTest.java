@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.test.integration.spring.CdmServicesTransactionalSpringIn
 
 public class PolytomousKeyNodeServiceTest extends CdmServicesTransactionalSpringIntegrationTest {
 
-    String[] tableNames = new String[]{"POLYTOMOUSKEY","POLYTOMOUSKEYNODE","POLYTOMOUSKEYNODE_AUD"};
+    private static String[] tableNames = new String[]{"POLYTOMOUSKEY","POLYTOMOUSKEYNODE","POLYTOMOUSKEYNODE_AUD"};
 
 	@Autowired
 	private IPolytomousKeyNodeService service;

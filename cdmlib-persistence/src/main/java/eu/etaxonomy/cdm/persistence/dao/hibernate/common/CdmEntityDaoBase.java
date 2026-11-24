@@ -293,7 +293,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     @Override
     public T merge(T transientObject) throws DataAccessException {
         Session session = getSession();
-        @SuppressWarnings("unchecked")
         T persistentObject = (T) session.merge(transientObject);
         if (logger.isDebugEnabled()) {
             logger.debug("dao merge end");
