@@ -9,9 +9,13 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.permission;
 
 import java.util.List;
+import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.query.Query;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.api.filter.EntityFilter;
@@ -24,6 +28,8 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Repository
 public class UserDaoImpl extends CdmEntityDaoBase<User> implements IUserDao {
+
+    private static final Logger logger = LogManager.getLogger();
 
     public UserDaoImpl() {
         super(User.class);
@@ -95,5 +101,17 @@ public class UserDaoImpl extends CdmEntityDaoBase<User> implements IUserDao {
             .setParameter("password", newEncodedPassword)
             .setParameter("username", username)
             .executeUpdate();
+    }
+
+
+    @Override
+    public UUID update(User user) throws DataAccessException {
+        if (user == null) {
+            logger.warn("User to update should not be null. NOP");
+            return null;
+        }
+        // merge() cascades JPA CascadeType.MERGE; Session.update() only cascaded SAVE_UPDATE.
+        getSession().update(user);
+        return user.getUuid();
     }
 }

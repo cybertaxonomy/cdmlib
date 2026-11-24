@@ -264,13 +264,6 @@ public class UserService
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-    public UUID update(User user) {
-        updateUser(user);
-        return user.getUuid();
-    }
-
-    @Override
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public UUID saveGrantedAuthority(GrantedAuthority grantedAuthority) {

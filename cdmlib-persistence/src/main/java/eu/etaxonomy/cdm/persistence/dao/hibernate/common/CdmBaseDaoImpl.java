@@ -39,17 +39,6 @@ public abstract class CdmBaseDaoImpl
         return newInstance;
     }
 
-
-    UUID update_(CdmBase transientObject) throws DataAccessException {
-        if (transientObject == null) {
-            logger.warn("Object to update should not be null. NOP");
-            return null;
-        }
-        getSession().update(transientObject);
-        return transientObject.getUuid();
-    }
-
-
     UUID delete_(CdmBase objectToDelete) throws DataAccessException {
         if (objectToDelete == null) {
             logger.info("object to delete was 'null'");

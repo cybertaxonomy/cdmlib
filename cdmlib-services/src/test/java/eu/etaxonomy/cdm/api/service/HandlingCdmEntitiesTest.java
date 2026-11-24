@@ -8,15 +8,12 @@
  */
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.LazyInitializationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,7 +27,6 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -93,220 +89,6 @@ public class HandlingCdmEntitiesTest extends CdmServicesTransactionalSpringInteg
         Taxon taxon = Taxon.NewInstance(name, null);
         taxonService.save(taxon).getUuid();
         printDataSet(System.out,false,null,includeTables);
-    }
-
-    @Test
-    @CdmDataSet
-    public void testNonTransactionalUpdateForExistingTaxon() {
-
-        // this method tests the updating of a 'truely' detached object which
-        // attempts to initialize a lazy loaded proxy object while trying to
-        // update the same.
-
-        // End the test-class transaction so service calls use their own short-lived
-        // sessions (Unitils TransactionMode.DISABLED equivalent).
-        endTransaction();
-
-        // ---- loading taxon with find (uuid) ----
-
-        Taxon taxon = (Taxon)taxonService.find(taxonUuid);
-
-        // at this point the taxonNew object is detached and all lazy loaded proxy
-        // objects in the object graph (including teamMembers) will have values of
-        // initialized=false and session=null
-
-        // since name is lazy loaded the call to getName should fail
-        try {
-            CdmBase.deproxy(taxon.getName());
-            fail("LazyInitializationException not thrown for lazy loaded Taxon.name");
-        } catch(LazyInitializationException lie) {
-            assertIsLieNoSession(lie);
-        }
-
-        // ---- loading taxon with find (id) ----
-
-        taxon = commonService.find(taxon.getClass(), taxon.getId());
-
-        // at this point the taxonNew object is detached and all lazy loaded proxy
-        // objects in the object graph (including teamMembers) will have values of
-        // initialized=false and session=null
-
-        // since name is lazy loaded the call to getName should fail
-        try {
-            CdmBase.deproxy(taxon.getName(),TaxonName.class);
-            fail("LazyInitializationException not thrown for lazy loaded Taxon.name");
-        } catch(LazyInitializationException lie) {
-            assertIsLieNoSession(lie);
-        }
-
-        // ---- loading taxon with findTaxonByUuid ----
-
-        List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String[] {
-                "name"
-        });
-
-        // loading the taxon with its taxon name object pre-initialized
-        taxon = (Taxon)taxonService.findTaxonByUuid(taxonUuid, TAXON_INIT_STRATEGY);
-
-        // at this point the taxonNew object is detached and all lazy loaded proxy
-        // objects in the object graph (including teamMembers) will have values of
-        // initialized=false and session=null
-
-        TaxonName nvn = CdmBase.deproxy(taxon.getName());
-
-        // normally this call should throw a lazy loading exception since
-        // the combinationAuthorship object is not initialized, but
-        // the findTaxonByUuid performs this initialization (via the
-        // AdvancedBeanInitializer) since the combinationAuthorship
-        // is annotated with CacheUpdate
-
-        Team team = CdmBase.deproxy(nvn.getCombinationAuthorship(), Team.class);
-
-        // setting the protected title cache to false to ensure that
-        // TeamDefaultCacheStrategy.getTitleCache is called, which in turn tries
-        // to initialize the teamMembers persistent collection which fails
-
-        team.setProtectedTitleCache(false);
-
-        try {
-            taxonService.update(taxon);
-            // disabled since #10524 because missing cascading for name.combinationAuthor
-            // will prevent from throwing the expected LIE
-            //fail("LazyInitializationException not thrown for lazy loaded Team.teamMembers");
-        } catch(LazyInitializationException lie) {
-            if(!lie.getMessage().equals(LIE_TEAMMEMBERS_NOSESSION)) {
-                fail("LazyInitializationException thrown, but not : " + LIE_TEAMMEMBERS_NOSESSION
-                        + ". Actual exception was: " + lie.getMessage());
-            }
-        }
-
-        // the above fails due to the fact that hibernate does not resolve lazy
-        // loading on a detached object until the object is persisted. The attempt
-        // to initialize teamMembers before the object graph is persisted means that
-        // the current session is not yet attached to the proxy objects and hibernate
-        // tries to use the existing session set in the teamMembers object which is
-        // null, leading to the exception
-
-        // setting the protected title cache to true to ensure that
-        // TeamDefaultCacheStrategy.getTitleCache is not called, implying
-        // that the teamMembers are not initialized, so no exception is thrown
-
-        team.setProtectedTitleCache(true);
-        team.setProtectedCollectorTitleCache(true);
-        team.setProtectedNomenclaturalTitleCache(true);
-        taxonService.update(taxon);
-
-    }
-
-    private void assertIsLieNoSession(LazyInitializationException lie) {
-        if(!lie.getMessage().matches(LIE_NOSESSION)) {
-            fail("LazyInitializationException ("+lie.getMessage()+") thrown, but does not match: " + LIE_NOSESSION);
-        }
-    }
-
-    @Test
-    @CdmDataSet
-    public void testTransactionalUpdateAfterFindTaxonByUuidForExistingTaxon() {
-
-        // this method tests the updating of a detached object inside a single
-        // transaction.
-
-        // this method is transactional, meaning that a transaction is started
-        // at the start of the method and ends only with the end of the method
-
-        // since this method is transactional, any object initialized within this method
-        // will have a valid session attached to any lazy loaded proxy objects
-        // in the object graph (including teamMembers)
-
-        // ---- loading taxon with find (uuid) ----
-
-        Taxon taxon = (Taxon)taxonService.find(taxonUuid);
-
-        // at this point the taxon object is detached and all lazy loaded proxy
-        // objects in the object graph (including teamMembers) will have a new
-        // session attached implying that all the following calls will succeed
-
-        INonViralName nvn =  CdmBase.deproxy(taxon.getName());
-        Team team = CdmBase.deproxy(nvn.getCombinationAuthorship(),Team.class);
-        taxonService.update(taxon);
-
-        // ---- loading taxon with find (id) ----
-
-        taxon = commonService.find(taxon.getClass(), taxon.getId());
-
-        // at this point the taxon object is detached and all lazy loaded proxy
-        // objects in the object graph (including teamMembers) will have a new
-        // session attached implying that all the following calls will succeed
-
-        nvn =  CdmBase.deproxy(taxon.getName());
-        team = CdmBase.deproxy(nvn.getCombinationAuthorship(), Team.class);
-        taxonService.update(taxon);
-
-        // ---- loading taxon with findTaxonByUuid ----
-
-        List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String[] {
-                "name"
-        });
-
-        // loading the taxon with its taxon name object pre-initialized
-        taxon = (Taxon)taxonService.findTaxonByUuid(taxonUuid, TAXON_INIT_STRATEGY);
-
-        nvn = CdmBase.deproxy(taxon.getName(),TaxonName.class);
-        team = CdmBase.deproxy(nvn.getCombinationAuthorship(), Team.class);
-
-        // since a valid session is now attached to teamMembers, forcing the
-        // initializing of the teamMembers (in TeamDefaultCacheStrategy.getTitleCache)
-        // by setting the protected title cache to false does not throw an exception
-        // because the teamMember persistent collection now has a valid session,
-        // which is used to initialize the persistent collection
-
-        team.setProtectedTitleCache(false);
-        taxonService.update(taxon);
-    }
-
-    @Test
-    public void testNonTransactionalUpdateForNewTaxon() {
-
-        // this test is only to prove that the update problem (see #testNonTransactionalUpdateForExistingTaxon)
-        // occurs also for newly created objects (as expected)
-        endTransaction();
-
-        // create / save new taxon with name and author team with team member
-
-        Team combAuthor = Team.NewTitledInstance("X-Men", "X-Men");
-        Person person = Person.NewTitledInstance("Wolverine");
-        combAuthor.addTeamMember(person);
-        agentService.save(person);
-        agentService.save(combAuthor);
-
-        TaxonName name = TaxonNameFactory.NewBotanicalInstance(null, "Pinus Alba", null, null, null, null, null, null,  null);
-        name.setCombinationAuthorship(combAuthor);
-
-        Taxon taxon = Taxon.NewInstance(name, null);
-
-        UUID taxonUuid = taxonService.save(taxon).getUuid();
-
-        List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String[] {
-                "name"
-        });
-
-        taxon = (Taxon)taxonService.findTaxonByUuid(taxonUuid, TAXON_INIT_STRATEGY);
-
-        INonViralName nvn = CdmBase.deproxy(taxon.getName());
-        Team team = CdmBase.deproxy(nvn.getCombinationAuthorship(), Team.class);
-        team.setProtectedTitleCache(false);
-
-        try {
-            taxonService.update(taxon);
-            // disabled since #10524 because missing cascading for name.combinationAuthor
-            // will prevent from throwing the expected LIE
-            //fail("LazyInitializationException not thrown for lazy loaded Team.teamMembers");
-        } catch(LazyInitializationException lie) {
-            if(!lie.getMessage().equals(LIE_TEAMMEMBERS_NOSESSION)) {
-                fail("LazyInitializationException thrown, but not : " + LIE_TEAMMEMBERS_NOSESSION
-                        + "Actual message was: " + lie.getMessage());
-            }
-       }
     }
 
     @Test

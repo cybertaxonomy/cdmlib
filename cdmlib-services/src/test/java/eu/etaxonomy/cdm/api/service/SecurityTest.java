@@ -532,7 +532,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         user.setEmailAddress("test@bgbm.org");
 
         userService.updateUser(user);
-        userService.update(user);
         commitAndStartNewTransaction(null);
     }
 

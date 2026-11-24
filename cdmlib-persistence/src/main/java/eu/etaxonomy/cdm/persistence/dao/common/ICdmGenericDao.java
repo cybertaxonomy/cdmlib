@@ -33,8 +33,6 @@ public interface ICdmGenericDao {
 
 	public Set<CdmBase> saveAll(Set<CdmBase> transientObject) throws DataAccessException;
 
-	public UUID update(CdmBase transientObject) throws DataAccessException;
-
 	public UUID delete(CdmBase persistentObject) throws DataAccessException;
 
 	public void saveMetaData(CdmMetaData cdmMetaData);

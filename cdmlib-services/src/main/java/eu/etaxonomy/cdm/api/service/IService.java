@@ -329,15 +329,6 @@ public interface IService<T extends ICdmBase>{
     public void save(T newInstance1, T newInstance2);
 
     /**
-     * Update the persistent state of an existing transient entity
-     * that has been persisted previously
-     *
-     * @param transientObject the entity to be persisted
-     * @return The unique identifier of the persisted entity
-     */
-    public UUID update(T transientObject);
-
-    /**
      * Simply calls the load method.
      * Required specifically for the editor to allow load calls which
      * can also update the session cache.

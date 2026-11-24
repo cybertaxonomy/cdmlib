@@ -122,24 +122,8 @@ public interface ICdmEntityDao<T extends CdmBase> {
 
     public Map<UUID, T> saveAll(Collection<? extends T> cdmObjCollection) throws DataAccessException;
 
-    /**
-     * @param transientObject
-     * @return
-     * @throws DataAccessException
-     */
-    public UUID update(T transientObject) throws DataAccessException;
-
-    /**
-     * @param persistentObject
-     * @return
-     * @throws DataAccessException
-     */
     public UUID refresh(T persistentObject) throws DataAccessException;
 
-    /**
-     * @param persistentObject
-     * @throws DataAccessException
-     */
     public UUID delete(T persistentObject) throws DataAccessException;
 
     /**

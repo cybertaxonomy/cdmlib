@@ -269,11 +269,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
-    public UUID update(T transientObject) throws DataAccessException {
-        return super.update_(transientObject);
-    }
-
-    @Override
     public UUID delete(T objectToDelete) throws DataAccessException {
         return super.delete_(objectToDelete);
     }

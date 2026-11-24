@@ -365,12 +365,6 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     protected abstract void setDao(DAO dao);
 
     @Override
-    @Transactional(readOnly = false)
-    public UUID update(T transientObject) {
-        return dao.update(transientObject);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public <S extends T> List<S> list(S example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         return dao.list(example, includeProperties, limit, start, orderHints, propertyPaths);

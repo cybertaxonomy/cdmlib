@@ -1288,11 +1288,6 @@ public class CdmGenericDaoImpl
     }
 
     @Override
-    public UUID update(CdmBase transientObject) throws DataAccessException {
-        return super.update_(transientObject);
-    }
-
-    @Override
     public long count(Class<? extends CdmBase> type) {
         return super.count_(type);
     }

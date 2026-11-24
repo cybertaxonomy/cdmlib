@@ -9,6 +9,9 @@
 package eu.etaxonomy.cdm.persistence.dao.permission;
 
 import java.util.List;
+import java.util.UUID;
+
+import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
@@ -82,4 +85,6 @@ public interface IUserDao extends ICdmEntityDao<User> {
      * Write encoded password to database.
      */
     public void updatePassword(String username, String newEncodedPassword);
+
+    public UUID update(User transientObject) throws DataAccessException;
 }
