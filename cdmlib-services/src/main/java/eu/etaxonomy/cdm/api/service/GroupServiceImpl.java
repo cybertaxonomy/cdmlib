@@ -99,7 +99,6 @@ public class GroupServiceImpl
         Group group = dao.findGroupByName(oldName);
 
         group.setName(newName);
-        dao.update(group);
     }
 
     @Override
@@ -112,9 +111,7 @@ public class GroupServiceImpl
         User user = userDao.findUserByUsername(username);
 
         if(group != null && user != null){
-            if(group.addMember(user)) {
-                dao.update(group);
-            }
+            group.addMember(user);
         }
     }
 
@@ -128,9 +125,7 @@ public class GroupServiceImpl
         User user = userDao.findUserByUsername(username);
 
         if(group != null && user != null){
-            if(group.removeMember(user)){
-                dao.update(group);
-            }
+            group.removeMember(user);
         }
     }
 
@@ -155,9 +150,7 @@ public class GroupServiceImpl
         Group group = dao.findGroupByName(groupName);
 
         if (group != null){
-            if(group.getGrantedAuthorities().add(authority)){
-                dao.update(group);
-            }
+            group.addGrantedAuthority(authority);
         }
     }
 
@@ -171,9 +164,7 @@ public class GroupServiceImpl
         Group group = dao.findGroupByName(groupName);
 
         if(group != null){
-            if(group.getGrantedAuthorities().remove(authority)) {
-                dao.update(group);
-            }
+            group.removeGrantedAuthority(authority);
         }
     }
 

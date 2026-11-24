@@ -43,7 +43,6 @@ public interface ICdmEntityDao<T extends CdmBase> {
 
     public <S extends T> S save(S newInstance) throws DataAccessException;
 
-
     public void save(T newInstance1, T newInstance) throws DataAccessException;
 
     public T merge(T transientEntity) throws DataAccessException;

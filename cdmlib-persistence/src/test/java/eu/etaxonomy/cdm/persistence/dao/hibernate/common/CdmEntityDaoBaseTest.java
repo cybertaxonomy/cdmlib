@@ -210,7 +210,6 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalSpringIntegrationTestW
     public void testUpdate() {
         TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
         cdmBase.setDoubtful(true);
-        cdmEntityDaoBase.update(cdmBase);
         commit();
     }
 
@@ -224,7 +223,6 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalSpringIntegrationTestW
         cdmBase.setDoubtful(true);
         RuntimeException securityException = null;
         try {
-        cdmEntityDaoBase.update(cdmBase);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException    = findSecurityRuntimeException(e);

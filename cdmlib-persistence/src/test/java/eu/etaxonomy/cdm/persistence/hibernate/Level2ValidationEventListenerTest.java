@@ -80,7 +80,6 @@ public class Level2ValidationEventListenerTest extends CdmTransactionalSpringInt
 	public void testUpdate(){
 		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
 		cdmBase.setDoubtful(true);
-		cdmEntityDaoBase.update(cdmBase);
 		commit();
 	}
 

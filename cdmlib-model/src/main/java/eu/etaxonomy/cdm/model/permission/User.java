@@ -15,14 +15,14 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -225,6 +225,13 @@ public class User extends CdmBase implements UserDetails {
         this.grantedAuthorities = grantedAuthorities;
         initAuthorities();
     }
+    public boolean addGrantedAuthority(GrantedAuthority authority){
+        return this.getGrantedAuthorities().add(authority);
+    }
+    public boolean removeGrantedAuthority(GrantedAuthority authority){
+        return this.getGrantedAuthorities().remove(authority);
+    }
+
 
     public Set<AuthorityBase> getAuthoritiesB() {return authorities;}
     public void setAuthorities(Set<AuthorityBase> authorities) {

@@ -181,7 +181,6 @@ public class CommonServiceImplTest extends CdmServicesTransactionalSpringIntegra
 	public final void testLoadCacheStrategyForReference(){
 		Reference ref = referenceDao.load(UUID.fromString("613980ac-9bd5-43b9-a374-d71e1794688f"));
 		ref.setType(ReferenceType.Article);
-		referenceDao.update(ref);
 		referenceService.updateCaches();
 	}
 

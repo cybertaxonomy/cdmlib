@@ -98,9 +98,9 @@ public class CdmPreDataChangeListener
             generateCaches(entity);
             //moved to CdmPreDataChangeListener
             if (entity instanceof ITreeNode) {
-                    ITreeNode<?> node = (ITreeNode<?>)entity;
-                    reindex(node);
-                }
+                ITreeNode<?> node = (ITreeNode<?>)entity;
+                reindex(node);
+            }
         }
     }
 

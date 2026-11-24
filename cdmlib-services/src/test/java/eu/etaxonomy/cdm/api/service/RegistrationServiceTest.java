@@ -250,8 +250,8 @@ public class RegistrationServiceTest extends CdmServicesTransactionalSpringInteg
         User user1 = User.NewInstance("user1", "00000");
         User user2 = User.NewInstance("user2", "00000");
         // granted authorities are irrelevant for the test but are required to allow creating the test data
-        user1.getAuthorities().add(Role.ROLE_ADMIN);
-        user2.getAuthorities().add(Role.ROLE_ADMIN);
+        user1.addGrantedAuthority(Role.ROLE_ADMIN);
+        user2.addGrantedAuthority(Role.ROLE_ADMIN);
         user1.setUuid(USER1_UUID);
         user2.setUuid(USER2_UUID);
         repo.getUserService().save(user1);

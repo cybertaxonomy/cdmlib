@@ -233,7 +233,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
                     if(grantedAuthority == null){
                         grantedAuthority = authority.asNewGrantedAuthority();
                     }
-                    newAuthorityAdded = user.getGrantedAuthorities().add(grantedAuthority);
+                    newAuthorityAdded = user.addGrantedAuthority(grantedAuthority);
                 } catch (CdmAuthorityParsingException e) {
                     getRunAsAutheticator().restoreAuthentication();
                     throw new RuntimeException(e);
@@ -282,7 +282,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
         if(user != null){
             try {
                 getRunAsAutheticator().runAsAuthentication(Role.ROLE_USER_MANAGER);
-                user.getGrantedAuthorities().remove(cdmAuthority);
+                user.removeGrantedAuthority(cdmAuthority);
                 repo().getSession().flush();
                 logger.debug("security context refreshed with user " + username);
             } finally {

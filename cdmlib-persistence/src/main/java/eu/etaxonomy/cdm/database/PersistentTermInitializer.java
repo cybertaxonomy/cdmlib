@@ -243,16 +243,9 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
             }
             if(persistedVocabularyHasMissingTerms) {
             	if (logger.isDebugEnabled()){logger.debug("vocabulary " + vocabularyUuid + " exists but does not have all the required terms - updating");}
-                updateVocabulary(persistedVocabulary);
             }
         }
         return vocabularyUuid;
-    }
-
-    private void updateVocabulary(TermVocabulary<?> vocabulary) {
-        TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
-        vocabularyDao.update(vocabulary);
-        transactionManager.commit(txStatus);
     }
 
     private void saveVocabulary(TermVocabulary<?> vocabulary) {

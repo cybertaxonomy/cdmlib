@@ -106,6 +106,7 @@ public class UserService
     @Transactional(readOnly=false)
     @PreAuthorize("isAuthenticated()")
     public void changePassword(String oldPassword, String newPassword) {
+
         Assert.hasText(oldPassword, "Old password must not be empty.");
         Assert.hasText(newPassword, "New password must not be empty.");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -120,7 +121,6 @@ public class UserService
             // check if old password is valid
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), oldPassword));
             encodeUserPassword(user, newPassword);
-            dao.update(user);
 
             // authenticate the user again with the new password
             UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
@@ -161,7 +161,6 @@ public class UserService
             }
 
             encodeUserPassword(user, newPassword);
-            dao.update(user);
             userCache.removeUserFromCache(user.getUsername());
         } catch(NonUniqueResultException nure) {
             throw new IncorrectResultSizeDataAccessException("More than one user found with name '" + username + "'", 1);
@@ -209,8 +208,8 @@ public class UserService
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public void updateUser(UserDetails user) {
-        Assert.isInstanceOf(User.class, user);
 
+        Assert.isInstanceOf(User.class, user);
         dao.update((User)user);
         userCache.removeUserFromCache(user.getUsername());
     }

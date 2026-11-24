@@ -367,7 +367,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         // add REFERENCE[UPDATE] to taxonEditor
         User taxonEditor = userService.load(TAXON_EDITOR_UUID);
-        Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
+        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
         grantedAuthorities.addAll(taxonEditor.getGrantedAuthorities());
         GrantedAuthorityImpl referenceUpdate_ga = new CdmAuthority(PermissionClass.REFERENCE, null, EnumSet.of(CRUD.UPDATE), null).asNewGrantedAuthority();
         grantedAuthorities.add(referenceUpdate_ga);

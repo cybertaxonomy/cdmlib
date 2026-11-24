@@ -110,8 +110,6 @@ public class AgentDaoImplTest extends CdmTransactionalSpringIntegrationTest {
         Person person = (Person)agentDao.findByUuid(personUuid);
         assert person != null : "person must exist";
         person.setGivenName("Benjamin");
-        agentDao.update(person);
-//        commitAndStartNewTransaction(new String[]{"AGENTBASE_AUD","AGENTBASE"});
         commit();
     }
 

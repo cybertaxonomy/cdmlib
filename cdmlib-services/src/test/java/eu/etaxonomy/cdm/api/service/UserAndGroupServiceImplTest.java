@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -224,10 +223,8 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
         user = userService.load(TAXON_EDITOR_UUID);
 
         // 1. add to the users GrantedAuthorities
-        // TODO is there any other way to do this?
-        Set<GrantedAuthority> grantedAuthorities = user.getGrantedAuthorities();
-        grantedAuthorities.add(rolePublish);
-        user.setGrantedAuthorities(grantedAuthorities);
+        user.addGrantedAuthority(rolePublish);
+
         commitAndStartNewTransaction(null);
 
         // 2. add to existing group

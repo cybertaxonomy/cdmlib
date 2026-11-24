@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.test.integration.spring.CdmTransactionalSpringIntegratio
 /**
  * @author a.mueller
  */
-public class SaveOrUpdateEntityListenerTest extends CdmTransactionalSpringIntegrationTest {
+public class SaveEntityListenerTest extends CdmTransactionalSpringIntegrationTest {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
@@ -62,7 +62,7 @@ public class SaveOrUpdateEntityListenerTest extends CdmTransactionalSpringIntegr
             "/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml",
             "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
-	public void testOnSaveOrUpdateDeterminationTaxonName() {
+	public void testOnSaveDeterminationTaxonName() {
 
 		//create test data
 	    DerivedUnit unit = DerivedUnit.NewInstance(SpecimenOrObservationType.DerivedUnit);
