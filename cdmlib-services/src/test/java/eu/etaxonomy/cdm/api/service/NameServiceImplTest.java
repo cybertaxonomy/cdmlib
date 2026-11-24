@@ -713,7 +713,6 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
         SpecimenTypeDesignation std3 = SpecimenTypeDesignation.NewInstance();
         name3.addTypeDesignation(std3, false);
         typeDesignationDao.save(std3);
-        this.nameService.update(name3);
 
         this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
         desigs3 = name3.getTypeDesignations();
@@ -758,7 +757,6 @@ public class NameServiceImplTest extends CdmServicesTransactionalSpringIntegrati
 
         NameTypeDesignation desig3 = (NameTypeDesignation)name3.getTypeDesignations().iterator().next();
         name3.addTypeDesignation(save(SpecimenTypeDesignation.NewInstance()), false);
-        this.nameService.update(name3);
 
         name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
         desigs3 = name3.getTypeDesignations();
