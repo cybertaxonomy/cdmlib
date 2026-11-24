@@ -271,7 +271,7 @@ public interface IService<T extends ICdmBase>{
      * @param detachedObject the detached entity to be merged
      * @return the persisted entity
      */
-    public T merge(T detachedObject);
+    public <S extends T> S merge(S detachedObject);
 
     public T merge(T detachedObject, CdmBase... removedObjects);
 

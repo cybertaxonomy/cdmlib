@@ -278,7 +278,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 
     @Override
     @Transactional(readOnly = false)
-    public T merge(T newInstance) {
+    public <S extends T> S merge(S newInstance) {
         return dao.merge(newInstance);
     }
 

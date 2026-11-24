@@ -45,7 +45,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
 
     public void save(T newInstance1, T newInstance) throws DataAccessException;
 
-    public T merge(T transientEntity) throws DataAccessException;
+    public <S extends T> S merge(S transientEntity) throws DataAccessException;
 
     /**
      * Same as {@link #merge(CdmBase)} but with the possibility to fully remove
@@ -53,7 +53,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * This may become necessary if these objects were deleted from the detached object graph
      * and are not handled via Cascade.REMOVE or orphanRemoval.
      */
-    public T merge(T transientEntity, Collection<CdmBase> removedObjects) throws DataAccessException;
+    public <S extends T> S merge(S transientEntity, Collection<CdmBase> removedObjects) throws DataAccessException;
 
     /**
      * This method allows for the possibility of returning the input transient

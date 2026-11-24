@@ -236,9 +236,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
-    public T merge(T transientObject) throws DataAccessException {
+    public <S extends T> S merge(S transientObject) throws DataAccessException {
         Session session = getSession();
-        T persistentObject = (T) session.merge(transientObject);
+        S persistentObject = (S) session.merge(transientObject);
         if (logger.isDebugEnabled()) {
             logger.debug("dao merge end");
         }
@@ -246,8 +246,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
-    public T merge(T transientEntity, Collection<CdmBase> detachedObjectsToRemove) throws DataAccessException{
-        T result = merge(transientEntity);
+    public <S extends T> S merge(S transientEntity, Collection<CdmBase> detachedObjectsToRemove) throws DataAccessException{
+        S result = merge(transientEntity);
         for (CdmBase detachedObject : detachedObjectsToRemove) {
             CdmBase persistedObject = genericDao.find(CdmBase.deproxy(detachedObject.getClass()), detachedObject.getUuid());
             if (persistedObject != null) {
