@@ -41,8 +41,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 public interface ICdmEntityDao<T extends CdmBase> {
 
-    public UUID saveOrUpdate(T transientObject) throws DataAccessException;
-
     public <S extends T> S save(S newInstance) throws DataAccessException;
 
 
@@ -124,8 +122,6 @@ public interface ICdmEntityDao<T extends CdmBase> {
     public Session getSession() throws DataAccessException;
 
     public Map<UUID, T> saveAll(Collection<? extends T> cdmObjCollection) throws DataAccessException;
-
-    public Map<UUID, T> saveOrUpdateAll(Collection<T> cdmObjCollection);
 
     /**
      * @param transientObject

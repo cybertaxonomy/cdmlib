@@ -623,7 +623,7 @@ public class CdmGenericDaoImpl
     }
 
 	@Override
-	public <T extends CdmBase> void   merge(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException {
+	public <T extends CdmBase> void merge(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException {
 		SessionImpl session = (SessionImpl) getSession();
 
 		DeduplicationHelper helper = new DeduplicationHelper(session, this);
@@ -1152,7 +1152,7 @@ public class CdmGenericDaoImpl
 
 	@Override
     public void saveMetaData(CdmMetaData cdmMetaData) {
-		getSession().saveOrUpdate(cdmMetaData);
+		getSession().save(cdmMetaData);
 	}
 
 	@Override
@@ -1285,11 +1285,6 @@ public class CdmGenericDaoImpl
     @Override
     public <S extends CdmBase> CdmBase save(S newInstance) throws DataAccessException {
         return super.save_(newInstance);
-    }
-
-    @Override
-    public UUID saveOrUpdate(CdmBase transientObject) throws DataAccessException {
-        return super.saveOrUpdate_(transientObject);
     }
 
     @Override

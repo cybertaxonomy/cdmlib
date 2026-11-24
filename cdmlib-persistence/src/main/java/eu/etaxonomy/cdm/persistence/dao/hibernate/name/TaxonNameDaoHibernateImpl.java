@@ -625,7 +625,7 @@ public class TaxonNameDaoHibernateImpl
     public UUID delete (TaxonName persistentObject){
         Set<TaxonBase> taxonBases = persistentObject.getTaxonBases();
 
-        getSession().saveOrUpdate(persistentObject);
+        getSession().save(persistentObject);
         HomotypicalGroup homotypicalGroup = HibernateProxyHelper.deproxy(
                 persistentObject.getHomotypicalGroup());
         Integer homotypicalGroupId = homotypicalGroup != null ? homotypicalGroup.getId() : null;

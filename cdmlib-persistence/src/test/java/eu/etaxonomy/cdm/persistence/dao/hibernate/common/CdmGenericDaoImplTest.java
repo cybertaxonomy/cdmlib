@@ -770,6 +770,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalSpringIntegrationTest
         agentDao.save(person3);
         commitAndStartNewTransaction(null);
 
+        person1a = (Person)agentDao.load(person1a.getUuid());
         IMergeStrategy personMergeStrategy = DefaultMergeStrategy.NewInstance(Person.class);
         cdmGenericDao.merge(person1b, person1a, personMergeStrategy);
 

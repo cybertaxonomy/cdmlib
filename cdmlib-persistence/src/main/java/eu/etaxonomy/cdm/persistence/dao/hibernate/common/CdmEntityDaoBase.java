@@ -107,15 +107,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         defaultBeanInitializer.initialize(t, propertyPaths);
     }
 
-    // TODO this method should be moved to a concrete class (not typed)
-    public UUID saveCdmObj(CdmBase cdmObj) throws DataAccessException {
-        getSession().saveOrUpdate(cdmObj);
-        return cdmObj.getUuid();
-    }
-
     // TODO: Replace saveCdmObj() by saveCdmObject_
     private UUID saveCdmObject_(T cdmObj) {
-        getSession().saveOrUpdate(cdmObj);
+        getSession().save(cdmObj);
         return cdmObj.getUuid();
     }
 
@@ -146,55 +140,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             }
             resultMap.put(uuid, cdmObj);
             i++;
-        }
-
-        if (logger.isInfoEnabled()) {
-            logger.info("Saved " + i + " objects");
-        }
-        return resultMap;
-    }
-
-    private UUID saveOrUpdateCdmObject(T cdmObj) {
-        getSession().saveOrUpdate(cdmObj);
-        return cdmObj.getUuid();
-    }
-
-    @Override
-    public Map<UUID, T> saveOrUpdateAll(Collection<T> cdmObjCollection) {
-        int types = cdmObjCollection.getClass().getTypeParameters().length;
-        if (types > 0) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("ClassType: + " + cdmObjCollection.getClass().getTypeParameters()[0]);
-            }
-        }
-
-        Map<UUID, T> resultMap = new HashMap<>();
-        Iterator<T> iterator = cdmObjCollection.iterator();
-        int i = 0;
-        while (iterator.hasNext()) {
-            if (((i % 2000) == 0) && (i > 0)) {
-                logger.debug("Saved " + i + " objects");
-            }
-            T cdmObj = iterator.next();
-            UUID uuid = saveOrUpdateCdmObject(cdmObj);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Save cdmObj: " + (cdmObj == null ? null : cdmObj.toString()));
-            }
-            resultMap.put(uuid, cdmObj);
-            i++;
-            //Note AM: the following creates more problems than it solves due to unsaved transient instance exceptions, therefore I removed it for now.
-//            if ((i % flushAfterNo) == 0) {
-//                try {
-//                    if (logger.isDebugEnabled()) {
-//                        logger.debug("flush");
-//                    }
-//                    flush();
-//                } catch (Exception e) {
-//                    logger.error("An exception occurred when trying to flush data");
-//                    e.printStackTrace();
-//                    throw new RuntimeException(e);
-//                }
-//            }
         }
 
         if (logger.isInfoEnabled()) {
@@ -310,11 +255,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             }
         }
         return result;
-    }
-
-    @Override
-    public UUID saveOrUpdate(T transientObject) throws DataAccessException {
-        return super.saveOrUpdate_(transientObject);
     }
 
     @Override

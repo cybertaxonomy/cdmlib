@@ -88,7 +88,7 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalSpringIntegratio
 	@Test
 	@CdmDataSet(cleanSweep = true, value = "CacheStrategyGeneratorTest.xml")
 	@CdmExpectedDataSet
-	public void testOnSaveOrUpdateNames() {
+	public void testOnSaveNames() {
 
 	    //names
 	    TaxonName name =  cdmEntityDaoBase.findByUuid(UUID.fromString("a49a3963-c4ea-4047-8588-2f8f15352730"));
@@ -96,7 +96,7 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalSpringIntegratio
 		name.setNameCache(null, false);
 		name.setGenusOrUninomial("Abies");
 		name.setAuthorshipCache("Mill.", true);
-		cdmEntityDaoBase.saveOrUpdate(name);
+		cdmEntityDaoBase.save(name);
 
 		TaxonName name2 =  cdmEntityDaoBase.findByUuid(UUID.fromString("05a438d6-065f-49ef-84db-c7dc2c259975"));
 		// Clear caches explicitly so CacheStrategyGenerator must regenerate them
@@ -116,7 +116,7 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalSpringIntegratio
 		name2.setNomenclaturalReference(ref);
 		name2.setNomenclaturalMicroReference("44");
 
-		cdmEntityDaoBase.saveOrUpdate(name2);
+		cdmEntityDaoBase.save(name2);
 
 		assertEquals(name, cdmEntityDaoBase.findByUuid(name.getUuid()));
 
@@ -126,7 +126,7 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalSpringIntegratio
 		TaxonName name3 = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		name3.setFullTitleCache("Test: MyBook");
 		name3.setTitleCache("Test", true);
-		cdmEntityDaoBase.saveOrUpdate(name3);
+		cdmEntityDaoBase.save(name3);
 		List<TaxonName> taxa = cdmEntityDaoBase.findByTitle("Test");
 
 		TaxonName nameBase = taxa.get (0);
@@ -143,7 +143,7 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalSpringIntegratio
 	@Test
 	@CdmDataSet(cleanSweep = true, value = "CacheStrategyGeneratorTest.xml")
 	@CdmExpectedDataSet
-	public void testOnSaveOrUpdateAgents() {
+	public void testOnSaveAgents() {
 
 		//person
 		Person person1;
@@ -164,15 +164,15 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalSpringIntegratio
 //		System.out.println(person3.getTitleCache());
 //		System.out.println(person3.getNomenclaturalTitle());
 
-		agentDao.saveOrUpdate(person1);
-		agentDao.saveOrUpdate(person2);
-		agentDao.saveOrUpdate(person3);
+		agentDao.save(person1);
+		agentDao.save(person2);
+		agentDao.save(person3);
 
 		//Teams
 		Team team1 = Team.NewInstance();
 		team1.addTeamMember(person1);
 		team1.setUuid(UUID.fromString("db957a0a-1494-49bb-8d17-d3eaa2076573"));
-		agentDao.saveOrUpdate(team1);
+		agentDao.save(team1);
 
 		Person person4 = (Person)agentDao.findByUuid(UUID.fromString("4c4e15e3-3a4f-4505-900a-fae2555ac9e4"));
 		assertEquals(person3, person4);
@@ -209,7 +209,7 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalSpringIntegratio
 	@CdmDataSet(cleanSweep = true, value = "CacheStrategyGeneratorTest.xml")
 	@CdmExpectedDataSet
 	//TODO correct abbrevTitleCache for article still unclear (open question: with or without article title ?)
-	public void testOnSaveOrUpdateReferences() {
+	public void testOnSaveReferences() {
 		//References
 		IJournal journal1 = ReferenceFactory.newJournal();
 		Person journalAuthor = makePerson1();
@@ -231,15 +231,13 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalSpringIntegratio
 		article1.setAuthorship(articleAuthor);
 		article1.getAbbrevTitleCache();
 		agentDao.save(articleAuthor);
-		referenceDao.saveOrUpdate((Reference)article1);
+		referenceDao.save((Reference)article1);
 
 		commit();
 	}
 
 	@Test
-//	@CdmDataSet("CacheStrategyGeneratorTest.xml")
-//	@CdmExpectedDataSet
-	public void testOnSaveOrUpdateAmplification() {
+	public void testOnSaveAmplification() {
 		Amplification amplification = Amplification.NewInstance();
 		UUID amplUuid = UUID.fromString("11e6b2d5-3eb5-4434-9c56-5bb4c1102147");
 		amplification.setUuid(amplUuid);
@@ -258,7 +256,7 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalSpringIntegratio
 		amplification.setInstitution(institution);
 
 		termDao.save(marker);
-		amplificationDao.saveOrUpdate(amplification);
+		amplificationDao.save(amplification);
 		assertEquals("My institute_Person_marker_2008", amplification.getLabelCache());
 	}
 

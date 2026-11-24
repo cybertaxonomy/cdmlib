@@ -231,18 +231,6 @@ public class CommonServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public <T extends IMergable> void merge(T mergeFirst, T mergeSecond, Class<? extends CdmBase> clazz) throws MergeException {
-        IMergeStrategy mergeStrategy;
-        if (clazz == null){
-            mergeStrategy = DefaultMergeStrategy.NewInstance(((CdmBase)mergeFirst).getClass());
-        } else {
-            mergeStrategy = DefaultMergeStrategy.NewInstance(clazz);
-        }
-        merge(mergeFirst, mergeSecond, mergeStrategy);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
     public <T extends IMergable> void merge(UUID mergeFirstUuid, UUID mergeSecondUuid, Class<? extends CdmBase> clazz) throws MergeException {
         IMergeStrategy mergeStrategy;
         T mergeFirst = (T) genericDao.find(clazz, mergeFirstUuid);
@@ -254,13 +242,6 @@ public class CommonServiceImpl
             throw new MergeException("The merge candidate is not available anymore.");
         }
         mergeStrategy = DefaultMergeStrategy.NewInstance(clazz);
-        merge(mergeFirst, mergeSecond, mergeStrategy);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public <T extends IMergable> void merge(T mergeFirst, T mergeSecond) throws MergeException {
-        IMergeStrategy mergeStrategy = DefaultMergeStrategy.NewInstance(((CdmBase)mergeFirst).getClass());
         merge(mergeFirst, mergeSecond, mergeStrategy);
     }
 

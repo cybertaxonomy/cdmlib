@@ -57,10 +57,10 @@ public class Level2ValidationEventListenerTest extends CdmTransactionalSpringInt
 	@CdmDataSet
 	@CdmExpectedDataSet
 	@Disabled
-	public void testSaveOrUpdate(){
+	public void testSave(){
 		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
 		cdmBase.setDoubtful(true);
-		cdmEntityDaoBase.saveOrUpdate(cdmBase);
+		cdmEntityDaoBase.save(cdmBase);
 		commit();
 	}
 
@@ -68,7 +68,7 @@ public class Level2ValidationEventListenerTest extends CdmTransactionalSpringInt
     @CdmDataSet
     @CdmExpectedDataSet
     @Disabled
-	public void testSave() throws Exception{
+	public void testSave2() throws Exception{
 		cdmEntityDaoBase.save(cdmBase);
 		commit();
 	}

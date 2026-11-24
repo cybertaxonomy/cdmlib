@@ -35,7 +35,6 @@ import org.springframework.security.core.context.SecurityContextImpl;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.permission.IUserDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.RandomOrder;
@@ -58,9 +57,6 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalSpringIntegrationTestW
 
     @Autowired
     private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private IUserDao userDao;
 
     private TestingAuthenticationToken taxonEditorToken;
     private TestingAuthenticationToken adminToken;
@@ -98,41 +94,49 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalSpringIntegrationTestW
     @Test
     @CdmDataSet("CdmEntityDaoBaseTest.xml")
     @CdmExpectedDataSet
-    public void testSaveOrUpdate() {
+    public void testSave2() {
         TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
         cdmBase.setDoubtful(true);
-        cdmEntityDaoBase.saveOrUpdate(cdmBase);
+        cdmEntityDaoBase.save(cdmBase);
         commit();
     }
 
     @Test
     @CdmDataSet("CdmEntityDaoBaseTest.xml")
     @CdmExpectedDataSet
-    public void testSaveOrUpdateWithAuthentication() {
+    public void testSave() throws Exception {
+        cdmEntityDaoBase.save(cdmBase);
+        commit();
+    }
+
+    @Test
+    @CdmDataSet("CdmEntityDaoBaseTest.xml")
+    @CdmExpectedDataSet
+    public void testSaveWithAuthentication2() {
 
         setAuthentication(taxonEditorToken);
         TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
         cdmBase.setDoubtful(true);
-        cdmEntityDaoBase.saveOrUpdate(cdmBase);
+        cdmEntityDaoBase.save(cdmBase);
         commit();
     }
 
     @Test
     @CdmDataSet("CdmEntityDaoBaseTest.xml")
     @CdmExpectedDataSet
-    public void testSaveOrUpdateNewObjectWithAuthentication() {
+    public void testSaveNewObjectWithAuthentication() {
 //		printDataSet(System.err, new String[]{"TAXONBASE", "HIBERNATE_SEQUENCES"});
         setAuthentication(taxonEditorToken);
         RuntimeException securityException = null;
 
         // 1) test create
         try{
-            cdmEntityDaoBase.saveOrUpdate(cdmBase);
+            cdmEntityDaoBase.save(cdmBase);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
             logger.error("Unexpected failure of evaluation.", e);
-            fail();
+            fail("Unexpected exception: " + securityException.getMessage());
         } finally {
             // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
@@ -144,26 +148,18 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalSpringIntegrationTestW
         cdmBase = cdmEntityDaoBase.findByUuid(cdmBase.getUuid());
         cdmBase.setDoubtful(true);
         try{
-            cdmEntityDaoBase.saveOrUpdate(cdmBase);
+            cdmEntityDaoBase.save(cdmBase);
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
             logger.error("Unexpected failure of evaluation.", e);
-            fail();
+            fail("Unexpected exception: " + securityException.getMessage());
         } finally {
             // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
             startNewTransaction();
         }
-    }
-
-    @Test
-    @CdmDataSet("CdmEntityDaoBaseTest.xml")
-    @CdmExpectedDataSet
-    public void testSave() throws Exception {
-        cdmEntityDaoBase.save(cdmBase);
-        commit();
     }
 
     @Test
@@ -198,6 +194,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalSpringIntegrationTestW
         } catch (RuntimeException e){
             securityException   = findSecurityRuntimeException(e);
             logger.error("Unexpected failure of evaluation.", securityException);
+            fail();
         } finally {
             // needed in case save was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException

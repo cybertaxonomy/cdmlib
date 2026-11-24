@@ -78,7 +78,7 @@ public class DeduplicationHelper {
 		this.genericDao = genericDao;
 	}
 
-	public <T extends CdmBase>  boolean isMergeable(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) {
+	public <T extends CdmBase> boolean isMergeable(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) {
 
 		if (mergeStrategy == null){
 			mergeStrategy = DefaultMergeStrategy.NewInstance(cdmBase1.getClass());
@@ -86,14 +86,12 @@ public class DeduplicationHelper {
 		try {
 			checkMergeValid(cdmBase1, cdmBase2, mergeStrategy);
 			return true;
-		} catch (IllegalArgumentException e) {
-			return false;
-		} catch (NullPointerException e) {
+		} catch (IllegalArgumentException | NullPointerException e) {
 			return false;
 		}
 	}
 
-	public <T extends CdmBase>  void merge(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException {
+	public <T extends CdmBase> void merge(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException {
 		@SuppressWarnings("unchecked")
 		Class<T> clazz = (Class<T>)cdmBase1.getClass();
 		@SuppressWarnings("unchecked")
@@ -109,7 +107,7 @@ public class DeduplicationHelper {
 			// Initialize List collections that reference cdmBase2 while the persistence context
 			// is still consistent. Hibernate 6.6 can hit EntityInitializerImpl AssertionError
 			// when lazy-loading an @OrderColumn PersistentList (e.g. Team.teamMembers) after
-			// merge / saveOrUpdate / flush have mutated the PC (see testMergePersons / #5652).
+			// merge / save_Or_Update / flush have mutated the PC (see testMergePersons / #5652).
 			if (cdmBase2.getId() > 0) {
 				preInitializeListReferences(cdmBase2, clazz2);
 			}
@@ -124,7 +122,7 @@ public class DeduplicationHelper {
 				IMergable mergable1 = (IMergable)cdmBase1;
 				IMergable mergable2 = (IMergable)cdmBase2;
 				deleteSet = mergeStrategy.invoke(mergable1, mergable2, cloneSet);
-				//session.saveOrUpdate(mergable1);
+				//session.save_Or_Update(mergable1);
 
 				//session.flush();
 				//((IMergable)cdmBase1).mergeInto(cdmBase2, DefaultMergeStrategy.NewInstance(cdmBase1.getClass()));
@@ -136,7 +134,7 @@ public class DeduplicationHelper {
 			if (cdmBase2.getId() > 0){
 				// preInitialize may have loaded a managed twin via teamMembers etc.
 				evictManagedTwinIfDifferent(cdmBase2);
-				session.saveOrUpdate(cdmBase2);
+				session.save(cdmBase2);
 				session.flush();
 				//rearrange references pointing to cdmBase2 to cdmBase1 in future
 				reallocateReferences(cdmBase1, cdmBase2, clazz2, cloneSet);
@@ -327,8 +325,8 @@ public class DeduplicationHelper {
 			copyIdentifiableExtensions(cdmBase1, cdmBase2, session);
 		}
 
-		session.saveOrUpdate(cdmBase1);
-		session.saveOrUpdate(cdmBase2);
+		session.save(cdmBase1);
+		session.save(cdmBase2);
 		session.flush();
 	}
 
@@ -442,7 +440,7 @@ public class DeduplicationHelper {
 
 	/**
 	 * Eagerly load {@link List} collections that contain {@code cdmBase2} while the
-	 * persistence context is still consistent. Must run before merge / saveOrUpdate / flush.
+	 * persistence context is still consistent. Must run before merge / save_Or_Update / flush.
 	 */
 	private void preInitializeListReferences(CdmBase cdmBase2, Class<? extends CdmBase> clazz)
 			throws Exception {
@@ -467,7 +465,7 @@ public class DeduplicationHelper {
 	/**
 	 * If the session already holds another instance with the same id (e.g. loaded as a
 	 * collection element during {@link #preInitializeListReferences}), evict it so
-	 * {@code saveOrUpdate} of the caller's instance does not throw
+	 * {@code save_Or_Update} of the caller's instance does not throw
 	 * {@link org.hibernate.NonUniqueObjectException}.
 	 */
 	private void evictManagedTwinIfDifferent(CdmBase entity) {
@@ -586,7 +584,7 @@ public class DeduplicationHelper {
 		            if (refEnt != null) {
                         String newText = refEnt.getText() == null? null: refEnt.getText().replace(cdmBase2.getUuid().toString(), cdmBase1.getUuid().toString());
                         refEnt.setText(newText);
-                        session.saveOrUpdate(refEnt);
+                        session.save(refEnt);
                     }
 
 		            //TODO

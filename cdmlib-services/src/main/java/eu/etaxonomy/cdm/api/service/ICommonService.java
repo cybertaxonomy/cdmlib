@@ -132,28 +132,6 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 	 */
 	public <T extends IMergable> void merge(T mergeFirst, T mergeSecond, IMergeStrategy mergeStrategy) throws MergeException;
 
-    /**
-     * Merges mergeSecond into mergeFirst. All references to mergeSecond will be replaced by references
-     * to merge first, using a merge strategy defined by the given class.
-     *
-     * @param mergeFirst
-     * @param mergeSecond
-     * @param clazz
-     * @throws MergeException
-     */
-    public <T extends IMergable> void merge(T mergeFirst, T mergeSecond, Class<? extends CdmBase> clazz) throws MergeException;
-
-
-    /**
-     * Merges mergeSecond into mergeFirst. All references to mergeSecond will be replaced by references
-     * to merge first, using a merge strategy defined by the mergeFirst type.
-     * @param mergeFirst
-     * @param mergeSecond
-     * @throws MergeException
-     */
-    public <T extends IMergable> void merge(T mergeFirst, T mergeSecond) throws MergeException;
-
-
 	/**
 	 * Returns all objects that match the object to match according to the given match strategy.
 	 * If no match strategy is defined the default match strategy is taken.
@@ -165,11 +143,9 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 	 */
 	public <T extends IMatchable> List<T> findMatching(T objectToMatch, IMatchStrategy matchStrategy) throws MatchException;
 
-
 	public <T extends IMatchable> List<T> findMatching(T objectToMatch, MatchStrategyConfigurator.MatchStrategy strategy) throws MatchException;
 
 	public <T extends CdmBase> T findWithUpdate(Class<T> clazz, int id);
-
 
 	/**
 	 * A generic method to retrieve any CdmBase object by its id and class.<BR>

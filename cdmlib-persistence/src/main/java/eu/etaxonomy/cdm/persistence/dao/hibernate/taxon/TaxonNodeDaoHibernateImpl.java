@@ -95,15 +95,10 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 		Taxon taxon = persistentObject.getTaxon();
 		taxon = HibernateProxyHelper.deproxy(taxon);
 
-		/*Session session = this.getSession();
-		Query<TaxonNode> query = session.createQuery("from TaxonNode t where t.taxon = :taxon", TaxonNode.class);
-		query.setParameter("taxon", taxon);
-		List result = query.list();*/
 		if (taxon != null){
 		    Hibernate.initialize(taxon);
 		    Hibernate.initialize(taxon.getTaxonNodes());
 			Set<TaxonNode> nodes = taxon.getTaxonNodes();
-			//Hibernate.initialize(taxon.getTaxonNodes());
 			for (TaxonNode node:nodes) {
 			    node = HibernateProxyHelper.deproxy(node);
 
@@ -118,13 +113,13 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 	                        childNodes.remove();
 
 	                    }
-	                    for (TaxonNode deleteNode:listForDeletion){
+	                    for (TaxonNode deleteNode: listForDeletion){
 	                        delete(deleteNode, deleteChildren);
 	                    }
 	                }
 
 			        taxon.removeTaxonNode(node, deleteChildren);
-			        taxonDao.saveOrUpdate(taxon);
+			        taxonDao.save(taxon);
     				taxon = HibernateProxyHelper.deproxy(taxonDao.findByUuid(taxon.getUuid()), Taxon.class);
     				taxonDao.delete(taxon);
 			    }

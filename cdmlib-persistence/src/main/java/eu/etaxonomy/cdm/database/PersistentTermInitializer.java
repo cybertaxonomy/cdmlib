@@ -136,7 +136,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 	            		Set<UUID> missingTermsOfVoc = missingTermUuids.get(vocUuid);
 		            	@SuppressWarnings("unchecked")
                         Set<? extends DefinedTermBase<?>> createdTerms = termLoader.loadSingleTerms(vocType, voc, missingTermsOfVoc);
-	                	vocabularyDao.saveOrUpdate(voc);
+	                	vocabularyDao.save(voc);
 	                }
 	            }
 	            initializeAndStore(vocabularyType, terms, vocabularyMap);  //TODO
