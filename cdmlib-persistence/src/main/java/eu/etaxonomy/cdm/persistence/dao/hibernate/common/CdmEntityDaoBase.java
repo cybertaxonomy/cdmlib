@@ -120,10 +120,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     @Override
     public Map<UUID, T> saveAll(Collection<? extends T> cdmObjCollection) {
         int types = cdmObjCollection.getClass().getTypeParameters().length;
-        if (types > 0) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("ClassType: + " + cdmObjCollection.getClass().getTypeParameters()[0]);
-            }
+        if (types > 0 && logger.isDebugEnabled()) {
+            logger.debug("ClassType: + " + cdmObjCollection.getClass().getTypeParameters()[0]);
         }
 
         Map<UUID, T> resultMap = new HashMap<>();
