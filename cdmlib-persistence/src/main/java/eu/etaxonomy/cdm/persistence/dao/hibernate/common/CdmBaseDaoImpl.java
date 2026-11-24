@@ -55,7 +55,7 @@ public abstract class CdmBaseDaoImpl
         // as that solution only swallows and hides the exception, but doesn't
         // actually solve it.
         CdmBase persistentObject = (CdmBase)getSession().merge(objectToDelete);
-        getSession().delete(persistentObject);
+        getSession().remove(persistentObject);
         return persistentObject.getUuid();
     }
 
