@@ -160,7 +160,7 @@ public class HandlingCdmEntitiesTest extends CdmServicesTransactionalSpringInteg
         // AdvancedBeanInitializer) since the combinationAuthorship
         // is annotated with CacheUpdate
 
-        Team team = CdmBase.deproxy(nvn.getCombinationAuthorship(),Team.class);
+        Team team = CdmBase.deproxy(nvn.getCombinationAuthorship(), Team.class);
 
         // setting the protected title cache to false to ensure that
         // TeamDefaultCacheStrategy.getTitleCache is called, which in turn tries
@@ -175,7 +175,8 @@ public class HandlingCdmEntitiesTest extends CdmServicesTransactionalSpringInteg
             //fail("LazyInitializationException not thrown for lazy loaded Team.teamMembers");
         } catch(LazyInitializationException lie) {
             if(!lie.getMessage().equals(LIE_TEAMMEMBERS_NOSESSION)) {
-                fail("LazyInitializationException thrown, but not : " + LIE_TEAMMEMBERS_NOSESSION);
+                fail("LazyInitializationException thrown, but not : " + LIE_TEAMMEMBERS_NOSESSION
+                        + ". Actual exception was: " + lie.getMessage());
             }
         }
 
@@ -302,7 +303,8 @@ public class HandlingCdmEntitiesTest extends CdmServicesTransactionalSpringInteg
             //fail("LazyInitializationException not thrown for lazy loaded Team.teamMembers");
         } catch(LazyInitializationException lie) {
             if(!lie.getMessage().equals(LIE_TEAMMEMBERS_NOSESSION)) {
-                fail("LazyInitializationException thrown, but not : " + LIE_TEAMMEMBERS_NOSESSION);
+                fail("LazyInitializationException thrown, but not : " + LIE_TEAMMEMBERS_NOSESSION
+                        + "Actual message was: " + lie.getMessage());
             }
        }
     }

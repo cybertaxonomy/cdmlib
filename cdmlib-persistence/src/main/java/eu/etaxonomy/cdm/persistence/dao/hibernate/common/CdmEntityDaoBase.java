@@ -207,7 +207,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         PostMergeEntityListener.addSession(session);
         MergeResult<T> result = null;
         try {
-            @SuppressWarnings("unchecked")
             T persistentObject = (T) session.merge(transientObject);
             if (logger.isDebugEnabled()) {
                 logger.debug("dao merge end");
