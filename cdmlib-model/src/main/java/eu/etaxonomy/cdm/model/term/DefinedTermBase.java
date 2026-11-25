@@ -196,7 +196,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase<T>>
     @XmlElement(name = "TermVocabulary")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.LAZY, targetEntity = TermVocabulary.class)
     protected TermVocabulary<T> vocabulary;
 
     //the unique identifier/name this term uses in its given vocabulary #3479
