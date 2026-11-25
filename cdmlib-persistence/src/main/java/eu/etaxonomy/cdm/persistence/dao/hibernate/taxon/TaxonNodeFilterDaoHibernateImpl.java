@@ -16,7 +16,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -74,7 +74,7 @@ public class TaxonNodeFilterDaoHibernateImpl
     public long count(TaxonNodeFilter filter){
         String selectPart = "count(*) as n ";
         String queryStr = query(filter, selectPart);
-        Query<Long> query = getSession().createQuery(queryStr, Long.class);
+        SelectionQuery<Long> query = getSession().createSelectionQuery(queryStr, Long.class);
         long result = query.uniqueResult();
 
         return result;
@@ -87,7 +87,7 @@ public class TaxonNodeFilterDaoHibernateImpl
             return listTaxonomicallySorted(filter, true);
         }else {
             String queryStr = query(filter, "tn.uuid");
-            Query<UUID> query = getSession().createQuery(queryStr, UUID.class);
+            SelectionQuery<UUID> query = getSession().createSelectionQuery(queryStr, UUID.class);
             List<UUID> list = query.list();
 
             list = deduplicate(list);
@@ -102,7 +102,7 @@ public class TaxonNodeFilterDaoHibernateImpl
             return listTaxonomicallySorted(filter, false);
         }else {
             String queryStr = query(filter, "tn.id");
-            Query<Integer> query = getSession().createQuery(queryStr, Integer.class);
+            SelectionQuery<Integer> query = getSession().createSelectionQuery(queryStr, Integer.class);
             List<Integer> list = query.list();
             list = deduplicate(list);
             return list;
@@ -112,7 +112,7 @@ public class TaxonNodeFilterDaoHibernateImpl
     private Set<Integer> collectParentIds(TaxonNodeFilter filter){
 
         String queryStr = query(filter, "tn.treeIndex");
-        Query<String> query = getSession().createQuery(queryStr, String.class);
+        SelectionQuery<String> query = getSession().createSelectionQuery(queryStr, String.class);
         List<String> list = query.list();
         Set<Integer> idSet = list.stream()
             .filter(ti->ti != null)
@@ -300,7 +300,7 @@ public class TaxonNodeFilterDaoHibernateImpl
                 + "name.genusOrUninomial, name.infraGenericEpithet, name.specificEpithet, "
                 +   "name.infraSpecificEpithet, name.cultivarEpithet, name.appendedPhrase, name.authorshipCache";
         String queryStr = query(filter, selectPart);
-        List<SortableTaxonNodeDto> list = getSession().createQuery(queryStr, Object[].class)
+        List<SortableTaxonNodeDto> list = getSession().createSelectionQuery(queryStr, Object[].class)
                 .getResultList()
                 .stream()
                 .map(row -> new SortableTaxonNodeDto(
@@ -452,7 +452,7 @@ public class TaxonNodeFilterDaoHibernateImpl
         areaIds.add(area.getId());
         String queryStr = String.format("SELECT includes.uuid FROM DefinedTermBase t inner join t.includes includes WHERE t.uuid = '%s'",
                 area.getUuid().toString());
-        Query<UUID> query = getSession().createQuery(queryStr, UUID.class);
+        SelectionQuery<UUID> query = getSession().createSelectionQuery(queryStr, UUID.class);
         List<UUID> childAreas = query.list();
         for (UUID childArea : childAreas) {
             areaIds.addAll(getChildAreasRecursively(childArea));

@@ -19,7 +19,7 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.api.filter.MatchMode;
@@ -53,7 +53,7 @@ public class RegistrationDaoHibernateImpl
         if (isVolatile(reference)){
             return Long.valueOf(0);
         }
-        Query<Long> query = makeReferenceQuery(reference, includedStatus, true, Long.class);
+        SelectionQuery<Long> query = makeReferenceQuery(reference, includedStatus, true, Long.class);
         List<Long> list = query.list();
         return list.isEmpty()? Long.valueOf(0) : list.get(0);
     }
@@ -66,7 +66,7 @@ public class RegistrationDaoHibernateImpl
             return Collections.emptyList();
         }
 
-        Query<Registration> query = makeReferenceQuery(reference, includedStatus, false, Registration.class);
+        SelectionQuery<Registration> query = makeReferenceQuery(reference, includedStatus, false, Registration.class);
 
         addLimitAndStart(query, limit, start);
 
@@ -82,7 +82,7 @@ public class RegistrationDaoHibernateImpl
         return reference != null && reference.isPresent() && reference.get().getId() == 0;
     }
 
-    private <R extends Object> Query<R> makeReferenceQuery(Optional<Reference> reference,
+    private <R extends Object> SelectionQuery<R> makeReferenceQuery(Optional<Reference> reference,
             Collection<RegistrationStatus> includedStatus,
             boolean isCount, Class<R> returnClass) {
 
@@ -123,7 +123,7 @@ public class RegistrationDaoHibernateImpl
         }
 
         String hql = select + from + where + orderBy;
-        Query<R> query = getSession().createQuery(hql, returnClass);
+        SelectionQuery<R> query = getSession().createSelectionQuery(hql, returnClass);
         if (reference != null && reference.isPresent()){
             query.setParameter("ref", reference.get());
         }
@@ -139,7 +139,7 @@ public class RegistrationDaoHibernateImpl
     @Override
     public long count(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
             String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids) {
-        Query<Long> query = makeFilteredSearchQuery(submitterUuid, includedStatus, identifierFilterPattern,
+        SelectionQuery<Long> query = makeFilteredSearchQuery(submitterUuid, includedStatus, identifierFilterPattern,
                 taxonNameFilterPattern, referenceFilterPattern, typeDesignationStatusUuids, true, null);
 //      LogUtils.setLevel("org.hibernate.SQL", Level.DEBUG);
         List<Long> list = query.list();
@@ -152,7 +152,7 @@ public class RegistrationDaoHibernateImpl
             String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        Query<Registration> query = makeFilteredSearchQuery(submitterUuid, includedStatus, identifierFilterPattern,
+        SelectionQuery<Registration> query = makeFilteredSearchQuery(submitterUuid, includedStatus, identifierFilterPattern,
                 taxonNameFilterPattern, referenceFilterPattern, typeDesignationStatusUuids, false, orderHints);
 
         if(limit != null /*&&  !doCount*/) {
@@ -172,7 +172,7 @@ public class RegistrationDaoHibernateImpl
     public List<Registration> list(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, Collection<UUID> taxonNameUUIDs,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        Query query = makeByNameUUIDQuery(submitterUuid, includedStatus, taxonNameUUIDs, false, orderHints);
+        SelectionQuery query = makeByNameUUIDQuery(submitterUuid, includedStatus, taxonNameUUIDs, false, orderHints);
 
         if(limit != null /*&&  !doCount*/) {
             query.setMaxResults(limit);
@@ -192,7 +192,7 @@ public class RegistrationDaoHibernateImpl
 
     @Override
     public long count(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, Collection<UUID> taxonNameUUIDs) {
-        Query query = makeByNameUUIDQuery(submitterUuid, includedStatus, taxonNameUUIDs, true, null);
+        SelectionQuery query = makeByNameUUIDQuery(submitterUuid, includedStatus, taxonNameUUIDs, true, null);
 //      LogUtils.setLevel("org.hibernate.SQL", Level.DEBUG);
         @SuppressWarnings("unchecked")
         List<Long> list = query.list();
@@ -200,7 +200,7 @@ public class RegistrationDaoHibernateImpl
         return list.isEmpty()? Long.valueOf(0) : list.get(0);
     }
 
-    private Query makeByNameUUIDQuery(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
+    private SelectionQuery makeByNameUUIDQuery(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
             Collection<UUID> taxonNameUUIDs, boolean isCount, List<OrderHint> orderHints) {
 
         Map<String, Object> parameters = new HashMap<>();
@@ -232,7 +232,7 @@ public class RegistrationDaoHibernateImpl
 
 
         String hql = select + from + where + orderBy;
-        Query query = getSession().createQuery(hql);
+        SelectionQuery query = getSession().createSelectionQuery(hql, Object.class);
 
         for(String paramName : parameters.keySet()){
             Object value = parameters.get(paramName);
@@ -246,7 +246,7 @@ public class RegistrationDaoHibernateImpl
         return query;
     }
 
-    private Query makeFilteredSearchQuery(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
+    private SelectionQuery makeFilteredSearchQuery(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
             String identifierFilterPattern, String taxonNameFilterPattern, String referenceFilterPattern,
             Collection<UUID> typeDesignationStatusUuids, boolean isCount, List<OrderHint> orderHints) {
 
@@ -314,7 +314,7 @@ public class RegistrationDaoHibernateImpl
             where += " AND ( " +  typeStatusWhere + ")";
         }
         String hql = select + from + where + orderBy;
-        Query query = getSession().createQuery(hql);
+        SelectionQuery query = getSession().createSelectionQuery(hql, Object.class);
 
         for(String paramName : parameters.keySet()){
             Object value = parameters.get(paramName);

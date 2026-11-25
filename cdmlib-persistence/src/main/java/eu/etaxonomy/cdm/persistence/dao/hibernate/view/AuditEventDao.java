@@ -16,7 +16,7 @@ import java.util.UUID;
 import org.hibernate.Hibernate;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.view.AuditEvent;
@@ -33,41 +33,41 @@ public class AuditEventDao extends DaoBase implements IAuditEventDao {
 
 	@Override
     public long count() {
-		Query<Long> query = getSession().createQuery("select count(auditEvent) from AuditEvent auditEvent", Long.class);
+		SelectionQuery<Long> query = getSession().createSelectionQuery("select count(auditEvent) from AuditEvent auditEvent", Long.class);
 		return query.uniqueResult();
 	}
 
 	@Override
     public boolean exists(UUID uuid) {
-		Query<AuditEvent> query = getSession().createQuery("select auditEvent from AuditEvent auditEvent where auditEvent.uuid = :uuid", AuditEvent.class);
+		SelectionQuery<AuditEvent> query = getSession().createSelectionQuery("select auditEvent from AuditEvent auditEvent where auditEvent.uuid = :uuid", AuditEvent.class);
 		query.setParameter("uuid", uuid);
 		return null != query.uniqueResult();
 	}
 
 	@Override
     public AuditEvent findById(Integer id) {
-		Query<AuditEvent> query = getSession().createQuery("select auditEvent from AuditEvent auditEvent where auditEvent.id = :id", AuditEvent.class);
+		SelectionQuery<AuditEvent> query = getSession().createSelectionQuery("select auditEvent from AuditEvent auditEvent where auditEvent.id = :id", AuditEvent.class);
 		query.setParameter("id", id);
 		return query.uniqueResult();
 	}
 
 	@Override
     public AuditEvent findByUuid(UUID uuid) {
-		Query<AuditEvent> query = getSession().createQuery("select auditEvent from AuditEvent auditEvent where auditEvent.uuid = :uuid", AuditEvent.class);
+		SelectionQuery<AuditEvent> query = getSession().createSelectionQuery("select auditEvent from AuditEvent auditEvent where auditEvent.uuid = :uuid", AuditEvent.class);
 		query.setParameter("uuid", uuid);
 		return query.uniqueResult();
 	}
 
 	@Override
     public AuditEvent getNextAuditEvent(AuditEvent auditEvent) {
-		Query<AuditEvent> query = getSession().createQuery("select auditEvent from AuditEvent auditEvent where auditEvent.revisionNumber = :revisionNumber + 1", AuditEvent.class);
+		SelectionQuery<AuditEvent> query = getSession().createSelectionQuery("select auditEvent from AuditEvent auditEvent where auditEvent.revisionNumber = :revisionNumber + 1", AuditEvent.class);
 		query.setParameter("revisionNumber", auditEvent.getRevisionNumber());
 		return query.uniqueResult();
 	}
 
 	@Override
     public AuditEvent getPreviousAuditEvent(AuditEvent auditEvent) {
-		Query<AuditEvent> query = getSession().createQuery("select auditEvent from AuditEvent auditEvent where auditEvent.revisionNumber = :revisionNumber - 1", AuditEvent.class);
+		SelectionQuery<AuditEvent> query = getSession().createSelectionQuery("select auditEvent from AuditEvent auditEvent where auditEvent.revisionNumber = :revisionNumber - 1", AuditEvent.class);
 		query.setParameter("revisionNumber", auditEvent.getRevisionNumber());
 		return query.uniqueResult();
 	}
@@ -78,12 +78,12 @@ public class AuditEventDao extends DaoBase implements IAuditEventDao {
 			sort = AuditEventSort.BACKWARDS;
 		}
 
-		Query<AuditEvent> query = null;
+		SelectionQuery<AuditEvent> query = null;
 
 		if(sort.equals(AuditEventSort.FORWARDS)) {
-			query = getSession().createQuery("select auditEvent from AuditEvent auditEvent order by auditEvent.timestamp asc", AuditEvent.class);
+			query = getSession().createSelectionQuery("select auditEvent from AuditEvent auditEvent order by auditEvent.timestamp asc", AuditEvent.class);
 		} else {
-			query = getSession().createQuery("select auditEvent from AuditEvent auditEvent order by auditEvent.timestamp desc", AuditEvent.class);
+			query = getSession().createSelectionQuery("select auditEvent from AuditEvent auditEvent order by auditEvent.timestamp desc", AuditEvent.class);
 		}
 
 		this.addPageSizeAndNumber(query, pageSize, pageNumber);

@@ -19,7 +19,7 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -71,7 +71,7 @@ public class DescriptiveDataSetDao
 	@Override
     public Map<DescriptionBase, Set<DescriptionElementBase>> getDescriptionElements(DescriptiveDataSet descriptiveDataSet, Set<Feature> features, Integer pageSize,	Integer pageNumber,	List<String> propertyPaths) {
 		checkNotInPriorView("DescriptiveDataSetDao.getDescriptionElements(DescriptiveDataSet descriptiveDataSet, Set<Feature> features, Integer pageSize,Integer pageNumber, List<String> propertyPaths)");
-		Query<DescriptionBase> query = getSession().createQuery("SELECT description FROM DescriptiveDataSet descriptiveDataSet JOIN DescriptiveDataSet.descriptions description ORDER BY description.titleCache ASC", DescriptionBase.class);
+		SelectionQuery<DescriptionBase> query = getSession().createSelectionQuery("SELECT description FROM DescriptiveDataSet descriptiveDataSet JOIN DescriptiveDataSet.descriptions description ORDER BY description.titleCache ASC", DescriptionBase.class);
 
 		addPageSizeAndNumber(query, pageSize, pageNumber);
         List<DescriptionBase> descriptions = query.list();
@@ -92,7 +92,7 @@ public class DescriptiveDataSetDao
             }
 	        cq.select(root);
 	        cq.where(cb.and(predicates.toArray(new Predicate[0])));
-	        List<DescriptionElementBase> r = getSession().createQuery(cq).getResultList();
+	        List<DescriptionElementBase> r = getSession().createSelectionQuery(cq).getResultList();
 
 	        defaultBeanInitializer.initializeAll(r, propertyPaths);
             result.put(description, new HashSet<>(r));
@@ -116,13 +116,13 @@ public class DescriptiveDataSetDao
 
 			//feature
 			String strQueryTreeId = "SELECT ws.descriptiveSystem.id FROM DescriptiveDataSet dds join dds.descriptiveSystem tree WHERE dds.uuid = :descriptiveDataSetUuid ";
-			Query<Integer> queryTree = getSession().createQuery(strQueryTreeId, Integer.class);
+			SelectionQuery<Integer> queryTree = getSession().createSelectionQuery(strQueryTreeId, Integer.class);
 			queryTree.setParameter("descriptiveDataSetUuid", descriptiveDataSetUuid);
 			List<Integer> trees = queryTree.list();
 
 			String ftSelect = "SELECT feature.id FROM TermNode node join node.feature as feature " +
 					" WHERE node.featureTree.id in (:trees) ";
-			Query<Integer> ftQuery = getSession().createQuery(ftSelect, Integer.class);
+			SelectionQuery<Integer> ftQuery = getSession().createSelectionQuery(ftSelect, Integer.class);
 			ftQuery.setParameterList("trees", trees);
 			List<Integer> features = ftQuery.list();
 
@@ -148,7 +148,7 @@ public class DescriptiveDataSetDao
 					+ " and feature.id in (:features)  "
 				+ " order by taxon.uuid asc, feature.uuid asc"
 				;
-			Query<Object[]> query = getSession().createQuery(strQuery, Object[].class);
+			SelectionQuery<Object[]> query = getSession().createSelectionQuery(strQuery, Object[].class);
 
 			query.setParameter("descriptiveDataSetUuid", descriptiveDataSetUuid);
 			query.setParameter("clazz", clazz);
@@ -200,7 +200,7 @@ public class DescriptiveDataSetDao
 
         }
 
-        Query<Object[]> query = session.createQuery(queryString, Object[].class);
+        SelectionQuery<Object[]> query = session.createSelectionQuery(queryString, Object[].class);
 
         if (limitOfInitialElements != null){
             query.setMaxResults(limitOfInitialElements);
@@ -225,7 +225,7 @@ public class DescriptiveDataSetDao
         Session session = getSession();
 
         String queryString = "SELECT t.uuid  FROM DescriptiveDataSet a JOIN a.taxonSubtreeFilter as t WHERE a.uuid = :uuid";
-        Query<UUID> query = session.createQuery(queryString, UUID.class);
+        SelectionQuery<UUID> query = session.createSelectionQuery(queryString, UUID.class);
         query.setParameter("uuid", uuid);
 
         List<UUID> result = query.list();
@@ -240,7 +240,7 @@ public class DescriptiveDataSetDao
         Session session = getSession();
         String queryString = "SELECT t.uuid  FROM DescriptiveDataSet a JOIN a.descriptions as t WHERE a.uuid = :uuid";
 
-        Query<UUID> query = session.createQuery(queryString, UUID.class);
+        SelectionQuery<UUID> query = session.createSelectionQuery(queryString, UUID.class);
         query.setParameter("uuid", uuid);
 
         List<UUID> result = query.list();
@@ -263,7 +263,7 @@ public class DescriptiveDataSetDao
             queryStringTaxonDescriptions += "AND tn.treeIndex LIKE :treeIndex";
         }
 
-        Query<UUID> query = session.createQuery(queryStringTaxonDescriptions, UUID.class);
+        SelectionQuery<UUID> query = session.createSelectionQuery(queryStringTaxonDescriptions, UUID.class);
         query.setParameter("uuid", uuid);
         if (subtreeIndex != null) {
             query.setParameter("treeIndex", subtreeIndex+"%");
@@ -283,7 +283,7 @@ public class DescriptiveDataSetDao
             queryStringSpecimenDescriptions += "AND tn.treeIndex LIKE :treeIndex " ;
         }
 
-        Query<UUID> querySpecimenDescriptions = session.createQuery(queryStringSpecimenDescriptions, UUID.class);
+        SelectionQuery<UUID> querySpecimenDescriptions = session.createSelectionQuery(queryStringSpecimenDescriptions, UUID.class);
         querySpecimenDescriptions.setParameter("uuid", uuid);
         if (subtreeIndex != null) {
             querySpecimenDescriptions.setParameter("treeIndex", subtreeIndex+"%");
@@ -305,7 +305,7 @@ public class DescriptiveDataSetDao
         String queryString = DescriptiveDataSetBaseDto.getDescriptiveDataSetDtoSelect()
                 + " WHERE a.uuid = :uuid"
                 + " ORDER BY a.titleCache";
-        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
+        SelectionQuery<Object[]> query =  getSession().createSelectionQuery(queryString, Object[].class);
         query.setParameter("uuid", uuid);
 
         List<Object[]> result = query.list();
@@ -350,7 +350,7 @@ public class DescriptiveDataSetDao
         String queryString = DescriptiveDataSetBaseDto.getDescriptiveDataSetDtoSelect()
                 + " WHERE a.uuid = :uuid"
                 + " ORDER BY a.titleCache";
-        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
+        SelectionQuery<Object[]> query =  getSession().createSelectionQuery(queryString, Object[].class);
         query.setParameter("uuid", uuid);
 
         List<Object[]> result = query.list();

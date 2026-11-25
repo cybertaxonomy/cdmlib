@@ -15,7 +15,8 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.query.Query;
+import org.hibernate.query.MutationQuery;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -69,7 +70,7 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
 
     @Override
     public EntityValidation getEntityValidation(String validatedEntityClass, int validatedEntityId) {
-        Query<EntityValidation> query = getSession().createQuery(
+        SelectionQuery<EntityValidation> query = getSession().createSelectionQuery(
                 "FROM EntityValidation vr "
                         + "WHERE vr.validatedEntityClass = :cls AND vr.validatedEntityId = :id",
                         EntityValidation.class);
@@ -85,7 +86,7 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
 
     @Override
     public List<EntityValidation> getEntityValidations() {
-        Query<EntityValidation> query = getSession().createQuery(
+        SelectionQuery<EntityValidation> query = getSession().createSelectionQuery(
                 " FROM EntityValidation vr "
               + " ORDER BY vr.validatedEntityClass, vr.validatedEntityId",
                 EntityValidation.class);
@@ -95,8 +96,8 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
 
     @Override
     public List<EntityValidation> getEntityValidations(String validatedEntityClass) {
-        Query<EntityValidation> query = getSession()
-                .createQuery(
+        SelectionQuery<EntityValidation> query = getSession()
+                .createSelectionQuery(
                         " FROM EntityValidation vr "
                       + " WHERE vr.validatedEntityClass = :cls "
                       + " ORDER BY vr.validatedEntityClass, vr.validatedEntityId",
@@ -108,7 +109,7 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
 
     @Override
     public List<EntityValidation> getEntitiesViolatingConstraint(String validatorClass) {
-        Query<EntityValidation> query = getSession().createQuery(
+        SelectionQuery<EntityValidation> query = getSession().createSelectionQuery(
                 "  FROM EntityValidation vr JOIN FETCH vr.entityConstraintViolations cv "
                + " WHERE cv.validator = :cls "
                + " ORDER BY vr.validatedEntityClass, vr.validatedEntityId",
@@ -120,7 +121,7 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
 
     @Override
     public List<EntityValidation> getEntityValidations(String validatedEntityClass, Severity severity) {
-        Query<EntityValidation> query = getSession().createQuery(
+        SelectionQuery<EntityValidation> query = getSession().createSelectionQuery(
                 "FROM EntityValidation vr JOIN FETCH vr.entityConstraintViolations cv "
                         + "WHERE vr.validatedEntityClass = :cls " + "AND cv.severity = :severity "
                         + "ORDER BY vr.validatedEntityClass, vr.validatedEntityId",
@@ -133,7 +134,7 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
 
     @Override
     public List<EntityValidation> getEntityValidations(Severity severity) {
-        Query<EntityValidation> query = getSession().createQuery(
+        SelectionQuery<EntityValidation> query = getSession().createSelectionQuery(
                 " FROM EntityValidation vr JOIN FETCH vr.entityConstraintViolations cv "
               + " WHERE cv.severity = :severity "
               + " ORDER BY vr.validatedEntityClass, vr.validatedEntityId",
@@ -187,7 +188,7 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
             }
             sql.append(")");
         }
-        Query<EntityConstraintViolation> query = getSession().createQuery(sql.toString(), EntityConstraintViolation.class);
+        MutationQuery query = getSession().createMutationQuery(sql.toString());
         query.setParameter("id", validationResultId);
         if (validationGroups != null && validationGroups.length != 0) {
             for (int i = 0; i < validationGroups.length; ++i) {

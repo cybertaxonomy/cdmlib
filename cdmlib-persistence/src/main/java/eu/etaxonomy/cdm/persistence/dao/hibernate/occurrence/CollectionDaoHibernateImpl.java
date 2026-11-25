@@ -15,7 +15,7 @@ import java.util.UUID;
 import org.hibernate.Hibernate;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.hibernate.search.mapper.orm.Search;
 import org.springframework.stereotype.Repository;
 
@@ -51,7 +51,7 @@ public class CollectionDaoHibernateImpl extends IdentifiableDaoBase<Collection> 
 	        cq.select(root);
 	        cq.where(predicateStrNotNull(cb, root, "code", code));
 
-	        List<Collection> results = getSession().createQuery(cq).getResultList();
+	        List<Collection> results = getSession().createSelectionQuery(cq).getResultList();
 	        return results;
 
 		} else {
@@ -66,7 +66,7 @@ public class CollectionDaoHibernateImpl extends IdentifiableDaoBase<Collection> 
         String queryString = "SELECT c.uuid, c.id, c.titleCache, c.code FROM Collection as c WHERE c.code LIKE :code";
 
 
-        Query<Object[]> query = getSession().createQuery(queryString, Object[].class);
+        SelectionQuery<Object[]> query = getSession().createSelectionQuery(queryString, Object[].class);
         codePattern = codePattern + "%";
         codePattern = codePattern.replace("*", "%");
         codePattern = codePattern.replace("?", "_");
@@ -86,7 +86,7 @@ public class CollectionDaoHibernateImpl extends IdentifiableDaoBase<Collection> 
         String queryString = "SELECT c.uuid, c.id, c.titleCache, c.code FROM Collection as c WHERE c.titleCache like  :pattern OR c.name like :pattern OR c.townOrLocation like :pattern";
 
 
-        Query<Object[]> query = getSession().createQuery(queryString, Object[].class);
+        SelectionQuery<Object[]> query = getSession().createSelectionQuery(queryString, Object[].class);
         pattern = pattern + "%";
         pattern = pattern.replace("*", "%");
         pattern = pattern.replace("?", "_");

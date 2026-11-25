@@ -16,7 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
@@ -129,7 +129,7 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
 //                  //+ ")"
 //                  + " FROM Registration reg " + filter;
 
-            Query<Object> query = session.createQuery(hql, Object.class);
+            SelectionQuery<Object> query = session.createSelectionQuery(hql, Object.class);
 
             result = query.uniqueResult();
         } finally {

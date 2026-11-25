@@ -12,7 +12,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -39,7 +39,7 @@ public class EntityConstraintViolationHibernateImpl extends CdmEntityDaoBase<Ent
 
     @Override
     public List<EntityConstraintViolation> getConstraintViolations() {
-        Query<EntityConstraintViolation> query = getSession().createQuery(
+        SelectionQuery<EntityConstraintViolation> query = getSession().createSelectionQuery(
                 "FROM EntityConstraintViolation cv " + "JOIN FETCH cv.entityValidation ev "
                         + "ORDER BY ev.validatedEntityClass, ev.validatedEntityId",
                         EntityConstraintViolation.class);
@@ -49,7 +49,7 @@ public class EntityConstraintViolationHibernateImpl extends CdmEntityDaoBase<Ent
 
     @Override
     public List<EntityConstraintViolation> getConstraintViolations(String validatedEntityClass) {
-        Query<EntityConstraintViolation> query = getSession().createQuery(
+        SelectionQuery<EntityConstraintViolation> query = getSession().createSelectionQuery(
                 "FROM EntityConstraintViolation cv " + "JOIN FETCH cv.entityValidation ev "
                         + "WHERE ev.validatedEntityClass = :cls "
                         + "ORDER BY ev.validatedEntityClass, ev.validatedEntityId",
@@ -61,7 +61,7 @@ public class EntityConstraintViolationHibernateImpl extends CdmEntityDaoBase<Ent
 
     @Override
     public List<EntityConstraintViolation> getConstraintViolations(String validatedEntityClass, Severity severity) {
-        Query<EntityConstraintViolation> query = getSession().createQuery(
+        SelectionQuery<EntityConstraintViolation> query = getSession().createSelectionQuery(
                 "FROM EntityConstraintViolation cv " + "JOIN FETCH cv.entityValidation ev "
                         + "WHERE ev.validatedEntityClass = :cls " + "AND cv.severity = :severity "
                         + "ORDER BY ev.validatedEntityClass, ev.validatedEntityId",
@@ -74,7 +74,7 @@ public class EntityConstraintViolationHibernateImpl extends CdmEntityDaoBase<Ent
 
     @Override
     public List<EntityConstraintViolation> getConstraintViolations(Severity severity) {
-        Query<EntityConstraintViolation> query = getSession().createQuery(
+        SelectionQuery<EntityConstraintViolation> query = getSession().createSelectionQuery(
                 "FROM EntityConstraintViolation cv " + "JOIN FETCH cv.entityValidation ev "
                         + "WHERE cv.severity = :severity " + "ORDER BY ev.validatedEntityClass, ev.validatedEntityId",
                         EntityConstraintViolation.class);

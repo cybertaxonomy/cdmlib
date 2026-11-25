@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -40,7 +40,7 @@ public class VocabularyFilterDaoHibernateImpl
     @Override
     public List<Integer> idList(VocabularyFilter filter){
         String queryStr = query(filter, "tn.id");
-        Query<Integer> query = getSession().createQuery(queryStr, Integer.class);
+        SelectionQuery<Integer> query = getSession().createSelectionQuery(queryStr, Integer.class);
         List<Integer> list = query.list();
         list = deduplicate(list);
         return list;
@@ -49,7 +49,7 @@ public class VocabularyFilterDaoHibernateImpl
     @Override
     public long count(VocabularyFilter filter){
         String queryStr = query(filter, "count(*) as n ");
-        Query<Long> query = getSession().createQuery(queryStr, Long.class);
+        SelectionQuery<Long> query = getSession().createSelectionQuery(queryStr, Long.class);
         long result = query.uniqueResult();
 
         return result;
@@ -58,7 +58,7 @@ public class VocabularyFilterDaoHibernateImpl
     @Override
     public List<UUID> listUuids(VocabularyFilter filter){
         String queryStr = query(filter, "voc.uuid");
-        Query<UUID> query = getSession().createQuery(queryStr, UUID.class);
+        SelectionQuery<UUID> query = getSession().createSelectionQuery(queryStr, UUID.class);
         List<UUID> list = query.list();
 
         list = deduplicate(list);

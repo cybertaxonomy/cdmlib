@@ -18,7 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.hibernate.search.mapper.orm.Search;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -109,7 +109,7 @@ public class ReferenceDaoHibernateImpl
         cq.select(root)
           .where(cb.and(predicates.toArray(new Predicate[0])));
 
-        return getSession().createQuery(cq).getResultList();
+        return getSession().createSelectionQuery(cq).getResultList();
 	}
 
 	@Override
@@ -130,7 +130,7 @@ public class ReferenceDaoHibernateImpl
 		    }
 		}
 
-		Query<Object[]> query = session.createQuery(queryString, Object[].class);
+		SelectionQuery<Object[]> query = session.createSelectionQuery(queryString, Object[].class);
 
 		if (limit != null){
 		    query.setMaxResults(limit);
@@ -189,7 +189,7 @@ public class ReferenceDaoHibernateImpl
         //order
         queryString +=" ORDER BY ids.type.uuid, ids.identifier, c.uuid ";
 
-        Query<Object[]> query = getSession().createQuery(queryString, Object[].class);
+        SelectionQuery<Object[]> query = getSession().createSelectionQuery(queryString, Object[].class);
 
         //parameters
         if (identifierType != null){
@@ -205,11 +205,11 @@ public class ReferenceDaoHibernateImpl
 	@Override
     public List<Reference> getAllReferencesForPublishing(){
 		@SuppressWarnings("unchecked")
-        List<Reference> references = getSession().createQuery("SELECT r FROM Reference r "+
+        List<Reference> references = getSession().createSelectionQuery("SELECT r FROM Reference r "+
 				"WHERE r.id IN "+
 					"(SELECT m.markedObj.id FROM Marker m WHERE "+
 						"m.markerType.id = "+
-							"(SELECT dtb.id FROM DefinedTermBase dtb, Representation r WHERE r MEMBER OF dtb.representations AND r.text='publish'))").list();
+							"(SELECT dtb.id FROM DefinedTermBase dtb, Representation r WHERE r MEMBER OF dtb.representations AND r.text='publish'))", Reference.class).list();
 		return references;
 	}
 
@@ -217,10 +217,10 @@ public class ReferenceDaoHibernateImpl
     public List<Reference> getAllNotNomenclaturalReferencesForPublishing(){
 
 		@SuppressWarnings("unchecked")
-        List<Reference> references = getSession().createQuery("select t.nomenclaturalReference from TaxonName t").list();
+        List<Reference> references = getSession().createSelectionQuery("select t.nomenclaturalReference from TaxonName t", Reference.class).list();
 		String queryString = "from Reference b where b not in (:referenceList) and b in (:publish)" ;
-		Query<Reference> referenceQuery = getSession()
-		        .createQuery(queryString, Reference.class)
+		SelectionQuery<Reference> referenceQuery = getSession()
+		        .createSelectionQuery(queryString, Reference.class)
 		        .setParameterList("referenceList", references)
 		        .setParameterList("publish", getAllReferencesForPublishing());
 
@@ -231,7 +231,7 @@ public class ReferenceDaoHibernateImpl
 	@Override
     public List<Reference> getAllNomenclaturalReferences() {
 
-        List<Reference> references = getSession().createQuery(
+        List<Reference> references = getSession().createSelectionQuery(
 				  " SELECT DISTINCT ns.citation "
 				+ " FROM TaxonName n"
 				+ " JOIN n.nomenclaturalSource ns ", Reference.class)
@@ -246,7 +246,7 @@ public class ReferenceDaoHibernateImpl
 		List<Reference> references = new ArrayList<>();
 		List<Reference> subordinateReferences = new ArrayList<>();
 
-		Query<Reference> query = getSession().createQuery(
+		SelectionQuery<Reference> query = getSession().createSelectionQuery(
 		        "select r from Reference r where r.inReference = (:reference)",
 		        Reference.class);
 		query.setParameter("reference", reference);
@@ -321,7 +321,7 @@ public class ReferenceDaoHibernateImpl
 		// name relations
 		// taxon relations
 
-		Query<TaxonBase> query = getSession().createQuery(taxonDescriptionSql.toString(), TaxonBase.class);
+		SelectionQuery<TaxonBase> query = getSession().createSelectionQuery(taxonDescriptionSql.toString(), TaxonBase.class);
 		query.setParameterList("referenceBase_1", referenceSet);
 		query.setParameterList("referenceBase_2", referenceSet);
 		query.setParameterList("referenceBase_3", referenceSet);
@@ -340,20 +340,20 @@ public class ReferenceDaoHibernateImpl
     public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCache(Integer limit, String pattern, ReferenceType refType) {
         Session session = getSession();
 
-        Query<Object[]> query = null;
+        SelectionQuery<Object[]> query = null;
         if (pattern != null){
             if (pattern.startsWith("*")){
                 //requirement probably by WGB to allow search also on titleCache if search starts with *
-                query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName() +" where abbrevTitleCache like :pattern OR titleCache like :pattern ", Object[].class);
+                query = session.createSelectionQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName() +" where abbrevTitleCache like :pattern OR titleCache like :pattern ", Object[].class);
             }else{
-                query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName() +" where abbrevTitleCache like :pattern ", Object[].class);
+                query = session.createSelectionQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName() +" where abbrevTitleCache like :pattern ", Object[].class);
             }
             pattern = pattern + "%";
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             query.setParameter("pattern", pattern);
         } else {
-            query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName(), Object[].class);
+            query = session.createSelectionQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName(), Object[].class);
         }
         if (limit != null){
            query.setMaxResults(limit);
@@ -370,14 +370,14 @@ public class ReferenceDaoHibernateImpl
     public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String authorPattern, ReferenceType refType) {
         Session session = getSession();
 
-        Query<Object[]> query = null;
+        SelectionQuery<Object[]> query = null;
         if (authorPattern != null){
-            query = session.createQuery("SELECT uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName()
+            query = session.createSelectionQuery("SELECT uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName()
             +" as r where r.authorship.nomenclaturalTitleCache like :pattern  ", Object[].class);
 
             query.setParameter("pattern", authorPattern);
         } else {
-            query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName(), Object[].class);
+            query = session.createSelectionQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName(), Object[].class);
         }
         if (limit != null){
            query.setMaxResults(limit);
@@ -394,15 +394,15 @@ public class ReferenceDaoHibernateImpl
     public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthorID(Integer limit, Integer authorID, ReferenceType refType) {
         Session session = getSession();
 
-        Query<Object[]> query = null;
+        SelectionQuery<Object[]> query = null;
         if (authorID != null){
-            query = session.createQuery("SELECT uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName()
+            query = session.createSelectionQuery("SELECT uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName()
             +" as r where r.authorship.id = :authorID  ",
             Object[].class);
 
             query.setParameter("authorID", authorID);
         } else {
-            query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName(), Object[].class);
+            query = session.createSelectionQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName(), Object[].class);
         }
         if (limit != null){
            query.setMaxResults(limit);

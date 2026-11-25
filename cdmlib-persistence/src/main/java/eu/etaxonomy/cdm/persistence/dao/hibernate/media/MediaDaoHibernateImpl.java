@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import org.hibernate.Hibernate;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.hibernate.search.mapper.orm.Search;
 import org.springframework.stereotype.Repository;
 
@@ -71,7 +71,7 @@ public class MediaDaoHibernateImpl
 		    cq.select(cb.countDistinct(root))
 		      .where(predicateAnd(cb, predicates));
 
-		    return getSession().createQuery(cq).getSingleResult();
+		    return getSession().createSelectionQuery(cq).getSingleResult();
 
 		} else {
 			if((taxonomicScope == null || taxonomicScope.isEmpty()) && (geoScope == null || geoScope.isEmpty())) {
@@ -128,7 +128,7 @@ public class MediaDaoHibernateImpl
 		      .orderBy(ordersFrom(cb, root, null));
 
 		    List<MediaKey> results = addPageSizeAndNumber(
-		            getSession().createQuery(cq), pageSize, pageNumber)
+		            getSession().createSelectionQuery(cq), pageSize, pageNumber)
 		           .getResultList();
 		    defaultBeanInitializer.initializeAll(results, propertyPaths);
 		    return deduplicateResult(results);
@@ -149,7 +149,7 @@ public class MediaDaoHibernateImpl
 	@Override
     public List<Rights> getRights(Media media, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		checkNotInPriorView("MediaDaoHibernateImpl.getRights(Media t, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
-		Query<Rights> query = getSession().createQuery("SELECT rights FROM Media media JOIN media.rights rights WHERE media = :media", Rights.class);
+		SelectionQuery<Rights> query = getSession().createSelectionQuery("SELECT rights FROM Media media JOIN media.rights rights WHERE media = :media", Rights.class);
 		query.setParameter("media",media);
 		addPageSizeAndNumber(query, pageSize, pageNumber);
 		List<Rights> results = query.list();
@@ -160,7 +160,7 @@ public class MediaDaoHibernateImpl
     @Override
     public long countRights(Media media) {
 		checkNotInPriorView("MediaDaoHibernateImpl.countRights(Media t)");
-		Query<Long> query = getSession().createQuery("select count(rights) from Media media join media.rights rights where media = :media", Long.class);
+		SelectionQuery<Long> query = getSession().createSelectionQuery("select count(rights) from Media media join media.rights rights where media = :media", Long.class);
 		query.setParameter("media",media);
 		return query.uniqueResult();
 	}

@@ -17,7 +17,6 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
 import org.hibernate.query.SelectionQuery;
 import org.springframework.stereotype.Repository;
 
@@ -59,7 +58,7 @@ public class OriginalSourceDaoImpl
         // Hibernate 6: MappedSuperclass (e.g. SingleSourcedEntityBase) cannot be used in FROM
         for (Class<?> entityClass : entityRootsWithAttribute(clazz, "source")) {
             @SuppressWarnings("unchecked")
-            Query<S> q = getSession().createQuery(
+            SelectionQuery<S> q = getSession().createSelectionQuery(
                     "SELECT c FROM " + entityClass.getName() + " AS c "
                     + "INNER JOIN c.source AS source "
                     + "WHERE source.id = :sourceId", (Class<S>) entityClass);
@@ -81,7 +80,7 @@ public class OriginalSourceDaoImpl
         // query each concrete entity root that inherits "sources".
         for (Class<?> entityClass : entityRootsWithAttribute(clazz, "sources")) {
             @SuppressWarnings("unchecked")
-            Query<S> q = getSession().createQuery(
+            SelectionQuery<S> q = getSession().createSelectionQuery(
                     "SELECT c FROM " + entityClass.getName() + " AS c "
                     + "INNER JOIN c.sources AS source "
                     + "WHERE source.id = :sourceId", (Class<S>) entityClass);
@@ -138,7 +137,7 @@ public class OriginalSourceDaoImpl
 		}
 		idInSourceString = "'"+ idInSourceString + "'";
 
-		Query<Object[]> q = session.createQuery(
+		SelectionQuery<Object[]> q = session.createSelectionQuery(
                 "SELECT source.idInSource, c " +
                 "FROM " + clazz.getName() + " AS c " +
                 "INNER JOIN c.sources AS source " +
@@ -162,7 +161,7 @@ public class OriginalSourceDaoImpl
 	@Override
     public <S extends ISourceable> List<S> findOriginalSourceByIdInSource(Class<S> clazz, String idInSource, String idNamespace) {
 		Session session = getSession();
-		Query<S> q = session.createQuery(
+		SelectionQuery<S> q = session.createSelectionQuery(
                 "SELECT c FROM " + clazz.getSimpleName() + " as c " +
                 "  INNER JOIN c.sources as source " +
                 "WHERE source.idInSource = :idInSource " +
@@ -189,7 +188,7 @@ public class OriginalSourceDaoImpl
         cq.select(cb.count(root))
           .where(root.get("nameUsedInSource").isNotNull());
 
-        long result = getSession().createQuery(cq).getSingleResult();
+        long result = getSession().createSelectionQuery(cq).getSingleResult();
         return result;
 	}
 

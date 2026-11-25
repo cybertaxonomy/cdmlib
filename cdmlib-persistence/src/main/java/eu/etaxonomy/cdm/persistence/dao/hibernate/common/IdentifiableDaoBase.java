@@ -20,7 +20,7 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.hibernate.Session;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.hibernate.search.mapper.orm.Search;
 
 import eu.etaxonomy.cdm.api.filter.EntityFilter;
@@ -71,7 +71,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         Root<T> root = cq.from(type);
         cq.where(predicateILike(cb, root, "titleCache", queryString));
         cq.select(cb.count(root));
-        Long result = session.createQuery(cq).getSingleResult();
+        Long result = session.createSelectionQuery(cq).getSingleResult();
 
         return result;
     }
@@ -86,7 +86,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         Root<T> root = cq.from(type);
         cq.select(root)
           .where(predicateILike(cb, root, "titleCache", queryString));
-        List<T> results = session.createQuery(cq).getResultList();
+        List<T> results = session.createSelectionQuery(cq).getResultList();
 
         List<String> propertyPaths = null;
         defaultBeanInitializer.initializeAll(results, propertyPaths);
@@ -97,7 +97,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
     public List<String> findTitleCache(Class<? extends T> clazz, String queryString,
     		Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode){
 
-        Query<String> query = prepareFindTitleCache(clazz, queryString, pageSize,
+        SelectionQuery<String> query = prepareFindTitleCache(clazz, queryString, pageSize,
                 pageNumber, matchMode, false, String.class);
 
         List<String> result = query.list();
@@ -107,7 +107,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
     @Override
     public Long countTitleCache(Class<? extends T> clazz, String queryString, MatchMode matchMode){
 
-        Query<Long> query = prepareFindTitleCache(clazz, queryString, null,
+        SelectionQuery<Long> query = prepareFindTitleCache(clazz, queryString, null,
                 null, matchMode, true, Long.class);
         Long result = query.uniqueResult();
         return result;
@@ -121,7 +121,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
      * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
      * @return
      */
-    private <R extends Object> Query<R>  prepareFindTitleCache(Class<? extends T> clazz,
+    private <R extends Object> SelectionQuery<R>  prepareFindTitleCache(Class<? extends T> clazz,
             String queryString, Integer pageSize, Integer pageNumber,
             MatchMode matchMode, boolean doCount, Class<R> resultClass) {
         if(clazz == null) {
@@ -135,7 +135,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         }
         String hql = "select " + what + " from  " + clazz.getName() + " e where e.titleCache like '" + queryString + "'";
 
-        Query<R> query = getSession().createQuery(hql, resultClass);
+        SelectionQuery<R> query = getSession().createSelectionQuery(hql, resultClass);
 
         if (!doCount) {
             this.addPageSizeAndNumber(query, pageSize, pageNumber);
@@ -163,7 +163,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
     @Override
     public long countSources(T identifiableEntity) {
         checkNotInPriorView("IdentifiableDaoBase.countSources(T identifiableEntity)");
-        Query<Long> query = getSession().createQuery(
+        SelectionQuery<Long> query = getSession().createSelectionQuery(
                 "SELECT COUNT(source) FROM "+identifiableEntity.getClass().getName() + " ie JOIN ie.sources source WHERE ie = :identifiableEntity",
                 Long.class);
         query.setParameter("identifiableEntity", identifiableEntity);
@@ -177,7 +177,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
             return new ArrayList<>();
         }
         checkNotInPriorView("IdentifiableDaoBase.getCredits(T identifiableEntity, Integer pageSize, Integer pageNumber)");
-        Query<Credit> query = getSession().createQuery("select credits from " + type.getSimpleName() + " identifiableEntity join identifiableEntity.credits credits where identifiableEntity = :identifiableEntity",
+        SelectionQuery<Credit> query = getSession().createSelectionQuery("select credits from " + type.getSimpleName() + " identifiableEntity join identifiableEntity.credits credits where identifiableEntity = :identifiableEntity",
                 Credit.class);
         query.setParameter("identifiableEntity",identifiableEntity);
         addPageSizeAndNumber(query, pageSize, pageNumber);
@@ -190,7 +190,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
     public List<IdentifiableSource> getSources(T identifiableEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
         checkNotInPriorView("IdentifiableDaoBase.getSources(T identifiableEntity, Integer pageSize, Integer pageNumber)");
-        Query<OriginalSourceBase> query = getSession().createQuery(
+        SelectionQuery<OriginalSourceBase> query = getSession().createSelectionQuery(
                 "   SELECT source "
                 + " FROM "+ identifiableEntity.getClass().getName()+ " ie JOIN ie.sources source "
                 + " WHERE ie.id = :id",
@@ -207,7 +207,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
     @Override
     public List<T> findOriginalSourceByIdInSource(String idInSource, String idNamespace) {
         checkNotInPriorView("IdentifiableDaoBase.findOriginalSourceByIdInSource(String idInSource, String idNamespace)");
-        Query<T> query = getSession().createQuery(
+        SelectionQuery<T> query = getSession().createSelectionQuery(
                 "Select c from " + type.getSimpleName() + " as c " +
                 "inner join c.sources as source " +
                 "where source.idInSource = :idInSource " +
@@ -240,7 +240,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         }
         cq.select(root);
         cq.where(cb.and(predicates.toArray(new Predicate[0])));
-        T object = getSession().createQuery(cq).uniqueResult();
+        T object = getSession().createSelectionQuery(cq).uniqueResult();
 
         if(object != null) {
             return object;
@@ -274,7 +274,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
     public String getTitleCache(UUID uuid, boolean refresh){
         if (! refresh){
             String queryStr = String.format("SELECT titleCache FROM %s t WHERE t.uuid = '%s'", type.getSimpleName() , uuid.toString());
-            Query<String> query = getSession().createQuery(queryStr, String.class);
+            SelectionQuery<String> query = getSession().createSelectionQuery(queryStr, String.class);
             List<String> list = query.list();
             return list.isEmpty()? null : list.get(0);
         }else{
@@ -382,7 +382,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         cq.select(cb.countDistinct(root.get("id")))
           .where(predicate);
 
-        return getSession().createQuery(cq).getSingleResult();
+        return getSession().createSelectionQuery(cq).getSingleResult();
     }
 
 
@@ -405,7 +405,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         	queryString += " AND ids.type = :type";
         }
 
-		Query<Long> query = getSession().createQuery(queryString, Long.class);
+		SelectionQuery<Long> query = getSession().createSelectionQuery(queryString, Long.class);
         if (identifierType != null){
         	query.setParameter("type", identifierType);
         }
@@ -441,7 +441,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         //order
         queryString +=" ORDER BY ids.type.uuid, ids.identifier, c.uuid ";
 
-		Query<Object[]> query = getSession().createQuery(queryString, Object[].class);
+		SelectionQuery<Object[]> query = getSession().createSelectionQuery(queryString, Object[].class);
 
 		//parameters
 		if (identifierType != null){
@@ -483,7 +483,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         }
         queryString += " AND mks.markerType = :type";
 
-        Query<Long> query = getSession().createQuery(queryString, Long.class);
+        SelectionQuery<Long> query = getSession().createSelectionQuery(queryString, Long.class);
         query.setParameter("type", markerType);
         if (markerValue != null){
             query.setParameter("flag", markerValue);
@@ -519,7 +519,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         //order
         queryString +=" ORDER BY mks.markerType.uuid, mks.flag, c.uuid ";
 
-        Query<Object[]> query = getSession().createQuery(queryString, Object[].class);
+        SelectionQuery<Object[]> query = getSession().createSelectionQuery(queryString, Object[].class);
 
         //parameters
         query.setParameter("type", markerType);
@@ -564,7 +564,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
             pattern = pattern + "%";
         }
 
-        Query<Object[]> query = getSession().createQuery(queryString, Object[].class);
+        SelectionQuery<Object[]> query = getSession().createSelectionQuery(queryString, Object[].class);
         if (pattern != null){
             query.setParameter("pattern", pattern);
         }
@@ -593,7 +593,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
             clazz = (Class)this.type;
         }
 
-        Query<SortableTaxonNodeQueryResult> query = session.createQuery(
+        SelectionQuery<SortableTaxonNodeQueryResult> query = session.createSelectionQuery(
                 "SELECT new " + SortableTaxonNodeQueryResult.class.getName()
                 + "        (uuid, id, titleCache) "
                 + " FROM " + clazz.getSimpleName()
@@ -608,7 +608,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         if (limit != null){
            query.setMaxResults(limit);
         }
-        return getUuidAndTitleCache((Query)query);
+        return getUuidAndTitleCache(query);
     }
 
     @Override
@@ -616,7 +616,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         return getUuidAndTitleCache(type, null, null);
     }
 
-    protected <E extends IAnnotatableEntity> List<UuidAndTitleCache<E>> getUuidAndAbbrevTitleCache(Query<Object[]> query){
+    protected <E extends IAnnotatableEntity> List<UuidAndTitleCache<E>> getUuidAndAbbrevTitleCache(SelectionQuery<Object[]> query){
         List<UuidAndTitleCache<E>> list = new ArrayList<>();
 
         List<Object[]> result = query.list();
@@ -627,7 +627,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         return list;
     }
 
-    protected <E extends IAnnotatableEntity> List<UuidAndTitleCache<E>> getUuidAndTitleCache(Query query){
+    protected <E extends IAnnotatableEntity> List<UuidAndTitleCache<E>> getUuidAndTitleCache(SelectionQuery query){
 
         List<UuidAndTitleCache<E>> list = new ArrayList<>();
         @SuppressWarnings("unchecked")

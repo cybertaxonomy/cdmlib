@@ -31,7 +31,7 @@ import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.internal.SessionImpl;
 import org.hibernate.metamodel.MappingMetamodel;
 import org.hibernate.persister.entity.EntityPersister;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.hibernate.type.BasicType;
 import org.hibernate.type.CollectionType;
 import org.hibernate.type.ComponentType;
@@ -115,7 +115,7 @@ public class CdmGenericDaoImpl
     private List<ReferencingObjectDto> getCdmBasesByFieldAndClassDto(Class<? extends CdmBase> clazz, String propertyName,
             CdmBase referencedCdmBase, Integer limit){
 
-        Query<ReferencingObjectDto> query = getSession().createQuery("SELECT new eu.etaxonomy.cdm.persistence.dto.ReferencingObjectDto(this.uuid, this.id) "
+        SelectionQuery<ReferencingObjectDto> query = getSession().createSelectionQuery("SELECT new eu.etaxonomy.cdm.persistence.dto.ReferencingObjectDto(this.uuid, this.id) "
                     + "FROM "+ clazz.getSimpleName() + " this "
                     + "WHERE this." + propertyName +" = :referencedObject",
                     ReferencingObjectDto.class)
@@ -143,7 +143,7 @@ public class CdmGenericDaoImpl
         Root<CdmBase> root = (Root)cq.from(clazz);
         cq.select(root)
           .where(predicateEqual(cb, root, propertyName, referencedCdmBase));
-        TypedQuery<CdmBase> query = session.createQuery(cq);
+        SelectionQuery<CdmBase> query = session.createSelectionQuery(cq);
         if (limit != null){
             query.setMaxResults(limit);
         }
@@ -154,7 +154,7 @@ public class CdmGenericDaoImpl
 
 	@Override
     public long getCountByFieldAndClass(Class<? extends CdmBase> clazz, String propertyName, CdmBase referencedCdmBase){
-        Query<Long> query = getSession().createQuery("SELECT count(this) "
+        SelectionQuery<Long> query = getSession().createSelectionQuery("SELECT count(this) "
                 + " FROM "+ clazz.getSimpleName() + " this "
                 + " WHERE this." + propertyName +" = :referencedObject",
                 Long.class)
@@ -170,7 +170,7 @@ public class CdmGenericDaoImpl
 
         String queryStr = withItemInCollectionHql(itemClass, clazz, propertyName,
                 "new eu.etaxonomy.cdm.persistence.dto.ReferencingObjectDto(other.uuid, other.id)");
-        Query<ReferencingObjectDto> query = getSession().createQuery(queryStr, ReferencingObjectDto.class)
+        SelectionQuery<ReferencingObjectDto> query = getSession().createSelectionQuery(queryStr, ReferencingObjectDto.class)
                 .setParameter("referencedObject", item);
         if (limit != null){
             query.setMaxResults(limit);
@@ -189,7 +189,7 @@ public class CdmGenericDaoImpl
 		// is already managed in the persistence context (e.g. during deleteSynonym /
 		// getReferencingObjectsForDeletion).
 		String queryStr = withItemInCollectionHql(itemClass, clazz, propertyName, "other.id");
-		Query<Integer> query = getSession().createQuery(queryStr, Integer.class)
+		SelectionQuery<Integer> query = getSession().createSelectionQuery(queryStr, Integer.class)
 		        .setParameter("referencedObject", item);
 		if (limit != null){
 		    query.setMaxResults(limit);
@@ -219,7 +219,7 @@ public class CdmGenericDaoImpl
 
         String queryStr = withItemInCollectionHql(itemClass, clazz, propertyName, "count(this)");
 
-        Query<Long> query = getSession().createQuery(queryStr, Long.class)
+        SelectionQuery<Long> query = getSession().createSelectionQuery(queryStr, Long.class)
                 .setParameter("referencedObject", item);
         long result =query.uniqueResult();
         return result;
@@ -572,7 +572,7 @@ public class CdmGenericDaoImpl
 	@Override
 	public <T> List<T> getHqlResult(String hqlQuery, Object[] params, Class<T> clazz){
 		params = params == null ? new Object[0] : params;
-		Query<T> query = getSession().createQuery(hqlQuery, clazz);
+		SelectionQuery<T> query = getSession().createSelectionQuery(hqlQuery, clazz);
 		for(int i = 0; i<params.length; i++){
 		    query.setParameter(i+1, params[i]); //param numbering in query should start with 1
 		}
@@ -583,7 +583,7 @@ public class CdmGenericDaoImpl
 	@Override
     public <T> List<T> getHqlResult(String hqlQuery, Map<String,Object> params, Class<T> clazz){
         params = params == null ? new HashMap<>() : params;
-        Query<T> query = getSession().createQuery(hqlQuery, clazz);
+        SelectionQuery<T> query = getSession().createSelectionQuery(hqlQuery, clazz);
         for(Map.Entry<String,Object> entry : params.entrySet()){
             query.setParameter(entry.getKey(), entry.getValue());
         }
@@ -612,13 +612,13 @@ public class CdmGenericDaoImpl
 	}
 
 	@Override
-	public Query<Object> getHqlQuery(String hqlQuery){
-		return getSession().createQuery(hqlQuery, Object.class);
+	public SelectionQuery<Object> getHqlQuery(String hqlQuery){
+		return getSession().createSelectionQuery(hqlQuery, Object.class);
 	}
 
     @Override
-    public <T> Query<T> getHqlQuery(String hqlQuery, Class<T> clazz) throws UnsupportedOperationException{
-        Query<T> query = getSession().createQuery(hqlQuery, clazz);
+    public <T> SelectionQuery<T> getHqlQuery(String hqlQuery, Class<T> clazz) throws UnsupportedOperationException{
+        SelectionQuery<T> query = getSession().createSelectionQuery(hqlQuery, clazz);
         return query;
     }
 
@@ -675,7 +675,7 @@ public class CdmGenericDaoImpl
         cq.select(root)
           .where(predicateUuid(cb, root, uuid))
           .orderBy(cb.desc(root.get("created")));
-        List<T> results = session.createQuery(cq).getResultList();
+        List<T> results = session.createSelectionQuery(cq).getResultList();
 
         if (results.isEmpty()){
             return null;
@@ -717,7 +717,7 @@ public class CdmGenericDaoImpl
             cq.select(root)
               .where(predicateUuid(cb, root, uuid))
               .orderBy(cb.desc(root.get("created")));
-            List<T> results = session.createQuery(cq).getResultList();
+            List<T> results = session.createSelectionQuery(cq).getResultList();
 
             results = deduplicateResult(results);
             if (results.isEmpty()) {
@@ -799,7 +799,7 @@ public class CdmGenericDaoImpl
 
 			@SuppressWarnings({ "rawtypes", "unchecked" })
             //deduplicate (for some reason the match candidate list return matching teams >1x if they have >1 member, so we deduplicate to be on the safe site
-			List<T> matchCandidates = deduplicateResult((List)session.createQuery(query).getResultList());
+			List<T> matchCandidates = deduplicateResult((List)session.createSelectionQuery(query).getResultList());
 			matchCandidates.remove(objectToMatch);
 			for (T matchCandidate : matchCandidates ){
 				if (includeCandidates || matchStrategy.invoke(objectToMatch, matchCandidate).isSuccessful()){
@@ -1262,7 +1262,7 @@ public class CdmGenericDaoImpl
     @Override
     public List<UUID> listUuid(Class<? extends CdmBase> clazz) {
         String queryString = "SELECT uuid FROM " + clazz.getSimpleName();
-        Query<UUID> query = getSession().createQuery(queryString, UUID.class);
+        SelectionQuery<UUID> query = getSession().createSelectionQuery(queryString, UUID.class);
         List<UUID> list = query.list();
         return list;
     }

@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.permission;
 
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
@@ -26,7 +26,7 @@ public class GrantedAuthorityDaoImpl extends CdmEntityDaoBase<GrantedAuthorityIm
 	@Override
     public GrantedAuthorityImpl findAuthorityString(String authorityString){
 	    GrantedAuthorityImpl result = null;
-	    Query<GrantedAuthorityImpl> query = getSession().createQuery("select ga from GrantedAuthorityImpl ga where ga.authority = :authority", GrantedAuthorityImpl.class);
+	    SelectionQuery<GrantedAuthorityImpl> query = getSession().createSelectionQuery("select ga from GrantedAuthorityImpl ga where ga.authority = :authority", GrantedAuthorityImpl.class);
         query.setParameter("authority",authorityString);
 
         result = query.uniqueResult();

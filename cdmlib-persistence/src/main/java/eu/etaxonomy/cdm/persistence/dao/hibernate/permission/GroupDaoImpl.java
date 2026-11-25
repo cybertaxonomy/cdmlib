@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.permission;
 import java.util.List;
 
 import org.hibernate.Hibernate;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.api.filter.EntityFilter;
@@ -30,7 +30,7 @@ public class GroupDaoImpl extends CdmEntityDaoBase<Group> implements IGroupDao {
 
 	@Override
 	public Group findGroupByName(String groupName) {
-		Query<Group> query = getSession().createQuery("select g from Group g where g.name = :name", Group.class);
+		SelectionQuery<Group> query = getSession().createSelectionQuery("select g from Group g where g.name = :name", Group.class);
 		query.setParameter("name",groupName);
 
 		Group group = query.uniqueResult();
@@ -44,7 +44,7 @@ public class GroupDaoImpl extends CdmEntityDaoBase<Group> implements IGroupDao {
 
 	@Override
     public List<String> listNames(Integer pageSize, Integer pageNumber) {
-		Query<String> query = getSession().createQuery("SELECT g.name FROM Group g", String.class);
+		SelectionQuery<String> query = getSession().createSelectionQuery("SELECT g.name FROM Group g", String.class);
 		this.addPageSizeAndNumber(query, pageSize, pageNumber);
 
         List<String> result = query.list();
@@ -53,7 +53,7 @@ public class GroupDaoImpl extends CdmEntityDaoBase<Group> implements IGroupDao {
 
 	@Override
     public List<String> listMembers(Group group, Integer pageSize,	Integer pageNumber) {
-		Query<String> query = getSession().createQuery("SELECT m.username FROM Group g JOIN g.members m WHERE g = :group", String.class);
+		SelectionQuery<String> query = getSession().createSelectionQuery("SELECT m.username FROM Group g JOIN g.members m WHERE g = :group", String.class);
 		query.setParameter("group", group);
 		this.addPageSizeAndNumber(query, pageSize, pageNumber);
 

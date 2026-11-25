@@ -34,7 +34,7 @@ import org.hibernate.envers.internal.entities.mapper.relation.lazy.proxy.Collect
 import org.hibernate.envers.internal.entities.mapper.relation.lazy.proxy.MapProxy;
 import org.hibernate.envers.internal.entities.mapper.relation.lazy.proxy.SortedMapProxy;
 import org.hibernate.proxy.HibernateProxy;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -453,7 +453,7 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
                 AutoInit autoInit = addAutoinitFetchLoading(clazz, "c");
                 hql = String.format(hql, clazz.getSimpleName(), autoInit.leftJoinFetch);
                 if (logger.isTraceEnabled()){logger.trace(hql);}
-                Query<Object> query = genericDao.getHqlQuery(hql, Object.class);
+                SelectionQuery<Object> query = genericDao.getHqlQuery(hql, Object.class);
                 query.setParameterList("idSet", idSet);
                 List<Object> list = query.list();
 
@@ -528,7 +528,7 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
 
 					try {
 						if (logger.isTraceEnabled()){logger.trace(hql);}
-						Query query = genericDao.getHqlQuery(hql, Object.class);
+						SelectionQuery query = genericDao.getHqlQuery(hql, Object.class);
 						query.setParameterList("idSet", idSet);
 						list = query.list();
 						if (logger.isTraceEnabled()){logger.trace("size of retrieved list is " + list.size());}

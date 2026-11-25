@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.hibernate.Session;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.term.TermNode;
@@ -58,7 +58,7 @@ public class TermNodeDaoImpl
           .where(predicateAnd(cb, predicates))
           .orderBy(ordersFrom(cb, root, orderHints));
 
-        List<TermNode> results = addLimitAndStart(getSession().createQuery(cq), limit, start)
+        List<TermNode> results = addLimitAndStart(getSession().createSelectionQuery(cq), limit, start)
                 .getResultList() ;
 
         defaultBeanInitializer.initializeAll(results, propertyPaths);
@@ -68,7 +68,7 @@ public class TermNodeDaoImpl
 	@Override
 	public List<UuidAndTitleCache<TermNode>> getUuidAndTitleCache(Integer limit, String pattern){
 	    Session session = getSession();
-        Query<SortableTaxonNodeQueryResult> query = session.createQuery(
+        SelectionQuery<SortableTaxonNodeQueryResult> query = session.createSelectionQuery(
                 "SELECT new " + SortableTaxonNodeQueryResult.class.getName()
                 + "       (uuid, id, titleCache) "
                 + " FROM TermNode node "
@@ -87,7 +87,7 @@ public class TermNodeDaoImpl
         return getUuidAndTitleCache(query);
 	}
 
-	protected List<UuidAndTitleCache<TermNode>> getUuidAndTitleCache(Query<SortableTaxonNodeQueryResult> query){
+	protected List<UuidAndTitleCache<TermNode>> getUuidAndTitleCache(SelectionQuery<SortableTaxonNodeQueryResult> query){
         List<UuidAndTitleCache<TermNode>> list = new ArrayList<>();
         List<SortableTaxonNodeQueryResult> result = query.list();
 

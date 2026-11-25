@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -91,11 +91,11 @@ public class TaxonNameDaoHibernateImpl
     public long countHybridNames(INonViralName name, HybridRelationshipType type) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Query<Long> query = null;
+            SelectionQuery<Long> query = null;
             if(type == null) {
-                query = getSession().createQuery("select count(relation) from HybridRelationship relation where relation.relatedFrom = :name", Long.class);
+                query = getSession().createSelectionQuery("select count(relation) from HybridRelationship relation where relation.relatedFrom = :name", Long.class);
             } else {
-                query = getSession().createQuery("select count(relation) from HybridRelationship relation where relation.relatedFrom = :name and relation.type = :type", Long.class);
+                query = getSession().createSelectionQuery("select count(relation) from HybridRelationship relation where relation.relatedFrom = :name and relation.type = :type", Long.class);
                 query.setParameter("type", type);
             }
             query.setParameter("name",name);
@@ -124,7 +124,7 @@ public class TaxonNameDaoHibernateImpl
         cq.select(cb.count(root))
           .where(predicate);
 
-        return getSession().createQuery(cq).getSingleResult();
+        return getSession().createSelectionQuery(cq).getSingleResult();
     }
 
     @Override
@@ -144,7 +144,7 @@ public class TaxonNameDaoHibernateImpl
             cq.select(cb.countDistinct(root.get("id")))
                 .where(predicate);
 
-            return getSession().createQuery(cq).getSingleResult();
+            return getSession().createSelectionQuery(cq).getSingleResult();
 
         } else {
             AuditQuery query = makeAuditQuery(TaxonName.class, auditEvent);
@@ -187,11 +187,11 @@ public class TaxonNameDaoHibernateImpl
 
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Query query = null;
+            SelectionQuery<Long> query = null;
             if(type == null) {
-                query = getSession().createQuery("select count(relation) from NameRelationship relation where relation." + direction +" = :name");
+                query = getSession().createSelectionQuery("select count(relation) from NameRelationship relation where relation." + direction +" = :name", Long.class);
             } else {
-                query = getSession().createQuery("select count(relation) from NameRelationship relation where relation." + direction +" = :name and relation.type = :type");
+                query = getSession().createSelectionQuery("select count(relation) from NameRelationship relation where relation." + direction +" = :name and relation.type = :type", Long.class);
                 query.setParameter("type", type);
             }
             query.setParameter("name",name);
@@ -213,11 +213,11 @@ public class TaxonNameDaoHibernateImpl
     @Override
     public long countTypeDesignations(TaxonName name, SpecimenTypeDesignationStatus status) {
         checkNotInPriorView("countTypeDesignations(TaxonName name, SpecimenTypeDesignationStatus status)");
-        Query<Long> query = null;
+        SelectionQuery<Long> query = null;
         if(status == null) {
-            query = getSession().createQuery("select count(designation) from TypeDesignationBase designation join designation.typifiedNames name where name = :name", Long.class);
+            query = getSession().createSelectionQuery("select count(designation) from TypeDesignationBase designation join designation.typifiedNames name where name = :name", Long.class);
         } else {
-            query = getSession().createQuery("select count(designation) from TypeDesignationBase designation join designation.typifiedNames name where name = :name and designation.typeStatus = :status", Long.class);
+            query = getSession().createSelectionQuery("select count(designation) from TypeDesignationBase designation join designation.typifiedNames name where name = :name and designation.typeStatus = :status", Long.class);
             query.setParameter("status", status);
         }
         query.setParameter("name",name);
@@ -245,7 +245,7 @@ public class TaxonNameDaoHibernateImpl
               .orderBy(ordersFrom(cb, root, orderHints));
 
             List<HybridRelationship> results = addPageSizeAndNumber(
-                    getSession().createQuery(cq), pageSize, pageNumber)
+                    getSession().createSelectionQuery(cq), pageSize, pageNumber)
                    .getResultList();
            defaultBeanInitializer.initializeAll(results, propertyPaths);
            return results;
@@ -296,7 +296,7 @@ public class TaxonNameDaoHibernateImpl
               .orderBy(ordersFrom(cb, root, orderHints));
 
             List<NameRelationship> results = addPageSizeAndNumber(
-                    getSession().createQuery(cq), pageSize, pageNumber)
+                    getSession().createSelectionQuery(cq), pageSize, pageNumber)
                    .getResultList();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
@@ -328,7 +328,7 @@ public class TaxonNameDaoHibernateImpl
     public List<Integer> getTypeSpecimenIdsForTaxonName(TaxonName name,
             TypeDesignationStatusBase<?> status, Integer pageSize, Integer pageNumber){
 
-        Query<Integer> query = getTypeDesignationQuery("designation.typeSpecimen.id",
+        SelectionQuery<Integer> query = getTypeDesignationQuery("designation.typeSpecimen.id",
                 name, SpecimenTypeDesignation.class, status, Integer.class);
         addPageSizeAndNumber(query, pageSize, pageNumber);
         List<Integer> result = query.list();
@@ -343,14 +343,14 @@ public class TaxonNameDaoHibernateImpl
 
         Class<T> returnType = (type != null)? type : (Class<T>)TypeDesignationBase.class;
         checkNotInPriorView("getTypeDesignations(TaxonName name, TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
-        Query<T> query = getTypeDesignationQuery("designation", name, type, status, returnType);
+        SelectionQuery<T> query = getTypeDesignationQuery("designation", name, type, status, returnType);
 
         addPageSizeAndNumber(query, pageSize, pageNumber);
         List<T> result = defaultBeanInitializer.initializeAll(query.list(), propertyPaths);
         return result;
     }
 
-    private <T extends TypeDesignationBase, R extends Object> Query<R> getTypeDesignationQuery(String select, TaxonName name,
+    private <T extends TypeDesignationBase, R extends Object> SelectionQuery<R> getTypeDesignationQuery(String select, TaxonName name,
             Class<T> type, TypeDesignationStatusBase<?> status, @NotNull Class<R> returnType){
 
         if (returnType == null) {
@@ -364,7 +364,7 @@ public class TaxonNameDaoHibernateImpl
         //  is then still TypeDesignationBase while the expected one is
         //  e.g. SpecimenTypeDesignation. This throws an exception.
         type = (type != null) ? type : (Class)TypeDesignationBase.class;
-        Query<R> query = null;
+        SelectionQuery<R> query = null;
         String queryString =
                   " SELECT " + select
                 + " FROM " + type.getSimpleName() + " designation "
@@ -374,7 +374,7 @@ public class TaxonNameDaoHibernateImpl
         if(status != null) {
             queryString +=  " and designation.typeStatus = :status";
         }
-        query = getSession().createQuery(queryString, returnType);
+        query = getSession().createSelectionQuery(queryString, returnType);
 
         if(status != null) {
             query.setParameter("status", status);
@@ -403,7 +403,7 @@ public class TaxonNameDaoHibernateImpl
               .orderBy(ordersFrom(cb, root, orderHints));
 
             List<TaxonName> results = addPageSizeAndNumber(
-                  getSession().createQuery(cq), pageSize, pageNumber)
+                  getSession().createSelectionQuery(cq), pageSize, pageNumber)
                  .getResultList();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
@@ -496,7 +496,7 @@ public class TaxonNameDaoHibernateImpl
           .orderBy(cb.asc(root.get("nameCache")), cb.asc(root.get("titleCache")));
 
         List<TaxonName> results = addPageSizeAndNumber(
-               getSession().createQuery(cq), pageSize, pageNumber)
+               getSession().createSelectionQuery(cq), pageSize, pageNumber)
               .getResultList();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
@@ -519,7 +519,7 @@ public class TaxonNameDaoHibernateImpl
           .orderBy(cb.asc(root.get("fullTitleCache")));
 
         List<TaxonName> results = addPageSizeAndNumber(
-                getSession().createQuery(cq), pageSize, pageNumber)
+                getSession().createSelectionQuery(cq), pageSize, pageNumber)
                .getResultList();
          defaultBeanInitializer.initializeAll(results, propertyPaths);
          return results;
@@ -542,7 +542,7 @@ public class TaxonNameDaoHibernateImpl
           .orderBy(cb.asc(root.get("titleCache")));
 
         List<TaxonName> results = addPageSizeAndNumber(
-                getSession().createQuery(cq), pageSize, pageNumber)
+                getSession().createSelectionQuery(cq), pageSize, pageNumber)
                .getResultList();
          defaultBeanInitializer.initializeAll(results, propertyPaths);
          return results;
@@ -562,7 +562,7 @@ public class TaxonNameDaoHibernateImpl
           .distinct(true)
           .where(predicate);
 
-        TaxonName result = getSession().createQuery(cq).getSingleResult();
+        TaxonName result = getSession().createSelectionQuery(cq).getSingleResult();
         defaultBeanInitializer.initialize(result, propertyPaths);
         return result;
     }
@@ -649,7 +649,7 @@ public class TaxonNameDaoHibernateImpl
 
         if (homotypicalGroupId != null) {
             long remainingNames = getSession()
-                    .createQuery("select count(n.id) from TaxonName n where n.homotypicalGroup.id = :hgId", Long.class)
+                    .createSelectionQuery("select count(n.id) from TaxonName n where n.homotypicalGroup.id = :hgId", Long.class)
                     .setParameter("hgId", homotypicalGroupId)
                     .uniqueResult();
             if (remainingNames == 0){
@@ -713,7 +713,7 @@ public class TaxonNameDaoHibernateImpl
     	        + " LEFT OUTER JOIN taxonBase.acceptedTaxon as accTaxon "
     	        + " LEFT OUTER JOIN accTaxon.taxonNodes as accTaxonNodes";
 
-    	Query hqlQuery = getSession().createQuery(hqlQueryStringFrom);
+    	SelectionQuery<Object[]> hqlQuery = getSession().createSelectionQuery(hqlQueryStringFrom, Object[].class);
     	List<?> hqlResult = hqlQuery.list();
 
 		List<Map<String,String>> nameRecords = new ArrayList<>();
@@ -782,7 +782,7 @@ public class TaxonNameDaoHibernateImpl
         StringBuilder hql = prepareFindTaxonNameParts(false, genusOrUninomial, infraGenericEpithet,
                 specificEpithet, infraSpecificEpithet, rank, excludedNamesUuids);
         addOrder(hql, "n", orderHints);
-        Query<TaxonNameParts> query = getSession().createQuery(hql.toString(), TaxonNameParts.class);
+        SelectionQuery<TaxonNameParts> query = getSession().createSelectionQuery(hql.toString(), TaxonNameParts.class);
         if(rank != null){
             query.setParameter("rank", rank);
         }
@@ -799,7 +799,7 @@ public class TaxonNameDaoHibernateImpl
             Optional<String> specificEpithet, Optional<String> infraSpecificEpithet, Rank rank, Collection<UUID> excludedNamesUUIDs) {
 
         StringBuilder hql = prepareFindTaxonNameParts(true, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, rank, excludedNamesUUIDs);
-        Query<Long> query = getSession().createQuery(hql.toString(), Long.class);
+        SelectionQuery<Long> query = getSession().createSelectionQuery(hql.toString(), Long.class);
         if(rank != null){
             query.setParameter("rank", rank);
         }
@@ -858,7 +858,7 @@ public class TaxonNameDaoHibernateImpl
         cq.select(cb.countDistinct(root))
           .where(predicateAnd(cb, predicates));
 
-        return getSession().createQuery(cq).getSingleResult();
+        return getSession().createSelectionQuery(cq).getSingleResult();
     }
 
     @Override
@@ -884,7 +884,7 @@ public class TaxonNameDaoHibernateImpl
           .orderBy(ordersFrom(cb, root, orderHints));
 
         List<NameRelationship> results = addPageSizeAndNumber(
-                getSession().createQuery(cq), pageSize, pageNumber)
+                getSession().createSelectionQuery(cq), pageSize, pageNumber)
                .getResultList();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
@@ -910,7 +910,7 @@ public class TaxonNameDaoHibernateImpl
         cq.select(cb.countDistinct(root))
           .where(predicateAnd(cb, predicates));
 
-        return getSession().createQuery(cq).getSingleResult();
+        return getSession().createSelectionQuery(cq).getSingleResult();
     }
 
     @Override
@@ -936,7 +936,7 @@ public class TaxonNameDaoHibernateImpl
           .orderBy(ordersFrom(cb, root, orderHints));
 
         List<HybridRelationship> results = addPageSizeAndNumber(
-                getSession().createQuery(cq), pageSize, pageNumber)
+                getSession().createSelectionQuery(cq), pageSize, pageNumber)
                .getResultList();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
@@ -954,14 +954,14 @@ public class TaxonNameDaoHibernateImpl
           .distinct(true);
 
         List<TypeDesignationBase<?>> results = (List)addPageSizeAndNumber(
-                getSession().createQuery(cq), pageSize, pageNumber)
+                getSession().createSelectionQuery(cq), pageSize, pageNumber)
                .getResultList();
         return deduplicateResult(results);
     }
 
     @Override
     public List<TypeDesignationStatusBase> getTypeDesignationStatusInUse() {
-        Query<TypeDesignationStatusBase> query = getSession().createQuery(
+        SelectionQuery<TypeDesignationStatusBase> query = getSession().createSelectionQuery(
                 "select distinct tdb.typeStatus from TypeDesignationBase tdb", TypeDesignationStatusBase.class);
         List<TypeDesignationStatusBase> terms = query.list();
         return terms;
@@ -982,7 +982,7 @@ public class TaxonNameDaoHibernateImpl
             hql += " AND n.rank.orderIndex <= :minRankIndex ";
         }
 
-        Query<String> query = getSession().createQuery(hql, String.class);
+        SelectionQuery<String> query = getSession().createSelectionQuery(hql, String.class);
         if (pattern != null) {
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
@@ -1015,7 +1015,7 @@ public class TaxonNameDaoHibernateImpl
             hql += " AND n.rank.orderIndex <= :minRankIndex ";
         }
 
-        Query<String> query = getSession().createQuery(hql, String.class);
+        SelectionQuery<String> query = getSession().createSelectionQuery(hql, String.class);
         if (pattern != null) {
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");

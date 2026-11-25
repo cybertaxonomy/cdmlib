@@ -44,7 +44,7 @@ public abstract class ToManyReferringObjectMetadata
         cq.select((Root)root);
         Join<Object, Object> join = root.join(this.fieldName, JoinType.INNER);
         cq.where(join.get("id").in(idValues));
-        List<? extends CdmBase> result = session.createQuery(cq).getResultList();
+        List<? extends CdmBase> result = session.createSelectionQuery(cq).getResultList();
 
         return result;
     }

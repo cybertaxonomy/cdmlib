@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.api.filter.MatchMode;
@@ -76,7 +76,7 @@ public class TermCollectionDaoImpl
         hql += " ORDER BY term."+ labelType.getKey();
 
         //TODO using clazz instead of DefinedTermBase.class for some reason does still throw hql exception
-        Query<DefinedTermBase> query = getSession().createQuery(hql, DefinedTermBase.class);
+        SelectionQuery<DefinedTermBase> query = getSession().createSelectionQuery(hql, DefinedTermBase.class);
 
         Set<Integer> collectionIDs = graphs.stream().map(g->g.getId()).collect(Collectors.toSet());
         query.setParameterList("collectionIDs", collectionIDs);
@@ -106,7 +106,7 @@ public class TermCollectionDaoImpl
     public <S extends TermCollection> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
             String pattern) {
         Session session = getSession();
-        Query<Object[]> query = session.createQuery(
+        SelectionQuery<Object[]> query = session.createSelectionQuery(
                 " SELECT uuid, id, titleCache "
                     + " FROM " + clazz.getSimpleName()
                     + (pattern!=null?" WHERE titleCache LIKE :pattern":" WHERE 1 = 1 ")
@@ -157,7 +157,7 @@ public class TermCollectionDaoImpl
             }
         }
 
-        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
+        SelectionQuery<Object[]> query =  getSession().createSelectionQuery(queryString, Object[].class);
         if (!termTypeWithSubType.isEmpty()){
             query.setParameterList("termTypes", termTypeWithSubType);
         }
@@ -189,7 +189,7 @@ public class TermCollectionDaoImpl
         String queryString = TermCollectionDto.getTermCollectionDtoSelect()
                 + " WHERE a.uuid IN :uuidList ";
 //                + "order by a.titleCache";
-        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
+        SelectionQuery<Object[]> query =  getSession().createSelectionQuery(queryString, Object[].class);
         query.setParameterList("uuidList", collUuids);
 
         List<Object[]> result = query.list();
@@ -203,7 +203,7 @@ public class TermCollectionDaoImpl
      * @param list
      */
     protected void addTerms(List<TermCollectionDto> list) {
-        Query<Object[]> query;
+        SelectionQuery<Object[]> query;
         List<Object[]> result;
         String queryStringTerms = TermDto.getTermDtoSelect();
         queryStringTerms += "WHERE v.uuid like :uuid" ;
@@ -212,7 +212,7 @@ public class TermCollectionDaoImpl
         for (TermCollectionDto dto: list) {
             //get terms
             if (dto instanceof TermVocabularyDto) {
-                query =  getSession().createQuery(queryStringTerms, Object[].class);
+                query =  getSession().createSelectionQuery(queryStringTerms, Object[].class);
                 query.setParameter("uuid", dto.getUuid());
 
                 result = query.list();

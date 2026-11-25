@@ -74,7 +74,7 @@ public class MarkerDaoImpl extends VersionableDaoBase<Marker> implements IMarker
             cq.where(cb.and(predicates.toArray(new Predicate[0])));
         }
 
-        return getSession().createQuery(cq).getSingleResult();
+        return getSession().createSelectionQuery(cq).getSingleResult();
 	}
 
 	public List<Marker> list(User creator, MarkerType markerType, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
@@ -102,7 +102,7 @@ public class MarkerDaoImpl extends VersionableDaoBase<Marker> implements IMarker
         cq.orderBy(ordersFrom(cb, root, orderHints));
 
         List<Marker> results = addPageSizeAndNumber(
-                 getSession().createQuery(cq), pageSize, pageNumber)
+                 getSession().createSelectionQuery(cq), pageSize, pageNumber)
                 .getResultList();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;

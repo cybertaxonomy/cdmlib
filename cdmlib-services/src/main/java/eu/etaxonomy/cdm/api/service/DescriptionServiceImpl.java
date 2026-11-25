@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -1045,7 +1045,7 @@ public class DescriptionServiceImpl
     @Override
     public List<DescriptionBaseDto> loadDtosForTaxon(UUID taxonUuid) {
         String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoForTaxonSelect();
-        Query<Object[]> query =  getSession().createQuery(sqlSelect, Object[].class);
+        SelectionQuery<Object[]> query =  getSession().createSelectionQuery(sqlSelect, Object[].class);
         query.setParameter("uuid", taxonUuid);
 
         List<Object[]> result = query.list();

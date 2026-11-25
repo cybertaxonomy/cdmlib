@@ -18,7 +18,7 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -303,12 +303,12 @@ public class StatisticsDaoHibernateImpl
 
 	        cq.select(cb.countDistinct(root.get("id")))
 	          .where(predicateEqual(cb, root, "classification", classification));
-	        return getSession().createQuery(cq).getSingleResult();
+	        return getSession().createSelectionQuery(cq).getSingleResult();
 		}
 
 		else if (clazz.equals(Synonym.class)) {
 
-			Query<Long> query = getSession().createQuery(
+			SelectionQuery<Long> query = getSession().createSelectionQuery(
 					"SELECT COUNT(DISTINCT s.uuid) FROM TaxonNode tn "
 							+ " JOIN tn.taxon.synonyms as s "
 							+ " WHERE tn.classification=:classification ",
@@ -363,8 +363,8 @@ public class StatisticsDaoHibernateImpl
 
 	@Override
     public Long countNomenclaturalReferences() {
-		Query<Long> query = getSession()
-				.createQuery(
+		SelectionQuery<Long> query = getSession()
+				.createSelectionQuery(
 						" SELECT COUNT(DISTINCT ns.citation) "
 						+ " FROM TaxonName n"
 						+ " JOIN n.nomenclaturalSource ns ",
@@ -919,7 +919,7 @@ public class StatisticsDaoHibernateImpl
 		Set<UUID> ids = new HashSet<>();
 		for (String queryString : queryStrings) {
 //		    System.out.println(queryString);
-		    Query<UUID> query = getSession().createQuery(queryString, UUID.class);
+		    SelectionQuery<UUID> query = getSession().createSelectionQuery(queryString, UUID.class);
 
 		    Set<String> parameterNames = query.getParameterMetadata().getNamedParameterNames();
 			List<String> queryParameters = new ArrayList<>(parameterNames);
@@ -950,14 +950,14 @@ public class StatisticsDaoHibernateImpl
 			List<String> queryStrings, Map<String, Object> parameters) {
 
 		// MAYDO catch error if queries deliver wrong type
-		Query<Long> query;
+		SelectionQuery<Long> query;
 		Long all = Long.valueOf(0);
 		Long result;
 
 
 		for (String queryString : queryStrings) {
 
-			query = getSession().createQuery(queryString, Long.class);
+			query = getSession().createSelectionQuery(queryString, Long.class);
 
 			//add matching parameters to query
 			Set<String> parameterNames = query.getParameterMetadata().getNamedParameterNames();
@@ -1001,7 +1001,7 @@ public class StatisticsDaoHibernateImpl
 				+ " JOIN tn.childNodes as chn "
 		        + " WHERE tn.uuid = :parent ";
 
-		Query<UUID> query = getSession().createQuery(queryString, UUID.class);
+		SelectionQuery<UUID> query = getSession().createSelectionQuery(queryString, UUID.class);
 
 		parents.add(rootUuid);
 		uuids.add(rootUuid);

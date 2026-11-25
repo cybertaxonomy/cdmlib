@@ -20,7 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -101,7 +101,7 @@ public class DescriptionDaoImpl
             cq.select(cb.countDistinct(root.get("id")))
               .where(predicateAnd(cb, predicates));
 
-            return getSession().createQuery(cq).getSingleResult();
+            return getSession().createSelectionQuery(cq).getSingleResult();
 
         } else {
             if(features != null && !features.isEmpty()) {
@@ -161,7 +161,7 @@ public class DescriptionDaoImpl
             cq.select(cb.countDistinct(root.get("id")))
               .where(predicateAnd(cb, predicates));
 
-            return getSession().createQuery(cq).getSingleResult();
+            return getSession().createSelectionQuery(cq).getSingleResult();
 
         } else {
             if((scopes == null || scopes.isEmpty())&& (geographicalScopes == null || geographicalScopes.isEmpty()) && (markerTypes == null || markerTypes.isEmpty())) {
@@ -268,7 +268,7 @@ public class DescriptionDaoImpl
               .where(predicateAnd(cb, predicates));
 
             List<T> results = addPageSizeAndNumber(
-                     getSession().createQuery(cq), pageSize, pageNumber)
+                     getSession().createSelectionQuery(cq), pageSize, pageNumber)
                     .getResultList();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
@@ -355,7 +355,7 @@ public class DescriptionDaoImpl
               .where(predicateAnd(cb, predicates));
 
             List<TaxonDescription> results = addPageSizeAndNumber(
-                    getSession().createQuery(cq), pageSize, pageNumber)
+                    getSession().createSelectionQuery(cq), pageSize, pageNumber)
                    .getResultList();
            defaultBeanInitializer.initializeAll(results, propertyPaths);
            return results;
@@ -401,7 +401,7 @@ public class DescriptionDaoImpl
               .where(predicateAnd(cb, predicates));
 
             List<TaxonNameDescription> results = addPageSizeAndNumber(
-                       getSession().createQuery(cq), pageSize, pageNumber)
+                       getSession().createSelectionQuery(cq), pageSize, pageNumber)
                       .getResultList();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
@@ -451,7 +451,7 @@ public class DescriptionDaoImpl
             cq.select(cb.countDistinct(root.get("id")))
               .where(predicateAnd(cb, predicates));
 
-            return getSession().createQuery(cq).getSingleResult();
+            return getSession().createSelectionQuery(cq).getSingleResult();
 
         } else {
             AuditQuery query = makeAuditQuery(TaxonNameDescription.class,auditEvent);
@@ -497,7 +497,7 @@ public class DescriptionDaoImpl
             Set<Feature> features, boolean includeUnpublished,
             Integer pageSize, Integer pageNumber, List<String> propertyPaths){
 
-        Query<Integer> query = prepareGetDescriptionElementForTaxon(taxonUuid, features,
+        SelectionQuery<Integer> query = prepareGetDescriptionElementForTaxon(taxonUuid, features,
                 IndividualsAssociation.class, includeUnpublished, pageSize, pageNumber,
                 "de.associatedSpecimenOrObservation.id");
         List<Integer> results = query.list();
@@ -507,7 +507,7 @@ public class DescriptionDaoImpl
     @Override
     public List<SortableTaxonNodeQueryResult> getNodeOfIndividualAssociationForSpecimen(UUID specimenUuid, UUID classificationUuid){
         String selectString = " new " +SortableTaxonNodeQueryResult.class.getName()+"(n.uuid, n.id, n.treeIndex, t.uuid, t.titleCache, t.name.titleCache, t.name.rank, n.parent.uuid, revStatus.idInVocabulary) ";
-        Query<SortableTaxonNodeQueryResult> query = prepareGetIndividualAssociationForSpecimen(specimenUuid, classificationUuid, selectString);
+        SelectionQuery<SortableTaxonNodeQueryResult> query = prepareGetIndividualAssociationForSpecimen(specimenUuid, classificationUuid, selectString);
         List<SortableTaxonNodeQueryResult> results = query.list();
         return results;
     }
@@ -519,7 +519,7 @@ public class DescriptionDaoImpl
             Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
 //      LogUtils.setLevel("org.hibernate.SQL", Level.TRACE);
-        Query<T> query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, includeUnpublished,
+        SelectionQuery<T> query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, includeUnpublished,
                 pageSize, pageNumber, "de");
 
         if (logger.isDebugEnabled()){logger.debug(" dao: get list ...");}
@@ -536,12 +536,12 @@ public class DescriptionDaoImpl
     public <T extends DescriptionElementBase> long countDescriptionElementForTaxon(
             UUID taxonUuid, Set<Feature> features, Class<T> type, boolean includeUnpublished) {
 
-        Query<Long> query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, includeUnpublished, null, null, "count(de)");
+        SelectionQuery<Long> query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, includeUnpublished, null, null, "count(de)");
 
         return query.uniqueResult();
     }
 
-    private <T extends DescriptionElementBase, R extends Object> Query<R> prepareGetDescriptionElementForTaxon(UUID taxonUuid,
+    private <T extends DescriptionElementBase, R extends Object> SelectionQuery<R> prepareGetDescriptionElementForTaxon(UUID taxonUuid,
             Set<Feature> features, Class<T> type, boolean includeUnpublished, Integer pageSize, Integer pageNumber, String selectString) {
 
         String queryString = "SELECT " + selectString + " FROM DescriptionElementBase AS de" +
@@ -557,7 +557,7 @@ public class DescriptionDaoImpl
         if (hasFeatureFilter){
             queryString += " and de.feature in (:features) ";
         }
-        Query<R> query = getSession().createQuery(queryString);
+        SelectionQuery<R> query = (SelectionQuery<R>)(SelectionQuery)getSession().createSelectionQuery(queryString, Object.class);
 
         query.setParameter("taxon_uuid", taxonUuid);
         if(type != null){
@@ -574,7 +574,7 @@ public class DescriptionDaoImpl
         return query;
     }
 
-    private Query<SortableTaxonNodeQueryResult> prepareGetIndividualAssociationForSpecimen(UUID specimenUuid, UUID classificationUuid, String selectString) {
+    private SelectionQuery<SortableTaxonNodeQueryResult> prepareGetIndividualAssociationForSpecimen(UUID specimenUuid, UUID classificationUuid, String selectString) {
 
         String queryString = "SELECT " + selectString + " FROM DescriptionElementBase AS de" +
                 " LEFT JOIN de.inDescription AS d" +
@@ -591,7 +591,7 @@ public class DescriptionDaoImpl
             whereString = whereString + " AND c.uuid = :classifcationUuid";
         }
 
-        Query<SortableTaxonNodeQueryResult> query = getSession().createQuery(queryString + classificationString + whereString, SortableTaxonNodeQueryResult.class);
+        SelectionQuery<SortableTaxonNodeQueryResult> query = getSession().createSelectionQuery(queryString + classificationString + whereString, SortableTaxonNodeQueryResult.class);
 
         query.setParameter("specimen_uuid", specimenUuid);
         if (classificationUuid != null){
@@ -609,7 +609,7 @@ public class DescriptionDaoImpl
         StringBuilder queryString = new StringBuilder(
                 "SELECT DISTINCT a.id, a.partOf.id"
                 + " FROM Distribution AS d JOIN d.area AS a");
-        Query<Object[]> query = getSession().createQuery(queryString.toString(), Object[].class);
+        SelectionQuery<Object[]> query = getSession().createSelectionQuery(queryString.toString(), Object[].class);
 
         List<Object[]> areasInUse = query.list();
         List<Object[]> parentResults = new ArrayList<>();
@@ -620,7 +620,7 @@ public class DescriptionDaoImpl
             if(includeAllParents) {
                 // find all parent nodes
                 String allAreasQueryStr = "select a.id, a.partOf.id from NamedArea as a";
-                query = getSession().createQuery(allAreasQueryStr, Object[].class);
+                query = getSession().createSelectionQuery(allAreasQueryStr, Object[].class);
                 List<Object[]> allAreasResult = query.list();
                 Map<Object, Object> allAreasMap = ArrayUtils.toMap(allAreasResult.toArray());
 
@@ -650,7 +650,7 @@ public class DescriptionDaoImpl
             // rows for a term with multiple representations
             String parentAreasQueryStr = TermDto.getTermDtoSelect("NamedArea")
                     + "where a.id in (:allAreaIds) order by a.idInVocabulary";
-            query = getSession().createQuery(parentAreasQueryStr, Object[].class);
+            query = getSession().createSelectionQuery(parentAreasQueryStr, Object[].class);
             query.setParameterList("allAreaIds", allAreaIds);
 
             addPageSizeAndNumber(query, pageSize, pageNumber);
@@ -664,7 +664,7 @@ public class DescriptionDaoImpl
     @Override
     public DescriptionBaseDto loadDto(UUID descriptionUuid) {
         String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoSelect();
-        Query<Object[]> query =  getSession().createQuery(sqlSelect, Object[].class);
+        SelectionQuery<Object[]> query =  getSession().createSelectionQuery(sqlSelect, Object[].class);
         List<UUID> uuids = new ArrayList<>();
         uuids.add(descriptionUuid);
         query.setParameterList("uuid", uuids);
@@ -677,10 +677,9 @@ public class DescriptionDaoImpl
             DescriptionBaseDto dto = list.get(0);
             //get categorical data
             sqlSelect = CategoricalDataDto.getCategoricalDtoSelect();
-            query =  getSession().createQuery(sqlSelect);
+            query =  getSession().createSelectionQuery(sqlSelect, Object[].class);
             query.setParameter("uuid", descriptionUuid);
 
-            @SuppressWarnings("unchecked")
             List<Object[]>  resultCat = query.list();
             List<CategoricalDataDto> listCategorical = CategoricalDataDto.categoricalDataDtoListFrom(resultCat);
 
@@ -696,9 +695,8 @@ public class DescriptionDaoImpl
             dto.getElements().addAll(listCategorical);
             //get quantitative data
             sqlSelect = QuantitativeDataDto.getQuantitativeDataDtoSelect();
-            query =  getSession().createQuery(sqlSelect);
+            query =  getSession().createSelectionQuery(sqlSelect, Object[].class);
             query.setParameter("uuid", descriptionUuid);
-            @SuppressWarnings("unchecked")
             List<Object[]>  resultQuant = query.list();
             List<QuantitativeDataDto> listQuant = QuantitativeDataDto.quantitativeDataDtoListFrom(resultQuant);
             dto.getElements().addAll(listQuant);
@@ -712,7 +710,7 @@ public class DescriptionDaoImpl
     @Override
     public List<DescriptionBaseDto> loadDtos(Set<UUID> descriptionUuids) {
         String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoSelect();
-        Query<Object[]> query =  getSession().createQuery(sqlSelect, Object[].class);
+        SelectionQuery<Object[]> query =  getSession().createSelectionQuery(sqlSelect, Object[].class);
         query.setParameterList("uuid", descriptionUuids);
 
         List<Object[]> result = query.list();
@@ -723,7 +721,7 @@ public class DescriptionDaoImpl
 
             //get categorical data
             sqlSelect = CategoricalDataDto.getCategoricalDtoSelect();
-            query = getSession().createQuery(sqlSelect, Object[].class);
+            query = getSession().createSelectionQuery(sqlSelect, Object[].class);
             query.setParameter("uuid", dto.getDescriptionUuid());
             List<Object[]>  resultCat = query.list();
             List<CategoricalDataDto> listCategorical = CategoricalDataDto.categoricalDataDtoListFrom(resultCat);
@@ -740,7 +738,7 @@ public class DescriptionDaoImpl
             dto.getElements().addAll(listCategorical);
             //get quantitative data
             sqlSelect = QuantitativeDataDto.getQuantitativeDataDtoSelect();
-            query = getSession().createQuery(sqlSelect, Object[].class);
+            query = getSession().createSelectionQuery(sqlSelect, Object[].class);
             query.setParameter("uuid",  dto.getDescriptionUuid());
             List<Object[]> resultQuant = query.list();
             List<QuantitativeDataDto> listQuant = QuantitativeDataDto.quantitativeDataDtoListFrom(resultQuant);

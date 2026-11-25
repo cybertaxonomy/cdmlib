@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.api.filter.EntityFilter;
@@ -63,7 +63,7 @@ public class AgentDaoImpl
 		    cq.select(root)
 		      .where(predicateStrNotNull(cb, root, "code", code));
 
-		    List<Institution> result = getSession().createQuery(cq).getResultList();
+		    List<Institution> result = getSession().createSelectionQuery(cq).getResultList();
  	    	return result;
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Institution.class,auditEvent.getRevisionNumber());
@@ -77,7 +77,7 @@ public class AgentDaoImpl
 	@Override
     public long countMembers(Team team) {
 		checkNotInPriorView("AgentDaoImpl.countMembers(Team team)");
-		Query<Long> query = getSession().createQuery("select count(teamMember) from Team team join team.teamMembers teamMember where team = :team", Long.class);
+		SelectionQuery<Long> query = getSession().createSelectionQuery("select count(teamMember) from Team team join team.teamMembers teamMember where team = :team", Long.class);
 		query.setParameter("team", team);
 		return query.uniqueResult();
 	}
@@ -85,7 +85,7 @@ public class AgentDaoImpl
 	@Override
     public List<Person> getMembers(Team team, Integer pageSize,	Integer pageNumber) {
 		checkNotInPriorView("AgentDaoImpl.getMembers(Team team, Integer pageSize,	Integer pageNumber)");
-		Query<Person> query = getSession().createQuery(
+		SelectionQuery<Person> query = getSession().createSelectionQuery(
 		        "SELECT teamMember "
 		        + " FROM Team team JOIN team.teamMembers teamMember "
 		        + " WHERE team = :team"
@@ -104,20 +104,20 @@ public class AgentDaoImpl
         clazz = (clazz == null)? (Class)type : clazz;
         String clazzString = " FROM " + clazz.getSimpleName();
 
-        Query<Object[]> query = null;
+        SelectionQuery<Object[]> query = null;
 
         if (pattern != null){
             String whereClause = " WHERE collectorTitleCache LIKE :pattern "
                      + " OR titleCache LIKE :pattern "
                      + " OR nomenclaturalTitleCache like :pattern ";
 
-            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString  + whereClause, Object[].class);
+            query = session.createSelectionQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString  + whereClause, Object[].class);
             pattern = pattern + "%";
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             query.setParameter("pattern", pattern);
         } else {
-            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString, Object[].class);
+            query = session.createSelectionQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString, Object[].class);
         }
         if (limit != null){
             query.setMaxResults(limit);
@@ -133,18 +133,18 @@ public class AgentDaoImpl
         clazz = (clazz == null)? (Class)type : clazz;
         String clazzString = " FROM " + clazz.getSimpleName();
 
-        Query<Object[]> query = null;
+        SelectionQuery<Object[]> query = null;
 
         if (pattern != null){
             String whereClause = " WHERE titleCache LIKE :pattern";
 
-            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString  + whereClause, Object[].class);
+            query = session.createSelectionQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString  + whereClause, Object[].class);
             pattern = pattern + "%";
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             query.setParameter("pattern", pattern);
         } else {
-            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString, Object[].class);
+            query = session.createSelectionQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString, Object[].class);
         }
         if (limit != null){
             query.setMaxResults(limit);
@@ -160,7 +160,7 @@ public class AgentDaoImpl
         clazz = (clazz == null)? (Class)type : clazz;
         String clazzString = " FROM " + clazz.getSimpleName();
 
-        Query<Object[]> query = null;
+        SelectionQuery<Object[]> query = null;
 
         if (pattern != null){
             String whereClause = " WHERE nomenclaturalTitleCache LIKE :pattern";
@@ -169,13 +169,13 @@ public class AgentDaoImpl
                 whereClause += " OR collectorTitleCache LIKE :pattern";
             }
 
-            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString  + whereClause, Object[].class);
+            query = session.createSelectionQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString  + whereClause, Object[].class);
             pattern = pattern + "%";
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             query.setParameter("pattern", pattern);
         } else {
-            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString, Object[].class);
+            query = session.createSelectionQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString, Object[].class);
         }
         if (limit != null){
             query.setMaxResults(limit);
@@ -196,7 +196,7 @@ public class AgentDaoImpl
 	    return findByParam(clazz, params, queryString, matchmode, entityFilters, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
-    protected <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getTeamOrPersonUuidAndTitleCache(Query<Object[]> query){
+    protected <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getTeamOrPersonUuidAndTitleCache(SelectionQuery<Object[]> query){
         List<TeamOrPersonUuidAndTitleCache<T>> list = new ArrayList<>();
 
         List<Object[]> result = query.list();

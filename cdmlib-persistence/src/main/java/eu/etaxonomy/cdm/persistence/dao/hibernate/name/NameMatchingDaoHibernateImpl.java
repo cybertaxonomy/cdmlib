@@ -15,7 +15,7 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -52,7 +52,7 @@ public class NameMatchingDaoHibernateImpl
             Set<String> generaSet = postFilteredGenusOrUninominalWithDis.keySet();
             List <String> generaList = new ArrayList <>(generaSet);
             hql = prepareFindTaxonNamePartsString("genusOrUninomial","generaList");
-            Query<NameMatchingParts> query = getSession().createQuery(hql.toString(), NameMatchingParts.class);
+            SelectionQuery<NameMatchingParts> query = getSession().createSelectionQuery(hql.toString(), NameMatchingParts.class);
             query.setParameterList("generaList", generaList);
             result = query.list();
         }

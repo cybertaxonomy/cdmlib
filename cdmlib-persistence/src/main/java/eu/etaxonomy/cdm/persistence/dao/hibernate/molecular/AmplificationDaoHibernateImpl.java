@@ -15,7 +15,7 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.api.filter.EntityFilter;
@@ -46,12 +46,12 @@ public class AmplificationDaoHibernateImpl
     public List<UuidAndTitleCache<Amplification>> getAmplificationUuidAndLabelCache(Integer limit, String pattern) {
         List<UuidAndTitleCache<Amplification>> list = new ArrayList<>();
         Session session = getSession();
-        Query<Object[]> query;
+        SelectionQuery<Object[]> query;
         if (pattern != null){
-            query = session.createQuery("select uuid, id, labelCache from Amplification where labelCache like :pattern", Object[].class);
+            query = session.createSelectionQuery("select uuid, id, labelCache from Amplification where labelCache like :pattern", Object[].class);
             query.setParameter("pattern", pattern);
         }else{
-            query = session.createQuery("select uuid, id, labelCache from Amplification", Object[].class);
+            query = session.createSelectionQuery("select uuid, id, labelCache from Amplification", Object[].class);
         }
         if (limit != null){
             query.setMaxResults(limit);

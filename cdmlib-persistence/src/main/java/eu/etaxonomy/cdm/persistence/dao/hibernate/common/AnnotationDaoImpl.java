@@ -50,7 +50,7 @@ public class AnnotationDaoImpl
 	    cq.select(cb.countDistinct(root.get("id")))
 	      .where(predicateAnd(cb, predicates));
 
-	    return getSession().createQuery(cq).getSingleResult();
+	    return getSession().createSelectionQuery(cq).getSingleResult();
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class AnnotationDaoImpl
           .orderBy(ordersFrom(cb, root, orderHints));
 
 		List<Annotation> results = addPageSizeAndNumber(
-		         getSession().createQuery(cq), pageSize, pageNumber)
+		         getSession().createSelectionQuery(cq), pageSize, pageNumber)
 		        .getResultList();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
@@ -99,7 +99,7 @@ public class AnnotationDaoImpl
         cq.select(cb.countDistinct(root))
            .where(predicateAnd(cb, predicates));
 
-        return getSession().createQuery(cq).getSingleResult();
+        return getSession().createSelectionQuery(cq).getSingleResult();
 	}
 
 	@Override
@@ -122,7 +122,7 @@ public class AnnotationDaoImpl
         cq.orderBy(ordersFrom(cb, root, orderHints));
 
         List<Annotation> results = addPageSizeAndNumber(
-                 getSession().createQuery(cq), pageSize, pageNumber)
+                 getSession().createSelectionQuery(cq), pageSize, pageNumber)
                 .getResultList();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;

@@ -13,7 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -49,7 +49,7 @@ public class IdentificationKeyDaoImpl extends DaoBase implements IIdentification
     public long count() {
 		long total = 0;
 		for (Class<? extends IIdentificationKey> type : KEY_IMPLS) {
-			Long n = getSession().createQuery(
+			Long n = getSession().createSelectionQuery(
 					"SELECT count(k) FROM " + type.getName() + " k", Long.class)
 					.uniqueResult();
 			total += n == null ? 0 : n;
@@ -61,7 +61,7 @@ public class IdentificationKeyDaoImpl extends DaoBase implements IIdentification
     public List<IIdentificationKey> list(Integer limit, Integer start, List<String> propertyPaths) {
 		List<IIdentificationKey> results = new ArrayList<>();
 		for (Class<? extends IIdentificationKey> type : KEY_IMPLS) {
-			Query<? extends IIdentificationKey> query = getSession().createQuery(
+			SelectionQuery<? extends IIdentificationKey> query = getSession().createSelectionQuery(
 					"SELECT k FROM " + type.getName() + " k", type);
 			results.addAll(query.list());
 		}
@@ -81,9 +81,9 @@ public class IdentificationKeyDaoImpl extends DaoBase implements IIdentification
 		List<T> results = new ArrayList<>();
 		for (Class<? extends T> impl : resolveTypes(type)) {
 			@SuppressWarnings("unchecked")
-			Query<T> query = getSession().createQuery(
+			SelectionQuery<T> query = getSession().createSelectionQuery(
 					"SELECT k FROM " + impl.getName()
-							+ " k JOIN k.taxonomicScope ts WHERE ts.uuid = :taxon_uuid");
+							+ " k JOIN k.taxonomicScope ts WHERE ts.uuid = :taxon_uuid", type);
 			query.setParameter("taxon_uuid", taxonUuid);
 			results.addAll(query.list());
 		}
@@ -95,7 +95,7 @@ public class IdentificationKeyDaoImpl extends DaoBase implements IIdentification
 	public <T extends IIdentificationKey> long countByTaxonomicScope(UUID taxonUuid, @NotNull Class<T> type) {
 		long count = 0;
 		for (Class<? extends T> impl : resolveTypes(type)) {
-			Long n = getSession().createQuery(
+			Long n = getSession().createSelectionQuery(
 					"SELECT count(k) FROM " + impl.getName()
 							+ " k JOIN k.taxonomicScope ts WHERE ts.uuid = :taxon_uuid",
 					Long.class)

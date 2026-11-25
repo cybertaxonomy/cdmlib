@@ -14,7 +14,7 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -90,7 +90,7 @@ public class TaxonGraphDaoHibernateImpl
     public List<TaxonGraphEdgeDTO> listTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
             boolean includeUnpublished, Integer pageSize, Integer pageIndex) {
 
-        Query<TaxonGraphEdgeDTO> query = prepareTaxonGraphEdgeDTOs(
+        SelectionQuery<TaxonGraphEdgeDTO> query = prepareTaxonGraphEdgeDTOs(
                 fromTaxonUuid, toTaxonUuid, type, includeUnpublished, false, TaxonGraphEdgeDTO.class);
 
 
@@ -111,12 +111,12 @@ public class TaxonGraphDaoHibernateImpl
     public long countTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
             boolean includeUnpublished) {
 
-        Query<Long> query = prepareTaxonGraphEdgeDTOs(fromTaxonUuid, toTaxonUuid, type, includeUnpublished, true, Long.class);
+        SelectionQuery<Long> query = prepareTaxonGraphEdgeDTOs(fromTaxonUuid, toTaxonUuid, type, includeUnpublished, true, Long.class);
         Long count = query.uniqueResult();
         return count;
     }
 
-    protected <R extends Object> Query<R> prepareTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
+    protected <R extends Object> SelectionQuery<R> prepareTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
             boolean includeUnpublished, boolean doCount, Class<R> returnedClass) {
 
         Session session = getSession();
@@ -159,7 +159,7 @@ public class TaxonGraphDaoHibernateImpl
             }
         }
 
-        Query<R> query = session.createQuery(hql, returnedClass);
+        SelectionQuery<R> query = session.createSelectionQuery(hql, returnedClass);
         query.setParameter("reltype", type);
         query.setParameter("regStatus", RegistrationStatus.PUBLISHED);
         if(fromTaxonUuid != null){

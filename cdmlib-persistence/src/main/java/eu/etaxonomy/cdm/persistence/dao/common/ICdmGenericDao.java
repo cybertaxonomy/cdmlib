@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.Session;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -235,9 +235,9 @@ public interface ICdmGenericDao {
 	 * @return
 	 */
 	@Deprecated
-	public Query<Object> getHqlQuery(String hqlQuery) throws UnsupportedOperationException;
+	public SelectionQuery<Object> getHqlQuery(String hqlQuery) throws UnsupportedOperationException;
 
-    public <T> Query<T> getHqlQuery(String hqlQuery, Class<T> clazz) throws UnsupportedOperationException;
+    public <T> SelectionQuery<T> getHqlQuery(String hqlQuery, Class<T> clazz) throws UnsupportedOperationException;
 
 	public Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase);
 

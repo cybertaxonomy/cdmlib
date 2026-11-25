@@ -55,7 +55,7 @@ public class TestingTermVocabularyDao {
           .orderBy(cb.desc(voc.get("created")));
 
         @SuppressWarnings("rawtypes")
-        List<TermVocabulary> results = getSession().createQuery(cq).getResultList();
+        List<TermVocabulary> results = getSession().createSelectionQuery(cq).getResultList();
 
         if (results.isEmpty()){
             return null;

@@ -15,7 +15,7 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.api.filter.EntityFilter;
@@ -45,7 +45,7 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoBaseImpl<Primer> imple
         List<UuidAndTitleCache<Primer>> list = new ArrayList<>();
         Session session = getSession();
 
-        Query<Object[]> query = session.createQuery("select uuid, id, label from Primer", Object[].class);
+        SelectionQuery<Object[]> query = session.createSelectionQuery("select uuid, id, label from Primer", Object[].class);
 
         List<Object[]> result = query.list();
 
@@ -76,7 +76,7 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoBaseImpl<Primer> imple
             queryString += " label LIKE :pattern";
         }
 
-        Query<Object[]> query = getSession().createQuery(queryString, Object[].class);
+        SelectionQuery<Object[]> query = getSession().createSelectionQuery(queryString, Object[].class);
 
         if (limitOfInitialElements != null){
             query.setMaxResults(limitOfInitialElements);

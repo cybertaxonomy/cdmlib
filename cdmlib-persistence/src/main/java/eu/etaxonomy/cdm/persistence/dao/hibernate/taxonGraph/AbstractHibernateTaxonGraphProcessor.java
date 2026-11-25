@@ -18,7 +18,7 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
@@ -111,7 +111,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
      */
     public Reference secReference(){
         if(secReference == null){
-            Query<Reference> q = getSession().createQuery("SELECT r FROM Reference r WHERE r.uuid = :uuid", Reference.class);
+            SelectionQuery<Reference> q = getSession().createSelectionQuery("SELECT r FROM Reference r WHERE r.uuid = :uuid", Reference.class);
             q.setParameter("uuid", getSecReferenceUUID());
             secReference = q.uniqueResult();
             if(secReference == null){
@@ -425,7 +425,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         if(specificEpithet != null){
             hql += " AND n.specificEpithet = :specificEpithet";
         }
-        Query<TaxonName> q = getSession().createQuery(hql, TaxonName.class);
+        SelectionQuery<TaxonName> q = getSession().createSelectionQuery(hql, TaxonName.class);
 
         q.setParameter("rank", rank);
         q.setParameter("genusOrUninomial", genusOrUninomial);
@@ -442,7 +442,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         if(specificEpithet != null){
             hql += " AND n.specificEpithet = :specificEpithet";
         }
-        Query<TaxonName> q = getSession().createQuery(hql, TaxonName.class);
+        SelectionQuery<TaxonName> q = getSession().createSelectionQuery(hql, TaxonName.class);
 
         q.setParameter("rankOrderIndex", rank.getOrderIndex());
         q.setParameter("genusOrUninomial", genusOrUninomial);
@@ -467,7 +467,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         if(citation != null){
             hql += " AND rel.source.citation = :citation";
         }
-        Query<TaxonRelationship> q = getSession().createQuery(hql, TaxonRelationship.class);
+        SelectionQuery<TaxonRelationship> q = getSession().createSelectionQuery(hql, TaxonRelationship.class);
         q.setParameter("relatedTaxon", relatedTaxon);
         q.setParameter("type", type);
         if(citation != null){

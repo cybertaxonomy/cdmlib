@@ -17,7 +17,7 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -116,7 +116,7 @@ public class TermTreeDaoImpl
     public <S extends TermTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(Class<S> clazz, TermType termType, Integer limit,
             String pattern) {
         Session session = getSession();
-        Query<Object[]> query = session.createQuery(
+        SelectionQuery<Object[]> query = session.createSelectionQuery(
                 " SELECT uuid, id, titleCache "
                     + " FROM " + clazz.getSimpleName()
                     + (pattern!=null?" WHERE titleCache LIKE :pattern":" WHERE 1 = 1 ")
@@ -143,7 +143,7 @@ public class TermTreeDaoImpl
         String queryString = TermCollectionDto.getTermCollectionDtoSelect("TermTree")
                 + " WHERE a.termType = :termType"
                 + " ORDER BY a.titleCache";
-        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
+        SelectionQuery<Object[]> query =  getSession().createSelectionQuery(queryString, Object[].class);
         query.setParameter("termType", termType);
 
         List<Object[]> result = query.list();
@@ -161,7 +161,7 @@ public class TermTreeDaoImpl
         String queryString = TermTreeDto.getTermTreeDtoSelect()
                 + " WHERE a.termType = :termType"
                 + " ORDER BY a.titleCache";
-        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
+        SelectionQuery<Object[]> query =  getSession().createSelectionQuery(queryString, Object[].class);
         query.setParameter("termType", termType);
 
         List<Object[]> result = query.list();
@@ -178,7 +178,7 @@ public class TermTreeDaoImpl
         String queryString = TermTreeDto.getTermCollectionDtoSelect()
                 + " WHERE a.uuid = :uuid"
                 + " ORDER BY a.titleCache";
-        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
+        SelectionQuery<Object[]> query =  getSession().createSelectionQuery(queryString, Object[].class);
         query.setParameter("uuid", uuid);
 
         List<Object[]> result = query.list();

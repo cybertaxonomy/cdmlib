@@ -20,7 +20,7 @@ import java.util.UUID;
 import org.hibernate.Session;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
@@ -68,7 +68,7 @@ public class TermVocabularyDaoImpl
     public long countTerms(TermVocabulary termVocabulary) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    Query<Long> query = getSession().createQuery("SELECT count(term) FROM DefinedTermBase term WHERE term.vocabulary = :vocabulary", Long.class);
+		    SelectionQuery<Long> query = getSession().createSelectionQuery("SELECT count(term) FROM DefinedTermBase term WHERE term.vocabulary = :vocabulary", Long.class);
 		    query.setParameter("vocabulary", termVocabulary);
 		    return query.uniqueResult();
 		} else {
@@ -98,7 +98,7 @@ public class TermVocabularyDaoImpl
 	          .orderBy(ordersFrom(cb, root, orderHints));
 
 	        List<T> result = addPageSizeAndNumber(
-	                 getSession().createQuery(cq), pageSize, pageNumber)
+	                 getSession().createSelectionQuery(cq), pageSize, pageNumber)
 	                .getResultList();
 	        result = DaoBase.deduplicateResult(result);
 	        defaultBeanInitializer.initializeAll(result, propertyPaths);
@@ -123,7 +123,7 @@ public class TermVocabularyDaoImpl
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 		    //TODO use clazz
     		@SuppressWarnings("rawtypes")
-            Query<TermVocabulary> query = getSession().createQuery(
+            SelectionQuery<TermVocabulary> query = getSession().createSelectionQuery(
     		        "   SELECT vocabulary "
     		        + " FROM TermVocabulary vocabulary "
     		        + " WHERE vocabulary.termSourceUri= :termSourceUri"
@@ -160,7 +160,7 @@ public class TermVocabularyDaoImpl
           .distinct(true)
           .where(cb.equal(root.get("termType"), termType));
 
-        List<TermVocabulary<T>> result = getSession().createQuery(cq).getResultList();
+        List<TermVocabulary<T>> result = getSession().createSelectionQuery(cq).getResultList();
         result = DaoBase.deduplicateResult(result);
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
@@ -186,7 +186,7 @@ public class TermVocabularyDaoImpl
           .orderBy(ordersFrom(cb, root, orderHints));
 
         List<TermVocabulary> result = addLimitAndStart(
-                 getSession().createQuery(cq), limit, start)
+                 getSession().createSelectionQuery(cq), limit, start)
                 .getResultList();
         result = DaoBase.deduplicateResult(result);
         defaultBeanInitializer.initializeAll(result, propertyPaths);
@@ -210,7 +210,7 @@ public class TermVocabularyDaoImpl
 				" FROM TermVocabulary voc join voc.terms terms  " +
 				" WHERE terms.uuid IN (:uuids) " +
 				" ORDER BY voc.uuid ";
-		Query<UUID> query = getSession().createQuery(hql, UUID.class);
+		SelectionQuery<UUID> query = getSession().createSelectionQuery(hql, UUID.class);
 
 		int splitSize = 2000;
 		List<Collection<UUID>> missingTermCandidates = splitCollection(missingTermCandidateUuids, splitSize);
@@ -233,7 +233,7 @@ public class TermVocabularyDaoImpl
 //					" WHERE  voc.uuid IN (:vocUuids) AND voc.terms is empty  " +
 					" ORDER BY voc.uuid ";
 			@SuppressWarnings("unchecked")
-            Query<TermVocabulary<?>> query2 = getSession().createQuery(hql2);
+            SelectionQuery<TermVocabulary<?>> query2 = (SelectionQuery<TermVocabulary<?>>)(SelectionQuery)getSession().createSelectionQuery(hql2, TermVocabulary.class);
 			query2.setParameterList("termUuids", missingTermCandidateUuids);
 			query2.setParameterList("vocUuids", uuidsRequested.keySet());
 
@@ -274,7 +274,7 @@ public class TermVocabularyDaoImpl
 	    String queryString = TermDto.getTermDtoSelect()
 	            + "where v.uuid in :vocabularyUuids "
 	            + "order by a.titleCache";
-	    Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
+	    SelectionQuery<Object[]> query =  getSession().createSelectionQuery(queryString, Object[].class);
 	    query.setParameterList("vocabularyUuids", vocabularyUuids);
 
 	    List<Object[]> result = query.list();
@@ -287,7 +287,7 @@ public class TermVocabularyDaoImpl
 	    String queryString = TermDto.getTermDtoSelect()
 	            + " WHERE v.uuid = :vocabularyUuid "
 	            + " ORDER by a.titleCache";
-	    Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
+	    SelectionQuery<Object[]> query =  getSession().createSelectionQuery(queryString, Object[].class);
 	    query.setParameter("vocabularyUuid", vocabularyUuid);
 
 	    List<Object[]> result = query.list();
@@ -300,7 +300,7 @@ public class TermVocabularyDaoImpl
         String queryString = TermDto.getTermDtoSelectNamedArea()
                 + " WHERE v.uuid in :vocabularyUuids "
                 + " ORDER by a.titleCache";
-        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
+        SelectionQuery<Object[]> query =  getSession().createSelectionQuery(queryString, Object[].class);
         query.setParameterList("vocabularyUuids", vocabularyUuids);
 
         List<Object[]> result = query.list();
@@ -314,7 +314,7 @@ public class TermVocabularyDaoImpl
                 + "where v.uuid = :vocabularyUuid "
                 + "and a.partOf is null "
                 + "and a.kindOf is null";
-        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
+        SelectionQuery<Object[]> query =  getSession().createSelectionQuery(queryString, Object[].class);
         query.setParameter("vocabularyUuid", vocabularyUuid);
         List<Object[]> result = query.list();
         List<TermDto> list = TermDto.termDtoListFrom(result);
@@ -339,7 +339,7 @@ public class TermVocabularyDaoImpl
                 + " where v.uuid = :vocabularyUuid "
                 + " and a.partOf is null "
                 + " and a.kindOf is null";
-        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
+        SelectionQuery<Object[]> query =  getSession().createSelectionQuery(queryString, Object[].class);
         query.setParameter("vocabularyUuid", vocabularyUuid);
 
         List<Object[]> result = query.list();
@@ -378,7 +378,7 @@ public class TermVocabularyDaoImpl
                 + " WHERE a.uuid in "
                 + " (" + queryVocWithFittingTerms + ")";
 
-        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
+        SelectionQuery<Object[]> query =  getSession().createSelectionQuery(queryString, Object[].class);
         query.setParameter("feature", TermType.Feature);
 
         List<Object[]> result = query.list();
@@ -419,7 +419,7 @@ public class TermVocabularyDaoImpl
             }
         }
 
-        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
+        SelectionQuery<Object[]> query =  getSession().createSelectionQuery(queryString, Object[].class);
         if (!termTypeWithSubType.isEmpty()){
             query.setParameterList("termTypes", termTypeWithSubType);
         }
@@ -450,9 +450,9 @@ public class TermVocabularyDaoImpl
             return getUuidAndTitleCache(clazz, limit, pattern);
         }
         Session session = getSession();
-        Query<Object[]> query = null;
+        SelectionQuery<Object[]> query = null;
         if (pattern != null){
-            query = session.createQuery(
+            query = session.createSelectionQuery(
                       " SELECT uuid, id, titleCache "
                     + " FROM " + clazz.getSimpleName()
                     + " WHERE titleCache LIKE :pattern "
@@ -463,7 +463,7 @@ public class TermVocabularyDaoImpl
             pattern = pattern + "%";
             query.setParameter("pattern", pattern);
         } else {
-            query = session.createQuery(
+            query = session.createSelectionQuery(
                       " SELECT uuid, id, titleCache "
                     + " FROM  " + clazz.getSimpleName()
                     + " WHERE termType = :termType",
@@ -485,7 +485,7 @@ public class TermVocabularyDaoImpl
         String queryString = TermCollectionDto.getTermCollectionDtoSelect()
                 + " where a.uuid like :uuid ";
 //                + "order by a.titleCache";
-        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
+        SelectionQuery<Object[]> query =  getSession().createSelectionQuery(queryString, Object[].class);
         query.setParameter("uuid", vocUuid);
 
         List<Object[]> result = query.list();
@@ -506,7 +506,7 @@ public class TermVocabularyDaoImpl
         String queryString = TermCollectionDto.getTermCollectionDtoSelect()
                 + " WHERE a.uuid IN :uuidList ";
 //                + "order by a.titleCache";
-        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
+        SelectionQuery<Object[]> query =  getSession().createSelectionQuery(queryString, Object[].class);
         query.setParameterList("uuidList", vocUuids);
 
         List<Object[]> result = query.list();

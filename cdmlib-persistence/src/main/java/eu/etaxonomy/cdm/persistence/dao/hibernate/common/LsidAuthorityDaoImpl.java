@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
@@ -26,7 +26,7 @@ public class LsidAuthorityDaoImpl extends CdmEntityDaoBase<LSIDAuthority> implem
 
 	@Override
     public Class<? extends IIdentifiableEntity> getClassForNamespace(LSID lsid) {
-		Query<Class> query = getSession().createQuery("select clazz from LSIDAuthority authority join authority.namespaces clazz where authority.authority = :authority and index(clazz) = :namespace",
+		SelectionQuery<Class> query = getSession().createSelectionQuery("select clazz from LSIDAuthority authority join authority.namespaces clazz where authority.authority = :authority and index(clazz) = :namespace",
 		        Class.class);
 		query.setParameter("authority",lsid.getAuthority());
 		query.setParameter("namespace", lsid.getNamespace());

@@ -35,7 +35,7 @@ public class ToOneReferringObjectMetadata extends ReferringObjectMetadataImpl {
 
         cq.select((Root)root);
         cq.where(cb.equal(root.get("fieldName"), x));
-        List<? extends CdmBase> result = session.createQuery(cq).getResultList();
+        List<? extends CdmBase> result = session.createSelectionQuery(cq).getResultList();
         return result;
 	}
 

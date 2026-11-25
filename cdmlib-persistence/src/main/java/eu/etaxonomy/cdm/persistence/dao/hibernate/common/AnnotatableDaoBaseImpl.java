@@ -12,7 +12,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -41,14 +41,14 @@ public abstract class AnnotatableDaoBaseImpl<T extends AnnotatableEntity>
     public long countAnnotations(T annotatableEntity, MarkerType status) {
 
 	    checkNotInPriorView("AnnotatableDaoBaseImpl.countAnnotations(T annotatableEntity, MarkerType status)");
-		Query<Long> query = null;
+		SelectionQuery<Long> query = null;
 
 		String className = annotatableEntity.getClass().getName();
         if(status == null) {
            //AND annoEnt.class = :class" does not work for some reason
-        	query = getSession().createQuery("SELECT COUNT(annotation) FROM " + className + " annoEnt JOIN annoEnt.annotations annotation WHERE annoEnt.id = :id", Long.class );
+        	query = getSession().createSelectionQuery("SELECT COUNT(annotation) FROM " + className + " annoEnt JOIN annoEnt.annotations annotation WHERE annoEnt.id = :id", Long.class );
         } else {
-        	query = getSession().createQuery("SELECT COUNT(annotation) FROM " + className + " annoEnt JOIN annoEnt.annotations annotation JOIN annotation.markers marker "
+        	query = getSession().createSelectionQuery("SELECT COUNT(annotation) FROM " + className + " annoEnt JOIN annoEnt.annotations annotation JOIN annotation.markers marker "
         	        + " WHERE annoEnt.id = :id AND marker.markerType = :status",
         	        Long.class);
         	query.setParameter("status", status);
@@ -62,7 +62,7 @@ public abstract class AnnotatableDaoBaseImpl<T extends AnnotatableEntity>
     public List<Annotation> getAnnotations(T annotatableEntity,	MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		checkNotInPriorView("AnnotatableDaoBaseImpl.getAnnotations(T annotatableEntity, MarkerType status, Integer pageSize, Integer pageNumber)");
 
-		Query<Annotation> query = null;
+		SelectionQuery<Annotation> query = null;
         StringBuffer orderString = new StringBuffer();
 
         if(orderHints != null && !orderHints.isEmpty()) {
@@ -81,9 +81,9 @@ public abstract class AnnotatableDaoBaseImpl<T extends AnnotatableEntity>
         String className = annotatableEntity.getClass().getName();
         if(status == null) {
             //AND annoEnt.class = :class  does not work for some reason
-        	query = getSession().createQuery("SELECT annotation FROM " + className + " annoEnt JOIN annoEnt.annotations annotation WHERE annoEnt.id = :id " + orderString.toString(), Annotation.class);
+        	query = getSession().createSelectionQuery("SELECT annotation FROM " + className + " annoEnt JOIN annoEnt.annotations annotation WHERE annoEnt.id = :id " + orderString.toString(), Annotation.class);
         } else {
-        	query = getSession().createQuery("SELECT annotation FROM " + className + " annoEnt JOIN annoEnt.annotations annotation JOIN annotation.markers marker " +
+        	query = getSession().createSelectionQuery("SELECT annotation FROM " + className + " annoEnt JOIN annoEnt.annotations annotation JOIN annotation.markers marker " +
         	        " WHERE annoEnt.id = :id AND marker.markerType = :status" + orderString.toString(),
         	        Annotation.class);
         	query.setParameter("status",status);
@@ -101,13 +101,13 @@ public abstract class AnnotatableDaoBaseImpl<T extends AnnotatableEntity>
 	@Override
     public long countMarkers(T annotatableEntity, Boolean technical) {
 		checkNotInPriorView("AnnotatableDaoBaseImpl.countMarkers(T annotatableEntity, Boolean technical");
-        Query<Long> query = null;
+        SelectionQuery<Long> query = null;
 
         String className = annotatableEntity.getClass().getName();
 		if(technical == null) {
-			query = getSession().createQuery("SELECT COUNT(marker) FROM " + className + " annoEnt JOIN annoEnt.markers marker  WHERE annoEnt.id = :id ", Long.class);
+			query = getSession().createSelectionQuery("SELECT COUNT(marker) FROM " + className + " annoEnt JOIN annoEnt.markers marker  WHERE annoEnt.id = :id ", Long.class);
 		} else {
-			query = getSession().createQuery("SELECT COUNT(marker) FROM " + className + " annoEnt JOIN annoEnt.markers marker JOIN marker.markerType type "
+			query = getSession().createSelectionQuery("SELECT COUNT(marker) FROM " + className + " annoEnt JOIN annoEnt.markers marker JOIN marker.markerType type "
 			        + " WHERE annoEnt.id = :id AND type.isTechnical = :technical",
 			        Long.class);
 			query.setParameter("technical", technical);
@@ -121,7 +121,7 @@ public abstract class AnnotatableDaoBaseImpl<T extends AnnotatableEntity>
     public List<Marker> getMarkers(T annotatableEntity, Boolean technical, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
     	checkNotInPriorView("AnnotatableDaoBaseImpl.getMarkers(T annotatableEntity, Boolean technical, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
 
-    	Query<Marker> query = null;
+    	SelectionQuery<Marker> query = null;
         StringBuffer orderString = new StringBuffer();
 
         if(orderHints != null && !orderHints.isEmpty()) {
@@ -139,9 +139,9 @@ public abstract class AnnotatableDaoBaseImpl<T extends AnnotatableEntity>
 
         String className = annotatableEntity.getClass().getName();
 		if(technical == null) {
-			query = getSession().createQuery("SELECT marker FROM " + className + " annoEnt JOIN annoEnt.markers marker WHERE annoEnt.id = :id" + orderString.toString(), Marker.class);
+			query = getSession().createSelectionQuery("SELECT marker FROM " + className + " annoEnt JOIN annoEnt.markers marker WHERE annoEnt.id = :id" + orderString.toString(), Marker.class);
 		} else {
-			query = getSession().createQuery("SELECT marker FROM " + className + " annoEnt JOIN annoEnt.markers marker JOIN marker.markerType type "
+			query = getSession().createSelectionQuery("SELECT marker FROM " + className + " annoEnt JOIN annoEnt.markers marker JOIN marker.markerType type "
 			        + " WHERE annoEnt.id = :id AND type.isTechnical = :technical" + orderString.toString(),
 			        Marker.class);
 			query.setParameter("technical",technical);
@@ -158,12 +158,12 @@ public abstract class AnnotatableDaoBaseImpl<T extends AnnotatableEntity>
     @Override
     public int countMarkers(Class<? extends T> clazz, Boolean technical) {
 		checkNotInPriorView("AnnotatableDaoBaseImpl.countMarkers(Class<? extends T> clazz, Boolean technical, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
-		Query<Long> query = null;
+		SelectionQuery<Long> query = null;
 		String className = clazz == null ? type.getName() : clazz.getName();
 		if(technical == null) {
-			query = getSession().createQuery("SELECT count(marker) FROM " + className + " annoEnt JOIN annoEnt.markers marker JOIN marker.markerType type", Long.class);
+			query = getSession().createSelectionQuery("SELECT count(marker) FROM " + className + " annoEnt JOIN annoEnt.markers marker JOIN marker.markerType type", Long.class);
 		} else {
-			query = getSession().createQuery("SELECT count(marker) FROM " + className + " annoEnt JOIN annoEnt.markers marker JOIN marker.markerType type "
+			query = getSession().createSelectionQuery("SELECT count(marker) FROM " + className + " annoEnt JOIN annoEnt.markers marker JOIN marker.markerType type "
 			        + " WHERE type.technical = :technical", Long.class);
 			query.setParameter("technical", technical);
 		}
@@ -180,12 +180,12 @@ public abstract class AnnotatableDaoBaseImpl<T extends AnnotatableEntity>
 	@Override
     public List<Object[]> groupMarkers(Class<? extends T> clazz, Boolean technical, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		checkNotInPriorView("AnnotatableDaoBaseImpl.groupMarkers(Class<? extends T> clazz, Boolean technical, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
-		Query<Object[]> query = null;
+		SelectionQuery<Object[]> query = null;
 		String className = clazz == null ? type.getName() : clazz.getName();
         if(technical == null) {
-			query = getSession().createQuery("SELECT type, count(marker) FROM " + className + " annoEnt JOIN annoEnt.markers marker JOIN marker.markerType type GROUP BY type ORDER BY type.titleCache ASC", Object[].class);
+			query = getSession().createSelectionQuery("SELECT type, count(marker) FROM " + className + " annoEnt JOIN annoEnt.markers marker JOIN marker.markerType type GROUP BY type ORDER BY type.titleCache ASC", Object[].class);
 		} else {
-			query = getSession().createQuery("SELECT type, count(marker) FROM " + className + " annoEnt JOIN annoEnt.markers marker JOIN marker.markerType type "
+			query = getSession().createSelectionQuery("SELECT type, count(marker) FROM " + className + " annoEnt JOIN annoEnt.markers marker JOIN marker.markerType type "
 			        + " WHERE type.technical = :technical GROUP BY type ORDER BY type.titleCache ASC",
 			        Object[].class);
 			query.setParameter("technical", technical);

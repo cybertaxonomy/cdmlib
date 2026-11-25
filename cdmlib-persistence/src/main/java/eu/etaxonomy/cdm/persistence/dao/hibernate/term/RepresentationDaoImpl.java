@@ -47,7 +47,7 @@ public class RepresentationDaoImpl
         cq.select(root);
 
         List<Representation> results = addLimitAndStart(
-                getSession().createQuery(cq), limit, start)
+                getSession().createSelectionQuery(cq), limit, start)
                 .getResultList();
         return results;
 	}

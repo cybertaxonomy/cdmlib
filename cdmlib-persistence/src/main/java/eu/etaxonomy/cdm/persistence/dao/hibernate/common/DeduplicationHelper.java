@@ -32,7 +32,7 @@ import org.hibernate.persister.collection.CollectionPersister;
 import org.hibernate.persister.collection.OneToManyPersister;
 import org.hibernate.persister.entity.AbstractEntityPersister;
 import org.hibernate.persister.entity.EntityPersister;
-import org.hibernate.query.Query;
+import org.hibernate.query.MutationQuery;
 import org.hibernate.type.AnyType;
 import org.hibernate.type.CollectionType;
 import org.hibernate.type.ComponentType;
@@ -571,7 +571,7 @@ public class DeduplicationHelper {
 		        String hql = " UPDATE " + className + " c "
 		                + " SET c."+propertyName+" = :newValue "
 		                + " WHERE c.id = :id ";
-		        Query<?> query = session.createQuery(hql);
+		        MutationQuery query = session.createMutationQuery(hql);
 		        query.setParameter("newValue", cdmBase1);
 		        query.setParameter("id",referencingObject.getId());
 		        int rowCount = query.executeUpdate();
