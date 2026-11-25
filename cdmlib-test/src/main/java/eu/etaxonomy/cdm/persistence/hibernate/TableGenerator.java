@@ -13,8 +13,7 @@ import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.MappingException;
-import org.hibernate.service.ServiceRegistry;
-import org.hibernate.type.Type;
+import org.hibernate.generator.GeneratorCreationContext;
 
 /**
  * Subclass of the {@link org.hibernate.id.enhanced.TableGenerator} for the sole purpose to
@@ -47,7 +46,7 @@ import org.hibernate.type.Type;
  * You must tell spring to instantiate the ... before the session factory:
  *
  * <pre>
- * &lt;bean id=&quot;sessionFactory&quot; class=&quot;org.springframework.orm.hibernate5.LocalSessionFactoryBean&quot; depends-on=&quot;tableGeneratorGlobalOverride&quot;&gt;
+ * &lt;bean id=&quot;sessionFactory&quot; class=&quot;...CdmLocalContainerEntityManagerFactoryBean&quot; depends-on=&quot;tableGeneratorGlobalOverride&quot;&gt;
  * ...
  * </pre>
  *
@@ -59,35 +58,18 @@ public class TableGenerator extends org.hibernate.id.enhanced.TableGenerator {
 
 	private static final Logger logger = LogManager.getLogger();
 
+	/**
+	 * Hibernate 7 configures table generators via {@link GeneratorCreationContext};
+	 * the older {@code configure(Type, Properties, ServiceRegistry)} path is no longer used.
+	 */
 	@Override
-    public void configure(Type type, Properties params, ServiceRegistry serviceRegistry) throws MappingException {
-
-		Properties overrideProperies = TableGeneratorGlobalOverride.getProperties();
-		if(overrideProperies != null) {
-			params.putAll(overrideProperies);
+	public void configure(GeneratorCreationContext creationContext, Properties parameters) throws MappingException {
+		Properties overrideProperties = TableGeneratorGlobalOverride.getProperties();
+		if (overrideProperties != null) {
+			parameters.putAll(overrideProperties);
 		}
-		logger.debug("overrideProperies:" + (overrideProperies != null ? overrideProperies :"NULL"));
-		super.configure(type, params, serviceRegistry);
+		logger.debug("overrideProperties:" + (overrideProperties != null ? overrideProperties : "NULL"));
+		super.configure(creationContext, parameters);
 	}
-
-//	@Override
-//	public synchronized Serializable generate(final SessionImplementor session, Object obj) {
-//
-//		Serializable nextId =  super.generate(session, obj);
-//		logger.debug("next id for " + obj.getClass().getSimpleName() + ":" + obj + " =" + nextId );
-//		return nextId;
-//
-//		/*
-//		if(nextId instanceof Number){
-//			long nextIdL = ((Number)nextId).longValue();
-//			int nextIdOffset = 1000;
-//			logger.info("next id = " + (nextIdL + nextIdOffset));
-//			return IdentifierGeneratorHelper.createNumber( nextIdL + nextIdOffset, nextId.getClass() );
-//		} else {
-//			logger.error("identifier expected to be a Number, cannot apply offset");
-//			return nextId;
-//		}
-//		*/
-//	}
 
 }
