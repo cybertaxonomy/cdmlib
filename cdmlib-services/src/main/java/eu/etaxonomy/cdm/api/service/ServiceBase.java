@@ -19,7 +19,7 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.LockOptions;
+import org.hibernate.LockMode;
 import org.hibernate.ObjectDeletedException;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,14 +67,14 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 
     @Override
     @Transactional(readOnly = true)
-    public void lock(T t, LockOptions lockOptions) {
-        dao.lock(t, lockOptions);
+    public void lock(T t, LockMode lockMode) {
+        dao.lock(t, lockMode);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public void refresh(T t, LockOptions lockOptions, List<String> propertyPaths) {
-        dao.refresh(t, lockOptions, propertyPaths);
+    public void refresh(T t, LockMode lockMode, List<String> propertyPaths) {
+        dao.refresh(t, lockMode, propertyPaths);
     }
 
     @Override

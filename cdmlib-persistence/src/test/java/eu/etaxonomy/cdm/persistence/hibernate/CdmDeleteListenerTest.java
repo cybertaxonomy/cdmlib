@@ -18,7 +18,6 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.LockMode;
-import org.hibernate.LockOptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +58,7 @@ public class CdmDeleteListenerTest extends CdmTransactionalSpringIntegrationTest
 		/**
 		 * Ended up with some horrible hibernate errors otherwise
 		 */
-		taxonNameDao.refresh(name, new LockOptions(LockMode.READ), null);
+		taxonNameDao.refresh(name, LockMode.READ, null);
 		assertNotNull(name);
 //		int nRels = taxonDao.countAllRelationships();  //TODO needs fixing on test side or dao method side as it jumps into auditing
 //		assertEquals(2, nRels, "There should be 2 relationships");

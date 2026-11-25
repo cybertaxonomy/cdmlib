@@ -25,7 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.FlushMode;
-import org.hibernate.LockOptions;
+import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
@@ -92,8 +92,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
-    public void lock(T t, LockOptions lockOptions) {
-        getSession().lock(t, lockOptions.getLockMode());
+    public void lock(T t, LockMode lockMode) {
+        getSession().lock(t, lockMode);
     }
 
     @Override
@@ -102,8 +102,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
-    public void refresh(T t, LockOptions lockOptions, List<String> propertyPaths) {
-        getSession().refresh(t, lockOptions);
+    public void refresh(T t, LockMode lockMode, List<String> propertyPaths) {
+        getSession().refresh(t, lockMode);
         defaultBeanInitializer.initialize(t, propertyPaths);
     }
 
