@@ -289,9 +289,11 @@ public class TaxonRelationshipType
 	 * except if the concept reference follows the taxonomical opinion of
 	 * another reference.<BR>
 	 * This type is neither symmetric nor transitive.
-	 * @deprecated will be removed in version 3.0
+	 *
+     * NOTE: This relationship should be used with care. In most cases using
+     *       {@link Classification} and {@link TaxonNode} is the appropriate
+     *       choice to handle a parent child relationship.
 	 */
-	@Deprecated
 	public static final TaxonRelationshipType TAXONOMICALLY_INCLUDED_IN(){
 		return getTermByUuid(uuidTaxonomicallyIncludedIn);
 	}
