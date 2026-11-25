@@ -109,8 +109,7 @@ public class UserDaoImpl extends CdmEntityDaoBase<User> implements IUserDao {
             logger.warn("User to update should not be null. NOP");
             return null;
         }
-        // merge() cascades JPA CascadeType.MERGE; Session.update() only cascaded SAVE_UPDATE.
-        getSession().update(user);
+        user = getSession().merge(user);
         return user.getUuid();
     }
 }

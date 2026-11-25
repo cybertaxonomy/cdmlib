@@ -172,7 +172,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             for (CdmBase referringObject : referringObjects) {
                 try {
                     referringObjectMetadata.replace(referringObject, x, y);
-                    getSession().update(referringObject);
+                    getSession().merge(referringObject);
 
                 } catch (IllegalArgumentException e) {
                     throw new RuntimeException(e.getMessage(), e);
@@ -321,14 +321,14 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
           .where(where)
           .orderBy(cb.desc(root.get("created")));
 
-        List<Integer> ids = getSession().createQuery(cq).getResultList();
+        List<Integer> ids = getSession().createSelectionQuery(cq).getResultList();
         if (ids.isEmpty()) {
             return null;
         }
         if (ids.size() > 1) {
             logger.error("findByUuidPreferManaged() delivers more than one result for UUID: " + uuid);
         }
-        return getSession().get(type, ids.get(0));
+        return getSession().find(type, ids.get(0));
     }
 
     @Override
@@ -682,7 +682,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
     @Override
     public T loadWithoutInitializing(int id){
-        return this.getSession().load(type, id);
+        return this.getSession().getReference(type, id);
     }
 
     @Override

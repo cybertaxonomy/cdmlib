@@ -1466,7 +1466,7 @@ public class TaxonDaoHibernateImpl
 		boolean isTaxon = clazzParam == Taxon.class || clazzParam == TaxonBase.class;
 		boolean isSynonym = clazzParam == Synonym.class || clazzParam == TaxonBase.class;
 
-		getSession().update(subtreeFilter);  //to avoid LIE when retrieving treeindex
+		subtreeFilter = getSession().merge(subtreeFilter);  //to avoid LIE when retrieving treeindex
 		String filterStr = "'" + subtreeFilter.treeIndex() + "%%'";
 		String accTreeJoin = isTaxon? " LEFT JOIN c.taxonNodes tn  " : "";
 		String synTreeJoin = isSynonym ? " LEFT JOIN c.acceptedTaxon as acc LEFT JOIN acc.taxonNodes synTn  " : "";
@@ -1587,7 +1587,7 @@ public class TaxonDaoHibernateImpl
         boolean isTaxon = clazzParam == Taxon.class || clazzParam == TaxonBase.class;
         boolean isSynonym = clazzParam == Synonym.class || clazzParam == TaxonBase.class;
 
-        getSession().update(subtreeFilter);  //to avoid LIE when retrieving treeindex
+        subtreeFilter = getSession().merge(subtreeFilter);  //to avoid LIE when retrieving treeindex
         String filterStr = "'" + subtreeFilter.treeIndex() + "%%'";
         String accTreeJoin = isTaxon? " LEFT JOIN c.taxonNodes tn  " : "";
         String synTreeJoin = isSynonym ? " LEFT JOIN c.acceptedTaxon acc LEFT JOIN acc.taxonNodes synTn  " : "";
@@ -1633,7 +1633,7 @@ public class TaxonDaoHibernateImpl
 
         boolean isTaxon = clazzParam == Taxon.class || clazzParam == TaxonBase.class;
         boolean isSynonym = clazzParam == Synonym.class || clazzParam == TaxonBase.class;
-        getSession().update(subtreeFilter);  //to avoid LIE when retrieving treeindex
+        subtreeFilter = getSession().merge(subtreeFilter);  //to avoid LIE when retrieving treeindex
         String filterStr = "'" + subtreeFilter.treeIndex() + "%%'";
         String accTreeJoin = isTaxon? " LEFT JOIN c.taxonNodes tn  " : "";
         String synTreeJoin = isSynonym ? " LEFT JOIN c.acceptedTaxon as acc LEFT JOIN acc.taxonNodes synTn  " : "";

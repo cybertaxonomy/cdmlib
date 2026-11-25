@@ -19,6 +19,11 @@ import org.hibernate.event.spi.PersistEvent;
 import org.hibernate.event.spi.PersistEventListener;
 
 /**
+ * Generates identifiable caches early in the persistence lifecycle so values
+ * are present when Hibernate captures insert/update state.
+ * <p>
+ * See also {@link CdmListenerIntegrator}.
+ *
  * @author a.mueller
  * @since 04.03.2009
  */
