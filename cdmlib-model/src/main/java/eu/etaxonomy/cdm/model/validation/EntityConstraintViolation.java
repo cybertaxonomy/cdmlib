@@ -13,13 +13,12 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.jpa.SeverityConverter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -121,8 +120,7 @@ public class EntityConstraintViolation extends CdmBase {
     private String validationGroup;
 
     @XmlElement(name = "EntityValidation")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({ CascadeType.SAVE_UPDATE })
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private EntityValidation entityValidation;
 
     protected EntityConstraintViolation() {

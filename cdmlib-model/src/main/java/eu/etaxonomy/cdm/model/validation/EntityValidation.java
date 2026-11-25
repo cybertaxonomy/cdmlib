@@ -18,8 +18,6 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
@@ -27,6 +25,7 @@ import eu.etaxonomy.cdm.jpa.UuidConverter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -120,8 +119,7 @@ public class EntityValidation extends CdmBase {
     private EntityValidationStatus status;
 
     @XmlElementWrapper(name = "EntityConstraintViolations")
-    @OneToMany(mappedBy = "entityValidation", orphanRemoval = true)
-    @Cascade({ CascadeType.ALL })
+    @OneToMany(mappedBy = "entityValidation", orphanRemoval = true, cascade = CascadeType.ALL)
     @Fetch(value = FetchMode.JOIN)
     private Set<EntityConstraintViolation> entityConstraintViolations = new HashSet<EntityConstraintViolation>();
 

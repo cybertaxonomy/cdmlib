@@ -16,13 +16,12 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToOne;
@@ -81,8 +80,7 @@ public class TermTree<T extends DefinedTermBase>
 	//translations should be synchronized all over the system (there is a ticket for this)
 
 	@XmlElement(name = "Root")
-	@OneToOne(fetch = FetchType.LAZY, targetEntity = TermNode.class)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+	@OneToOne(fetch = FetchType.LAZY, targetEntity = TermNode.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private TermNode<T> root;
 
 //******************** FACTORY METHODS ******************************************/

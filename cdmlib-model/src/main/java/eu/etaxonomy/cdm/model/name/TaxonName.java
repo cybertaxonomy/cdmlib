@@ -29,7 +29,6 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
-import org.hibernate.annotations.Cascade;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -237,10 +236,7 @@ public class TaxonName
 
     @XmlElementWrapper(name = "Descriptions")
     @XmlElement(name = "Description")
-    @OneToMany(mappedBy="taxonName", fetch= FetchType.LAZY, orphanRemoval=true)
-    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
-        org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.MERGE,
-        org.hibernate.annotations.CascadeType.DELETE})
+    @OneToMany(mappedBy="taxonName", fetch= FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @NotNull
     private Set<TaxonNameDescription> descriptions = new HashSet<>();
 
@@ -285,8 +281,7 @@ public class TaxonName
     @XmlSchemaType(name = "IDREF")
     // Prefer Hibernate SAVE_UPDATE over JPA CascadeType.PERSIST: groups are often shared/detached;
     // JPA PERSIST then fails with "detached entity passed to persist".
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Match(MatchMode.IGNORE)
     @CacheUpdate(noUpdate ="titleCache")
     //TODO Val #3379
@@ -295,9 +290,7 @@ public class TaxonName
 
     @XmlElementWrapper(name = "RelationsFromThisName")
     @XmlElement(name = "RelationFromThisName")
-    @OneToMany(mappedBy="relatedFrom", fetch= FetchType.LAZY, orphanRemoval=true)
-    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.PERSIST,
-        org.hibernate.annotations.CascadeType.MERGE, org.hibernate.annotations.CascadeType.DELETE})
+    @OneToMany(mappedBy="relatedFrom", fetch= FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @Merge(MergeMode.RELATION)
     @NotNull
     @Valid
@@ -307,9 +300,7 @@ public class TaxonName
     @XmlElement(name = "RelationToThisName")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToMany(mappedBy="relatedTo", fetch= FetchType.LAZY, orphanRemoval=true)
-    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.PERSIST,
-        org.hibernate.annotations.CascadeType.MERGE, org.hibernate.annotations.CascadeType.DELETE})
+    @OneToMany(mappedBy="relatedTo", fetch= FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @Merge(MergeMode.RELATION)
     @NotNull
     @Valid
@@ -317,9 +308,7 @@ public class TaxonName
 
     @XmlElementWrapper(name = "NomenclaturalStatuses")
     @XmlElement(name = "NomenclaturalStatus")
-    @OneToMany(fetch= FetchType.LAZY, mappedBy = "name", orphanRemoval=true)
-    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.PERSIST,
-        org.hibernate.annotations.CascadeType.MERGE, org.hibernate.annotations.CascadeType.DELETE})
+    @OneToMany(fetch= FetchType.LAZY, mappedBy = "name", orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @NotNull
     @IndexedEmbedded(includeDepth=1)
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
@@ -499,18 +488,14 @@ public class TaxonName
 
     @XmlElementWrapper(name = "HybridRelationsFromThisName")
     @XmlElement(name = "HybridRelationsFromThisName")
-    @OneToMany(mappedBy="relatedFrom", fetch = FetchType.LAZY)
-    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.PERSIST,
-        org.hibernate.annotations.CascadeType.MERGE})
+    @OneToMany(mappedBy="relatedFrom", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Merge(MergeMode.RELATION)
     @NotNull
     private Set<HybridRelationship> hybridParentRelations = new HashSet<>();
 
     @XmlElementWrapper(name = "HybridRelationsToThisName")
     @XmlElement(name = "HybridRelationsToThisName")
-    @OneToMany(mappedBy="relatedTo", fetch = FetchType.LAZY, orphanRemoval=true) //a hybrid relation can be deleted automatically if the child is deleted.
-    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.PERSIST,
-        org.hibernate.annotations.CascadeType.MERGE, org.hibernate.annotations.CascadeType.DELETE})
+    @OneToMany(mappedBy="relatedTo", fetch = FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}) //a hybrid relation can be deleted automatically if the child is deleted.
     @Merge(MergeMode.RELATION)
     @NotNull
     private Set<HybridRelationship> hybridChildRelations = new HashSet<>();

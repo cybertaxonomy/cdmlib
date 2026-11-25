@@ -19,11 +19,10 @@ import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.validation.Level2;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -83,8 +82,7 @@ public class CategoricalData
 
     @XmlElementWrapper(name = "States")
     @XmlElement(name = "State")
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="categoricalData", orphanRemoval=true)
-    @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="categoricalData", orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @IndexedEmbedded(includeDepth = 3)
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     @NotEmpty(groups = Level2.class)

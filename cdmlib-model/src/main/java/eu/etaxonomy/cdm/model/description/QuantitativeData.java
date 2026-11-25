@@ -17,12 +17,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.common.BigDecimalUtil;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.validation.Level2;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -91,8 +90,7 @@ public class QuantitativeData
 
 	@XmlElementWrapper(name = "StatisticalValues")
 	@XmlElement(name = "StatisticalValue")
-	@OneToMany(fetch = FetchType.LAZY, mappedBy="quantitativeData", orphanRemoval=true)
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="quantitativeData", orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
 	@NotEmpty(groups = Level2.class)
 	private Set<StatisticalMeasurementValue> statisticalValues = new HashSet<>();
 

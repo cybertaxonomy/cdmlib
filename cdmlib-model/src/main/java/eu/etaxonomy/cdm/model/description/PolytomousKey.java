@@ -17,8 +17,6 @@ import org.apache.commons.lang3.Strings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CreditableEntity;
@@ -32,6 +30,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.strategy.cache.description.PolytomousKeyDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -125,8 +124,7 @@ public class PolytomousKey
     private Set<DefinedTerm> scopeRestrictions = new HashSet<>();
 
     @XmlElement(name = "Root")
-    @OneToOne(fetch = FetchType.LAZY)
-    @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE })
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     private PolytomousKeyNode root;
 
     @XmlElement(name = "StartNumber")

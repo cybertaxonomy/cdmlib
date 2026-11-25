@@ -22,8 +22,6 @@ import org.hibernate.search.mapper.pojo.common.annotation.Param;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.PropertyBinding;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
@@ -35,6 +33,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -115,9 +114,8 @@ public class StateData
 
     @XmlElement(name = "ModifyingText")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @MapKeyJoinColumn(name="modifyingtext_mapkey_id")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     @PropertyBinding(binder = @PropertyBinderRef(type=MultilanguageTextFieldBridge.class,
             params = @Param(name="fieldName", value="modifyingText")))
     private Map<Language,LanguageString> modifyingText = new HashMap<>();

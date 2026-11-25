@@ -16,12 +16,11 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.media.IHasLink;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Inheritance;
@@ -61,8 +60,7 @@ public abstract class TermCollection<TERM extends DefinedTermBase, REL extends T
     @XmlElement(name = "TermRelation")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToMany(mappedBy="graph", fetch=FetchType.LAZY, targetEntity = TermRelationBase.class)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy="graph", fetch=FetchType.LAZY, targetEntity = TermRelationBase.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @IndexedEmbedded(includeDepth = 2)
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private Set<REL> termRelations = new HashSet<>();

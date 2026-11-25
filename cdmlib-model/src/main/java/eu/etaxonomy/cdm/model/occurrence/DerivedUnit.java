@@ -23,7 +23,6 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmb
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 import org.hibernate.type.SqlTypes;
-import org.hibernate.annotations.Cascade;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter;
@@ -133,8 +132,7 @@ public class DerivedUnit
 	@XmlElement(name = "DerivedFrom")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.MERGE})
+	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@IndexedEmbedded(includeDepth = 4)
 	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	private DerivationEvent derivedFrom;
@@ -167,8 +165,7 @@ public class DerivedUnit
 	@XmlElement(name = "Preservation")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	@ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.MERGE})
+	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private PreservationMethod preservation;
 
 

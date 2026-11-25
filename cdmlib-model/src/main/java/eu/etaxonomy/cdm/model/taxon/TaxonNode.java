@@ -17,8 +17,6 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.engine.backend.types.Projectable;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
@@ -45,6 +43,7 @@ import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustBeLowerRankThanParent;
 import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustDeriveNameFromParent;
 import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -102,8 +101,7 @@ public class TaxonNode
     @XmlElement(name = "taxon")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Taxon taxon;
 
     @XmlElement(name = "parent")
@@ -146,8 +144,7 @@ public class TaxonNode
     @XmlElement(name = "agentRelation")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToMany(mappedBy="taxonNode", fetch=FetchType.LAZY, orphanRemoval = true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToMany(mappedBy="taxonNode", fetch=FetchType.LAZY, orphanRemoval = true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     private Set<TaxonNodeAgentRelation> agentRelations = new HashSet<>();
 
     /**
@@ -161,7 +158,7 @@ public class TaxonNode
 
     @XmlElement(name = "placementNote")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     // Explicit join + map-key column: DB column is placementNote_KEY (SchemaUpdater_5120),
     // not the Hibernate-6 default placementNote_mapkey_id used by other Multilanguage maps
     @JoinTable(
@@ -170,7 +167,6 @@ public class TaxonNode
             inverseJoinColumns = @JoinColumn(name = "placementNote_id")
     )
     @MapKeyJoinColumn(name = "placementNote_KEY")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     private Map<Language,LanguageString> placementNote = new HashMap<>();
 
 //	private Taxon originalConcept;

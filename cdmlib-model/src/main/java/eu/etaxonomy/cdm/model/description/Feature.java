@@ -19,8 +19,6 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.common.CdmClass.CdmClassEnumSetConverter;
@@ -35,6 +33,7 @@ import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -146,12 +145,11 @@ public class Feature extends AvailableForTermBase<Feature> {
     //copy from RelationshipTermBase
 	@XmlElementWrapper(name = "InverseRepresentations")
     @XmlElement(name = "Representation")
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinTable(name="DefinedTermBase_InverseRepresentation",  //see also RelationshipTermBase.inverseRepresentations
         joinColumns=@JoinColumn(name="DefinedTermBase_id")
         //  inverseJoinColumns
     )
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
 //    @IndexedEmbedded(includeDepth = 2)
     private Set<Representation> inverseRepresentations = new HashSet<>();
 

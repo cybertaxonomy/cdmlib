@@ -28,8 +28,6 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmb
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 import org.hibernate.type.SqlTypes;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.common.DOI;
@@ -64,6 +62,7 @@ import eu.etaxonomy.cdm.validation.annotation.InReference;
 import eu.etaxonomy.cdm.validation.annotation.NoRecursiveInReference;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
@@ -365,8 +364,7 @@ public class Reference
     @XmlElementWrapper(name = "Credits", nillable = true)
     @XmlElement(name = "Credit")
     @OrderColumn(name="sortIndex")
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     //TODO
     @Merge(MergeMode.ADD_CLONE)
     @NotNull

@@ -15,6 +15,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -32,8 +33,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -81,24 +80,21 @@ public class DnaSample extends DerivedUnit {
 	@XmlElement(name = "sequence")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToMany(mappedBy="dnaSample", fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy="dnaSample", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Sequence> sequences = new HashSet<>();
 
 	@XmlElementWrapper(name = "AmplificationResults")
 	@XmlElement(name = "AmplificationResult")
-	@OneToMany(mappedBy="dnaSample", fetch = FetchType.LAZY)
-	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
+	@OneToMany(mappedBy="dnaSample", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @NotNull
 	private final Set<AmplificationResult> amplificationResults = new HashSet<>();
 
     @XmlElement(name = "DnaQuality", required = true)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @IndexedEmbedded
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     private DnaQuality dnaQuality;
 
 // ******************* CONSTRUCTOR *************************/

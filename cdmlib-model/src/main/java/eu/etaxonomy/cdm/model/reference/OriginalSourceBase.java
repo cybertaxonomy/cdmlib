@@ -15,8 +15,6 @@ import org.apache.commons.lang3.Strings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.springframework.util.Assert;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -27,6 +25,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriodBase;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -123,14 +122,12 @@ public abstract class OriginalSourceBase
     @XmlSchemaType(name = "IDREF")
     // LAZY: EAGER caused Hibernate 6.1 AssertionFailure ("force initializing collection loading")
     // when cascading deletes load OriginalSourceBase while another collection is initializing
-    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     private CdmLinkSource cdmSource;
 
     @XmlElementWrapper(name = "Links", nillable = true)
     @XmlElement(name = "Link")
-    @OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToMany(fetch=FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @Merge(MergeMode.ADD_CLONE)
 	private Set<ExternalLink> links = new HashSet<>();
 

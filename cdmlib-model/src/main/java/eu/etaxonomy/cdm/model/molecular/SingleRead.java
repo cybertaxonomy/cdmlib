@@ -11,14 +11,13 @@ package eu.etaxonomy.cdm.model.molecular;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
@@ -69,28 +68,25 @@ public class SingleRead extends EventBase {
 	@XmlElement(name = "AmplificationResult")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private AmplificationResult amplificationResult;
 
 	/** @see #getPrimer()*/
 	@XmlElement(name = "Primer")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private Primer primer;
 
 	/** @see #getSequence()*/
 	/**{@link #getSequence()}*/
 	@XmlElement(name = "Sequence")
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     private SequenceString sequence = SequenceString.NewInstance();
 
 	@XmlElement(name = "Pherogram")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private Media pherogram;
 
 	/** @see #getDirection()*/
@@ -101,8 +97,7 @@ public class SingleRead extends EventBase {
 	@XmlElement(name = "MaterialOrMethod")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private MaterialOrMethodEvent materialOrMethod;
 
 	// ******************** FACTORY METHOD ******************/

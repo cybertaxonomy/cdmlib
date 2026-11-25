@@ -16,11 +16,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.springframework.security.core.GrantedAuthority;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -98,16 +97,14 @@ public class Group extends CdmBase {
     @XmlElement(name = "GrantedAuthority", type = GrantedAuthorityImpl.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set <GrantedAuthority> grantedAuthorities = new HashSet<>();
 
     @XmlElementWrapper(name = "Authorities")
     @XmlElement(name = "Authority", type = AuthorityBase.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToMany(fetch = FetchType.LAZY, targetEntity = AuthorityBase.class)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = AuthorityBase.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set <AuthorityBase> authorities = new HashSet<>();
 
 

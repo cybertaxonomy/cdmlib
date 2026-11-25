@@ -18,8 +18,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.envers.Audited;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
@@ -28,6 +26,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -168,8 +167,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlElementWrapper(name = "Children")
 	@XmlElement(name = "Child")
 	@OrderColumn(name = "sortIndex", nullable=true)  //, base = 0
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent") //no orphanRemoval (#10101)
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE })
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}) //no orphanRemoval (#10101)
 	private List<PolytomousKeyNode> children = new ArrayList<>();
 
 	@XmlElement(name = "Parent")
@@ -182,15 +180,13 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlElement(name = "Statement")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE })
+	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
 	private KeyStatement statement;
 
 	@XmlElement(name = "Question")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
+	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
 	private KeyStatement question;
 
 	@XmlElement(name = "Feature")
@@ -225,9 +221,8 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	// TODO should be available for each taxon/result
 	@XmlElement(name = "ModifyingText")
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@MapKeyJoinColumn(name="modifyingtext_mapkey_id")
-    @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE })
 	private Map<Language, LanguageString> modifyingText = new HashMap<>();
 
 // ************************** FACTORY ********************************/

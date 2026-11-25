@@ -15,13 +15,12 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.MappedSuperclass;
@@ -52,8 +51,7 @@ public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCache
     @XmlElement(name = "Medium")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	//TODO
 	@Merge(MergeMode.ADD_CLONE)
     private Set<Media> media = new HashSet<>();

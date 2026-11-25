@@ -26,8 +26,6 @@ import org.hibernate.search.engine.backend.types.Sortable;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
@@ -47,6 +45,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import eu.etaxonomy.cdm.validation.Level2;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.FetchType;
@@ -123,8 +122,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @XmlElementWrapper(name = "Extensions", nillable = true)
     @XmlElement(name = "Extension")
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
     private Set<Extension> extensions = new HashSet<>();
@@ -132,16 +130,14 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @XmlElementWrapper(name = "Identifiers", nillable = true)
     @XmlElement(name = "Identifier")
     @OrderColumn(name="sortIndex")
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
     private List<Identifier> identifiers = new ArrayList<>();
 
     @XmlElementWrapper(name = "Links", nillable = true)
     @XmlElement(name = "Link")
-    @OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToMany(fetch=FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @Merge(MergeMode.ADD_CLONE)
     private Set<ExternalLink> links = new HashSet<>();
 

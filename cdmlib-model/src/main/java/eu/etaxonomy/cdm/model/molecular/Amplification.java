@@ -16,8 +16,6 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextFi
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -26,6 +24,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.TermType;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -108,24 +107,21 @@ public class Amplification extends EventBase {
     @XmlElement(name = "ForwardPrimer")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Primer forwardPrimer;
 
     /** @see #getReversePrimer()*/
     @XmlElement(name = "ReversePrimer")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Primer reversePrimer;
 
 
     @XmlElement(name = "Purification")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private MaterialOrMethodEvent purification;
 
 	@XmlElement(name = "Institution")

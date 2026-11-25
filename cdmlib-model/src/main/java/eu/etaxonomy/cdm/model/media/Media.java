@@ -20,8 +20,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
@@ -41,6 +39,7 @@ import eu.etaxonomy.cdm.strategy.cache.media.MediaDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import eu.etaxonomy.cdm.validation.Level2;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -105,11 +104,10 @@ public class Media
     // private MultilanguageText title = new MultilanguageText();
     @XmlElement(name = "MediaTitle")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE, CascadeType.REFRESH})
     @MapKeyJoinColumn(name="title_mapkey_id")
     @IndexedEmbedded
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE,CascadeType.DELETE, CascadeType.REFRESH})
     @NotNull
     @NotEmpty(groups = Level2.class)
     private Map<Language,LanguageString> title = new HashMap<>();
@@ -125,10 +123,9 @@ public class Media
     // private MultilanguageText description = new MultilanguageText();
     @XmlElement(name = "MediaDescription")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE, CascadeType.REFRESH})
     @MapKeyJoinColumn(name="description_mapkey_id")
     @JoinTable(name = "Media_Description")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE,CascadeType.DELETE, CascadeType.REFRESH})
     @IndexedEmbedded
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     @NotNull
@@ -143,8 +140,7 @@ public class Media
         @XmlElement(name = "ImageFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = ImageFile.class),
         @XmlElement(name = "MovieFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = MovieFile.class)
     })
-    @OneToMany(mappedBy="media",fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE, CascadeType.REFRESH})
+    @OneToMany(mappedBy="media",fetch = FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE, CascadeType.REFRESH})
     @NotNull
     @NotEmpty(groups = Level2.class)
     private Set<MediaRepresentation> representations = new HashSet<>();
@@ -160,16 +156,14 @@ public class Media
     @XmlElement(name = "Link")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @IndexedEmbedded
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     private ExternalLink link;
 
     @XmlElementWrapper(name = "Rights", nillable = true)
     @XmlElement(name = "Rights")
-    @ManyToMany(fetch = FetchType.LAZY)  //#5762 M:N now
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})  //#5762 M:N now
     //TODO
     @Merge(MergeMode.ADD_CLONE)
     @NotNull

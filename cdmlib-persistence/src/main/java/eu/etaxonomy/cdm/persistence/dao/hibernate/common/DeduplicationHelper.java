@@ -374,7 +374,7 @@ public class DeduplicationHelper {
 		}
 		for (Marker marker : removeListMarker){
 			annotatableEntity2.removeMarker(marker);
-			session.delete(marker);
+			session.remove(marker);
 		}
 	}
 
@@ -421,9 +421,8 @@ public class DeduplicationHelper {
 		}
 		for (Identifier removeObject : removeListIdentifier){
 			identifiableEntity2.removeIdentifier(removeObject);
-			session.delete(removeObject);
+			session.remove(removeObject);
 		}
-
 	}
 
 	private void reallocateReferences(CdmBase cdmBase1, CdmBase cdmBase2, Class<? extends CdmBase> clazz, Set<ICdmBase> cloneSet){

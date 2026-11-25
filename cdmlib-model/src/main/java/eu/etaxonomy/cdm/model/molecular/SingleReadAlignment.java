@@ -14,11 +14,10 @@ import org.hibernate.Length;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
 import org.hibernate.type.SqlTypes;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.jpa.ShiftConverter;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -64,8 +63,7 @@ public class SingleReadAlignment extends VersionableEntity {
 	@XmlElement(name = "SingleRead")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private SingleRead singleRead;
 
 	//TODO XML mapping / user type

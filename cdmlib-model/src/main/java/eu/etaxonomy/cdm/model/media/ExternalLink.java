@@ -17,8 +17,6 @@ import org.hibernate.Length;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
 import org.hibernate.type.SqlTypes;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
@@ -27,6 +25,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -87,9 +86,8 @@ public class ExternalLink extends VersionableEntity{
 
     @XmlElement(name = "Description")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @MapKeyJoinColumn(name="description_mapkey_id")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE })
     private Map<Language,LanguageString> description = new HashMap<>();
 
     // the exptected size, mostly relevant for Files, can be null

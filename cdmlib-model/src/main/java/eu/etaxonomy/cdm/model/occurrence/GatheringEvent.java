@@ -20,8 +20,6 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextFi
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -31,6 +29,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -82,8 +81,7 @@ public class GatheringEvent extends EventBase {
 	private static final Logger logger = LogManager.getLogger();
 
 	@XmlElement(name = "Locality")
-	@OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
-	@Cascade({CascadeType.ALL})
+	@OneToOne(fetch = FetchType.LAZY, orphanRemoval=true, cascade = CascadeType.ALL)
 	@IndexedEmbedded
 	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	private LanguageString locality;

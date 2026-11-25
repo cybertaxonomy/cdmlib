@@ -11,8 +11,6 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
@@ -21,6 +19,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.term.TermBase;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.MapKeyJoinColumn;
@@ -55,9 +54,8 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 
 	@XmlElement(name = "MultiLanguageText")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-    @OneToMany (fetch= FetchType.LAZY, orphanRemoval=true)
+    @OneToMany (fetch= FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
 	@MapKeyJoinColumn(name="label_mapkey_id")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE })
 //    @IndexedEmbedded
     private Map<Language, LanguageString> label = new HashMap<>();
 

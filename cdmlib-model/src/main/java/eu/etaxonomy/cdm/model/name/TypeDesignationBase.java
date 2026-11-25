@@ -18,8 +18,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -31,6 +29,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.annotation.ValidLectotypeSource;
 import eu.etaxonomy.cdm.validation.annotation.ValidTypeDesignation;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Inheritance;
@@ -101,8 +100,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     @XmlElement(name = "source")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     private NamedSource designationSource;
 
     @XmlElementWrapper(name = "TypifiedNames")

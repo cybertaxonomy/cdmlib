@@ -129,7 +129,7 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
             }
         } else {
             // make sure the entity is still in the current session
-            secReference = getSession().load(Reference.class, secReference.getId());
+            secReference = getSession().getReference(Reference.class, secReference.getId());
         }
         return secReference;
     }

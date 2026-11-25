@@ -22,8 +22,6 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericFie
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.TypeBinding;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.compare.taxon.TaxonComparator;
@@ -49,6 +47,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynonym;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -137,12 +136,11 @@ public abstract class TaxonBase
     @XmlElement(name = "Name")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     // id is contributed as String by NotNullAwareIdBridge; includeEmbeddedObjectId would
     // add an Integer document-id field at name.id and conflict with that binder (HSEARCH600126)
     @IndexedEmbedded
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     @NotNull(groups = Level2.class)
     private TaxonName name;
 
@@ -150,8 +148,7 @@ public abstract class TaxonBase
     @XmlElement(name = "SecSource")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true, mappedBy="sourcedTaxon")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE,CascadeType.DELETE})
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true, mappedBy="sourcedTaxon", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @CacheUpdate(noUpdate ="titleCache")
     @IndexedEmbedded
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)

@@ -14,37 +14,49 @@ import org.hibernate.HibernateException;
 import org.hibernate.event.spi.MergeContext;
 import org.hibernate.event.spi.MergeEvent;
 import org.hibernate.event.spi.MergeEventListener;
-import org.hibernate.event.spi.SaveOrUpdateEvent;
-import org.hibernate.event.spi.SaveOrUpdateEventListener;
+import org.hibernate.event.spi.PersistContext;
+import org.hibernate.event.spi.PersistEvent;
+import org.hibernate.event.spi.PersistEventListener;
 
 /**
  * @author a.mueller
  * @since 04.03.2009
  */
-public class CacheStrategyGenerator implements SaveOrUpdateEventListener, MergeEventListener {
+public class CacheStrategyGeneratorListener
+        implements MergeEventListener, PersistEventListener {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
     @Override
-    public void onSaveOrUpdate(SaveOrUpdateEvent event) throws HibernateException {
-        Object entity = event.getObject();
-        saveOrUpdateOrMerge(entity);
+    public void onPersist(PersistEvent event) throws HibernateException {
+        persistOrMerge(event.getObject());
+    }
+
+    @Override
+    public void onPersist(PersistEvent event, PersistContext createdAlready) throws HibernateException {
+        // Cascading persist visits entities via this overload as well.
+        persistOrMerge(event.getObject());
     }
 
     @Override
     public void onMerge(MergeEvent event) throws HibernateException {
-        Object entity = event.getOriginal();
-        saveOrUpdateOrMerge(entity);
+        // Always update caches for (session bound) merge result
+        // If no result exists (e.g. because original was not yet persisted
+        // update the original. Always updating the original may lead to LIEs.
+        if (event.getResult() != null && event.getResult() != event.getOriginal()) {
+            persistOrMerge(event.getResult());
+        }else {
+            persistOrMerge(event.getOriginal());
+        }
     }
 
-    @Override
+    @Override  //for cascading merges
     public void onMerge(MergeEvent event, MergeContext copiedAlready) throws HibernateException {
-        logger.warn("OnMerge(MergeEvent, MergeContext) was called. This method from "
-                + "interface MergeListener is not implemented yet in"
-                + "CacheStrategyGenerator");
+        onMerge(event);  //copiedAlready not needed here, so we link to onMerge(event)
     }
 
-    private void saveOrUpdateOrMerge(Object entity) {
+    private void persistOrMerge(Object entity) {
         CdmPreDataChangeListener.generateCaches(entity);
     }
 }

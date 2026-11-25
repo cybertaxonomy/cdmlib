@@ -93,7 +93,7 @@ public class AuditEventDao extends DaoBase implements IAuditEventDao {
 	@Override
     public AuditEvent findByDate(ZonedDateTime dateTime) {
 		Number id = getAuditReader().getRevisionNumberForDate(Date.from(dateTime.toInstant()));
-		AuditEvent auditEvent = getSession().load(AuditEvent.class, id);
+		AuditEvent auditEvent = getSession().getReference(AuditEvent.class, id);
 		Hibernate.initialize(auditEvent);
 		return auditEvent;
 	}

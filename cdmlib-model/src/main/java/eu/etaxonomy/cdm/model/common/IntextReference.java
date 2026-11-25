@@ -5,8 +5,6 @@ package eu.etaxonomy.cdm.model.common;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.envers.Audited;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
@@ -17,6 +15,7 @@ import eu.etaxonomy.cdm.model.reference.CdmLinkSource;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
@@ -87,8 +86,7 @@ public class IntextReference extends CdmLinkBase {
     @XmlElement(name = "Source")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private OriginalSourceBase source;
 
     @XmlElement(name = "Media")

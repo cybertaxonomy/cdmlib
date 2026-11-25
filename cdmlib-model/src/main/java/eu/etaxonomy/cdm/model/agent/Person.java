@@ -21,8 +21,6 @@ import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -37,6 +35,7 @@ import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -163,8 +162,7 @@ public class Person
 
     @XmlElementWrapper(name = "InstitutionalMemberships", nillable = true)
     @XmlElement(name = "InstitutionalMembership")
-    @OneToMany(fetch=FetchType.LAZY, mappedBy = "person")
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "person", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
 	protected Set<InstitutionalMembership> institutionalMemberships;
 
 // *********************** FACTORY **********************************/

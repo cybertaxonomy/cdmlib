@@ -18,12 +18,11 @@ import org.hibernate.Length;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
 import org.hibernate.type.SqlTypes;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.jpa.UriConverter;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -101,8 +100,7 @@ public class MediaRepresentation extends VersionableEntity {
 
     @XmlElementWrapper(name = "MediaMetaDatas")
     @XmlElement(name = "MediaMetaData")
-    @OneToMany (mappedBy="mediaRepresentation", fetch= FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE, CascadeType.REFRESH})
+    @OneToMany (mappedBy="mediaRepresentation", fetch= FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE, CascadeType.REFRESH})
     private Set<MediaMetaData> mediaMetaData = new HashSet<>();
 
 //********************* FACTORY ***********************************************/

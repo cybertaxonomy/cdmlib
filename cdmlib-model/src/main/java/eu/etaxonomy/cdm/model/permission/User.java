@@ -15,8 +15,6 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
@@ -32,6 +30,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.annotation.ValidPassword;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -102,8 +101,7 @@ public class User extends CdmBase implements UserDetails {
     @XmlElement(name = "GrantedAuthority", type = GrantedAuthorityImpl.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}) // see #2414 (Group updating doesn't work)
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @NotAudited
     protected Set<GrantedAuthority> grantedAuthorities = new HashSet<>();  //authorities of this user only
 
@@ -145,8 +143,7 @@ public class User extends CdmBase implements UserDetails {
     @XmlElement(name = "Authority", type = AuthorityBase.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToMany(fetch = FetchType.LAZY, targetEntity = AuthorityBase.class)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = AuthorityBase.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @NotAudited
     protected Set<AuthorityBase> authorities = new HashSet<>();
 

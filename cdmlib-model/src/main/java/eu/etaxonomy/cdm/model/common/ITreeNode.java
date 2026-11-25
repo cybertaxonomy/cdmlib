@@ -11,11 +11,9 @@ package eu.etaxonomy.cdm.model.common;
 import java.util.Collection;
 import java.util.List;
 
-import org.hibernate.event.spi.SaveOrUpdateEventListener;
-
 /**
  * Common interface for all tree data structures supporting tree indexing.
- * Mainly used by {@link SaveOrUpdateEventListener} to update the indices.
+ * Mainly used by hibernate listener to update the indices.
  *
  * @author a.mueller
  * @since 12.08.2013

@@ -18,8 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.SetMap;
@@ -28,6 +26,7 @@ import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureState;
 import eu.etaxonomy.cdm.model.description.State;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -92,16 +91,14 @@ public class TermNode<T extends DefinedTermBase>
     @XmlElement(name = "Child")
     //see https://dev.e-taxonomy.eu/redmine/issues/3722
     @OrderColumn(name="sortIndex", nullable=true)
-	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent", targetEntity=TermNode.class) //no orphanRemoval (#10101)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})  //TODO , CascadeType.DELETE makes sense but needs testing in TaxEditor first
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent", targetEntity=TermNode.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE}) //no orphanRemoval (#10101); TODO CascadeType.REMOVE needs TaxEditor testing
 	private List<TermNode<T>> children = new ArrayList<>();
 
     @XmlElementWrapper(name = "OnlyApplicableIf")
     @XmlElement(name = "OnlyApplicableIf")
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinTable(name="TermNode_OnlyApplicableIf")
     private final Set<FeatureState> onlyApplicableIf = new HashSet<>();
 
@@ -109,8 +106,7 @@ public class TermNode<T extends DefinedTermBase>
     @XmlElement(name = "InapplicableIf")
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinTable(name="TermNode_InapplicableIf")
     private final Set<FeatureState> inapplicableIf = new HashSet<>();
 

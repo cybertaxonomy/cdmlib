@@ -22,8 +22,6 @@ import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import com.opencsv.CSVWriter;
 
@@ -37,6 +35,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -85,12 +84,11 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
 
 	@XmlElementWrapper(name = "InverseRepresentations")
 	@XmlElement(name = "Representation")
-	@OneToMany(fetch = FetchType.EAGER, orphanRemoval=true)  //eager loading same as TermBase.representations
+	@OneToMany(fetch = FetchType.EAGER, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})  //eager loading same as TermBase.representations
 	@JoinTable(name="DefinedTermBase_InverseRepresentation",  //see also Feature.inverseRepresentations
         joinColumns=@JoinColumn(name="DefinedTermBase_id")
 //	    inverseJoinColumns
     )
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
 	@IndexedEmbedded(includeDepth = 2)
 	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	private Set<Representation> inverseRepresentations = new HashSet<>();

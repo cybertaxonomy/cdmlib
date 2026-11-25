@@ -14,8 +14,6 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -24,6 +22,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermTree;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinTable;
@@ -108,8 +107,7 @@ public class MediaKey extends Media implements IIdentificationKey{
 	@XmlElement( name = "KeyRepresentation")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	@OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE,CascadeType.DELETE})
+	@OneToMany(fetch=FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
 	@NotNull
 	private Set<Representation> keyRepresentations = new HashSet<>();
 

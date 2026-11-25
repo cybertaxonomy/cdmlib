@@ -19,13 +19,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embeddable;
@@ -86,13 +85,11 @@ public class Contact implements Serializable, Cloneable {
 	@XmlElement(name = "PhoneNumber")
 	@ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "contact_phonenumbers_element")
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
 	private List<String> phoneNumbers = new ArrayList<>();
 
     @XmlElementWrapper(name = "Addresses", nillable = true)
     @XmlElement(name = "Address")
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	protected Set<Address> addresses = new HashSet<>();
 
 	public static Contact NewInstance() {

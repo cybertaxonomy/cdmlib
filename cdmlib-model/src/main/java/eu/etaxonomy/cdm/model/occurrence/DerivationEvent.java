@@ -17,11 +17,10 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.EventBase;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -62,8 +61,7 @@ public class DerivationEvent extends EventBase {
 	@XmlElement(name = "Original")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
-	@ManyToMany(fetch = FetchType.LAZY,mappedBy="derivationEvents")
+	@ManyToMany(fetch = FetchType.LAZY,mappedBy="derivationEvents", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@IndexedEmbedded(includeDepth = 3)
 	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	protected Set<SpecimenOrObservationBase> originals = new HashSet<>();
@@ -72,8 +70,7 @@ public class DerivationEvent extends EventBase {
 	@XmlElement(name = "Derivative")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="derivedFrom")
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="derivedFrom", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	protected Set<DerivedUnit> derivatives = new HashSet<>();
 
 	@XmlElement(name = "Institution")

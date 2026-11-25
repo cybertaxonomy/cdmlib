@@ -31,8 +31,6 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmb
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 import org.hibernate.type.SqlTypes;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -65,6 +63,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -144,16 +143,14 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 
     @XmlElementWrapper(name = "Descriptions")
     @XmlElement(name = "Description")
-    @OneToMany(mappedBy="describedSpecimenOrObservation", fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy="describedSpecimenOrObservation", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @NotNull
     private Set<SpecimenDescription> descriptions = new HashSet<>();
 
 
     @XmlElementWrapper(name = "Determinations")
     @XmlElement(name = "Determination")
-    @OneToMany(mappedBy="identifiedUnit", orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToMany(mappedBy="identifiedUnit", orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @IndexedEmbedded(includeDepth = 2)
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     @NotNull
@@ -207,9 +204,8 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     // in conjunction with titleCache which serves as the "citation" string for this object
     @XmlElement(name = "Description")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @MapKeyJoinColumn(name="definition_mapkey_id")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @IndexedEmbedded
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     @NotNull
@@ -220,8 +216,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @XmlElement(name = "DerivationEvent")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToMany(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
+    @ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @NotNull
     protected Set<DerivationEvent> derivationEvents = new HashSet<>();
 

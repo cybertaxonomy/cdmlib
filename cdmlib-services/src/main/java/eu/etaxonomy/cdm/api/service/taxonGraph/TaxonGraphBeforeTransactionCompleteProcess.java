@@ -210,8 +210,8 @@ public class TaxonGraphBeforeTransactionCompleteProcess
                     if(taxonName != null && reference != null) {
                         createTempSession(session);
                         // load name and reference also into this session
-                        taxonName = getSession().load(TaxonName.class, taxonName.getId());
-                        reference = getSession().load(Reference.class, reference.getId());
+                        taxonName = getSession().getReference(TaxonName.class, taxonName.getId());
+                        reference = getSession().getReference(Reference.class, reference.getId());
                         onNewNomenClaturalSource(taxonName, reference);
                         getSession().flush();
                     }

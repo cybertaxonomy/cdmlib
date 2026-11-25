@@ -15,14 +15,13 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.PropertyBinderRef;
 import org.hibernate.search.mapper.pojo.common.annotation.Param;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.PropertyBinding;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.MapKeyJoinColumn;
@@ -61,9 +60,8 @@ public class TextualTypeDesignation extends TypeDesignationBase<SpecimenTypeDesi
 
     @XmlElement(name = "Text")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-    @OneToMany (fetch= FetchType.LAZY, orphanRemoval=true)
+    @OneToMany (fetch= FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @MapKeyJoinColumn(name="text_mapkey_id")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @PropertyBinding(binder = @PropertyBinderRef(type=MultilanguageTextFieldBridge.class,
             params = @Param(name="fieldName", value="text")))
     @NotNull

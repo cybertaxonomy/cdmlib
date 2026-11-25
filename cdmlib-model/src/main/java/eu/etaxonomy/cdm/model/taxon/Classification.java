@@ -23,8 +23,6 @@ import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
@@ -41,6 +39,7 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.taxon.ClassificationDefaultCacheStrategy;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -85,8 +84,7 @@ public class Classification
     private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "Name")
-    @OneToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "name_id", referencedColumnName = "id")
     @IndexedEmbedded
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
@@ -95,8 +93,7 @@ public class Classification
     @XmlElement(name = "rootNode")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToOne(fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private TaxonNode rootNode;
 
 	@XmlElement(name = "TimePeriod")
@@ -112,9 +109,8 @@ public class Classification
 
 	@XmlElement(name = "Description")
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-	@OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+	@OneToMany(fetch = FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
 	@MapKeyJoinColumn(name="description_mapkey_id")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE })
 	@JoinTable(name = "Classification_Description")
 //    @PropertyBinding(binder = @PropertyBinderRef(type=MultilanguageTextFieldBridge.class,
 //            params = @Param(name="fieldName", value="text")))
@@ -125,8 +121,7 @@ public class Classification
     @XmlElement(name = "source")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     private NamedSource source;
 
 // ********************** FACTORY METHODS *********************************************/

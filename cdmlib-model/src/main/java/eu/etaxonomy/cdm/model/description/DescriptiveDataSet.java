@@ -16,8 +16,6 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.common.CreditableEntity;
 import eu.etaxonomy.cdm.model.common.IHasCredits;
@@ -32,6 +30,7 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.strategy.cache.description.DescriptiveDataSetDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinTable;
@@ -81,8 +80,7 @@ public class DescriptiveDataSet
 
 	@XmlElementWrapper(name = "Representations")
 	@XmlElement(name = "Representation")
-    @OneToMany(fetch=FetchType.EAGER)
-	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE })
+    @OneToMany(fetch=FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
 	private Set<Representation> representations = new HashSet<>();
 
 	@XmlElement(name = "DescriptiveSystem")
@@ -136,8 +134,7 @@ public class DescriptiveDataSet
 
     @XmlElementWrapper(name = "Rights", nillable = true)
     @XmlElement(name = "Rights")
-    @ManyToMany(fetch = FetchType.LAZY)  //#5762 M:N now
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})  //#5762 M:N now
     //TODO
     @Merge(MergeMode.ADD_CLONE)
     @NotNull

@@ -18,12 +18,11 @@ import org.hibernate.Length;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
 import org.hibernate.type.SqlTypes;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.jpa.UriConverter;
 import eu.etaxonomy.cdm.model.agent.Person;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -64,8 +63,7 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
     //TODO do we need to add it to JAXB? #4706
     @XmlElementWrapper(name = "IntextReferences", nillable = true)
     @XmlElement(name = "IntextReference")
-    @OneToMany(mappedBy="annotation", fetch=FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToMany(mappedBy="annotation", fetch=FetchType.LAZY, orphanRemoval=true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
 //  @Merge(MergeMode.ADD_CLONE)
     private Set<IntextReference> intextReferences = new HashSet<>();
 
