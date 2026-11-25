@@ -101,7 +101,7 @@ public class Cdm2CdmVocabularyImport
             if (thisVoc != null){
                 source.commitTransaction(otherTx);
                 getVocabularyService().save(thisVoc);  //TODO test if save is really correct here (#11083)
-                getCommonService().save(state.getToSave());  //TODO test if save is really correct here (#11083)
+                getCommonService().saveOrMergeAll(state.getToSave());  //TODO test if save is really correct here (#11083)
                 state.clearToSave();
             }
         } catch (Exception e) {
@@ -150,7 +150,7 @@ public class Cdm2CdmVocabularyImport
             if (thisGraph != null){
                 source.commitTransaction(otherTx);
                 getTermTreeService().save(thisGraph);  //TODO test if save is really correct here (#11083)
-                getCommonService().save(state.getToSave());  //TODO test if save is really correct here (#11083)
+                getCommonService().saveOrMergeAll(state.getToSave());  //TODO test if save is really correct here (#11083)
                 state.clearToSave();
             }
         } catch (Exception e) {

@@ -89,7 +89,6 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase {
 				continue;
 			}
 			String tcsElementName = "TaxonRelationship";
-			@SuppressWarnings("unchecked")
             List<Element> elTaxonRelationshipList = elTaxonRelationships.getChildren(tcsElementName, tcsNamespace);
 			for (Element elTaxonRelationship : elTaxonRelationshipList){
 
@@ -122,7 +121,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase {
         MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		@SuppressWarnings("unchecked")
         MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
-		Map<String, CommonTaxonName> commonNameMap = new HashMap<String, CommonTaxonName>();
+		Map<String, CommonTaxonName> commonNameMap = new HashMap<>();
 
 		ITaxonService taxonService = getTaxonService();
 		IReferenceService referenceService = getReferenceService();
@@ -145,7 +144,6 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase {
 
 		Set<String> synonymIdSet = makeSynonymIds(elTaxonConceptList, success);
 		//TODO make the same for the Assertions
-
 		int i = 0;
 
 		//for each taxonConcept
@@ -241,7 +239,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase {
 		//invokeRelations(source, cdmApp, deleteAll, taxonMap, referenceMap);
 		referenceService.save(referenceMap.objects());
 		logger.info(i + " taxa handled. Saving ...");
-		taxonService.save(taxonMap.objects());
+		taxonService.merge(new ArrayList<>(taxonMap.objects())); //referenced names might be detached, therefore we use merge (#11083)
 		logger.info("end makeTaxa ...");
 		if (!success.getValue()){
 			state.setUnsuccessfull();

@@ -67,7 +67,7 @@ public class PolytomousKeyDaoImpl
 	       key.setRoot(null);
 	       nodeDao.delete(root);
 	    }
-	    getSession().delete(key);
+	    getSession().remove(key);
 	    return key.getUuid();
 	}
 }

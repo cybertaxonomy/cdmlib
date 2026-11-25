@@ -45,19 +45,19 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
 		//maybe
 		//TODO maybe there is better way to allow updates without allowing to write CdmPref.value
 		if (pref != null){
-			getSession().delete(pref);
+			getSession().remove(pref);
 		}
 //		IPreferencePredicate<?> predicate = PreferencePredicate.getByKey(preference.getPredicate());
 //		if (predicate == null ||
 //		        !preference.isAllowOverride()){
-		    getSession().save(preference);
+		    getSession().persist(preference);
 	}
 
 	@Override
     public void remove(PrefKey key){
         CdmPreference pref = get(key);
         if (pref != null){
-            getSession().delete(pref);
+            getSession().remove(pref);
         }
     }
 

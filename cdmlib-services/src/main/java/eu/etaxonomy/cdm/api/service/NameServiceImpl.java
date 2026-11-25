@@ -209,7 +209,7 @@ public class NameServiceImpl
 
             try{
                 if (!namesToUpdate.isEmpty()){
-                    Map<UUID, TaxonName> updatedNames = dao.saveAll(namesToUpdate);
+                    Map<UUID, TaxonName> updatedNames = dao.saveOrMergeAll(namesToUpdate);
                     Set<TaxonName> names = new HashSet<>(updatedNames.values());
                     result.addUpdatedObjects(names);
                 }
@@ -459,8 +459,8 @@ public class NameServiceImpl
      */
     @Override
     @Transactional(readOnly = false)
-    public Map<UUID, HomotypicalGroup> saveAllHomotypicalGroups(Collection<HomotypicalGroup> homotypicalGroups){
-        return homotypicalGroupDao.saveAll(homotypicalGroups);
+    public void saveHomotypicGroups(Collection<HomotypicalGroup> homotypicalGroups){
+        homotypicalGroupDao.saveOrMergeAll(homotypicalGroups);
     }
 
     /**

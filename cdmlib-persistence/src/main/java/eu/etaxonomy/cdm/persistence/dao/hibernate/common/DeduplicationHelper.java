@@ -134,7 +134,7 @@ public class DeduplicationHelper {
 			if (cdmBase2.getId() > 0){
 				// preInitialize may have loaded a managed twin via teamMembers etc.
 				evictManagedTwinIfDifferent(cdmBase2);
-				session.save(cdmBase2);
+				session.persist(cdmBase2);
 				session.flush();
 				//rearrange references pointing to cdmBase2 to cdmBase1 in future
 				reallocateReferences(cdmBase1, cdmBase2, clazz2, cloneSet);
@@ -148,12 +148,12 @@ public class DeduplicationHelper {
 			    deleteSecond = ((ConvertMergeStrategy)mergeStrategy).isDeleteSecondObject();
 			}
 			if(deleteSecond){
-			    session.delete(cdmBase2);
+			    session.remove(cdmBase2);
 
 			    for (ICdmBase toBeDeleted : deleteSet){
 	                logger.debug("Delete " + toBeDeleted);
 	                if (toBeDeleted != cdmBase2){
-	                    session.delete(toBeDeleted);
+	                    session.remove(toBeDeleted);
 	                }
 	            }
 			}
@@ -325,8 +325,8 @@ public class DeduplicationHelper {
 			copyIdentifiableExtensions(cdmBase1, cdmBase2, session);
 		}
 
-		session.save(cdmBase1);
-		session.save(cdmBase2);
+		session.persist(cdmBase1);
+		session.persist(cdmBase2);
 		session.flush();
 	}
 
@@ -357,7 +357,7 @@ public class DeduplicationHelper {
 		}
 		for (Annotation annotation : removeListAnnotation){
 			annotatableEntity2.removeAnnotation(annotation);
-			session.delete(annotation);
+			session.remove(annotation);
 		}
 
 		//marker
@@ -405,7 +405,7 @@ public class DeduplicationHelper {
 		}
 		for (Extension removeObject : removeListExtension){
 			identifiableEntity2.removeExtension(removeObject);
-			session.delete(removeObject);
+			session.remove(removeObject);
 		}
 
 		//identifiers
@@ -584,7 +584,7 @@ public class DeduplicationHelper {
 		            if (refEnt != null) {
                         String newText = refEnt.getText() == null? null: refEnt.getText().replace(cdmBase2.getUuid().toString(), cdmBase1.getUuid().toString());
                         refEnt.setText(newText);
-                        session.save(refEnt);
+                        session.persist(refEnt);
                     }
 
 		            //TODO

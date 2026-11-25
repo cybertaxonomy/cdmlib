@@ -326,7 +326,7 @@ public class TaxonGraphTest extends CdmTransactionalSpringIntegrationTest {
                 // taxa:
                 t_euglenophyceae, t_euglena, t_trachelomonas, other_t_trachelomonas, t_trachelomonas_a, t_trachelomonas_o, t_trachelomonas_o_var_d,
                 t_trachelomonas_s, t_trachelomonas_s_var_a}) {
-            session.save(cdm);
+            session.persist(cdm);
         }
 
         List<TaxonRelationship> taxonRels = new ArrayList<>();

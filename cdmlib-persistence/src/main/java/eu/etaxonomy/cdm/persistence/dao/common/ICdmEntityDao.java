@@ -120,7 +120,11 @@ public interface ICdmEntityDao<T extends CdmBase> {
 
     public Session getSession() throws DataAccessException;
 
-    public Map<UUID, T> saveAll(Collection<? extends T> cdmObjCollection) throws DataAccessException;
+    /**
+     * Persists or merges each collection item. If the item is persisted already (has an id)
+     * it is merged, if it is not yet persisted (has no id) it is persisted.
+     */
+    public Map<UUID, T> saveOrMergeAll(Collection<? extends T> cdmObjCollection) throws DataAccessException;
 
     public UUID refresh(T persistentObject) throws DataAccessException;
 

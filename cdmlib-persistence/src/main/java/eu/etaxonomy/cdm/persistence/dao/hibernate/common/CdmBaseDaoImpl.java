@@ -35,7 +35,7 @@ public abstract class CdmBaseDaoImpl
             logger.warn("Object to save should not be null. NOP");
             return null;
         }
-        getSession().save(newInstance);
+        getSession().persist(newInstance);
         return newInstance;
     }
 

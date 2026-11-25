@@ -135,7 +135,7 @@ public interface INameService
 	 * @param homotypicalGroups
 	 * @return
 	 */
-	public Map<UUID, HomotypicalGroup> saveAllHomotypicalGroups(Collection<HomotypicalGroup> homotypicalGroups);
+	public void saveHomotypicGroups(Collection<HomotypicalGroup> homotypicalGroups);
 
 	/**
 	 * Returns all nomenclatural status.

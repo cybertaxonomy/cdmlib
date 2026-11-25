@@ -1152,7 +1152,7 @@ public class CdmGenericDaoImpl
 
 	@Override
     public void saveMetaData(CdmMetaData cdmMetaData) {
-		getSession().save(cdmMetaData);
+		getSession().persist(cdmMetaData);
 	}
 
 	@Override

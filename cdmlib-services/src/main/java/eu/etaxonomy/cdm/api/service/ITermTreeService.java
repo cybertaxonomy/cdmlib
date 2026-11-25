@@ -8,14 +8,11 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
@@ -39,8 +36,6 @@ public interface ITermTreeService extends IIdentifiableEntityService<TermTree> {
 	 *
 	 */
 	public TermTree<?> loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths);
-
-	public Map<UUID, TermNode> saveNodesAll(Collection<TermNode> featureNodeCollection);
 
 	public <S extends TermTree> List<UuidAndTitleCache<S>> getUuidAndTitleCacheByTermType(
 	        Class<S> clazz, TermType termType, Integer limit, String pattern);

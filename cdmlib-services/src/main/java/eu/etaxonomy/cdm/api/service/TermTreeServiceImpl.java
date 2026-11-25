@@ -10,9 +10,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -67,11 +65,6 @@ public class TermTreeServiceImpl
             clazz = TermTree.class;
         }
         return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
-    }
-
-    @Override
-    public Map<UUID, TermNode> saveNodesAll(Collection<TermNode> nodeCollection) {
-        return termNodeDao.saveAll(nodeCollection);
     }
 
     @Override

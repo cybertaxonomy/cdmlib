@@ -203,7 +203,7 @@ public class FullCoverageDataGenerator {
 		buildUserAuthority(entitiesToSave);
 
 		for (CdmBase entityToSave: entitiesToSave){
-			session.save(entityToSave);
+			session.persist(entityToSave);
 		}
 	}
 

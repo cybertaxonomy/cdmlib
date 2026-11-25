@@ -275,7 +275,7 @@ public class DistributionServiceImpl implements IDistributionService {
 
         ShpAttributesToNamedAreaMapper mapper = new ShpAttributesToNamedAreaMapper(areas, areaMapping);
         Map<NamedArea, String> resultMap = mapper.readCsv(csvReader, idSearchFields, wmsLayerName);
-        termDao.saveAll(areas);
+        termDao.saveOrMergeAll(areas);
         return resultMap;
     }
 }

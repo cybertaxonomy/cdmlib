@@ -91,7 +91,7 @@ public class Cdm2CdmTaxonNodeImport
 
                 getTaxonNodeService().save(saveCascading(node));   //TODO test if save is really correct here (#11083)
                 Set<CdmBase> remainingToSave = state.getToSave().stream().filter(s->!s.isPersisted()).collect(Collectors.toSet());
-                getCommonService().save(remainingToSave);   //TODO test if save is really correct here (#11083)
+                getCommonService().saveOrMergeAll(remainingToSave);   //TODO test if save is really correct here (#11083)
                 state.clearToSave();
             }
         } catch (Exception e) {

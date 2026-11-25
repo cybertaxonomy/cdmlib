@@ -107,18 +107,17 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         defaultBeanInitializer.initialize(t, propertyPaths);
     }
 
-    // TODO: Replace saveCdmObj() by saveCdmObject_
-    private UUID saveCdmObject_(T cdmObj) {
-        getSession().save(cdmObj);
-        return cdmObj.getUuid();
+    private T persistOrMerge(T cdmObj) {
+        if (!cdmObj.isPersisted()) {
+            getSession().persist(cdmObj);
+        } else {
+            cdmObj = getSession().merge(cdmObj);
+        }
+        return cdmObj;
     }
 
-    // TODO: Use everywhere CdmEntityDaoBase.saveAll() instead of
-    // ServiceBase.saveCdmObjectAll()?
-    // TODO: why does this use saveCdmObject_ which actually savesOrUpdateds
-    // data ?
     @Override
-    public Map<UUID, T> saveAll(Collection<? extends T> cdmObjCollection) {
+    public Map<UUID, T> saveOrMergeAll(Collection<? extends T> cdmObjCollection) {
         int types = cdmObjCollection.getClass().getTypeParameters().length;
         if (types > 0 && logger.isDebugEnabled()) {
             logger.debug("ClassType: + " + cdmObjCollection.getClass().getTypeParameters()[0]);
@@ -132,11 +131,11 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
                 logger.debug("Saved " + i + " objects");
             }
             T cdmObj = iterator.next();
-            UUID uuid = saveCdmObject_(cdmObj);
+            T persistedObj = persistOrMerge(cdmObj);
             if (logger.isDebugEnabled()) {
                 logger.debug("Save cdmObj: " + (cdmObj == null ? null : cdmObj.toString()));
             }
-            resultMap.put(uuid, cdmObj);
+            resultMap.put(persistedObj.getUuid(), persistedObj);
             i++;
         }
 
@@ -234,11 +233,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
     @Override
     public <S extends T> S merge(S transientObject) throws DataAccessException {
-        Session session = getSession();
-        S persistentObject = (S) session.merge(transientObject);
-        if (logger.isDebugEnabled()) {
-            logger.debug("dao merge end");
-        }
+        S persistentObject = (S) getSession().merge(transientObject);
         return persistentObject;
     }
 

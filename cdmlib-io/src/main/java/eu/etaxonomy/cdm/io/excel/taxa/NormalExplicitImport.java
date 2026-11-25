@@ -373,7 +373,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 		//save
 		//state.putTaxon(id, taxonBase);
 		taxonBase = getTaxonService().save(taxonBase);
-		getCommonService().save(entitiesToSave);
+		getCommonService().saveOrMergeAll(entitiesToSave);
 
 		taxonDataHolder.setCdmUuid(taxonBase.getUuid());
 		if (id == "0"){
@@ -573,7 +573,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 				//features
 				handleFeatures(state, taxonDataHolder, acceptedTaxon, nameUsedInSource);
 			}
-			getCommonService().save(entitiesToSave);
+			getCommonService().saveOrMergeAll(entitiesToSave);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

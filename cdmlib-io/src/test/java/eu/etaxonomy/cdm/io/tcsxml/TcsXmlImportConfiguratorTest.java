@@ -60,6 +60,7 @@ public class TcsXmlImportConfiguratorTest extends CdmIoTransactionalSpringIntegr
 	public void testInit() {
 		assertNotNull(defaultImport, "cdmTcsXmlImport should not be null");
 		assertNotNull(nameService, "nameService should not be null");
+		commit();
 	}
 
 	@Test
@@ -68,10 +69,12 @@ public class TcsXmlImportConfiguratorTest extends CdmIoTransactionalSpringIntegr
             "/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"
     })
 	public void testDoInvoke() {
+	    commit();
 		boolean result = defaultImport.invoke(configurator).isSuccess();
 		assertTrue(result, "Return value for import.invoke should be true");
+		commitAndStartNewTransaction();
 		List<TaxonName> list = nameService.list(TaxonName.class, null, 0, null, null);
-		assertEquals(16, nameService.count(null), "Number of TaxonNames should be 16");
+		assertEquals(16, list.size(), "Number of TaxonNames should be 16");
 	}
 
     @Override

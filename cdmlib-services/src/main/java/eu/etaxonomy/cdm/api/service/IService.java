@@ -307,7 +307,7 @@ public interface IService<T extends ICdmBase>{
     public UUID refresh(T persistentObject);
 
     /**
-     * Save a collection containing new entities (persists the entities)
+     * Persist or merges a collection containing new or existing entities (persists the entities)
      * @param newInstances the new entities to be persisted
      * @return A Map containing the new entities, keyed using the generated UUID's
      *         of those entities

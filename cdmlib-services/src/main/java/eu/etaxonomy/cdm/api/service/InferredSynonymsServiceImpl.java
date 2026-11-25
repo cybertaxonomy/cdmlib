@@ -97,7 +97,7 @@ public class InferredSynonymsServiceImpl
 
         List<Synonym> result = computeInferredSynonyms(taxonUuid, classificationUuid,
                 inferredSynonymType,doWithMisappliedNames, includeUnpublished, excludedNameCaches);
-        taxonDao.saveAll(result);
+        taxonDao.saveOrMergeAll(result);
         return result;
     }
 

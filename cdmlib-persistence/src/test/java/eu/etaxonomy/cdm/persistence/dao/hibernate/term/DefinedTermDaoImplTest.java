@@ -248,7 +248,7 @@ public class DefinedTermDaoImplTest extends CdmTransactionalSpringIntegrationTes
         //Change English label
         newModifier.setProtectedTitleCache(false);
         newModifier.setLabel("New English label");
-        dao.save(newModifier);
+        newModifier = dao.merge(newModifier);   //test titleCache generation with merge (for save see below)
         newModifier.setProtectedTitleCache(true);
         assertEquals("New English label", newModifier.getTitleCache(), "English (default language) label should still be the title cache");
 
@@ -256,7 +256,7 @@ public class DefinedTermDaoImplTest extends CdmTransactionalSpringIntegrationTes
         newModifier.setProtectedTitleCache(false);
         Representation newRepresentation = Representation.NewInstance("Beschreibung", "Deutscher Modifier", "Abk.", Language.GERMAN());
         newModifier.addRepresentation(newRepresentation);
-        newModifier = (DefinedTerm)dao.save(newModifier);
+        newModifier = (DefinedTerm)dao.save(newModifier); //test titleCache generation with save
         newModifier.setProtectedTitleCache(true);
         assertEquals("New English label", newModifier.getTitleCache(), "English (default language) label should still be the title cache");
 

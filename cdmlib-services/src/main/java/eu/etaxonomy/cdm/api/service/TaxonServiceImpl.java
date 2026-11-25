@@ -452,7 +452,7 @@ public class TaxonServiceImpl
             }
         }
         if (!sourcesToUpdate.isEmpty()) {
-            sourceDao.saveAll(sourcesToUpdate);  //needed at all?
+            sourceDao.saveOrMergeAll(sourcesToUpdate);  //needed at all?
         }
         dao.save(acceptedTaxon);
         dao.save(newAcceptedTaxon);

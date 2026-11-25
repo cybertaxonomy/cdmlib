@@ -130,7 +130,7 @@ public class TermVocabularyDaoImplTest extends CdmTransactionalSpringIntegration
 	    newVoc.setProtectedTitleCache(false);
 	    Representation newRepresentation = Representation.NewInstance("Beschreibung", "Deutsches Label", "Abk.", Language.GERMAN());
 	    newVoc.addRepresentation(newRepresentation);
-        newVoc = dao.save(newVoc);
+        newVoc = dao.save(newVoc); //test titleCache generation with save
 	    newVoc.setProtectedTitleCache(true);
 	    assertEquals("Deutsches Label", newVoc.getTitleCache(), "German Label should be new title cache");
 
@@ -138,21 +138,21 @@ public class TermVocabularyDaoImplTest extends CdmTransactionalSpringIntegration
 	    newVoc.setProtectedTitleCache(false);
         Representation englishRepresentation = Representation.NewInstance("Description", "English label", "Abbrev.", Language.DEFAULT());
         newVoc.addRepresentation(englishRepresentation);
-        newVoc = dao.save(newVoc);
+        newVoc = dao.save(newVoc); //test titleCache generation with save
         newVoc.setProtectedTitleCache(true);
         assertEquals("English label", newVoc.getTitleCache(), "English Label should be new title cache");
 
         //Change English label
         newVoc.setProtectedTitleCache(false);
         newVoc.setLabel("New English label");
-        newVoc = dao.save(newVoc);
+        newVoc = dao.merge(newVoc); //test titleCache generation with merge
         newVoc.setProtectedTitleCache(true);
         assertEquals("New English label", newVoc.getTitleCache(), "English (default language) label should be new English label");
 
         //Remove English
         newVoc.setProtectedTitleCache(false);
         newVoc.removeRepresentation(englishRepresentation);
-        newVoc = dao.save(newVoc);
+        newVoc = dao.merge(newVoc);  //test titleCache generation with merge
         newVoc.setProtectedTitleCache(true);
         assertEquals("Deutsches Label", newVoc.getTitleCache(), "German Label should be new title cache again as English representation is not there anymore");
 	}

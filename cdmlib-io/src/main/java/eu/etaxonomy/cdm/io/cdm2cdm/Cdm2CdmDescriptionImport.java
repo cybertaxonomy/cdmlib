@@ -84,7 +84,7 @@ public class Cdm2CdmDescriptionImport
             if (!result.isEmpty()){
 
                 getDescriptionService().save(result); //TODO test if save is really correct here (#11083)
-                getCommonService().save(state.getToSave());  //TODO test if save is really correct here (#11083)
+                getCommonService().saveOrMergeAll(state.getToSave());  //TODO test if save is really correct here (#11083)
             }
             state.clearToSave();
         } catch (Exception e) {

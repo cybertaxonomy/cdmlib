@@ -437,10 +437,11 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		return ! state.getConfig().isDoTaxonNames();
 	}
 
-	protected static final Reference unknownSec(MapWrapper<Reference> referenceMap){
+	protected final Reference unknownSec(MapWrapper<Reference> referenceMap){
 		Reference result = ReferenceFactory.newGeneric();
 		result.setTitleCache("UNKNOWN", true);
 		referenceMap.put(result.getUuid(), result);
+		this.getReferenceService().save(result);
 		return result;
 	}
 }

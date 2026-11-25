@@ -325,7 +325,7 @@ public class ConversationHolder {
     }
 
     public void delete(Object object){
-        this.getSession().delete(object);
+        this.getSession().remove(object);
     }
 
     /**

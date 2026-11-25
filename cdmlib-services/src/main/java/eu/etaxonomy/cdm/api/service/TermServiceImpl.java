@@ -377,7 +377,7 @@ public class TermServiceImpl
 				if (true){
 					dao.delete(term);
 					result.addDeletedObject(term);
-					dao.saveAll(termsToSave); //TODO test if save is really correct here (#11083)
+					dao.saveOrMergeAll(termsToSave); //TODO test if save is really correct here (#11083)
 				}
 			}
 		} catch (DataChangeNoRollbackException e) {

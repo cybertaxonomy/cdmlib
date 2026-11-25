@@ -603,7 +603,7 @@ public class ClassificationServiceImpl
     			}
     		}
     	}
-    	taxonNodeDao.saveAll(taxonNodesToSave);
+    	taxonNodeDao.saveOrMergeAll(taxonNodesToSave);
     	result.setCdmEntity(newClassification);
     	return result;
     }

@@ -51,7 +51,7 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
         if (entityValidation == null) {
             entityValidation = EntityValidation.newInstance(validatedEntity, crudEventType);
             addNewErrors(entityValidation, validatedEntity, errors);
-            getSession().save(entityValidation);
+            getSession().persist(entityValidation);
         } else {
             deleteOldErrors(entityValidation, validationGroups);
             addNewErrors(entityValidation, validatedEntity, errors);
@@ -63,7 +63,7 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
     public void deleteEntityValidation(String validatedEntityClass, int validatedEntityId) {
         EntityValidation result = getEntityValidation(validatedEntityClass, validatedEntityId);
         if (result != null) {
-            getSession().delete(result);
+            getSession().remove(result);
         }
     }
 

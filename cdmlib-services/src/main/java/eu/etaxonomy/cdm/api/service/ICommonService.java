@@ -354,7 +354,7 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      * @return A Map containing the new entities, keyed using the generated UUID's
      *         of those entities
      */
-    public <T extends CdmBase> Map<UUID,T> save(Collection<T> newInstances);
+    public <T extends CdmBase> Map<UUID,T> saveOrMergeAll(Collection<T> newInstances);
 
     /**
      * @param instance

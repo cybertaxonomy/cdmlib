@@ -82,5 +82,4 @@ public class CdmListenerIntegrator implements Integrator {
         //nothing to do for now
         logger.warn("Disintegrate ListenerIntegrator not yet implemented");
     }
-
 }

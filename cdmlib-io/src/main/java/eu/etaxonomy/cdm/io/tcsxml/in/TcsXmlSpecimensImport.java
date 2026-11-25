@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.XmlHelp;
@@ -53,6 +54,8 @@ public class TcsXmlSpecimensImport
 	public void doInvoke(TcsXmlImportState state){
 		logger.info("start make Specimens ...");
 
+		TransactionStatus tx = this.startTransaction();
+
 		MapWrapper<DerivedUnit> specimenMap = (MapWrapper<DerivedUnit>)state.getStore(ICdmIO.SPECIMEN_STORE);
 		Set<Institution> institutions = new HashSet<>();
 		Set<Collection> collections = new HashSet<>();
@@ -73,7 +76,6 @@ public class TcsXmlSpecimensImport
 		Element elSpecimens = doubleResult.getFirstResult();
 
 		String tcsElementName = "Specimen";
-		@SuppressWarnings("unchecked")
         List<Element> elSpecimenList = elSpecimens == null ? new ArrayList<>() : (List<Element>)elSpecimens.getChildren(tcsElementName, tcsNamespace);
 
 		int i = 0;
@@ -123,7 +125,7 @@ public class TcsXmlSpecimensImport
 		getCollectionService().save(collections);
 		getAgentService().save(institutions);
 	    getOccurrenceService().save(specimenMap.objects());
-
+	    commitTransaction(tx);
 		logger.info("end make Specimens ...");
 		if (!success){
 			state.setUnsuccessfull();

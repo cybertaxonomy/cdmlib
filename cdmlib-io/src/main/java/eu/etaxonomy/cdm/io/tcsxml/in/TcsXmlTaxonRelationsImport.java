@@ -21,6 +21,7 @@ import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ResultWrapper;
@@ -79,6 +80,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 	@Override
 	public void doInvoke(TcsXmlImportState state){
 
+	    TransactionStatus tx = this.startTransaction();
 
 		logger.info("start make taxon relations ...");
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
@@ -137,6 +139,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 
 
 		taxonStore = null;
+		commitTransaction(tx);
 		logger.info("end make taxon relations ...");
 		if (!success.getValue()){
 			state.setUnsuccessfull();
@@ -477,7 +480,12 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 			tree = makeTree(state, sec);
 		}
 		TaxonNode childNode = tree.addParentChild(toTaxon, fromTaxon, citation, microCitation);
-		return (childNode != null);
+		//save
+		if (!childNode.getParent().isPersisted()) {
+		    getTaxonNodeService().merge(childNode.getParent());
+		}
+		getTaxonNodeService().merge(childNode);
+		return true;
 	}
 
 
@@ -537,10 +545,10 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 					taxonName.setTitleCache(title, true);
 					logger.warn("Free text related taxon seems to be bug in TCS");
 					if (isSynonym){
-						result = Synonym.NewInstance(taxonName, TcsXmlImportBase.unknownSec(referenceMap));
+						result = Synonym.NewInstance(taxonName, unknownSec(referenceMap));
 						getTaxonService().save(result);
 					}else{
-						result = Taxon.NewInstance(taxonName, TcsXmlImportBase.unknownSec(referenceMap));
+						result = Taxon.NewInstance(taxonName, unknownSec(referenceMap));
 					}
 					result.setTitleCache(title, true);
 				}
