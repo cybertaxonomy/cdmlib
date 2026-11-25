@@ -304,7 +304,9 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase {
 		return result;
 	}
 
-	private TaxonName makeScientificName(Element elName, NomenclaturalCode code, MapWrapper<TaxonName> objectMap, ResultWrapper<Boolean> success){
+	private TaxonName makeScientificName(Element elName, NomenclaturalCode code,
+	        MapWrapper<TaxonName> objectMap, ResultWrapper<Boolean> success){
+
 		TaxonName result = null;
 		if (elName != null){
 			String language = elName.getAttributeValue("language");
