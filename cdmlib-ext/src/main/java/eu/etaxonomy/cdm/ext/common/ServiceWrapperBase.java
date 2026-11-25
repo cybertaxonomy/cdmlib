@@ -46,8 +46,8 @@ public class ServiceWrapperBase<T extends CdmBase> {
 
 	public void setBaseUrl(String baseUrl) {
 		try {
-			this.baseUrl = new URL(baseUrl);
-		} catch (MalformedURLException e) {
+			this.baseUrl = java.net.URI.create(baseUrl).toURL();
+		} catch (IllegalArgumentException | MalformedURLException e) {
 			logger.error(e);
 		}
 	}
