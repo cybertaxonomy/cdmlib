@@ -87,12 +87,10 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 
-		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
-
+		Set<TaxonBase> taxonStore = new HashSet<>();
 		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
 		String childName;
 		boolean obligatory;
-		String idNamespace = "TaxonRelationDTO";
 
 		TcsXmlImportConfigurator config = state.getConfig();
 		Element elDataSet = super.getDataSetElement(config);
@@ -332,12 +330,13 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 
 		if (elRelationship == null){
 			success.setValue(false);
+			throw new RuntimeException("No relationship element available");
 		}
 		String strRelType = elRelationship.getAttributeValue("type");
 
 
 		try {
-			ResultWrapper<Boolean> isInverse = new ResultWrapper<Boolean>();
+			ResultWrapper<Boolean> isInverse = new ResultWrapper<>();
 			isInverse.setValue(false);
 			if ("has vernacular".equalsIgnoreCase(strRelType)){
 				handleVernacular(success, state, elRelationship, fromTaxon);
@@ -488,8 +487,6 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		return true;
 	}
 
-
-	@SuppressWarnings("rawtypes")
 	private TaxonBase getToTaxon(Element elTaxonRelationship, MapWrapper<TaxonBase> map, MapWrapper<Reference> referenceMap,
 	        List<String> missingNameID,boolean isSynonym, ResultWrapper<Boolean> success, TcsXmlImportState state){
 

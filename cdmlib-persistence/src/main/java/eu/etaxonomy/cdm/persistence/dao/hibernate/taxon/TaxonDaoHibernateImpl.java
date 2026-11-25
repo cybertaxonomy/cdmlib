@@ -1506,12 +1506,13 @@ public class TaxonDaoHibernateImpl
 			MatchMode matchmode, boolean includeEntity,
 			Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
-		checkNotInPriorView("TaxonDaoHibernateImpl.findByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
+	    checkNotInPriorView("TaxonDaoHibernateImpl.findByIdentifier(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
+
 		Class<?> clazzParam = clazz == null ? type : clazz;
 
 		boolean isTaxon = clazzParam == Taxon.class || clazzParam == TaxonBase.class;
 		boolean isSynonym = clazzParam == Synonym.class || clazzParam == TaxonBase.class;
-		getSession().update(subtreeFilter);  //to avoid LIE when retrieving treeindex
+		subtreeFilter = getSession().merge(subtreeFilter);  //to avoid LIE when retrieving treeindex
 		String filterStr = "'" + subtreeFilter.treeIndex() + "%%'";
 		String accTreeJoin = isTaxon? " LEFT JOIN c.taxonNodes tn  " : "";
 		String synTreeJoin = isSynonym ? " LEFT JOIN c.acceptedTaxon as acc LEFT JOIN acc.taxonNodes synTn  " : "";
@@ -1571,6 +1572,7 @@ public class TaxonDaoHibernateImpl
     @Override
     public <S extends TaxonBase> long countByMarker(Class<S> clazz, MarkerType markerType,
             Boolean markerValue, TaxonNode subtreeFilter) {
+
         if (markerType == null){
             return 0;
         }

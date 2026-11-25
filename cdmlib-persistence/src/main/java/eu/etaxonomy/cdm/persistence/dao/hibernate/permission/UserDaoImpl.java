@@ -103,7 +103,6 @@ public class UserDaoImpl extends CdmEntityDaoBase<User> implements IUserDao {
             .executeUpdate();
     }
 
-
     @Override
     public UUID update(User user) throws DataAccessException {
         if (user == null) {
