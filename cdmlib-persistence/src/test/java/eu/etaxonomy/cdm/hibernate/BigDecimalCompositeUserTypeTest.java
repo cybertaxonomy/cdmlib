@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.math.BigDecimal;
 
-import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.metamodel.spi.ValueAccess;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,7 +56,7 @@ public class BigDecimalCompositeUserTypeTest {
                 return new Object[] { Integer.valueOf(2), new BigDecimal("1.32") };
             }
         };
-        BigDecimal restored = userType.instantiate(access, (SessionFactoryImplementor) null);
+        BigDecimal restored = userType.instantiate(access);
         assertEquals(2, restored.scale());
         assertEquals(new BigDecimal("1.32"), restored);
     }

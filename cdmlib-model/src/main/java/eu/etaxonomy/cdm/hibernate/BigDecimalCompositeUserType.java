@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.metamodel.spi.ValueAccess;
 import org.hibernate.usertype.CompositeUserType;
 
@@ -53,7 +52,7 @@ public class BigDecimalCompositeUserType implements CompositeUserType<BigDecimal
     }
 
     @Override
-    public BigDecimal instantiate(ValueAccess valueAccess, SessionFactoryImplementor sessionFactory) {
+    public BigDecimal instantiate(ValueAccess valueAccess) {
         Integer scale = valueAccess.getValue(0, Integer.class);
         BigDecimal value = valueAccess.getValue(1, BigDecimal.class);
         if (value == null) {

@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.persistence.hibernate;
 
 import java.beans.Introspector;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,7 +22,7 @@ import java.util.Set;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.EmptyInterceptor;
+import org.hibernate.Interceptor;
 import org.hibernate.type.Type;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -43,12 +42,9 @@ import eu.etaxonomy.cdm.persistence.permission.TargetEntityStates;
  * @author a.kohlbecker
  */
 @Component
-public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
-
-    private static final long serialVersionUID = 8477758472369568074L;
+public class CdmSecurityHibernateInterceptor implements Interceptor {
 
     private static final Logger logger = LogManager.getLogger();
-
 
     private ICdmPermissionEvaluator permissionEvaluator;
 
@@ -81,7 +77,7 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
     }
 
     @Override
-    public boolean onSave(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] type) {
+    public boolean onSave(Object entity, Object id, Object[] state, String[] propertyNames, Type[] type) {
 
         if (SecurityContextHolder.getContext().getAuthentication() == null || !(entity instanceof CdmBase)) {
             return true;
@@ -94,7 +90,7 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
     }
 
     @Override
-    public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) {
+    public boolean onFlushDirty(Object entity, Object id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) {
 
         if (SecurityContextHolder.getContext().getAuthentication() == null || !(entity instanceof CdmBase)) {
             return true;
@@ -159,7 +155,7 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
     }
 
     @Override
-    public void onDelete(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
+    public void onDelete(Object entity, Object id, Object[] state, String[] propertyNames, Type[] types) {
 
         if (SecurityContextHolder.getContext().getAuthentication() == null || !(entity instanceof CdmBase)) {
             return;

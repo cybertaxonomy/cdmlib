@@ -8,11 +8,9 @@
 */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.EmptyInterceptor;
+import org.hibernate.Interceptor;
 import org.hibernate.Transaction;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.hibernate.type.Type;
@@ -25,7 +23,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  *
  */
 @Component
-public class CdmHibernateInterceptor extends EmptyInterceptor {
+public class CdmHibernateInterceptor implements Interceptor {
         private static final long serialVersionUID = 2536017420460052854L;
         private static final Logger logger = LogManager.getLogger();
 
@@ -38,17 +36,8 @@ public class CdmHibernateInterceptor extends EmptyInterceptor {
         private int loads;
 
     @Override
-    public void onDelete(Object entity,
-           Serializable id,
-           Object[] state,
-           String[] propertyNames,
-           Type[] types) {
-        // do nothing
-    }
-
-    @Override
     public boolean onFlushDirty(Object entity,
-            Serializable id,
+            Object id,
             Object[] currentState,
             Object[] previousState,
             String[] propertyNames,
@@ -66,7 +55,7 @@ public class CdmHibernateInterceptor extends EmptyInterceptor {
 
     @Override
     public boolean onLoad(Object entity,
-                    Serializable id,
+                    Object id,
                     Object[] state,
                     String[] propertyNames,
                     Type[] types) {
@@ -81,7 +70,7 @@ public class CdmHibernateInterceptor extends EmptyInterceptor {
 
     @Override
     public boolean onSave(Object entity,
-                    Serializable id,
+                    Object id,
                     Object[] state,
                     String[] propertyNames,
                     Type[] types) {
@@ -142,4 +131,3 @@ public class CdmHibernateInterceptor extends EmptyInterceptor {
     }
 
 }
-

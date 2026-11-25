@@ -103,7 +103,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
     @Override
     public void refresh(T t, LockOptions lockOptions, List<String> propertyPaths) {
-        getSession().refresh(t, lockOptions.getLockMode());
+        getSession().refresh(t, lockOptions);
         defaultBeanInitializer.initialize(t, propertyPaths);
     }
 

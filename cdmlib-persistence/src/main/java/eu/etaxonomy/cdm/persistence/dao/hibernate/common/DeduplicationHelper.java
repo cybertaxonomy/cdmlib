@@ -26,7 +26,6 @@ import org.hibernate.MappingException;
 import org.hibernate.Session;
 import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.internal.SessionImpl;
-import org.hibernate.metadata.CollectionMetadata;
 import org.hibernate.metamodel.MappingMetamodel;
 import org.hibernate.metamodel.spi.MappingMetamodelImplementor;
 import org.hibernate.persister.collection.CollectionPersister;
@@ -263,12 +262,13 @@ public class DeduplicationHelper {
 		TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(null);
 		name1.getTaxonBases();
 
-		Type propType = sessionFactory.getReferencedPropertyType(TaxonName.class.getCanonicalName(), "taxonBases");
-//		Map<?,?> collMetadata = sessionFactory.getAllCollectionMetadata();
-		//roles = sessionFactory.getCollectionRolesByEntityParticipant("eu.etaxonomy.cdm.model.name.BotanicalName");
+		Type propType = sessionFactory.getMappingMetamodel()
+				.getEntityDescriptor(TaxonName.class)
+				.getPropertyType("taxonBases");
+		//roles = sessionFactory.getMappingMetamodel().getCollectionRolesByEntityParticipant(...);
 
 		try {
-		    MappingMetamodel metamodel = sessionFactory.getMetamodel();
+		    MappingMetamodel metamodel = sessionFactory.getMappingMetamodel();
             String collectionRole = TaxonName.class.getCanonicalName()+".annotations";
             CollectionPersister collPersister = metamodel.getCollectionDescriptor(collectionRole);
 		} catch (MappingException e) {
@@ -662,10 +662,9 @@ public class DeduplicationHelper {
 //				 Type refPropType = sessionFactory.getReferencedPropertyType(entityClass.getCanonicalName(), propertyName);
 				Set<String> collectionRoles = getCollectionRoles(clazz, sessionFactory);
 				for (String collectionRole : collectionRoles){
-					CollectionMetadata collMetadata = sessionFactory.getCollectionMetadata(collectionRole);
-					String role = collMetadata.getRole();
-					logger.debug(role);
-
+					CollectionPersister collPersister = sessionFactory.getMappingMetamodel()
+							.getCollectionDescriptor(collectionRole);
+					logger.debug(collPersister.getRole());
 				}
 
 //				if (entityClass.isInterface()){
@@ -679,9 +678,10 @@ public class DeduplicationHelper {
 				String role = collectionType.getRole();
 				Type elType = collectionType.getElementType(sessionFactory);
 				String n = collectionType.getAssociatedEntityName(sessionFactory);
-				CollectionMetadata collMetadata = sessionFactory.getCollectionMetadata(role);
-				if (collMetadata instanceof OneToManyPersister){
-					OneToManyPersister oneManyPersister = (OneToManyPersister)collMetadata;
+				CollectionPersister collPersister = sessionFactory.getMappingMetamodel()
+						.findCollectionDescriptor(role);
+				if (collPersister instanceof OneToManyPersister){
+					OneToManyPersister oneManyPersister = (OneToManyPersister)collPersister;
 					String className = oneManyPersister.getOwnerEntityName();
 					Class<?> myClass = Class.forName(className);
 					Field field = myClass.getDeclaredField(propertyName);

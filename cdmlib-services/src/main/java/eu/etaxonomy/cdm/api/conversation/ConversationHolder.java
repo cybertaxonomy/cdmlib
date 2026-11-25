@@ -335,8 +335,12 @@ public class ConversationHolder {
         getSession().lock(persistentObject, lockMode);
     }
 
+    /**
+     * Facades Session.lock(). The entity name is ignored; Hibernate 7 locks by
+     * instance only ({@code Session.lock(String, Object, LockMode)} was removed).
+     */
     public void lock(String entityName, Object persistentObject, LockMode lockMode){
-        getSession().lock(entityName, persistentObject, lockMode);
+        getSession().lock(persistentObject, lockMode);
     }
 
     /**

@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.boot.Metadata;
+import org.hibernate.boot.spi.BootstrapContext;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
@@ -31,14 +32,14 @@ public class CdmListenerIntegrator implements Integrator {
 
     @Override
     public void integrate(Metadata metadata,
-            SessionFactoryImplementor sessionFactory,
-            SessionFactoryServiceRegistry serviceRegistry)
+            BootstrapContext bootstrapContext,
+            SessionFactoryImplementor sessionFactory)
     {
         if (logger.isInfoEnabled()) {
             logger.info("Registering event listeners");
         }
 
-        final EventListenerRegistry eventRegistry = serviceRegistry.getService(EventListenerRegistry.class);
+        final EventListenerRegistry eventRegistry = sessionFactory.getEventListenerRegistry();
 
         //duplication strategy
         eventRegistry.addDuplicationStrategy(CdmListenerDuplicationStrategy.NewInstance);
