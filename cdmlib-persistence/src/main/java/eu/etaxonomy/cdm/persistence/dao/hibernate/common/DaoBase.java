@@ -26,6 +26,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.envers.query.AuditQuery;
+import org.hibernate.query.SelectionQuery;
 import org.hibernate.query.criteria.HibernateCriteriaBuilder;
 import org.hibernate.search.backend.lucene.LuceneExtension;
 import org.hibernate.search.engine.search.query.SearchQuery;
@@ -42,7 +43,6 @@ import eu.etaxonomy.cdm.persistence.query.NativeSqlOrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.RandomOrder;
 import jakarta.persistence.Lob;
-import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.From;
@@ -308,7 +308,7 @@ public abstract class DaoBase {
         CriteriaQuery<T> q = getCriteriaBuilder().createQuery(type);
         Root<T> root = q.from(type);
         q.select(root);
-        return getSession().createQuery(q).getResultList();
+        return getSession().createSelectionQuery(q).getResultList();
     }
 
     /**
@@ -327,12 +327,12 @@ public abstract class DaoBase {
         CriteriaBuilder cb = getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(long.class);
         cq.select(cb.count(cq.from(type)));
-        Long result = getSession().createQuery(cq).uniqueResult();
+        Long result = getSession().createSelectionQuery(cq).uniqueResult();
 
         return result;
     }
 
-    protected <T> TypedQuery<T> addLimitAndStart(TypedQuery<T> query, Integer limit, Integer start) {
+    protected <T> SelectionQuery<T> addLimitAndStart(SelectionQuery<T> query, Integer limit, Integer start) {
         if(limit != null) {
             if(start != null) {
                 query.setFirstResult(start);
@@ -344,7 +344,7 @@ public abstract class DaoBase {
         return query;
     }
 
-    protected <T> TypedQuery<T> addPageSizeAndNumber(TypedQuery<T> query, Integer pageSize, Integer pageNumber) {
+    protected <T> SelectionQuery<T> addPageSizeAndNumber(SelectionQuery<T> query, Integer pageSize, Integer pageNumber) {
         if(pageSize != null) {
             query.setMaxResults(pageSize);
             if(pageNumber != null) {
@@ -357,10 +357,10 @@ public abstract class DaoBase {
     }
 
     /**
-     * like {@link #addPageSizeAndNumber(TypedQuery, Integer, Integer)}
+     * like {@link #addPageSizeAndNumber(SelectionQuery, Integer, Integer)}
      * but here start is the absolute value, not the page number.
      */
-    protected <T> TypedQuery<T> addPageSizeAndStart(TypedQuery<T> query, Integer pageSize, Integer start) {
+    protected <T> SelectionQuery<T> addPageSizeAndStart(SelectionQuery<T> query, Integer pageSize, Integer start) {
         if(pageSize != null) {
             query.setMaxResults(pageSize);
             if(start != null) {

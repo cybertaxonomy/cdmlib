@@ -73,7 +73,7 @@ public abstract class CdmBaseDaoImpl
         cq.select(root)
           .orderBy(ordersFrom(cb, root, orderHints));
 
-        List<S> results = addLimitAndStart(getSession().createQuery(cq), limit, start)
+        List<S> results = addLimitAndStart(getSession().createSelectionQuery(cq), limit, start)
                 .getResultList();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;

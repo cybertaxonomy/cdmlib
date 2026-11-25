@@ -18,6 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -29,7 +30,6 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IOriginalSourceDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
@@ -212,7 +212,7 @@ public class OriginalSourceDaoImpl
 //            orderHints = OrderHint.ORDER_BY_ID.asList();
 //        }
 
-        TypedQuery<T> query = getSession().createQuery(cq);
+        SelectionQuery<T> query = getSession().createSelectionQuery(cq);
         addPageSizeAndNumber(query, pageSize, pageNumber);
 
         List<T> results = query.getResultList();

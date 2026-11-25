@@ -289,7 +289,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
           .where(where)
           .orderBy(cb.desc(root.get("created")));
 
-        List<T> results = getSession().createQuery(cq).getResultList();
+        List<T> results = getSession().createSelectionQuery(cq).getResultList();
 
         Set<T> resultSet = new HashSet<>();
         resultSet.addAll(results);
@@ -350,7 +350,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             cq.select(root)
               .where(predicateUuid(cb, root, uuid))
               .orderBy(cb.desc(root.get("created")));
-            List<T> results = session.createQuery(cq).getResultList();
+            List<T> results = session.createSelectionQuery(cq).getResultList();
 
             results = deduplicateResult(results);
             if (results.isEmpty()) {
@@ -387,7 +387,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         cq.select(root)
           .where(root.get("id").in(ids))
           .orderBy(ordersFrom(cb, root, orderHints));
-        List<T> result = getSession().createQuery(cq).getResultList();
+        List<T> result = getSession().createSelectionQuery(cq).getResultList();
 
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
@@ -426,7 +426,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
           .where(cb.and(predicates.toArray(new Predicate[0])))
           .orderBy(ordersFrom(cb, root, orderHints));
         List<S> result = addPageSizeAndNumber(
-                    getSession().createQuery(cq)
+                    getSession().createSelectionQuery(cq)
                     , pageSize, pageNumber)
                 .getResultList();
 
@@ -451,7 +451,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
           .orderBy(ordersFrom(cb, root, orderHints));
 
         List<S> results = addPageSizeAndNumber(
-                getSession().createQuery(cq), pageSize, pageNumber)
+                getSession().createSelectionQuery(cq), pageSize, pageNumber)
                .getResultList();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return deduplicateResult(results);
@@ -646,7 +646,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         cq.select(cb.countDistinct(root))
           .where(predicate);
 
-        return getSession().createQuery(cq).getSingleResult();
+        return getSession().createSelectionQuery(cq).getSingleResult();
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -762,7 +762,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             cq.orderBy(orders);
         }
 
-        List<Object[]> result = addLimitAndStart(getSession().createQuery(cq), limit, start)
+        List<Object[]> result = addLimitAndStart(getSession().createSelectionQuery(cq), limit, start)
                 .getResultList();
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
@@ -784,7 +784,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
           .orderBy(ordersFrom(cb, root, orderHints));
 
         List<T> results = addPageSizeAndNumber(
-                getSession().createQuery(cq), pageSize, pageNumber)
+                getSession().createSelectionQuery(cq), pageSize, pageNumber)
                .getResultList();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return deduplicateResult(results);
@@ -827,7 +827,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         cq.select(cb.countDistinct(root))
           .where(predicate);
 
-        return getSession().createQuery(cq).getSingleResult();
+        return getSession().createSelectionQuery(cq).getSingleResult();
     }
 
     private <S extends T> Predicate getExamplePredicate(CriteriaBuilder cb, Root<S> root, S example, Set<String> includeProperties) {
@@ -964,7 +964,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
           .orderBy(ordersFrom(cb, root, orderHints));
 
         List<S> results = addPageSizeAndNumber(
-               getSession().createQuery(cq), pageSize, pageNumber)
+               getSession().createSelectionQuery(cq), pageSize, pageNumber)
               .getResultList();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
@@ -987,7 +987,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         cq.select(cb.countDistinct(root.get("id")))
           .where(predicate);
 
-        return getSession().createQuery(cq).getSingleResult();
+        return getSession().createSelectionQuery(cq).getSingleResult();
     }
 
     @Override
@@ -1064,7 +1064,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
           .orderBy(ordersFrom(cb, root, orderHints));
 
         List<S> results = addPageSizeAndNumber(
-                getSession().createQuery(cq), limit, start)
+                getSession().createSelectionQuery(cq), limit, start)
             .getResultList();
 
         defaultBeanInitializer.initializeAll(results, propertyPaths);
@@ -1103,7 +1103,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         cq.select(cb.countDistinct(root))
           .where(filter.toPredicate(root, cb));
 
-        return getSession().createQuery(cq).getSingleResult();
+        return getSession().createSelectionQuery(cq).getSingleResult();
     }
 
     protected <S extends T> List<S> listByFilter(Class<S> clazz, EntityFilter<S> filter,
@@ -1122,7 +1122,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
           .orderBy(ordersFrom(cb, root, orderHints));
 
         List<S> results = addPageSizeAndNumber(
-                getSession().createQuery(cq), pageSize, pageNumber)
+                getSession().createSelectionQuery(cq), pageSize, pageNumber)
                .getResultList();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return deduplicateResult(results);
@@ -1151,7 +1151,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
           .where(filter.toPredicate(root, cb))
           .orderBy(ordersFrom(cb, root, orderHints));
 
-        S result = getSession().createQuery(cq)
+        S result = getSession().createSelectionQuery(cq)
                .getResultStream().findFirst().orElse(null);
        defaultBeanInitializer.initialize(result, propertyPaths);
        return result;

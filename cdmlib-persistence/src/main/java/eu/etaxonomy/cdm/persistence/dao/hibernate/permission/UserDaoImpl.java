@@ -14,7 +14,7 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
@@ -37,7 +37,7 @@ public class UserDaoImpl extends CdmEntityDaoBase<User> implements IUserDao {
 
     @Override
     public User findUserByUsername(String username) {
-        Query<User> query = getSession().createQuery("SELECT user FROM User user WHERE user.username = :username", User.class);
+        SelectionQuery<User> query = getSession().createSelectionQuery("SELECT user FROM User user WHERE user.username = :username", User.class);
         query.setParameter("username", username);
 
         User user = query.uniqueResult(); // username is a @NaturalId
@@ -46,7 +46,7 @@ public class UserDaoImpl extends CdmEntityDaoBase<User> implements IUserDao {
 
     @Override
     public boolean userNameExists(String username) {
-        Query<Long> query = getSession().createQuery("SELECT count(user) FROM User user WHERE user.username = :username", Long.class);
+        SelectionQuery<Long> query = getSession().createSelectionQuery("SELECT count(user) FROM User user WHERE user.username = :username", Long.class);
         query.setParameter("username", username);
 
         long count = query.uniqueResult();
@@ -55,7 +55,7 @@ public class UserDaoImpl extends CdmEntityDaoBase<User> implements IUserDao {
 
     @Override
     public boolean emailAddressExists(String emailAddress) {
-        Query<Long> query = getSession().createQuery("SELECT count(user) FROM User user WHERE user.emailAddress = :emailAddress", Long.class);
+        SelectionQuery<Long> query = getSession().createSelectionQuery("SELECT count(user) FROM User user WHERE user.emailAddress = :emailAddress", Long.class);
         query.setParameter("emailAddress", emailAddress);
 
         long count = query.uniqueResult();
@@ -64,7 +64,7 @@ public class UserDaoImpl extends CdmEntityDaoBase<User> implements IUserDao {
 
     @Override
     public User findByEmailAddress(String emailAddress) {
-        Query<User> query = getSession().createQuery("SELECT user FROM User user where user.emailAddress = :emailAddress", User.class);
+        SelectionQuery<User> query = getSession().createSelectionQuery("SELECT user FROM User user where user.emailAddress = :emailAddress", User.class);
         query.setParameter("emailAddress", emailAddress);
 
         User user = query.uniqueResult(); // emailAddress to be unique, see https://dev.e-taxonomy.eu/redmine/issues/7276
