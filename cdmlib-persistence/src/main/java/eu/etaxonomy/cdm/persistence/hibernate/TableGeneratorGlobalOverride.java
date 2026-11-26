@@ -21,10 +21,8 @@ import org.springframework.stereotype.Component;
  * @since Feb 23, 2016
  *
  */
-//TODO this class has been moved to cdmlib-persistence preliminarily. It should be moved to
-//cdmlib-test again as it should be used only in test. Currently this is not possible because
-//sessionFactory bean has a dependsOn relationship to this class and this creates problems in remote-webapp
-//as the been is not available
+// Kept in cdmlib-persistence: sessionFactory depends-on this bean on the main classpath.
+// A former copy in cdmlib-test caused Jetty "scanned from multiple locations" warnings.
 //see also TableGenerator
 @Component
 class TableGeneratorGlobalOverride {

@@ -393,6 +393,9 @@ public abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSou
 
         Properties props = new Properties();
         props.setProperty("hibernate.hbm2ddl.auto", hbm2dll.toString());
+        // Fail SessionFactory bootstrap on DDL errors instead of only logging them
+        // (ExceptionHandlerLoggedImpl). Catches e.g. duplicate hibernate_sequences inserts.
+        props.setProperty("hibernate.hbm2ddl.halt_on_error", "true");
         props.setProperty("hibernate.dialect", dbType.getHibernateDialectCanonicalName());
 //      OLD:props.setProperty("hibernate.cache.provider_class", cacheProviderClass.getName());
         props.setProperty(HibernateConfiguration.CACHE_PROVIDER_CLASS, cacheProviderClass.getName());

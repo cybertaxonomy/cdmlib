@@ -62,6 +62,8 @@
                 <!-- exclusive_index_use has no HS6 equivalent -->
                 <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
                 <prop key="hibernate.implicit_naming_strategy">org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl</prop>
+                <!-- Fail bootstrap on DDL errors instead of WARN-only ExceptionHandlerLoggedImpl -->
+                <prop key="hibernate.hbm2ddl.halt_on_error">true</prop>
             </props>
         </property>
     </bean>

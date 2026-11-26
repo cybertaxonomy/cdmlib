@@ -9,10 +9,15 @@
 package eu.etaxonomy.cdm.persistence.hibernate;
 
 import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.MappingException;
+import org.hibernate.boot.model.relational.Database;
+import org.hibernate.boot.model.relational.InitCommand;
+import org.hibernate.boot.model.relational.SqlStringGenerationContext;
 import org.hibernate.generator.GeneratorCreationContext;
 
 /**
@@ -52,14 +57,28 @@ import org.hibernate.generator.GeneratorCreationContext;
  *
  * @author Andreas Kohlbecker, 2012
  */
-//TODO this class has been moved to cdmlib-persistence preliminary. It should be moved to
-//cdmlib-test again as it should be used only in test. Currently this is not possible because
-//sessionFactory bean has a dependsOn relationship to this class and this creates problems in remote-webapp
-//as the been is not available.
+// Kept in cdmlib-persistence (not cdmlib-test): sessionFactory depends-on tableGeneratorGlobalOverride,
+// so the class must be on the main classpath; a duplicate in cdmlib-test caused Jetty
+// "scanned from multiple locations" warnings in remote-webapp.
 //see also TableGeneratorGlobalOverride
 public class TableGenerator extends org.hibernate.id.enhanced.TableGenerator {
 
     private static final Logger logger = LogManager.getLogger();
+
+	/**
+	 * Hibernate registers one {@code TableGenerator} per mapped entity. With
+	 * {@code prefer_entity_table_as_segment_value=true} and SINGLE_TABLE inheritance,
+	 * several entities share the same segment (e.g. {@code Media}, {@code DefinedTermBase}).
+	 * Without deduplication SchemaExport/CREATE emits duplicate
+	 * {@code insert into hibernate_sequences(...)} statements that hit the PK and are
+	 * only logged as WARN by {@code ExceptionHandlerLoggedImpl}.
+	 * <p>
+	 * Keyed by {@link Database} so each SessionFactory/metadata build gets a fresh set.
+	 */
+	private static final ConcurrentHashMap<Database, Set<String>> REGISTERED_SEGMENTS = new ConcurrentHashMap<>();
+
+	/** When true, {@link #generateInsertInitCommand} returns an empty command. */
+	private boolean skipInsertInitCommand;
 
 	/**
 	 * Hibernate 7 configures table generators via {@link GeneratorCreationContext};
@@ -73,6 +92,28 @@ public class TableGenerator extends org.hibernate.id.enhanced.TableGenerator {
 		}
 		logger.debug("overrideProperties:" + (overrideProperties != null ? overrideProperties : "NULL"));
 		super.configure(creationContext, parameters);
+	}
+
+	@Override
+	public void registerExportables(Database database) {
+		String segmentKey = getTableName() + "#" + getSegmentValue();
+		Set<String> registered = REGISTERED_SEGMENTS.computeIfAbsent(
+				database, db -> ConcurrentHashMap.newKeySet());
+		skipInsertInitCommand = !registered.add(segmentKey);
+		if (skipInsertInitCommand && logger.isDebugEnabled()) {
+			logger.debug("Skipping duplicate hibernate_sequences init for segment " + segmentKey);
+		}
+		// Always call super so this generator instance gets its Table reference;
+		// only the InitCommand insert is suppressed via generateInsertInitCommand.
+		super.registerExportables(database);
+	}
+
+	@Override
+	protected InitCommand generateInsertInitCommand(SqlStringGenerationContext context) {
+		if (skipInsertInitCommand) {
+			return new InitCommand();
+		}
+		return super.generateInsertInitCommand(context);
 	}
 
 }
