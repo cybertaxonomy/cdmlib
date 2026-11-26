@@ -15,7 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,7 +30,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.util.concurrent.ListenableFuture;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 
@@ -144,14 +146,13 @@ public class PasswordResetServiceTest extends CdmServicesTransactionalSpringInte
         resetTokenSendSignal = new CountDownLatch(1);
         passwordChangedSignal = new CountDownLatch(1);
 
-        ListenableFuture<Boolean> emailResetFuture = passwordResetService.emailResetToken(userName, requestFormUrlTemplate);
-        emailResetFuture.addCallback(
-                requestSuccessVal -> {
-                    resetTokenSendSignal.countDown();
-                }, futureException -> {
-                    assyncError = futureException;
-                    resetTokenSendSignal.countDown();
-                });
+        CompletableFuture<Boolean> emailResetFuture = passwordResetService.emailResetToken(userName, requestFormUrlTemplate);
+        emailResetFuture.whenComplete((requestSuccessVal, futureException) -> {
+            if (futureException != null) {
+                assyncError = futureException;
+            }
+            resetTokenSendSignal.countDown();
+        });
 
         // -- wait for passwordResetService.emailResetToken() to complete
         resetTokenSendSignal.await();
@@ -176,11 +177,11 @@ public class PasswordResetServiceTest extends CdmServicesTransactionalSpringInte
         assertEquals(AbstractRequestTokenStore.TOKEN_LENGTH + 17, m.group(1).length());
 
         // -- change password
-        ListenableFuture<Boolean> resetPasswordFuture = passwordResetService.resetPassword( m.group(1), newPWD);
-        resetPasswordFuture.addCallback(requestSuccessVal -> {
-            passwordChangedSignal.countDown();
-        }, futureException -> {
-            assyncError =  futureException;
+        CompletableFuture<Boolean> resetPasswordFuture = passwordResetService.resetPassword( m.group(1), newPWD);
+        resetPasswordFuture.whenComplete((requestSuccessVal, futureException) -> {
+            if (futureException != null) {
+                assyncError = futureException;
+            }
             passwordChangedSignal.countDown();
         });
         // -- wait for passwordResetService.resetPassword to complete
@@ -209,46 +210,41 @@ public class PasswordResetServiceTest extends CdmServicesTransactionalSpringInte
         passwordResetService.setRateLimiterTimeout(Duration.ofMillis(1)); // as short as possible to allow the fist call to be successful
 
         logger.debug("1. request");
-        ListenableFuture<Boolean> emailResetFuture = passwordResetService.emailResetToken(userName, requestFormUrlTemplate);
-        emailResetFuture.addCallback(
-                requestSuccessVal -> {
+        CompletableFuture<Boolean> emailResetFuture = passwordResetService.emailResetToken(userName, requestFormUrlTemplate);
+        emailResetFuture.whenComplete((requestSuccessVal, futureException) -> {
 //                    logger.debug("success 1");
-                    resetTokenSendSignal.countDown();
-                }, futureException -> {
+            if (futureException != null) {
 //                    logger.debug("error 1");
-                    assyncError = futureException;
-                    resetTokenSendSignal.countDown();
-                });
+                assyncError = futureException;
+            }
+            resetTokenSendSignal.countDown();
+        });
 
         logger.debug("2. request");
         //wait 2 seconds to definitely have the first request as first
         try {Thread.sleep(2000);} catch (InterruptedException e1) {}
-        ListenableFuture<Boolean> emailResetFuture2 = passwordResetService.emailResetToken(userName, requestFormUrlTemplate);
-        emailResetFuture2.addCallback(
-                requestSuccessVal -> {
+        CompletableFuture<Boolean> emailResetFuture2 = passwordResetService.emailResetToken(userName, requestFormUrlTemplate);
+        emailResetFuture2.whenComplete((requestSuccessVal, futureException) -> {
 //                    logger.debug("success 2");
-                    resetTokenSendSignal2.countDown();
-                }, futureException -> {
+            if (futureException != null) {
 //                    logger.debug("error 2");
-                    assyncError = futureException;
-                    resetTokenSendSignal2.countDown();
-                }
-        );
+                assyncError = futureException;
+            }
+            resetTokenSendSignal2.countDown();
+        });
 
 //        logger.debug("3. request");
         //wait another 4 seconds to totally wait 6s and therefore be allowed to request another token again
         try {Thread.sleep(4000);} catch (InterruptedException e1) {}
-        ListenableFuture<Boolean> emailResetFuture3 = passwordResetService.emailResetToken(userName, requestFormUrlTemplate);
-        emailResetFuture3.addCallback(
-                requestSuccessVal -> {
+        CompletableFuture<Boolean> emailResetFuture3 = passwordResetService.emailResetToken(userName, requestFormUrlTemplate);
+        emailResetFuture3.whenComplete((requestSuccessVal, futureException) -> {
 //                    logger.debug("success 3");
-                    resetTokenSendSignal3.countDown();
-                }, futureException -> {
-                    logger.debug("error 3");
-                    assyncError = futureException;
-                    resetTokenSendSignal3.countDown();
-                }
-        );
+            if (futureException != null) {
+                logger.debug("error 3");
+                assyncError = futureException;
+            }
+            resetTokenSendSignal3.countDown();
+        });
 
         // -- wait for passwordResetService.emailResetToken() to complete
         resetTokenSendSignal.await();
@@ -276,15 +272,13 @@ public class PasswordResetServiceTest extends CdmServicesTransactionalSpringInte
         resetTokenSendSignal = new CountDownLatch(1);
 
         passwordResetService.setRateLimiterTimeout(Duration.ofMillis(1)); // as should as possible to allow the fist call to be successful (with 1ns the fist call fails!)
-        ListenableFuture<Boolean> emailResetFuture = passwordResetService.emailResetToken("iDoNotExist", requestFormUrlTemplate);
-        emailResetFuture.addCallback(
-                requestSuccessVal -> {
-                    resetTokenSendSignal.countDown();
-                }, futureException -> {
-                    assyncError = futureException;
-                    resetTokenSendSignal.countDown();
-                }
-        );
+        CompletableFuture<Boolean> emailResetFuture = passwordResetService.emailResetToken("iDoNotExist", requestFormUrlTemplate);
+        emailResetFuture.whenComplete((requestSuccessVal, futureException) -> {
+            if (futureException != null) {
+                assyncError = futureException;
+            }
+            resetTokenSendSignal.countDown();
+        });
 
         // -- wait for passwordResetService.emailResetToken() to complete
         resetTokenSendSignal.await();
@@ -304,19 +298,27 @@ public class PasswordResetServiceTest extends CdmServicesTransactionalSpringInte
         passwordChangedSignal = new CountDownLatch(1);
 
         // -- change password
-        ListenableFuture<Boolean> resetPasswordFuture = passwordResetService.resetPassword( "IUER9843URIO--INVALID-TOKEN--UWEUR89EUWWEOIR", newPWD);
-        resetPasswordFuture.addCallback(requestSuccessVal -> {
-            passwordChangedSignal.countDown();
-        }, futureException -> {
-            assyncError =  futureException;
+        CompletableFuture<Boolean> resetPasswordFuture = passwordResetService.resetPassword( "IUER9843URIO--INVALID-TOKEN--UWEUR89EUWWEOIR", newPWD);
+        resetPasswordFuture.whenComplete((requestSuccessVal, futureException) -> {
+            if (futureException != null) {
+                assyncError = futureException;
+            }
             passwordChangedSignal.countDown();
         });
         // -- wait for passwordResetService.resetPassword to complete
         passwordChangedSignal.await();
 
         assertNotNull(assyncError);
-        assertEquals(AccountSelfManagementException.class, assyncError.getClass());
+        assertEquals(AccountSelfManagementException.class, unwrap(assyncError).getClass());
         assertEquals(0, wiser.getMessages().size());
+    }
+
+    private static Throwable unwrap(Throwable t) {
+        while (t.getCause() != null
+                && (t instanceof CompletionException || t instanceof ExecutionException)) {
+            t = t.getCause();
+        }
+        return t;
     }
 
     @Override

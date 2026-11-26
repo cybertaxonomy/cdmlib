@@ -14,7 +14,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +28,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.concurrent.ListenableFuture;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 
@@ -111,14 +113,13 @@ public class AccountRegistrationServiceTest extends CdmServicesTransactionalSpri
         createRequestTokenSendSignal = new CountDownLatch(1);
         accountCreatedSignal = new CountDownLatch(1);
 
-        ListenableFuture<Boolean> emailResetFuture = accountRegistrationService.emailAccountRegistrationRequest(userEmail, requestFormUrlTemplate);
-        emailResetFuture.addCallback(
-                requestSuccessVal -> {
-                    createRequestTokenSendSignal.countDown();
-                }, futureException -> {
-                    assyncError = futureException;
-                    createRequestTokenSendSignal.countDown();
-                });
+        CompletableFuture<Boolean> emailResetFuture = accountRegistrationService.emailAccountRegistrationRequest(userEmail, requestFormUrlTemplate);
+        emailResetFuture.whenComplete((requestSuccessVal, futureException) -> {
+            if (futureException != null) {
+                assyncError = futureException;
+            }
+            createRequestTokenSendSignal.countDown();
+        });
 
         // -- wait for passwordResetService.emailResetToken() to complete
         createRequestTokenSendSignal.await();
@@ -146,11 +147,11 @@ public class AccountRegistrationServiceTest extends CdmServicesTransactionalSpri
         assertEquals(AbstractRequestTokenStore.TOKEN_LENGTH + 17, m.group(1).length());
 
         // -- change password
-        ListenableFuture<Boolean> createAccountFuture = accountRegistrationService.createUserAccount(m.group(1), userName, userPWD, "Testor", "Nutzer", "Dr.");
-        createAccountFuture.addCallback(requestSuccessVal -> {
-            accountCreatedSignal.countDown();
-        }, futureException -> {
-            assyncError =  futureException;
+        CompletableFuture<Boolean> createAccountFuture = accountRegistrationService.createUserAccount(m.group(1), userName, userPWD, "Testor", "Nutzer", "Dr.");
+        createAccountFuture.whenComplete((requestSuccessVal, futureException) -> {
+            if (futureException != null) {
+                assyncError = futureException;
+            }
             accountCreatedSignal.countDown();
         });
         // -- wait for passwordResetService.resetPassword to complete
@@ -170,20 +171,19 @@ public class AccountRegistrationServiceTest extends CdmServicesTransactionalSpri
         createRequestTokenSendSignal = new CountDownLatch(1);
 
         accountRegistrationService.setRateLimiterTimeout(Duration.ofMillis(1)); // as should as possible to allow the fist call to be successful (with 1ns the fist call fails!)
-        ListenableFuture<Boolean> emailResetFuture = accountRegistrationService.emailAccountRegistrationRequest("not-a-valid-email@#address#", requestFormUrlTemplate);
-        emailResetFuture.addCallback(
-                requestSuccessVal -> {
-                    createRequestTokenSendSignal.countDown();
-                }, futureException -> {
-                    assyncError = futureException;
-                    createRequestTokenSendSignal.countDown();
-                });
+        CompletableFuture<Boolean> emailResetFuture = accountRegistrationService.emailAccountRegistrationRequest("not-a-valid-email@#address#", requestFormUrlTemplate);
+        emailResetFuture.whenComplete((requestSuccessVal, futureException) -> {
+            if (futureException != null) {
+                assyncError = futureException;
+            }
+            createRequestTokenSendSignal.countDown();
+        });
 
         // -- wait for passwordResetService.emailResetToken() to complete
         createRequestTokenSendSignal.await();
 
         assertNotNull(assyncError);
-        assertEquals(AddressException.class, assyncError.getClass());
+        assertEquals(AddressException.class, unwrap(assyncError).getClass());
     }
 
     @Test
@@ -193,18 +193,18 @@ public class AccountRegistrationServiceTest extends CdmServicesTransactionalSpri
         accountCreatedSignal = new CountDownLatch(1);
 
         // -- change password
-        ListenableFuture<Boolean> resetPasswordFuture = accountRegistrationService.createUserAccount("IUER9843URIO--INVALID-TOKEN--UWEUR89EUWWEOIR", userName, userPWD, null, null, null);
-        resetPasswordFuture.addCallback(requestSuccessVal -> {
-            accountCreatedSignal.countDown();
-        }, futureException -> {
-            assyncError =  futureException;
+        CompletableFuture<Boolean> resetPasswordFuture = accountRegistrationService.createUserAccount("IUER9843URIO--INVALID-TOKEN--UWEUR89EUWWEOIR", userName, userPWD, null, null, null);
+        resetPasswordFuture.whenComplete((requestSuccessVal, futureException) -> {
+            if (futureException != null) {
+                assyncError = futureException;
+            }
             accountCreatedSignal.countDown();
         });
         // -- wait for passwordResetService.resetPassword to complete
         accountCreatedSignal.await();
 
         assertNotNull(assyncError);
-        assertEquals(AccountSelfManagementException.class, assyncError.getClass());
+        assertEquals(AccountSelfManagementException.class, unwrap(assyncError).getClass());
         assertEquals(0, wiser.getMessages().size());
     }
 
@@ -214,14 +214,13 @@ public class AccountRegistrationServiceTest extends CdmServicesTransactionalSpri
 
         createRequestTokenSendSignal = new CountDownLatch(1);
 
-        ListenableFuture<Boolean> emailResetFuture = accountRegistrationService.emailAccountRegistrationRequest(userEmail, requestFormUrlTemplate);
-        emailResetFuture.addCallback(
-                requestSuccessVal -> {
-                    createRequestTokenSendSignal.countDown();
-                }, futureException -> {
-                    assyncError = futureException;
-                    createRequestTokenSendSignal.countDown();
-                });
+        CompletableFuture<Boolean> emailResetFuture = accountRegistrationService.emailAccountRegistrationRequest(userEmail, requestFormUrlTemplate);
+        emailResetFuture.whenComplete((requestSuccessVal, futureException) -> {
+            if (futureException != null) {
+                assyncError = futureException;
+            }
+            createRequestTokenSendSignal.countDown();
+        });
 
         // -- wait for passwordResetService.emailResetToken() to complete
         createRequestTokenSendSignal.await();
@@ -229,20 +228,29 @@ public class AccountRegistrationServiceTest extends CdmServicesTransactionalSpri
         accountCreatedSignal = new CountDownLatch(1);
 
         // -- change password
-        ListenableFuture<Boolean> resetPasswordFuture = accountRegistrationService.createUserAccount(userEmail, "admin", userPWD, null, null, null);
-        resetPasswordFuture.addCallback(requestSuccessVal -> {
-            accountCreatedSignal.countDown();
-        }, futureException -> {
-            assyncError =  futureException;
+        CompletableFuture<Boolean> resetPasswordFuture = accountRegistrationService.createUserAccount(userEmail, "admin", userPWD, null, null, null);
+        resetPasswordFuture.whenComplete((requestSuccessVal, futureException) -> {
+            if (futureException != null) {
+                assyncError = futureException;
+            }
             accountCreatedSignal.countDown();
         });
         // -- wait for passwordResetService.resetPassword to complete
         accountCreatedSignal.await();
 
         assertNotNull(assyncError);
-        assertEquals(AccountSelfManagementException.class, assyncError.getClass());
-        assertEquals(AccountRegistrationService.USER_NAME_EXISTS_MSG, assyncError.getMessage());
+        Throwable cause = unwrap(assyncError);
+        assertEquals(AccountSelfManagementException.class, cause.getClass());
+        assertEquals(AccountRegistrationService.USER_NAME_EXISTS_MSG, cause.getMessage());
         assertEquals(0, wiser.getMessages().size());
+    }
+
+    private static Throwable unwrap(Throwable t) {
+        while (t.getCause() != null
+                && (t instanceof CompletionException || t instanceof ExecutionException)) {
+            t = t.getCause();
+        }
+        return t;
     }
 
     @Override

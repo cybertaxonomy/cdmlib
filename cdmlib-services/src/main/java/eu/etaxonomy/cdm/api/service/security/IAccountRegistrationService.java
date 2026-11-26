@@ -8,8 +8,9 @@
 */
 package eu.etaxonomy.cdm.api.service.security;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.springframework.mail.MailException;
-import org.springframework.util.concurrent.ListenableFuture;
 
 import eu.etaxonomy.cdm.api.security.AccountCreationRequest;
 import jakarta.mail.internet.AddressException;
@@ -54,7 +55,7 @@ public interface IAccountRegistrationService extends IRateLimitedService {
      * @throws AccountSelfManagementException
      *             in case the user name is already being used.
      */
-    public ListenableFuture<Boolean> emailAccountRegistrationRequest(String emailAddress,
+    public CompletableFuture<Boolean> emailAccountRegistrationRequest(String emailAddress,
             String passwordRequestFormUrlTemplate)
             throws MailException, AddressException, AccountSelfManagementException;
 
@@ -85,7 +86,7 @@ public interface IAccountRegistrationService extends IRateLimitedService {
      *             {@link AccountCreationRequest} identified by the
      *             <code>token</code> not valid
      */
-    ListenableFuture<Boolean> createUserAccount(String token, String userName, String password, String givenName,
+    CompletableFuture<Boolean> createUserAccount(String token, String userName, String password, String givenName,
             String familyName, String prefix) throws MailException, AccountSelfManagementException, AddressException;
 
     boolean userNameExists(String userName);

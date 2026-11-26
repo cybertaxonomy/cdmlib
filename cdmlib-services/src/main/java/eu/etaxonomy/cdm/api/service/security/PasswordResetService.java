@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service.security;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,12 +21,10 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailPreparationException;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import org.springframework.util.concurrent.ListenableFuture;
 
 import eu.etaxonomy.cdm.api.security.AbstractRequestToken;
 import eu.etaxonomy.cdm.api.security.IAbstractRequestTokenStore;
@@ -50,10 +49,10 @@ public class PasswordResetService extends AccountSelfManagementService implement
 
     @Override
     @Async
-    public ListenableFuture<Boolean> emailResetToken(String userNameOrEmail, String passwordRequestFormUrlTemplate) throws MailException, EmailAddressNotFoundException {
+    public CompletableFuture<Boolean> emailResetToken(String userNameOrEmail, String passwordRequestFormUrlTemplate) throws MailException, EmailAddressNotFoundException {
 
         try {
-            // give calling methods a bit time to register the Listeners to the Future
+            // give calling methods a bit time to register callbacks on the Future
             Thread.sleep(10);
         } catch (InterruptedException e1) {
             // IGNORE
@@ -85,16 +84,16 @@ public class PasswordResetService extends AccountSelfManagementService implement
             } catch (MailException e) {
                 throw e;
             }
-            return new AsyncResult<>(true);
+            return CompletableFuture.completedFuture(true);
         } else {
             logger.trace("blocked by rate limiter");
-            return new AsyncResult<>(false);
+            return CompletableFuture.completedFuture(false);
         }
     }
 
    @Override
    @Async
-   public ListenableFuture<Boolean> resetPassword(String token, String newPassword) throws AccountSelfManagementException, MailException {
+   public CompletableFuture<Boolean> resetPassword(String token, String newPassword) throws AccountSelfManagementException, MailException {
 
        if (resetPassword_rateLimiter.tryAcquire(getRateLimiterTimeout())) {
 
@@ -109,7 +108,7 @@ public class PasswordResetService extends AccountSelfManagementService implement
                    sendEmail(resetRequest.get().getUserEmail(), resetRequest.get().getUserName(),
                            UserAccountEmailTemplates.RESET_SUCCESS_EMAIL_SUBJECT_TEMPLATE,
                            UserAccountEmailTemplates.RESET_SUCCESS_EMAIL_BODY_TEMPLATE, null);
-                   return new AsyncResult<>(true);
+                   return CompletableFuture.completedFuture(true);
                } catch (DataAccessException | IllegalArgumentException | UsernameNotFoundException e) {
                    logger.error("Failed to change password of User " + resetRequest.get().getUserName(), e);
                    sendEmail(resetRequest.get().getUserEmail(), resetRequest.get().getUserName(),
@@ -120,7 +119,7 @@ public class PasswordResetService extends AccountSelfManagementService implement
                throw new AccountSelfManagementException("Invalid password reset token");
            }
        }
-       return new AsyncResult<Boolean>(false);
+       return CompletableFuture.completedFuture(false);
    }
 
     protected User findUser(String userNameOrEmail) throws UsernameNotFoundException, EmailAddressNotFoundException {

@@ -8,8 +8,9 @@
 */
 package eu.etaxonomy.cdm.api.service.security;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.springframework.mail.MailException;
-import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * @author a.kohlbecker
@@ -49,7 +50,7 @@ public interface IPasswordResetService extends IRateLimitedService {
      * @throws EmailAddressNotFoundException
      *             in case the provided email address is unknown
      */
-    public ListenableFuture<Boolean> emailResetToken(String userNameOrEmail, String passwordRequestFormUrlTemplate)
+    public CompletableFuture<Boolean> emailResetToken(String userNameOrEmail, String passwordRequestFormUrlTemplate)
             throws MailException, EmailAddressNotFoundException;
 
     /**
@@ -67,6 +68,6 @@ public interface IPasswordResetService extends IRateLimitedService {
      * @throws MailException
      *             in case sending the email has failed
      */
-    public ListenableFuture<Boolean> resetPassword(String token, String newPassword) throws AccountSelfManagementException;
+    public CompletableFuture<Boolean> resetPassword(String token, String newPassword) throws AccountSelfManagementException;
 
 }

@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service.security;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,10 +20,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.mail.MailException;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.concurrent.ListenableFuture;
 
 import eu.etaxonomy.cdm.api.security.AbstractRequestToken;
 import eu.etaxonomy.cdm.api.security.AccountCreationRequest;
@@ -64,7 +63,7 @@ public class AccountRegistrationService
 
     @Override
     @Async
-    public ListenableFuture<Boolean> emailAccountRegistrationRequest(String emailAddress, String accountCreationRequestFormUrlTemplate) throws MailException, AddressException, AccountSelfManagementException {
+    public CompletableFuture<Boolean> emailAccountRegistrationRequest(String emailAddress, String accountCreationRequestFormUrlTemplate) throws MailException, AddressException, AccountSelfManagementException {
 
         if(logger.isTraceEnabled()) {
             logger.trace("emailAccountRegistrationConfirmation() trying to aquire from rate limiter [rate: " + emailResetToken_rateLimiter.getRate() + ", timeout: " + getRateLimiterTimeout().toMillis() + "ms]");
@@ -81,20 +80,20 @@ public class AccountRegistrationService
                         UserAccountEmailTemplates.REGISTRATION_REQUEST_EMAIL_SUBJECT_TEMPLATE,
                         UserAccountEmailTemplates.REGISTRATION_REQUEST_EMAIL_BODY_TEMPLATE, additionalValues);
                 logger.info("An account creation request has been send to " + emailAddress);
-                return new AsyncResult<>(true);
+                return CompletableFuture.completedFuture(true);
             } catch (MailException e) {
                 throw e;
             }
         } else {
             logger.trace("blocked by rate limiter");
-            return new AsyncResult<>(false);
+            return CompletableFuture.completedFuture(false);
         }
     }
 
     @Override
     @Async
     @Transactional(readOnly = false)
-    public ListenableFuture<Boolean> createUserAccount(String token, String userName, String password,
+    public CompletableFuture<Boolean> createUserAccount(String token, String userName, String password,
             String givenName, String familyName, String prefix)
             throws MailException, AccountSelfManagementException, AddressException {
 
@@ -141,7 +140,7 @@ public class AccountRegistrationService
                             UserAccountEmailTemplates.REGISTRATION_SUCCESS_EMAIL_SUBJECT_TEMPLATE,
                             UserAccountEmailTemplates.REGISTRATION_SUCCESS_EMAIL_BODY_TEMPLATE, null);
 
-                    return new AsyncResult<Boolean>(true);
+                    return CompletableFuture.completedFuture(true);
 
                 } catch (DataAccessException e) {
                     String message = "Failed to create a new user [userName: " + userName + ", email: " + creationRequest.get().getUserEmail() + "]";
@@ -152,7 +151,7 @@ public class AccountRegistrationService
                 throw new AccountSelfManagementException("Invalid account creation token");
             }
         }
-        return new AsyncResult<Boolean>(false);
+        return CompletableFuture.completedFuture(false);
     }
 
     /**
