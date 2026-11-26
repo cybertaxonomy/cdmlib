@@ -98,8 +98,8 @@ public class SearchResultBuilder implements ISearchResultBuilder {
 
             String cdmEntityId = null;
             SearchResult<T> searchResult = new SearchResult<T>();
-            for(ScoreDoc scoreDoc : groupDoc.scoreDocs) {
-                Document document = luceneSearch.getSearcher().doc(scoreDoc.doc);
+            for(ScoreDoc scoreDoc : groupDoc.scoreDocs()) {
+                Document document = luceneSearch.getSearcher().storedFields().document(scoreDoc.doc);
                 searchResult.addDoc(document);
 
                 if(cdmEntityId == null){
@@ -108,9 +108,9 @@ public class SearchResultBuilder implements ISearchResultBuilder {
                 }
             }
 
-            // set score values
-            if(isNumber(groupDoc.maxScore)){
-                searchResult.setScore(groupDoc.maxScore);
+            // set score values (GroupDocs is a record in Lucene 10)
+            if(isNumber(groupDoc.maxScore())){
+                searchResult.setScore(groupDoc.maxScore());
             }
 
             if(isNumber(topGroupsResultSet.maxScore)){
@@ -164,7 +164,7 @@ public class SearchResultBuilder implements ISearchResultBuilder {
         	String cdmEntityId = null;
         	SearchResult<T> searchResult = new SearchResult<T>();
 
-        	Document document = luceneSearch.getSearcher().doc(scoreDoc.doc);
+        	Document document = luceneSearch.getSearcher().storedFields().document(scoreDoc.doc);
         	searchResult.addDoc(document);
 
         	if(cdmEntityId == null){
@@ -219,7 +219,7 @@ public class SearchResultBuilder implements ISearchResultBuilder {
         	String cdmEntityId = null;
         	DocumentSearchResult searchResult = new DocumentSearchResult();
 
-        	Document document = luceneSearch.getSearcher().doc(scoreDoc.doc);
+        	Document document = luceneSearch.getSearcher().storedFields().document(scoreDoc.doc);
         	searchResult.addDoc(document);
 
         	searchResult.setScore(scoreDoc.score);

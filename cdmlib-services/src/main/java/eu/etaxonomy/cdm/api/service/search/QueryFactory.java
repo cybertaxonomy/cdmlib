@@ -355,7 +355,7 @@ public class QueryFactory {
                     for(ScoreDoc doc : docs) {
                         logger.debug("    toType doc: " + doc);
                             IndexReader indexReader = toolProvider.getIndexReaderFor(toType);
-                            logger.debug("              : " + indexReader.document(doc.doc));
+                            logger.debug("              : " + indexReader.storedFields().document(doc.doc));
                         }
                     }
             }

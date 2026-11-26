@@ -289,7 +289,7 @@ public class LuceneSearch {
         // --- set the max score for the group results
 
         // get max score from very first result
-        float maxScore = groupsResult.groups[0].maxScore;
+        float maxScore = groupsResult.groups[0].maxScore();
 
         if(logger.isDebugEnabled()){
             logger.debug("TopGroups: maxScore=" + maxScore + ", offset=" + offset +

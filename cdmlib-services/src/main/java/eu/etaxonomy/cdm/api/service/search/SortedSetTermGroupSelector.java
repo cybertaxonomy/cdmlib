@@ -67,16 +67,12 @@ public class SortedSetTermGroupSelector extends GroupSelector<BytesRef> {
 
     @Override
     public State advanceTo(int doc) throws IOException {
-        if (!this.docValues.advanceExact(doc)) {
+        if (!this.docValues.advanceExact(doc) || docValues.docValueCount() == 0) {
             groupId = -1;
             return includeEmpty ? State.ACCEPT : State.SKIP;
         }
-        long ordLong = docValues.nextOrd();
-        if (ordLong == SortedSetDocValues.NO_MORE_ORDS) {
-            groupId = -1;
-            return includeEmpty ? State.ACCEPT : State.SKIP;
-        }
-        int ord = (int) ordLong;
+        // Lucene 10: nextOrd() must not be called more than docValueCount() times
+        int ord = (int) docValues.nextOrd();
         if (ordsToGroupIds.containsKey(ord)) {
             groupId = ordsToGroupIds.get(ord);
             return State.ACCEPT;
