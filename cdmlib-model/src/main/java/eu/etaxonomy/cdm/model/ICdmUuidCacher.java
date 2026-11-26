@@ -13,9 +13,10 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
- * Cache class for CDM Entities based on Ehcache.
- * The class manages a singleton {@link net.sf.ehcache.CacheManager} having a
- * {@link net.sf.ehcache.Cache} initialised with a default configuration.
+ * Cache class for CDM Entities based on Ehcache 3.
+ * The implementing class manages a cache initialised with a default
+ * configuration within the singleton CDM entity cache manager
+ * (<code>eu.etaxonomy.cdm.api.cache.ehcache.CdmEntityCacheManager</code>).
  *
  * FIXME: This interface should actually be in an external project which also
  *        includes the implemented cachers.

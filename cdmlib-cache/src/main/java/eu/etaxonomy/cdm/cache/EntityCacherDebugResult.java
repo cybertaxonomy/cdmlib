@@ -25,12 +25,10 @@ import org.hibernate.proxy.LazyInitializer;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.api.cache.CdmPermanentCacheBase;
+import eu.etaxonomy.cdm.api.cache.ehcache.CdmCache;
+import eu.etaxonomy.cdm.api.cache.ehcache.CdmEntityCacheManager;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
 
 /**
  * @author cmathew
@@ -223,9 +221,9 @@ public class EntityCacherDebugResult {
     private String getCachesContainingEntity(CdmBase cdmEntity) {
         String caches = "";
 
-        Cache defaultCache = CacheManager.create().getCache(CdmPermanentCacheBase.PERMANENT_CACHE_NAME);
-        Element dce = defaultCache.get(cdmEntity.getUuid());
-        if(dce != null && dce.getObjectValue() == cdmEntity) {
+        CdmCache defaultCache = CdmEntityCacheManager.getInstance().getCache(CdmPermanentCacheBase.PERMANENT_CACHE_NAME);
+        Object dce = defaultCache == null ? null : defaultCache.get(cdmEntity.getUuid());
+        if(dce != null && dce == cdmEntity) {
             caches = "{DC}";
         }
 

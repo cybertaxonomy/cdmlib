@@ -74,9 +74,10 @@
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-services</artifactId>
     </dependency>
-    <dependency>  
-      <groupId>net.sf.ehcache</groupId>
+    <dependency>
+      <groupId>org.ehcache</groupId>
       <artifactId>ehcache</artifactId>
+      <classifier>jakarta</classifier>
     </dependency>
     <dependency>
       <groupId>eu.etaxonomy</groupId>

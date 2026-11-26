@@ -14,18 +14,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eu.etaxonomy.cdm.api.cache.ehcache.CdmCache;
+import eu.etaxonomy.cdm.api.cache.ehcache.CdmCacheConfiguration;
+import eu.etaxonomy.cdm.api.cache.ehcache.CdmCacheConfiguration.EvictionHint;
+import eu.etaxonomy.cdm.api.cache.ehcache.CdmEntityCacheManager;
 import eu.etaxonomy.cdm.model.ICdmUuidCacher;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
-
 /**
- * CDM Entity Cacher class based on EhCache using UUID as key.
- * The cacher allows null values to be cached.
+ * CDM Entity Cacher class based on EhCache 3 (see {@link CdmEntityCacheManager})
+ * using UUID as key. Null values are not cached.
  *
  * @author cmathew
  */
@@ -36,19 +34,17 @@ public abstract class CdmPermanentCacheBase implements ICdmUuidCacher {
     public static final String PERMANENT_CACHE_NAME = "cdmPermanentCache"; //TODO or better call it cdmTermCache? cdmProxyCache?
 
     @Autowired
-    public CacheManager cacheManager;
+    public CdmEntityCacheManager cacheManager;
 
     /**
-     * Constructor which initializes a singleton {@link net.sf.ehcache.CacheManager}
-     * if not yet initialzed
+     * Constructor which initializes the cacher
      */
     public CdmPermanentCacheBase() {
         init();
     }
 
     /**
-     * Initializes an empty singleton {@link net.sf.ehcache.CacheManager} and
-     * sets itself as the cacher object in specific CDM Entity objects.
+     * Sets itself as the cacher object in specific CDM Entity objects.
      */
     private void init() {
         setup();
@@ -57,9 +53,9 @@ public abstract class CdmPermanentCacheBase implements ICdmUuidCacher {
     protected abstract void setup();
 
     /**
-     * Returns the singleton default cache manager.
+     * Sets the cache manager if not yet set.
      */
-    protected void setCacheManager(CacheManager cacheManager) {
+    protected void setCacheManager(CdmEntityCacheManager cacheManager) {
 
         if(this.cacheManager == null){
             this.cacheManager = cacheManager;
@@ -71,60 +67,55 @@ public abstract class CdmPermanentCacheBase implements ICdmUuidCacher {
     /**
      * Returns the default cache configuration.
      */
-    protected CacheConfiguration getPermanentCacheConfiguration() {
+    protected CdmCacheConfiguration getPermanentCacheConfiguration() {
 
-        // For a better understanding on how to size caches, refer to
-        // http://ehcache.org/documentation/configuration/cache-size
-
-        CacheConfiguration cc = new CacheConfiguration(PERMANENT_CACHE_NAME, 500)
-                .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
-                .eternal(false)
+        return CdmCacheConfiguration.newInstance(PERMANENT_CACHE_NAME)
+                .maxHeapEntries(500)
+                .evictionHint(EvictionHint.LFU)
                 // default ttl and tti set to 2 hours
-                .timeToLiveSeconds(60*60*2)
-                .timeToIdleSeconds(60*60*2);
-
-        return cc;
+                .expiry(60*60*2, 60*60*2);
     }
 
     /**
      * Returns the permanent cache
      */
-    public Cache getPermanentCache() {
-        Cache permanentCache = cacheManager.getCache(PERMANENT_CACHE_NAME);
+    public CdmCache getPermanentCache() {
+        CdmCache permanentCache = cacheManager.getCache(PERMANENT_CACHE_NAME);
         if(permanentCache == null) {
-            CacheConfiguration defaultCacheConfig = getPermanentCacheConfiguration();
-            permanentCache = new Cache(defaultCacheConfig);
-            cacheManager.addCache(permanentCache);
+            permanentCache = cacheManager.getOrCreate(getPermanentCacheConfiguration());
         }
         return permanentCache;
     }
 
     @Override
     public void dispose(){
-        cacheManager.getCache(PERMANENT_CACHE_NAME).dispose();
+        CdmCache permanentCache = cacheManager.getCache(PERMANENT_CACHE_NAME);
+        if (permanentCache != null) {
+            permanentCache.close();
+        }
     }
 
     /**
-     * Gets the cache element corresponding to the given {@link java.util.UUID}
+     * Gets the cached entity corresponding to the given {@link java.util.UUID}
+     * or <code>null</code> if there is none (or it is expired).
      */
-    public Element getCacheElement(UUID uuid) {
-        return getPermanentCache().get(uuid);
+    private CdmBase getCached(UUID uuid) {
+        return (CdmBase)getPermanentCache().get(uuid);
     }
 
     @Override
     public  void put(UUID uuid, CdmBase cdmEntity) {
         CdmBase cachedCdmEntity = getFromCache(uuid);
         if(cachedCdmEntity == null) {
-            getPermanentCache().put(new Element(uuid, cdmEntity));
+            getPermanentCache().put(uuid, cdmEntity);
         }
     }
 
     @Override
     public CdmBase load(UUID uuid) {
-        Element e = getCacheElement(uuid);
+        CdmBase cdmEntity = getCached(uuid);
 
-        CdmBase cdmEntity;
-        if (e == null) {
+        if (cdmEntity == null) {
             // nothing in the cache for "key" (or expired) ... re-load the entity
             cdmEntity = findByUuid(uuid);
             // currently default cache is a non-null cache
@@ -134,21 +125,13 @@ public abstract class CdmPermanentCacheBase implements ICdmUuidCacher {
             if(cdmEntity != null) {
                 put(uuid, cdmEntity);
             }
-        } else {
-            // there is a valid element in the cache, however getObjectValue() may be null
-            cdmEntity = (CdmBase)e.getObjectValue();
         }
         return cdmEntity;
     }
 
     @Override
     public  CdmBase getFromCache(UUID uuid) {
-        Element e = getCacheElement(uuid);
-        if (e == null) {
-            return null;
-        } else {
-            return(CdmBase)e.getObjectValue();
-        }
+        return getCached(uuid);
     }
 
     @Override
@@ -169,7 +152,7 @@ public abstract class CdmPermanentCacheBase implements ICdmUuidCacher {
 
     @Override
     public boolean exists(UUID uuid) {
-        return getCacheElement(uuid) != null;
+        return getPermanentCache().containsKey(uuid);
     }
 
     @Override
@@ -182,11 +165,7 @@ public abstract class CdmPermanentCacheBase implements ICdmUuidCacher {
 
     @Override
     public boolean existsAndIsNotNull(UUID uuid) {
-        Element e = getCacheElement(uuid);
-        if (e != null) {
-            return e.getObjectValue() != null;
-        }
-        return false;
+        return getCached(uuid) != null;
     }
 
     /**

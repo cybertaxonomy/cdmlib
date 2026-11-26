@@ -73,7 +73,7 @@
     <swagger-annotations.version>3.0.0</swagger-annotations.version>
     <micrometer.version>1.18.0</micrometer.version>
     <nimbus-jose-jwt.version>10.10</nimbus-jose-jwt.version>
-    <!-- Ehcache 3 for Spring Cache / JCache (OAI-PMH); Ehcache 2 remains for entity cache until migrated -->
+    <!-- Ehcache 3: CDM entity cache (native API, see CdmEntityCacheManager) and Spring Cache / JCache (OAI-PMH) -->
     <ehcache3.version>3.10.8</ehcache3.version>
   </properties>
   
@@ -1116,11 +1116,6 @@
         <groupId>com.github.dozermapper</groupId>
         <artifactId>dozer-spring4</artifactId>
         <version>${dozer.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>net.sf.ehcache</groupId>
-        <artifactId>ehcache</artifactId>
-        <version>2.10.9.2</version>
       </dependency>
       <dependency>
         <groupId>org.ehcache</groupId>

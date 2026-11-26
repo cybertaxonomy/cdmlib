@@ -33,7 +33,7 @@ import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
 import org.hibernate.property.access.spi.Getter;
 
-import net.sf.ehcache.Cache;
+import eu.etaxonomy.cdm.api.cache.ehcache.CdmCache;
 
 /**
  * This class is serializing and deserializing the CDM model for performance purposes.
@@ -53,14 +53,14 @@ public class CdmModelCacher {
     public static final String CDM_MAP_SER_FOLDER = "/eu/etaxonomy/cdm/mappings/";
     public static final String CDM_MAP_SER_FILE_PATH = CDM_MAP_SER_FOLDER + CDM_MAP_SER_FILE;
 
-    public void cacheGetterFields(Cache cache) throws IOException, ClassNotFoundException {
+    public void cacheGetterFields(CdmCache cache) throws IOException, ClassNotFoundException {
 
         Map<String, CdmModelFieldPropertyFromClass> modelClassMap = loadModelClassMap();
 
-        cache.removeAll();
+        cache.clear();
 
         for(Map.Entry<String, CdmModelFieldPropertyFromClass> entry : modelClassMap.entrySet()) {
-            cache.put(new net.sf.ehcache.Element(entry.getKey(), entry.getValue()));
+            cache.put(entry.getKey(), entry.getValue());
         }
     }
 

@@ -8,7 +8,6 @@
  */
 package eu.etaxonomy.cdm.cache;
 
-import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,24 +15,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.management.MBeanServer;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.cache.CdmPermanentCacheBase;
+import eu.etaxonomy.cdm.api.cache.ehcache.CdmCache;
+import eu.etaxonomy.cdm.api.cache.ehcache.CdmCacheConfiguration;
+import eu.etaxonomy.cdm.api.cache.ehcache.CdmCacheStatistics;
+import eu.etaxonomy.cdm.api.cache.ehcache.CdmEntityCacheManager;
 import eu.etaxonomy.cdm.model.ICdmCacher;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
-
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-import net.sf.ehcache.Status;
-import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.config.SizeOfPolicyConfiguration;
-import net.sf.ehcache.management.ManagementService;
-import net.sf.ehcache.statistics.FlatStatistics;
 
 /**
  * This cache handles transient (id>0) and volatile (id=0) CdmBase objects.
@@ -59,7 +51,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     private final String cacheId;
 
     //the cache
-    private final Cache cache;
+    private final CdmCache cache;
 
     //permanent cache which is usually used to cache terms permanently
     private static CdmPermanentCacheBase permanentCache;
@@ -69,18 +61,14 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     //map for volatile entities (id=0)
     private final Map<UUID, CdmBase> volatileEntitiesMap = new HashMap<>();
 
-    private static volatile boolean managementBeansConfigured = false;
-
 // ********************* CONSTRUCTOR **********************************/
 
     public CdmTransientEntityCacher(String cacheId) {
         this.cacheId = cacheId;
 
-        CacheConfiguration cacheConfig = getEntityCacheConfiguration(cacheId);
-        cache = new Cache(cacheConfig);
-
-        getCacheManager().removeCache(cache.getName());
-        getCacheManager().addCache(cache);
+        CdmCacheConfiguration cacheConfig = getEntityCacheConfiguration(cacheId);
+        //replaces an existing cache with the same id
+        cache = getCacheManager().createCache(cacheConfig);
 
         cacheLoader = new CacheLoader(this);
     }
@@ -116,19 +104,18 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     /**
      * Returns the default cache configuration.
      */
-    private CacheConfiguration getEntityCacheConfiguration(String cacheId) {
-        SizeOfPolicyConfiguration sizeOfConfig = new SizeOfPolicyConfiguration();
-        sizeOfConfig.setMaxDepth(100);
-        sizeOfConfig.setMaxDepthExceededBehavior("abort");
-
-        return new CacheConfiguration(cacheId, 0)
-            .eternal(true)
-            .sizeOfPolicy(sizeOfConfig)
-            .overflowToOffHeap(false);
+    private CdmCacheConfiguration getEntityCacheConfiguration(String cacheId) {
+        //entities of a session must never be evicted as this would break identity
+        return CdmCacheConfiguration.newInstance(cacheId)
+            .eternal()
+            .unboundedHeap();
     }
 
-    public FlatStatistics getCacheStatistics() {
-        if(cache.getStatus() == Status.STATUS_ALIVE) {
+    /**
+     * @return the cache statistics or <code>null</code> if the cache is not alive anymore
+     */
+    public CdmCacheStatistics getCacheStatistics() {
+        if(cache.isAlive()) {
             return cache.getStatistics();
         }
         return null;
@@ -145,13 +132,13 @@ public class CdmTransientEntityCacher implements ICdmCacher {
      * investigation (#7699).
      * For now we throw an exception with some debugging information.
      */
-    private Cache getCache() {
-        Cache result = getCacheManager().getCache(cacheId);
+    private CdmCache getCache() {
+        CdmCache result = getCacheManager().getCache(cacheId);
         if (result == null) {
             throw new RuntimeException("No cache available for cacheId = "+cacheId+". See #7699." +
                 "\nAvailable caches are: " +  getCacheManager().getCacheNames() +
-                "\nCacheManager status is: " + getCacheManager().getStatus() +
-                "\n" + (cache == null ? "internal cache is null" : "Cache status is:" + cache.getStatus())
+                "\nCacheManager initialized: " + getCacheManager().isInitialized() +
+                "\n" + (cache == null ? "internal cache is null" : "Cache alive: " + cache.isAlive())
                 );
         }else {
             return result;
@@ -161,21 +148,10 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     /**
      * @return the singleton cacheManager
      */
-    protected CacheManager getCacheManager() {
-
-        CacheManager cacheManager = CacheManager.create();
-
-        if(!managementBeansConfigured){
-            MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-            boolean registerCacheManager = false;
-            boolean registerCaches = true;
-            boolean registerCacheConfigurations = false;
-            boolean registerCacheStatistics = true;
-            ManagementService.registerMBeans(cacheManager, mBeanServer, registerCacheManager, registerCaches, registerCacheConfigurations, registerCacheStatistics);
-            managementBeansConfigured = true;
-        }
-
-        return cacheManager;
+    protected CdmEntityCacheManager getCacheManager() {
+        // NOTE: the JMX registration of the caches (Ehcache 2 ManagementService)
+        //       is not available anymore with the Ehcache 3 based CdmEntityCacheManager
+        return CdmEntityCacheManager.getInstance();
     }
 
     public <T extends Object> T load(T obj, boolean update) {
@@ -276,23 +252,13 @@ public class CdmTransientEntityCacher implements ICdmCacher {
         if (key.getPersistenceId() == 0){
             throw new IllegalArgumentException("Volatile objects are not allowed in the transient object cache. Use newEntitiesMap instead.");
         }
-        getCache().put(new Element(key, cdmEntityToCache));
-    }
-
-    private Element getCacheElement(CdmEntityCacheKey<?> key) {
-        return getCache().get(key);
+        getCache().put(key, cdmEntityToCache);
     }
 
     public <T extends CdmBase> T getFromCache(CdmEntityCacheKey<T> id) {
-        Element e = getCacheElement(id);
-
-        if (e == null) {
-            return null;
-        } else {
-            @SuppressWarnings("unchecked")
-            T result = (T) e.getObjectValue();
-            return result;
-        }
+        @SuppressWarnings("unchecked")
+        T result = (T) getCache().get(id);
+        return result;
     }
 
     public <T extends CdmBase> T getFromCache(Class<T> clazz, int id) {
@@ -321,15 +287,16 @@ public class CdmTransientEntityCacher implements ICdmCacher {
 
     public List<CdmBase> getAllEntities() {
         List<CdmBase> entities = new ArrayList<>();
-        Map<String, CdmBase> elementsMap = getCache().getAllWithLoader(getCache().getKeys(), null);
-        for (Map.Entry<String, CdmBase> entry : elementsMap.entrySet()) {
-            entities.add(entry.getValue());
+        CdmCache theCache = getCache();
+        Map<Object, Object> elementsMap = theCache.getAll(theCache.getKeys());
+        for (Object value : elementsMap.values()) {
+            entities.add((CdmBase)value);
         }
         return entities;
     }
 
     public boolean exists(CdmEntityCacheKey<?> key) {
-        return (getCacheElement(key) != null);
+        return getCache().containsKey(key);
     }
 
     public boolean existsAndIsNotNull(CdmEntityCacheKey<?> id) {
@@ -337,14 +304,14 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     }
 
     public void clear() {
-        cache.removeAll();
+        cache.clear();
         volatileEntitiesMap.clear();
     }
 
     @Override
     public void dispose() {
-        getCacheManager().removeCache(cache.getName());
-        cache.dispose();
+        //removes the cache from the manager
+        cache.close();
         volatileEntitiesMap.clear();
     }
 

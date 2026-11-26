@@ -24,9 +24,6 @@ import eu.etaxonomy.cdm.model.ICdmCacher;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.Element;
-
 /**
  * @author cmathew
  * @since 19 Feb 2015
@@ -39,20 +36,15 @@ public class CacheLoader {
 
     private final ICdmCacher cdmCacher;
 
-    private final Cache cdmlibModelCache;
-
     public CacheLoader(ICdmCacher cdmCacher) {
         this.cdmCacher = cdmCacher;
-        this.cdmlibModelCache = CdmRemoteCacheManager.INSTANCE().getCdmModelGetMethodsCache();
+        //make sure the model cache is initialized
+        CdmRemoteCacheManager.INSTANCE();
     }
 
     CdmModelFieldPropertyFromClass getFromCdmlibModelCache(String className) {
-        Element e = cdmlibModelCache.get(className);
-        if (e == null) {
-            return null;
-        } else {
-            return (CdmModelFieldPropertyFromClass) e.getObjectValue();
-        }
+        //the manager re-creates the model cache if the cache manager was shut down in between
+        return (CdmModelFieldPropertyFromClass) CdmRemoteCacheManager.INSTANCE().getCdmModelGetMethodsCache().get(className);
     }
 
     @SuppressWarnings("unchecked")

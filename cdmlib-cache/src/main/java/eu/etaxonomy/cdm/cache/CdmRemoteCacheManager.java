@@ -13,17 +13,15 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheException;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.config.SizeOfPolicyConfiguration;
+import eu.etaxonomy.cdm.api.cache.ehcache.CdmCache;
+import eu.etaxonomy.cdm.api.cache.ehcache.CdmCacheConfiguration;
+import eu.etaxonomy.cdm.api.cache.ehcache.CdmEntityCacheManager;
 
 /**
- * By AM: A CacheManager wrapper singleton that starts the {@link CacheManager}
+ * By AM: A CacheManager wrapper singleton that starts the {@link CdmEntityCacheManager}
  *        and initializes the cdm model cache (see {@link CdmModelCacher} as
  *        cache handled by the cache manager. The model chache is configured as
- *        eternal, 1000 entries, in-Memory cache with name defined  by
+ *        eternal, unbounded, in-Memory cache with name defined  by
  *        {@link CdmRemoteCacheManager#CDM_MODEL_CACHE_NAME}.
  *
  * @author c.matthew
@@ -37,7 +35,7 @@ public class CdmRemoteCacheManager {
 
     private static CdmRemoteCacheManager cdmRemoteCacheManager;
 
-    private Cache cdmModelCache;
+    private volatile CdmCache cdmModelCache;
 
     public static CdmRemoteCacheManager INSTANCE(){
         if(cdmRemoteCacheManager == null) {
@@ -47,42 +45,42 @@ public class CdmRemoteCacheManager {
     }
 
     private CdmRemoteCacheManager() {
+        initModelCache();
+    }
 
+    private void initModelCache() {
         try {
-            // NOTE:Programmatically creating the cache manager may solve the problem of
-            //      recreating data written to disk on startup
-            //      see https://stackoverflow.com/questions/1729605/ehcache-persist-to-disk-issues
-            //      String cacheFilePath = CDMLIB_CACHE_MANAGER_CONFIG_RESOURCE.getFile().getAbsolutePath();
-            //InputStream in = this.getClass().getClassLoader().getResourceAsStream("cdmlib-ehcache.xml");
+            // eternal and never evicting, the model map is the same for the whole lifetime
+            CdmCacheConfiguration cdmModelCacheConfiguration = CdmCacheConfiguration.newInstance(CDM_MODEL_CACHE_NAME)
+                    .eternal()
+                    .unboundedHeap();
 
-            SizeOfPolicyConfiguration sizeOfConfig = new SizeOfPolicyConfiguration();
-            sizeOfConfig.setMaxDepth(1000);
-            sizeOfConfig.setMaxDepthExceededBehavior("abort");
-
-            CacheConfiguration cdmModelCacheConfiguration = new CacheConfiguration(CDM_MODEL_CACHE_NAME, 0)
-                    .eternal(true)
-                    .sizeOfPolicy(sizeOfConfig)
-                    .overflowToOffHeap(false);
-
-            cdmModelCache = new Cache(cdmModelCacheConfiguration);
-
-            CacheManager.create().addCache(cdmModelCache);
+            cdmModelCache = CdmEntityCacheManager.getInstance().createCache(cdmModelCacheConfiguration);
             CdmModelCacher cmdmc = new CdmModelCacher();
             cmdmc.cacheGetterFields(cdmModelCache);
 
-        } catch (CacheException | ClassNotFoundException | IOException e) {
+        } catch (RuntimeException | ClassNotFoundException | IOException e) {
             throw new CdmClientCacheException(e);
         }
     }
 
-    public Cache getCdmModelGetMethodsCache(){
-        return cdmModelCache;
+    public CdmCache getCdmModelGetMethodsCache(){
+        CdmCache result = cdmModelCache;
+        if (!result.isAlive()) {
+            //the cache manager was shut down in the meanwhile
+            synchronized (this) {
+                if (!cdmModelCache.isAlive()) {
+                    initModelCache();
+                }
+                result = cdmModelCache;
+            }
+        }
+        return result;
     }
 
     public static void removeEntityCaches() {
-        CacheManager cm = CacheManager.create();
-        String[] cacheNames = CacheManager.create().getCacheNames();
-        for(String cacheName : cacheNames) {
+        CdmEntityCacheManager cm = CdmEntityCacheManager.getInstance();
+        for(String cacheName : cm.getCacheNames()) {
             if(!cacheName.equals(CDM_MODEL_CACHE_NAME)) {
                 cm.removeCache(cacheName);
             }

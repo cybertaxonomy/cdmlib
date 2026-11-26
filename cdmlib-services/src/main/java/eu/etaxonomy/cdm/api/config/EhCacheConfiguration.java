@@ -8,21 +8,25 @@
 */
 package eu.etaxonomy.cdm.api.config;
 
+import java.io.File;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import eu.etaxonomy.cdm.api.cache.CdmPermanentCacheBase;
-
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.config.DiskStoreConfiguration;
-import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
+import eu.etaxonomy.cdm.api.cache.ehcache.CdmEntityCacheManager;
 
 /**
+ * Configures the {@link CdmEntityCacheManager} (Ehcache 3) used for the
+ * CDM entity caches. The bean is named <code>cacheManager</code>.
+ * <p>
+ * The OAI-PMH cache uses its own Spring/JCache cache manager,
+ * see <code>OaiPmhCacheConfiguration</code>.
+ *
  * @author a.kohlbecker
  * @since Feb 1, 2017
  */
@@ -32,62 +36,42 @@ public class EhCacheConfiguration implements DisposableBean {
 
     private static final Logger logger = LogManager.getLogger();
 
+    public static final String DISK_STORE_PATH_BEAN = "ehCacheDiskStorePath";
+
     @Autowired(required = false)
-    public DiskStoreConfiguration diskStoreConfiguration = null;
+    @Qualifier(DISK_STORE_PATH_BEAN)
+    public File diskStorePath = null;
 
     /**
-     * The DiskStoreConfiguration can either be autowired or set explicite
-     * @param diskStoreConfiguration the diskStoreConfiguration to set
+     * The disk store path can either be autowired (bean named
+     * {@link #DISK_STORE_PATH_BEAN}) or set explicitly.
+     *
+     * @param diskStorePath the directory for the optional disk store
      */
-    public void setDiskStoreConfiguration(DiskStoreConfiguration diskStoreConfiguration) {
-        this.diskStoreConfiguration = diskStoreConfiguration;
+    public void setDiskStorePath(File diskStorePath) {
+        this.diskStorePath = diskStorePath;
     }
 
-    private CacheManager cacheManager = null;
+    private CdmEntityCacheManager cacheManager = null;
 
-    @Bean
-    public CacheManager cacheManager(){
+    @Bean(name = "cacheManager")
+    public CdmEntityCacheManager cacheManager(){
 
-        net.sf.ehcache.config.Configuration conf = new net.sf.ehcache.config.Configuration();
-        if(diskStoreConfiguration != null){
-            if (logger.isDebugEnabled()) { logger.debug("creating CacheManager with disk store");}
-            conf.addDiskStore(diskStoreConfiguration);
+        //the manager is a singleton, the disk store path can only be set
+        //as long as the manager is not yet initialized (like in the TaxEditor)
+        cacheManager = CdmEntityCacheManager.getInstance();
+        if(diskStorePath != null){
+            if (logger.isDebugEnabled()) { logger.debug("configuring CdmEntityCacheManager with disk store");}
+            cacheManager.setDiskStorePath(diskStorePath);
         }
-        CacheConfiguration defaultConfig = getDefaultCacheConfiguration();
-        conf.addDefaultCache(defaultConfig);
-
-        //FIXME Caching by AM: setting the configuration does not work if the CacheManger
-        //                     singleton exists already (like in the TaxEditor)
-        // creates a singleton
-        cacheManager = CacheManager.create(conf);
-        if (logger.isDebugEnabled()) { logger.debug("CacheManager created");}
+        if (logger.isDebugEnabled()) { logger.debug("CdmEntityCacheManager created");}
         return cacheManager;
-    }
-
-    /**
-     * Returns the default cache configuration for the cache
-     * named {@link CdmPermanentCacheBase#PERMANENT_CACHE_NAME "cdmDefaultCache"}
-     */
-    protected CacheConfiguration getDefaultCacheConfiguration() {
-
-        // For a better understanding on how to size caches, refer to
-        // https://www.ehcache.org/documentation/2.8/configuration/cache-size.html
-
-        CacheConfiguration cc = new CacheConfiguration(CdmPermanentCacheBase.PERMANENT_CACHE_NAME, 500)
-                .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
-                .maxEntriesLocalHeap(10) // avoid ehache consuming too much heap
-                .eternal(false)
-                // default ttl and tti set to 2 hours
-                .timeToLiveSeconds(60*60*2)
-                .timeToIdleSeconds(60*60*2);
-
-        return cc;
     }
 
     @Override
     public void destroy() {
         if (cacheManager != null) {
-            logger.info("Shutting down EhCache CacheManager");
+            logger.info("Shutting down CdmEntityCacheManager");
             this.cacheManager.shutdown();
         }
     }
