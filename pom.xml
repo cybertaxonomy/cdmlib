@@ -59,8 +59,8 @@
     <dozer.version>7.0.0</dozer.version>                <!-- Jakarta EE; checked 2026-10 -->
     <jakarta.angus.mail.version>2.0.5</jakarta.angus.mail.version>
     <fop.version>2.11</fop.version>
-    <jena.version>5.6.0</jena.version> <!-- Not sure if still open: 4.7.0 still creates problems with term loading (AnnotationType.UNHANDLED
-                                          Jena 6.x: requires Java 21 and uses Lucene 10, and jena-iri removed  -->
+    <!-- Jena 6: Java 21+; jena-iri retired (→ jena-iri3986 via jena-core); Lucene 10 only via jena-text (not used) -->
+    <jena.version>6.3.0</jena.version>
     <doclint>none</doclint>
     <!-- DBs -->
     <h2.version>2.3.232</h2.version>
@@ -935,17 +935,12 @@
       </dependency>
       <dependency>
         <groupId>org.apache.jena</groupId>
-        <artifactId>jena-tdb</artifactId>
-        <version>${jena.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.jena</groupId>
         <artifactId>jena-arq</artifactId>
         <version>${jena.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.jena</groupId>
-        <artifactId>jena-iri</artifactId>
+        <artifactId>jena-tdb2</artifactId>
         <version>${jena.version}</version>
       </dependency>
 
@@ -1210,7 +1205,6 @@
       <dependency>
         <groupId>org.odftoolkit</groupId>
         <artifactId>odfdom-java</artifactId>
-        <!-- higher version available, but requires jena updated-->
         <version>0.13.0</version>
         <exclusions>
           <exclusion>
