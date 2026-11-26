@@ -26,10 +26,10 @@
       <artifactId>spring-web</artifactId>
     </dependency>
     <dependency>
-      <!-- Spring 7 no longer embeds commons-logging (former spring-jcl); remoting sources still use it -->
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.3.5</version>
+      <!-- Spring 7 no longer embeds commons-logging (former spring-jcl); remoting still
+           uses org.apache.commons.logging — bridge to SLF4J (avoids clash with real commons-logging) -->
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
     </dependency>
     <dependency>
       <groupId>jakarta.servlet</groupId>

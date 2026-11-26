@@ -109,11 +109,13 @@ public class TestingTermInitializer extends DefaultTermInitializer {
 //                logger.info("loading data set from " + termsDataSet.getFile().getAbsolutePath());
 
 
-                //old: IDataSet dataSet = new FlatXmlDataSet(new InputStreamReader(termsDataSet.getInputStream()),new InputStreamReader(termsDtd.getInputStream()));
-
+                // Do not use dataset.dtd here: it lags Hibernate join-table renames
+                // (e.g. *_ORIGINALSOURCE → *_ORIGINALSOURCEBASE) and makes CLEAN_INSERT
+                // fail with NoSuchTableException. Column sensing matches CdmDbUnitSupport;
+                // on a fresh H2 schema only tables present in TermsDataSet need loading.
                 IDataSet dataSet = new FlatXmlDataSetBuilder()
-                	.setMetaDataSetFromDtd(termsDtd.getInputStream())
-                	.build(termsDataSet.getInputStream());
+                        .setColumnSensing(true)
+                        .build(termsDataSet.getInputStream());
 
                 // FlatXml order is not FK-safe; Unitils disabled constraints during load
                 connection.getConnection().createStatement().execute("SET REFERENTIAL_INTEGRITY FALSE");
@@ -205,11 +207,13 @@ public class TestingTermInitializer extends DefaultTermInitializer {
     protected IDatabaseConnection getConnection() {
         IDatabaseConnection connection = null;
         try {
-            connection = new DatabaseConnection(dataSource.getConnection());
+            // Same schema/config as CdmDbUnitSupport (H2 PUBLIC)
+            connection = new DatabaseConnection(dataSource.getConnection(), "PUBLIC");
 
             DatabaseConfig config = connection.getConfig();
             // H2 test DataSource → H2DataTypeFactory (see applicationContext-springTest.xml)
             config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new H2DataTypeFactory());
+            config.setProperty(DatabaseConfig.FEATURE_QUALIFIED_TABLE_NAMES, false);
             // Term fixtures contain empty attribute values (e.g. DEFINEDTERMBASE.URI="")
             config.setProperty(DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS, true);
         } catch (Exception e) {

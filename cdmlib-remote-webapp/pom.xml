@@ -182,6 +182,12 @@
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-starter-logging</artifactId>
         </exclusion>
+        <!-- spring-boot-validation pulls tomcat-embed-el which duplicates jakarta.el.*
+             from jakarta.el-api; CDM uses expressly as EL impl for HV/Dozer -->
+        <exclusion>
+          <groupId>org.apache.tomcat.embed</groupId>
+          <artifactId>tomcat-embed-el</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>

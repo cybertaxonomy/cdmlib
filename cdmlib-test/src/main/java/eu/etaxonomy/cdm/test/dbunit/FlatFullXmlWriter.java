@@ -10,8 +10,9 @@ package eu.etaxonomy.cdm.test.dbunit;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,12 +58,10 @@ public class FlatFullXmlWriter implements IDataSetConsumer{
     /**
      * @param outputStream The stream to which the XML will be written.
      * @param encoding The encoding to be used for the {@link XmlWriter}.
-     * Can be null. See {@link XmlWriter#XmlWriter(OutputStream, String)}.
-     * @throws UnsupportedEncodingException
+     * Can be null (defaults to UTF-8). DbUnit 3.x takes {@link Charset}.
      */
-    public FlatFullXmlWriter(OutputStream outputStream, String encoding, boolean writeNullValues)
-            throws UnsupportedEncodingException {
-        _xmlWriter = new XmlWriter(outputStream, encoding);
+    public FlatFullXmlWriter(OutputStream outputStream, String encoding, boolean writeNullValues) {
+        _xmlWriter = new XmlWriter(outputStream, charsetOrUtf8(encoding));
         _xmlWriter.enablePrettyPrint(true);
         this.writeNullValues = writeNullValues;
     }
@@ -73,8 +72,14 @@ public class FlatFullXmlWriter implements IDataSetConsumer{
     }
 
     public FlatFullXmlWriter(Writer writer, String encoding){
-        _xmlWriter = new XmlWriter(writer, encoding);
+        _xmlWriter = new XmlWriter(writer, charsetOrUtf8(encoding));
         _xmlWriter.enablePrettyPrint(true);
+    }
+
+    private static Charset charsetOrUtf8(String encoding) {
+        return encoding == null || encoding.isBlank()
+                ? StandardCharsets.UTF_8
+                : Charset.forName(encoding);
     }
 
     public void setIncludeEmptyTable(boolean includeEmptyTable){
