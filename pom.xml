@@ -40,7 +40,6 @@
     <lucene.version>10.6.0</lucene.version>
     <junit-jupiter.version>6.1.3</junit-jupiter.version>
     <dbunit.version>3.5.3</dbunit.version>
-    <httpcomponents.version>4.5.14</httpcomponents.version>
     <doxia.version>2.2.0</doxia.version>
     <poi.version>6.0.0</poi.version>
     <!-- Jackson 3 (tools.jackson) for CDM + Spring 7.1; annotations / Jackson 2 for iiif -->
@@ -199,7 +198,7 @@
           <configuration>
             <activeRecipes>
              <!-- <recipe>org.openrewrite.java.OrderImports</recipe>-->
-             <recipe>org.openrewrite.java.migrate.UpgradeBuildToJava17</recipe>
+             <!-- project already on Java 21; UpgradeBuildToJava17 removed -->
             </activeRecipes>
           </configuration>
           <dependencies>
@@ -673,12 +672,7 @@
 		<artifactId>jaxb-runtime</artifactId>
 		<version>${jaxb.version}</version>
 	  </dependency>
-	  <dependency>
-		<groupId>org.glassfish.jaxb</groupId>
-		<artifactId>jaxb-jxc</artifactId>
-		<version>${jaxb.version}</version>
-	  </dependency>
-      <!-- dozer → jaxb-xjc 4.0.4; pin stack to match jaxb-runtime -->
+      <!-- dozer → jaxb-xjc; pin stack to match jaxb-runtime -->
 	  <dependency>
 		<groupId>org.glassfish.jaxb</groupId>
 		<artifactId>jaxb-xjc</artifactId>
@@ -714,7 +708,7 @@
       <!--  JAXB END -->
       
 	  <dependency>
-	    <!-- version management: ant pulled transitively in differing versions via jaxb-jxc/xjc -->
+	    <!-- version management: ant pulled transitively in differing versions via jaxb-xjc -->
 	    <groupId>org.apache.ant</groupId>
 	    <artifactId>ant</artifactId>
 	    <version>1.10.18</version>
@@ -797,11 +791,6 @@
         <version>7.2.2</version>
         <scope>test</scope>
       </dependency>
-      <dependency>
-        <groupId>javax.activation</groupId>
-        <artifactId>activation</artifactId>
-        <version>1.1.1</version>
-      </dependency>
       <!-- ******* aspect ******* -->
       <dependency>
         <!-- not really needed as long as aspectjweaver is on classpath which is a superset of aspectjrt -->
@@ -862,6 +851,7 @@
 <!--         <artifactId>cglib</artifactId> -->
 <!--         <version>${cglib.version}</version> -->
 <!--       </dependency> -->
+      <!-- pin for json-lib/ezmorph transitive convergence (not used by CDM code) -->
       <dependency>
         <groupId>commons-lang</groupId>
         <artifactId>commons-lang</artifactId>
@@ -938,11 +928,6 @@
         <artifactId>jena-arq</artifactId>
         <version>${jena.version}</version>
       </dependency>
-      <dependency>
-        <groupId>org.apache.jena</groupId>
-        <artifactId>jena-tdb2</artifactId>
-        <version>${jena.version}</version>
-      </dependency>
 
       <dependency>
         <groupId>net.sf.ezmorph</groupId>
@@ -976,11 +961,6 @@
         </exclusions>
       </dependency>
       <!-- media  -->
-      <dependency>
-        <groupId>org.devlib.schmidt</groupId>
-        <artifactId>imageinfo</artifactId>
-        <version>1.9</version>
-      </dependency>
        <dependency>
         <groupId>de.digitalcollections.iiif</groupId>
         <artifactId>iiif-apis</artifactId>
@@ -1000,11 +980,6 @@
       <dependency>
         <groupId>org.apache.poi</groupId>
         <artifactId>poi-ooxml-lite</artifactId>
-        <version>${poi.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.poi</groupId>
-        <artifactId>poi-ooxml-full</artifactId>
         <version>${poi.version}</version>
       </dependency>
 
@@ -1085,17 +1060,6 @@
         <artifactId>joda-time</artifactId>
         <version>2.15.1</version>
       </dependency>
-      <dependency>
-        <groupId>org.jadira.usertype</groupId>
-        <artifactId>usertype.core</artifactId>
-        <version>7.0.0.CR1</version>
-      </dependency>
-      <!-- dependency of jadira usertype -->
-      <dependency>
-        <groupId>javax.enterprise</groupId>
-        <artifactId>cdi-api</artifactId>
-        <version>2.0.SP1</version>
-      </dependency>
 
       <dependency>
         <groupId>org.apache.lucene</groupId>
@@ -1125,16 +1089,6 @@
       <dependency>
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-join</artifactId>
-        <version>${lucene.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-backward-codecs</artifactId>
-        <version>${lucene.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-misc</artifactId>
         <version>${lucene.version}</version>
       </dependency>
       <dependency>
@@ -1224,14 +1178,8 @@
           <artifactId>guava</artifactId>
           <version>33.8.0-jre</version>
       </dependency>
-      <!-- pin: guava 33.x → 1.0.1, springdoc webjars-locator-lite → 1.0.0 -->
+      <!-- pin: guava/springdoc/jena/caffeine jspecify convergence -->
       <dependency>
-          <groupId>org.jspecify</groupId>
-          <artifactId>jspecify</artifactId>
-          <version>1.0.1</version>
-      </dependency>
-      <dependency>
-          <!-- converge guava 1.0.1 vs caffeine/jena 1.0.0 -->
           <groupId>org.jspecify</groupId>
           <artifactId>jspecify</artifactId>
           <version>1.0.1</version>
@@ -1264,12 +1212,6 @@
             <artifactId>icu4j</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-      <!-- ******* SAXON (ViBRANT)******* -->
-      <dependency>
-        <groupId>net.sf.saxon</groupId>
-        <artifactId>Saxon-HE</artifactId>
-        <version>13.1</version>
       </dependency>
       <!-- ***** json ******************** -->
       <dependency>
@@ -1552,12 +1494,6 @@
         <artifactId>jakarta.servlet-api</artifactId>
         <version>6.1.0</version>
       </dependency>
-      <!-- kept for any remaining transitive/legacy consumers -->
-      <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>javax.servlet-api</artifactId>
-        <version>4.0.1</version>
-      </dependency>
 
       <!-- yourkit profiler api controller (used in ..) -->
       <dependency>
@@ -1593,19 +1529,6 @@
 		 <artifactId>expressly</artifactId>
 		 <version>6.0.0</version>
 	  </dependency>
-	  <dependency>
-	     <groupId>org.hibernate.validator</groupId>
-         <artifactId>hibernate-validator-cdi</artifactId>
-         <version>${hibernate-validator.version}</version>
-	  </dependency>
-      <dependency>
-         <!-- not clear if needed, but if needed v8.0 should be used to avoid problems with javax.validation.BootstrapConfiguration -->
-         <!-- it was a (currently excluded) transitiv dependency from org.geotools/gt-referencing  used in cdmlib-ext -->
-         <groupId>javax</groupId>
-         <artifactId>javaee-api</artifactId>
-         <version>8.0.1</version>
-      </dependency>
-	  
       <!-- for ikey-plus -->
       <dependency>
         <groupId>identificationKeyAPI</groupId>
@@ -1752,11 +1675,6 @@
         <version>2.2</version>
       </dependency> 
     
-      <dependency>
-         <groupId>com.sun</groupId>
-         <artifactId>tools</artifactId>
-         <version>1.8.0</version>
-      </dependency>
       <dependency>
         <!-- Email functionality (used in cdmlib-services) -->
         <!-- is api and impl, only api you find at jakarta.mail:jakarta.mail-api and :angus-mail is pure implementation -->
