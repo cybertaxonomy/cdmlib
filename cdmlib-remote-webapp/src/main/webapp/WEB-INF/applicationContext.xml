@@ -59,27 +59,10 @@
   
   <bean class="eu.etaxonomy.cdm.opt.config.EhCacheDiskStoreConfiguration" />
 
-  <!-- OAI-PMH TODO externalize? -->
+  <!-- OAI-PMH: Spring Cache + Ehcache 3 (entity cache still uses Ehcache 2 cacheManager) -->
+  <bean class="eu.etaxonomy.cdm.remote.config.OaiPmhCacheConfiguration"/>
+
   <bean name="taxonOaiPmhController"
-    class="eu.etaxonomy.cdm.remote.controller.oaipmh.TaxonOaiPmhController">
-    <property name="cachingModel" ref="taxonOaiPmhCacheMapping" />
-  </bean>
-
-  <bean name="taxonOaiPmhCacheMapping"
-    class="org.springmodules.cache.provider.ehcache.EhCacheCachingModel">
-    <property name="cacheName"
-      value="eu.etaxonomy.cdm.remote.controller.TaxonOaiPmhController.resumptionToken" />
-  </bean>
-
-  <bean id="serializableFactory" class="org.springmodules.cache.serializable.XStreamSerializableFactory" />
-
-  <bean id="cacheProviderFacade" class="org.springmodules.cache.provider.ehcache.EhCacheFacade">
-    <!-- 
-        the cacheManager is provided by the eu.etaxonomy.cdm.api.config.EhCacheConfiguration
-        in cdmlib-services
-     -->
-    <property name="cacheManager" ref="cacheManager" />
-    <property name="serializableFactory" ref="serializableFactory" />
-  </bean>
+    class="eu.etaxonomy.cdm.remote.controller.oaipmh.TaxonOaiPmhController"/>
 
 </beans>

@@ -13,24 +13,10 @@
 
   <import resource="classpath:/eu/etaxonomy/cdm/remote-dto.xml"/>
 
-  <!-- OAI-PMH -->
+  <!-- OAI-PMH: Spring Cache + Ehcache 3 (see OaiPmhCacheConfiguration) -->
+  <bean class="eu.etaxonomy.cdm.remote.config.OaiPmhCacheConfiguration"/>
+
   <bean name="taxonOaiPmhController"
-    class="eu.etaxonomy.cdm.remote.controller.oaipmh.TaxonOaiPmhController">
-    <property name="cachingModel" ref="taxonOaiPmhCacheMapping"/>
-  </bean>
-
-  <bean name="taxonOaiPmhCacheMapping"
-    class="org.springmodules.cache.provider.ehcache.EhCacheCachingModel">
-    <property name="cacheName"
-      value="eu.etaxonomy.cdm.remote.controller.TaxonOaiPmhController.resumptionToken"/>
-  </bean>
-
-  <bean id="serializableFactory"
-    class="org.springmodules.cache.serializable.XStreamSerializableFactory"/>
-
-  <bean id="cacheProviderFacade" class="org.springmodules.cache.provider.ehcache.EhCacheFacade">
-    <property name="cacheManager" ref="cacheManager"/>
-    <property name="serializableFactory" ref="serializableFactory"/>
-  </bean>
+    class="eu.etaxonomy.cdm.remote.controller.oaipmh.TaxonOaiPmhController"/>
 
 </beans>

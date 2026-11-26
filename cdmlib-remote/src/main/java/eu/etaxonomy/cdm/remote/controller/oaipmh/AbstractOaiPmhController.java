@@ -28,8 +28,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
-import org.springmodules.cache.CachingModel;
-import org.springmodules.cache.provider.CacheProviderFacade;
 
 import eu.etaxonomy.cdm.api.service.IAuditEventService;
 import eu.etaxonomy.cdm.api.service.IIdentifiableEntityService;
@@ -39,6 +37,7 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 import eu.etaxonomy.cdm.persistence.query.AuditEventSort;
+import eu.etaxonomy.cdm.remote.cache.ResumptionTokenCache;
 import eu.etaxonomy.cdm.remote.controller.BadResumptionTokenException;
 import eu.etaxonomy.cdm.remote.controller.IdDoesNotExistException;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.DeletedRecord;
@@ -76,23 +75,16 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 
     private Integer pageSize;
 
-    private CacheProviderFacade cacheProviderFacade;
-
-    private CachingModel cachingModel;
+    private ResumptionTokenCache resumptionTokenCache;
 
     private boolean onlyItemsWithLsid = false;
 
     /**
-     * sets cache name to be used
+     * Optional OAI-PMH resumption-token cache (Spring Cache + Ehcache 3).
      */
-    @Autowired
-    public void setCacheProviderFacade(CacheProviderFacade cacheProviderFacade) {
-        this.cacheProviderFacade = cacheProviderFacade;
-    }
-
-    @Autowired
-    public void setCachingModel(CachingModel cachingModel) {
-        this.cachingModel = cachingModel;
+    @Autowired(required = false)
+    public void setResumptionTokenCache(ResumptionTokenCache resumptionTokenCache) {
+        this.resumptionTokenCache = resumptionTokenCache;
     }
 
     public abstract void setService(SERVICE service);
@@ -318,10 +310,10 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 
         modelAndView.addObject("pager",results);
 
-        if(results.getCount() > results.getRecords().size() && cacheProviderFacade != null) {
+        if(results.getCount() > results.getRecords().size() && resumptionTokenCache != null) {
             ResumptionToken resumptionToken = new ResumptionToken(results, from, until, metadataPrefix, set);
             modelAndView.addObject("resumptionToken",resumptionToken);
-            cacheProviderFacade.putInCache(resumptionToken.getValue(), cachingModel, resumptionToken);
+            resumptionTokenCache.put(resumptionToken.getValue(), resumptionToken);
         }
 
         return modelAndView;
@@ -330,8 +322,8 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
     @RequestMapping(method = RequestMethod.GET, params = {"verb=ListIdentifiers", "resumptionToken"})
     public ModelAndView listIdentifiers(@RequestParam(value = "resumptionToken",required = true) String rToken) {
         ResumptionToken resumptionToken;
-        if(cacheProviderFacade != null && cacheProviderFacade.getFromCache(rToken, cachingModel) != null) {
-            resumptionToken = (ResumptionToken) cacheProviderFacade.getFromCache(rToken, cachingModel);
+        if(resumptionTokenCache != null && resumptionTokenCache.get(rToken) != null) {
+            resumptionToken = resumptionTokenCache.get(rToken);
             ModelAndView modelAndView = new ModelAndView("oai/listIdentifiers");
             modelAndView.addObject("metadataPrefix",resumptionToken.getMetadataPrefix());
 
@@ -370,11 +362,11 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
             if(results.getCount() > ((results.getPageSize() * results.getCurrentIndex()) + results.getRecords().size())) {
                 resumptionToken.updateResults(results);
                 modelAndView.addObject("resumptionToken", resumptionToken);
-                cacheProviderFacade.putInCache(resumptionToken.getValue(),cachingModel, resumptionToken);
+                resumptionTokenCache.put(resumptionToken.getValue(), resumptionToken);
             } else {
                 resumptionToken = ResumptionToken.emptyResumptionToken();
                 modelAndView.addObject("resumptionToken",resumptionToken);
-                cacheProviderFacade.removeFromCache(rToken,cachingModel);
+                resumptionTokenCache.remove(rToken);
             }
 
             return modelAndView;
@@ -433,10 +425,10 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 
         modelAndView.addObject("pager",results);
 
-        if(results.getCount() > results.getRecords().size() && cacheProviderFacade != null) {
+        if(results.getCount() > results.getRecords().size() && resumptionTokenCache != null) {
             ResumptionToken resumptionToken = new ResumptionToken(results, from, until, metadataPrefix, set);
             modelAndView.addObject("resumptionToken",resumptionToken);
-            cacheProviderFacade.putInCache(resumptionToken.getValue(), cachingModel, resumptionToken);
+            resumptionTokenCache.put(resumptionToken.getValue(), resumptionToken);
         }
 
         return modelAndView;
@@ -446,8 +438,8 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
     public ModelAndView listRecords(@RequestParam("resumptionToken") String rToken) {
 
        ResumptionToken resumptionToken;
-       if(cacheProviderFacade != null && cacheProviderFacade.getFromCache(rToken,cachingModel) != null) {
-               resumptionToken = (ResumptionToken) cacheProviderFacade.getFromCache(rToken,cachingModel);
+       if(resumptionTokenCache != null && resumptionTokenCache.get(rToken) != null) {
+               resumptionToken = resumptionTokenCache.get(rToken);
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.addObject("metadataPrefix",resumptionToken.getMetadataPrefix());
 
@@ -494,11 +486,11 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
             if(results.getCount() > ((results.getPageSize() * results.getCurrentIndex()) + results.getRecords().size())) {
                 resumptionToken.updateResults(results);
                 modelAndView.addObject("resumptionToken",resumptionToken);
-                cacheProviderFacade.putInCache(resumptionToken.getValue(), cachingModel, resumptionToken);
+                resumptionTokenCache.put(resumptionToken.getValue(), resumptionToken);
             } else {
                 resumptionToken = ResumptionToken.emptyResumptionToken();
                 modelAndView.addObject("resumptionToken",resumptionToken);
-                cacheProviderFacade.removeFromCache(rToken, cachingModel);
+                resumptionTokenCache.remove(rToken);
             }
 
             return modelAndView;
