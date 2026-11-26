@@ -259,9 +259,9 @@
           <stopPort>9199</stopPort>
           <scan>10</scan>
           <useTestScope>true</useTestScope>
-          <!-- Skip crypto jars without Servlet annotations (avoids scanning multi-release Java 25 classes) -->
+          <!-- Skip jars without Servlet annotations (BouncyCastle multi-release + Lucene MR-JAR false-positive scans) -->
           <webApp>
-            <webInfIncludeJarPattern>.*/(?!bcprov-|bcpkix-|bcutil-)[^/]+\.jar$</webInfIncludeJarPattern>
+            <webInfIncludeJarPattern>.*/(?!bcprov-|bcpkix-|bcutil-|lucene-)[^/]+\.jar$</webInfIncludeJarPattern>
           </webApp>
           <!-- jvmArgs will only be used when running mvn jetty:run-forked (<deployMode>FORK</deployMode> in jetty 10+) -->
           <jvmArgs>-Xmx2000M 
