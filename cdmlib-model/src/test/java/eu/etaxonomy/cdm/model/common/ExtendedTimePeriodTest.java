@@ -14,14 +14,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.MutableDateTime;
-import org.joda.time.Partial;
-import org.joda.time.ReadableInstant;
+import eu.etaxonomy.cdm.model.common.Partial;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -65,14 +63,14 @@ public class ExtendedTimePeriodTest {
 
     @Test
     public void testNewExtendedInstancePartial() {
-        ExtendedTimePeriod tp = ExtendedTimePeriod.NewExtendedInstance(new Partial().with(DateTimeFieldType.dayOfWeek(), 5));
+        ExtendedTimePeriod tp = ExtendedTimePeriod.NewExtendedInstance(Partial.ofDay(5));
         assertNotNull(tp);
         assertFalse(tp.isEmpty(), "VerbatimTimeperiod should not be empty");
     }
 
     @Test
     public void testNewExtendedInstancePartialPartial() {
-        ExtendedTimePeriod tp = ExtendedTimePeriod.NewExtendedInstance(new Partial().with(DateTimeFieldType.dayOfMonth(),day));
+        ExtendedTimePeriod tp = ExtendedTimePeriod.NewExtendedInstance(Partial.ofDay(day));
         assertNotNull(tp);
         assertFalse(tp.isEmpty(), "VerbatimTimeperiod should not be empty");
         assertEquals(day, tp.getStartDay(), "VerbatimTimeperiod's should not be empty");
@@ -148,27 +146,28 @@ public class ExtendedTimePeriodTest {
     }
 
     @Test
-    public void testNewExtendedInstanceReadableInstant() {
-        ReadableInstant readInst = new MutableDateTime();
-        ExtendedTimePeriod tp = ExtendedTimePeriod.NewExtendedInstance(readInst);
+    public void testNewExtendedInstanceZonedDateTime() {
+        ZonedDateTime zdt = ZonedDateTime.now();
+        ExtendedTimePeriod tp = ExtendedTimePeriod.NewExtendedInstance(Partial.fromZonedDateTime(zdt));
         assertNotNull(tp);
         assertFalse(tp.isEmpty(), "Timeperiod should not be empty");
-        assertEquals((Integer)readInst.get(DateTimeFieldType.dayOfMonth()), tp.getStartDay(), "Timeperiod's should not be empty");
+        assertEquals((Integer)zdt.getDayOfMonth(), tp.getStartDay(), "Timeperiod's should not be empty");
     }
 
     @Test
-    public void testNewExtendedInstanceReadableInstantReadableInstant() {
-        ReadableInstant readInst = new MutableDateTime();
-        ReadableInstant readInst2 = new MutableDateTime();
-        ((MutableDateTime)readInst).addDays(5);
-        ReadableInstant readInst3 = new MutableDateTime();
-        ReadableInstant readInst4 = new MutableDateTime();
-        ExtendedTimePeriod tp = ExtendedTimePeriod.NewExtendedInstance(readInst, readInst2, readInst3, readInst4);
+    public void testNewExtendedInstanceZonedDateTimeZonedDateTime() {
+        ZonedDateTime zdt = ZonedDateTime.now().plusDays(5);
+        ZonedDateTime zdt2 = ZonedDateTime.now();
+        ZonedDateTime zdt3 = ZonedDateTime.now().minusDays(2);
+        ZonedDateTime zdt4 = ZonedDateTime.now().plusDays(2);
+        ExtendedTimePeriod tp = ExtendedTimePeriod.NewExtendedInstance(
+                Partial.fromZonedDateTime(zdt), Partial.fromZonedDateTime(zdt2),
+                Partial.fromZonedDateTime(zdt3), Partial.fromZonedDateTime(zdt4));
 
         assertNotNull(tp);
         assertFalse(tp.isEmpty(), "Timeperiod should not be empty");
-        assertEquals((Integer)readInst.get(DateTimeFieldType.dayOfMonth()), tp.getStartDay(), "Timeperiod's day should be equal to readable instant day");
-        assertEquals((Integer)readInst2.get(DateTimeFieldType.dayOfMonth()), tp.getEndDay(), "Timeperiod's day should be equal to readable instant day");
+        assertEquals((Integer)zdt.getDayOfMonth(), tp.getStartDay(), "Timeperiod's day should be equal to zoned date time day");
+        assertEquals((Integer)zdt2.getDayOfMonth(), tp.getEndDay(), "Timeperiod's day should be equal to zoned date time day");
     }
 
     @Test
@@ -176,15 +175,14 @@ public class ExtendedTimePeriodTest {
         Calendar cal = Calendar.getInstance();
         cal.set(year, month, day);
         Partial part = TimePeriodBase.calendarToPartial(cal);
-        assertEquals(day, (Integer)part.get(DateTimeFieldType.dayOfMonth()), "Partial's day should not be equal to calednars day");
+        assertEquals(day, (Integer)part.getDay(), "Partial's day should not be equal to calednars day");
     }
 
     @Test
     public void testReadableInstantToPartial() {
-        ReadableInstant readInst = new MutableDateTime();
-        Partial part = TimePeriodBase.readableInstantToPartial(readInst);
-        part.get(DateTimeFieldType.dayOfMonth());
-        assertEquals((Integer)part.get(DateTimeFieldType.dayOfMonth()), (Integer)part.get(DateTimeFieldType.dayOfMonth()), "Partial's day should not be equal to calednars day");
+        ZonedDateTime zdt = ZonedDateTime.now();
+        Partial part = TimePeriodBase.readableInstantToPartial(zdt);
+        assertEquals((Integer)zdt.getDayOfMonth(), (Integer)part.getDay(), "Partial's day should equal zoned date time day");
     }
 
     @Test
@@ -195,12 +193,8 @@ public class ExtendedTimePeriodTest {
 
     @Test
     public void testSetStart(){
-        Partial startDate = new Partial().with(DateTimeFieldType.year(), 2010)
-                .with(DateTimeFieldType.monthOfYear(), 12)
-                .with(DateTimeFieldType.dayOfMonth(), 16);
-        Partial newStartDate = new Partial().with(DateTimeFieldType.year(), 1984)
-            .with(DateTimeFieldType.monthOfYear(), 12)
-            .with(DateTimeFieldType.dayOfMonth(), 14);
+        Partial startDate = Partial.of(2010, 12, 16);
+        Partial newStartDate = Partial.of(1984, 12, 14);
 
         ExtendedTimePeriod tp = ExtendedTimePeriod.NewExtendedInstance(startDate);
         String startString = tp.toString();
@@ -251,7 +245,7 @@ public class ExtendedTimePeriodTest {
     @Test
     public void testGetStart() {
         TimePeriod tp = new TimePeriod();
-        Partial start = new Partial(DateTimeFieldType.year(), 1999);
+        Partial start = Partial.ofYear(1999);
         tp.setStart(start);
         assertEquals(Integer.valueOf(1999), tp.getStartYear(), "Start year should be 1999");
         assertEquals(start, tp.getStart(), "Start should be 'start'");
@@ -260,7 +254,7 @@ public class ExtendedTimePeriodTest {
     @Test
     public void testGetEnd() {
         TimePeriod tp = new TimePeriod();
-        Partial end = new Partial(DateTimeFieldType.year(), 1999);
+        Partial end = Partial.ofYear(1999);
         tp.setEnd(end);
         assertEquals(Integer.valueOf(1999), tp.getEndYear(), "End year should be 1999");
         assertEquals(end, tp.getEnd(), "End should be 'end'");

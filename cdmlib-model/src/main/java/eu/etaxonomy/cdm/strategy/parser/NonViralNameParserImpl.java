@@ -17,8 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
+import eu.etaxonomy.cdm.model.common.Partial;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
@@ -795,7 +794,7 @@ public class NonViralNameParserImpl
 			try {
 				Integer year = Integer.valueOf(singleDateString.trim());
 				if (year > 1750 && year < 2050){
-					dt = dt.with(DateTimeFieldType.year(), year);
+					dt = dt.withYear(year);
 				}else{
 					dt = null;
 				}

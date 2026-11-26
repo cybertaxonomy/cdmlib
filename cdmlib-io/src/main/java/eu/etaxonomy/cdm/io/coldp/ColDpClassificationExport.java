@@ -23,9 +23,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
-import org.joda.time.format.DateTimeFormatterBuilder;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupComparator;
@@ -58,6 +55,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.Partial;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -564,17 +562,12 @@ public class ColDpClassificationExport
         }
         //TODO 2 date, what if end or freetext exist?
         Partial partial = mediaCreated.getStart();
-        if (partial == null || !partial.isSupported(DateTimeFieldType.year())
-                || !partial.isSupported(DateTimeFieldType.monthOfYear()) && partial.isSupported(DateTimeFieldType.dayOfMonth())) {
+        if (partial == null || !partial.hasYear()
+                || !partial.hasMonth() && partial.hasDay()) {
             //TODO 2 date, log warning, also if mediaCreated.getEnd() != null or so
             return null;
         } else {
-            org.joda.time.format.DateTimeFormatter formatter = new DateTimeFormatterBuilder()
-                    .appendYear(4, 4).appendLiteral('-')
-                    .appendMonthOfYear(2).appendLiteral('-')
-                    .appendDayOfMonth(2)
-                    .toFormatter();
-            return partial.toString(formatter);
+            return partial.toIsoDate();
         }
     }
 

@@ -16,9 +16,6 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
-import org.joda.time.ReadableInstant;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -137,23 +134,6 @@ public class ExtendedTimePeriod extends TimePeriodBase {
          return NewExtendedInstance(dateToPartial(startDate), dateToPartial(endDate), dateToPartial(extremeStartDate), dateToPartial(extremeEndDate));
      }
 
-     /**
-      * Factory method to create a TimePeriod from a <code>ReadableInstant</code>(e.g. <code>DateTime</code>).
-      * The <code>ReadableInstant</code> is stored as the starting instant.
-      */
-     public static final ExtendedTimePeriod NewExtendedInstance(ReadableInstant readableInstant){
-         return NewExtendedInstance(readableInstant, null, null, null);
-     }
-
-     /**
-      * Factory method to create an ExtendedTimePeriod from a starting and an ending <code>ReadableInstant</code>(e.g. <code>DateTime</code>)
-      * @return
-      */
-     public static final ExtendedTimePeriod NewExtendedInstance(ReadableInstant startInstant, ReadableInstant endInstant, ReadableInstant extremeStartInstant, ReadableInstant extremeEndInstant){
-         return NewExtendedInstance(readableInstantToPartial(startInstant), readableInstantToPartial(endInstant), readableInstantToPartial(extremeStartInstant), readableInstantToPartial(extremeEndInstant));
-     }
-
-
 //*********************** CONSTRUCTOR *********************************/
 
     protected ExtendedTimePeriod() {
@@ -211,69 +191,61 @@ public class ExtendedTimePeriod extends TimePeriodBase {
 
     @Transient
     public Integer getExtremeStartYear(){
-        return getPartialValue(extremeStart, YEAR_TYPE);
+        return getYear(extremeStart);
     }
 
     @Transient
     public Integer getExtremeStartMonth(){
-        return getPartialValue(extremeStart, MONTH_TYPE);
+        return getMonth(extremeStart);
     }
 
     @Transient
     public Integer getExtremeStartDay(){
-        return getPartialValue(extremeStart, DAY_TYPE);
+        return getDay(extremeStart);
     }
 
     @Transient
     public Integer getExtremeEndYear(){
-        return getPartialValue(getExtremeEnd(), YEAR_TYPE);
+        return getYear(getExtremeEnd());
     }
 
     @Transient
     public Integer getExtremeEndMonth(){
-        return getPartialValue(getExtremeEnd(), MONTH_TYPE);
+        return getMonth(getExtremeEnd());
     }
 
     @Transient
     public Integer getExtremeEndDay(){
-        return getPartialValue(getExtremeEnd(), DAY_TYPE);
+        return getDay(getExtremeEnd());
     }
 
     public TimePeriodBase setExtremeStartYear(Integer year){
-        return setExtremeStartField(year, YEAR_TYPE);
-    }
-
-    public TimePeriodBase setExtremeStartMonth(Integer month) throws IndexOutOfBoundsException{
-        return setExtremeStartField(month, MONTH_TYPE);
-    }
-
-    public TimePeriodBase setExtremeStartDay(Integer day) throws IndexOutOfBoundsException{
-        return setExtremeStartField(day, DAY_TYPE);
-    }
-
-    public TimePeriodBase setExtremeEndYear(Integer year){
-        return setExtremeEndField(year, YEAR_TYPE);
-    }
-
-    public TimePeriodBase setExtremeEndMonth(Integer month) throws IndexOutOfBoundsException{
-        return setExtremeEndField(month, MONTH_TYPE);
-    }
-
-    public TimePeriodBase setExtremeEndDay(Integer day) throws IndexOutOfBoundsException{
-        return setExtremeEndField(day, DAY_TYPE);
-    }
-
-    @Transient
-    private TimePeriodBase setExtremeStartField(Integer value, DateTimeFieldType type)
-            throws IndexOutOfBoundsException{
-        extremeStart = setPartialField(extremeStart, value, type);
+        extremeStart = withYear(extremeStart, year);
         return this;
     }
 
-    @Transient
-    private TimePeriodBase setExtremeEndField(Integer value, DateTimeFieldType type)
-            throws IndexOutOfBoundsException{
-        extremeEnd = setPartialField(getExtremeEnd(), value, type);
+    public TimePeriodBase setExtremeStartMonth(Integer month) throws IndexOutOfBoundsException{
+        extremeStart = withMonth(extremeStart, month);
+        return this;
+    }
+
+    public TimePeriodBase setExtremeStartDay(Integer day) throws IndexOutOfBoundsException{
+        extremeStart = withDay(extremeStart, day);
+        return this;
+    }
+
+    public TimePeriodBase setExtremeEndYear(Integer year){
+        extremeEnd = withYear(getExtremeEnd(), year);
+        return this;
+    }
+
+    public TimePeriodBase setExtremeEndMonth(Integer month) throws IndexOutOfBoundsException{
+        extremeEnd = withMonth(getExtremeEnd(), month);
+        return this;
+    }
+
+    public TimePeriodBase setExtremeEndDay(Integer day) throws IndexOutOfBoundsException{
+        extremeEnd = withDay(getExtremeEnd(), day);
         return this;
     }
 

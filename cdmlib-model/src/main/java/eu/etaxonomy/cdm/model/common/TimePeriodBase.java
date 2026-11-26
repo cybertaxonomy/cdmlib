@@ -9,11 +9,13 @@
 package eu.etaxonomy.cdm.model.common;
 
 import java.io.Serializable;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -21,11 +23,6 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.LocalDate;
-import org.joda.time.Partial;
-import org.joda.time.ReadableInstant;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -63,17 +60,9 @@ public abstract class TimePeriodBase implements Cloneable, Serializable, ICheckE
     private static final long serialVersionUID = 3405969418194981401L;
     private static final Logger logger = LogManager.getLogger();
 
-    public static final DateTimeFieldType YEAR_TYPE = DateTimeFieldType.year();
-    public static final DateTimeFieldType MONTH_TYPE = DateTimeFieldType.monthOfYear();
-    public static final DateTimeFieldType DAY_TYPE = DateTimeFieldType.dayOfMonth();
-    public static final DateTimeFieldType HOUR_TYPE = DateTimeFieldType.hourOfDay();
-    public static final DateTimeFieldType MINUTE_TYPE = DateTimeFieldType.minuteOfHour();
-
     public static final String SEP = UTF8.EN_DASH.toString(); //maybe this will be moved to a formatter class in future
 
-    public static final Partial CONTINUED = new Partial
-            (new DateTimeFieldType[]{YEAR_TYPE, MONTH_TYPE, DAY_TYPE},
-             new int[]{9999, 11, 30});
+    public static final Partial CONTINUED = Partial.of(9999, 11, 30);
 
     protected static TimePeriodFormatter formatter = TimePeriodFormatter.NewDefaultInstance();
 
@@ -100,8 +89,8 @@ public abstract class TimePeriodBase implements Cloneable, Serializable, ICheckE
         if (dateTime == null) {
             return null;
         }
-        Calendar calendar = GregorianCalendar.from(dateTime);
-        return calendarToPartial(calendar);
+        // date fields only (same as former Calendar/LocalDate conversion)
+        return Partial.fromLocalDate(dateTime.toLocalDate());
     }
 
     /**
@@ -111,33 +100,42 @@ public abstract class TimePeriodBase implements Cloneable, Serializable, ICheckE
         if (calendar == null){
             return null;
         }else{
-            LocalDate ld = new LocalDate(calendar);
-            Partial partial = new Partial(ld);
-            return partial;
+            LocalDate ld = LocalDate.of(
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH) + 1,
+                    calendar.get(Calendar.DAY_OF_MONTH));
+            return Partial.fromLocalDate(ld);
         }
     }
 
     /**
-     * Transforms a {@link ReadableInstant} into a <code>Partial</code>
+     * Transforms a {@link ZonedDateTime} into a <code>Partial</code> including hour and minute.
      */
-    public static Partial readableInstantToPartial(ReadableInstant readableInstant){
-        if (readableInstant == null){
-            return null;
-        }else{
-            DateTime dt = readableInstant.toInstant().toDateTime();
-            LocalDate ld = dt.toLocalDate();
-            int hour = dt.hourOfDay().get();
-            int minute = dt.minuteOfHour().get();
-            Partial partial = new Partial(ld).with(HOUR_TYPE, hour).with(MINUTE_TYPE, minute);
-            return partial;
-        }
+    public static Partial readableInstantToPartial(ZonedDateTime dateTime){
+        return Partial.fromZonedDateTime(dateTime);
     }
 
     /**
-     * Transforms a {@link Date} into a <code>Partial</code>.
+     * Transforms an {@link Instant} into a <code>Partial</code> (UTC) including hour and minute.
+     */
+    public static Partial readableInstantToPartial(Instant instant){
+        return Partial.fromInstant(instant);
+    }
+
+    /**
+     * Transforms a {@link Date} into a <code>Partial</code> including hour and minute (system default zone).
+     */
+    public static Partial readableInstantToPartial(Date date){
+        if (date == null) {
+            return null;
+        }
+        return Partial.fromZonedDateTime(date.toInstant().atZone(ZoneId.systemDefault()));
+    }
+
+    /**
+     * Transforms a {@link Date} into a <code>Partial</code> (date fields only).
      */
     public static Partial dateToPartial(Date date){
-        //TODO conversion untested, implemented according to http://www.roseindia.net/java/java-conversion/datetocalender.shtml
         if (date != null){
             Calendar cal = Calendar.getInstance();
             cal.setTime(date);
@@ -152,40 +150,82 @@ public abstract class TimePeriodBase implements Cloneable, Serializable, ICheckE
      * being the year of the Partial.
      */
     public static Partial yearToPartial(Integer year){
-        if (year != null){
-            return new Partial().with(YEAR_TYPE, year);
-        }else{
-            return null;
-        }
+        return year == null ? null : Partial.ofYear(year);
     }
     public static Partial monthToPartial(Integer month){
-        if (month != null){
-            return new Partial().with(MONTH_TYPE, month);
-        }else{
-            return null;
-        }
+        return month == null ? null : Partial.ofMonth(month);
     }
     public static Partial monthAndDayToPartial(Integer month, Integer day){
-        if (month != null || day != null){
-            Partial result = new Partial();
-            if (month != null){
-                result = result.with(MONTH_TYPE, month);
-            }
-            if (day != null){
-                result = result.with(DAY_TYPE, day);
-            }
-            return result;
-        }else{
+        if (month == null && day == null){
             return null;
         }
+        Partial result = new Partial();
+        if (month != null){
+            result = result.withMonth(month);
+        }
+        if (day != null){
+            result = result.withDay(day);
+        }
+        return result;
     }
 
-    public static Integer getPartialValue(Partial partial, DateTimeFieldType type){
-        if (partial == null || ! partial.isSupported(type)){
-            return null;
-        }else{
-            return partial.get(type);
+    public static Integer getYear(Partial partial){
+        return partial == null ? null : partial.getYear();
+    }
+    public static Integer getMonth(Partial partial){
+        return partial == null ? null : partial.getMonth();
+    }
+    public static Integer getDay(Partial partial){
+        return partial == null ? null : partial.getDay();
+    }
+    public static Integer getHour(Partial partial){
+        return partial == null ? null : partial.getHour();
+    }
+    public static Integer getMinute(Partial partial){
+        return partial == null ? null : partial.getMinute();
+    }
+
+    /**
+     * Sets or clears the year on {@code partial}. Null {@code year} clears the field;
+     * null {@code partial} starts from an empty {@link Partial}.
+     */
+    public static Partial withYear(Partial partial, Integer year){
+        if (partial == null){
+            partial = new Partial();
         }
+        return partial.withYear(year);
+    }
+
+    /**
+     * Sets or clears the month on {@code partial} (validated 1–12).
+     * Null {@code month} clears the field; null {@code partial} starts empty.
+     */
+    public static Partial withMonth(Partial partial, Integer month)
+            throws IndexOutOfBoundsException{
+        if (partial == null){
+            partial = new Partial();
+        }
+        if (month == null){
+            return partial.withoutMonth();
+        }
+        checkMonth(month);
+        return partial.withMonth(month);
+    }
+
+    /**
+     * Sets or clears the day on {@code partial} (validated against month if present).
+     * Null {@code day} clears the field; null {@code partial} starts empty.
+     */
+    public static Partial withDay(Partial partial, Integer day)
+            throws IndexOutOfBoundsException{
+        if (partial == null){
+            partial = new Partial();
+        }
+        if (day == null){
+            return partial.withoutDay();
+        }
+        checkDay(day, partial);
+        return partial.withDay(day);
     }
 
     public static ZonedDateTime zonedDateTimeFromPartial(Partial partial,
@@ -198,26 +238,26 @@ public abstract class TimePeriodBase implements Cloneable, Serializable, ICheckE
 
         ZonedDateTime result = defaultDateTime;
 
-        //go through all fields
-        for (int i = 0; i < partial.size(); i++) {
-            DateTimeFieldType jodaType = partial.getFieldType(i);
-            int value = partial.getValue(i);
-
-            if (jodaType == DateTimeFieldType.year()) {
-                result = result.with(ChronoField.YEAR, value);
-            } else if (jodaType == DateTimeFieldType.monthOfYear()) {
-                result = result.with(ChronoField.MONTH_OF_YEAR, value);
-            } else if (jodaType == DateTimeFieldType.dayOfMonth()) {
-                result = result.with(ChronoField.DAY_OF_MONTH, value);
-            } else if (jodaType == DateTimeFieldType.hourOfDay()) {
-                result = result.with(ChronoField.HOUR_OF_DAY, value);
-            } else if (jodaType == DateTimeFieldType.minuteOfHour()) {
-                result = result.with(ChronoField.MINUTE_OF_HOUR, value);
-            } else if (jodaType == DateTimeFieldType.secondOfMinute()) {
-                result = result.with(ChronoField.SECOND_OF_MINUTE, value);
-            } else if (jodaType == DateTimeFieldType.millisOfSecond()) {
-                result = result.with(ChronoField.MILLI_OF_SECOND, value);
-            }
+        if (partial.hasYear()) {
+            result = result.with(ChronoField.YEAR, partial.getYear());
+        }
+        if (partial.hasMonth()) {
+            result = result.with(ChronoField.MONTH_OF_YEAR, partial.getMonth());
+        }
+        if (partial.hasDay()) {
+            result = result.with(ChronoField.DAY_OF_MONTH, partial.getDay());
+        }
+        if (partial.hasHour()) {
+            result = result.with(ChronoField.HOUR_OF_DAY, partial.getHour());
+        }
+        if (partial.hasMinute()) {
+            result = result.with(ChronoField.MINUTE_OF_HOUR, partial.getMinute());
+        }
+        if (partial.hasSecond()) {
+            result = result.with(ChronoField.SECOND_OF_MINUTE, partial.getSecond());
+        }
+        if (partial.hasMillis()) {
+            result = result.with(ChronoField.MILLI_OF_SECOND, partial.getMillis());
         }
 
         return result;
@@ -363,117 +403,89 @@ public abstract class TimePeriodBase implements Cloneable, Serializable, ICheckE
 
     @Transient
     public Integer getStartYear(){
-        return getPartialValue(start, YEAR_TYPE);
+        return getYear(start);
     }
 
     @Transient
     public Integer getStartMonth(){
-        return getPartialValue(start, MONTH_TYPE);
+        return getMonth(start);
     }
 
     @Transient
     public Integer getStartDay(){
-        return getPartialValue(start, DAY_TYPE);
+        return getDay(start);
     }
 
     @Transient
     public Integer getEndYear(){
-        return getPartialValue(getEnd(), YEAR_TYPE);
+        return getYear(getEnd());
     }
 
     @Transient
     public Integer getEndMonth(){
-        return getPartialValue(getEnd(), MONTH_TYPE);
+        return getMonth(getEnd());
     }
 
     @Transient
     public Integer getEndDay(){
-        return getPartialValue(getEnd(), DAY_TYPE);
+        return getDay(getEnd());
     }
 
     public TimePeriodBase setStartYear(Integer year){
-        return setStartField(year, YEAR_TYPE);
+        start = withYear(start, year);
+        return this;
     }
 
     public TimePeriodBase setStartMonth(Integer month) throws IndexOutOfBoundsException{
-        return setStartField(month, MONTH_TYPE);
+        start = withMonth(start, month);
+        return this;
     }
 
     public TimePeriodBase setStartDay(Integer day) throws IndexOutOfBoundsException{
-        return setStartField(day, DAY_TYPE);
+        start = withDay(start, day);
+        return this;
     }
 
     public TimePeriodBase setEndYear(Integer year){
-        return setEndField(year, YEAR_TYPE);
+        end = withYear(getEnd(), year);
+        return this;
     }
 
     public TimePeriodBase setEndMonth(Integer month) throws IndexOutOfBoundsException{
-        return setEndField(month, MONTH_TYPE);
+        end = withMonth(getEnd(), month);
+        return this;
     }
 
     public TimePeriodBase setEndDay(Integer day) throws IndexOutOfBoundsException{
-        return setEndField(day, DAY_TYPE);
-    }
-
-    @Transient
-    private TimePeriodBase setStartField(Integer value, DateTimeFieldType type)
-            throws IndexOutOfBoundsException{
-        start = setPartialField(start, value, type);
+        end = withDay(getEnd(), day);
         return this;
-    }
-
-    @Transient
-    private TimePeriodBase setEndField(Integer value, DateTimeFieldType type)
-            throws IndexOutOfBoundsException{
-        end = setPartialField(getEnd(), value, type);
-        return this;
-    }
-
-    public static Partial setPartialField(Partial partial, Integer value, DateTimeFieldType type)
-            throws IndexOutOfBoundsException{
-        if (partial == null){
-            partial = new Partial();
-        }
-        if (value == null){
-            return partial.without(type);
-        }else{
-            checkFieldValues(value, type, partial);
-            return partial.with(type, value);
-        }
     }
 
 
 // ******************************** internal methods *******************************/
 
+    private static void checkMonth(Integer month) throws IndexOutOfBoundsException{
+        if (month < 1 || month > 12){
+            throw new IndexOutOfBoundsException("Value must be between 1 and 12");
+        }
+    }
+
     /**
-     * Throws an IndexOutOfBoundsException if the value does not have a valid value
-     * (e.g. month > 12, month < 1, day > 31, etc.)
-     * @param value
-     * @param type
-     * @throws IndexOutOfBoundsException
+     * Throws an IndexOutOfBoundsException if the day is not valid
+     * (e.g. day > 31, day < 1, or day beyond month length when month is set).
      */
-    private static void checkFieldValues(Integer value, DateTimeFieldType type, Partial partial)
-            throws IndexOutOfBoundsException{
-        int max = 9999999;
-        if (type.equals(MONTH_TYPE)){
-            max = 12;
-        }
-        if (type.equals(DAY_TYPE)){
-            max = 31;
-            Integer month = null;
-            if (partial.isSupported(MONTH_TYPE)){
-                month = partial.get(MONTH_TYPE);
-            }
-            if (month != null){
-                if (month == 2){
-                    max = 29;
-                }else if (month == 4 ||month == 6 ||month == 9 ||month == 11){
-                    max = 30;
-                }
+    private static void checkDay(Integer day, Partial partial) throws IndexOutOfBoundsException{
+        int max = 31;
+        Integer month = partial.getMonth();
+        if (month != null){
+            if (month == 2){
+                max = 29;
+            }else if (month == 4 || month == 6 || month == 9 || month == 11){
+                max = 30;
             }
         }
-        if ( (value < 1 || value > max) ){
-            throw new IndexOutOfBoundsException("Value must be between 1 and " +  max);
+        if (day < 1 || day > max){
+            throw new IndexOutOfBoundsException("Value must be between 1 and " + max);
         }
     }
 
@@ -516,7 +528,7 @@ public abstract class TimePeriodBase implements Cloneable, Serializable, ICheckE
     }
 
     protected boolean isEmpty(Partial partial) {
-        return partial == null? true : partial.getFields().length == 0;
+        return partial == null || partial.isEmpty();
     }
 
 //*********** EQUALS **********************************/

@@ -14,9 +14,7 @@ import java.util.EnumSet;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
-
+import eu.etaxonomy.cdm.model.common.Partial;
 import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -46,10 +44,7 @@ public class ReferenceFilters {
 
 
             // 1. Convert date time parameter to partial to make it comparable.
-            Partial dateAsPartial = new Partial()
-                .with(DateTimeFieldType.year(), date.getYear())
-                .with(DateTimeFieldType.monthOfYear(), date.getMonthValue())
-                .with(DateTimeFieldType.dayOfMonth(), date.getDayOfMonth());
+            Partial dateAsPartial = Partial.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth());
 
             //2. Define predicates for valid years
             Predicate startHasValidYear = cb.not(cb.like(startPath.as(String.class), "0000%"));

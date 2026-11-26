@@ -14,8 +14,7 @@ import java.util.regex.Pattern;
 
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
+import eu.etaxonomy.cdm.model.common.Partial;
 
 public class PartialAdapter extends XmlAdapter<String, Partial> {
 	
@@ -27,27 +26,32 @@ public class PartialAdapter extends XmlAdapter<String, Partial> {
 	}
 
 	@Override
-	public String marshal(Partial partial) throws Exception {
-		StringBuilder stringBuilder = new StringBuilder();
-		int[] values = partial.getValues();
-		
-		switch(values.length) {
-		case 7:
-			stringBuilder.append("." + values[6]);
-		case 6:
-			stringBuilder.insert(0,":" + values[5]);
-		case 5: 
-			stringBuilder.insert(0,":" + values[4]);
-		case 4:
-			stringBuilder.insert(0, "T" + values[3]);
-		case 3:
-			stringBuilder.insert(0, "-" + values[2]);
-		case 2:
-			stringBuilder.insert(0, "-" + values[1]);
-		case 1:
-			stringBuilder.insert(0, values[0]);
+    public String marshal(Partial partial) throws Exception {
+		if (partial == null || partial.isEmpty()) {
+			return "";
 		}
-		
+		StringBuilder stringBuilder = new StringBuilder();
+		if (partial.hasYear()) {
+			stringBuilder.append(partial.getYear());
+		}
+		if (partial.hasMonth()) {
+			stringBuilder.append('-').append(partial.getMonth());
+		}
+		if (partial.hasDay()) {
+			stringBuilder.append('-').append(partial.getDay());
+		}
+		if (partial.hasHour()) {
+			stringBuilder.append('T').append(String.format("%02d", partial.getHour()));
+		}
+		if (partial.hasMinute()) {
+			stringBuilder.append(':').append(String.format("%02d", partial.getMinute()));
+		}
+		if (partial.hasSecond()) {
+			stringBuilder.append(':').append(String.format("%02d", partial.getSecond()));
+		}
+		if (partial.hasMillis()) {
+			stringBuilder.append('.').append(partial.getMillis());
+		}
 		return stringBuilder.toString();
 	}
 
@@ -55,40 +59,23 @@ public class PartialAdapter extends XmlAdapter<String, Partial> {
 	public Partial unmarshal(String string) throws Exception {
 		Matcher matcher = PATTERN.matcher(string);
 		if(matcher.matches()) {
-            int nonNullGroups = 0;
-			for(int i = 1; i <= matcher.groupCount(); i++) {
-				if(matcher.group(i) != null)
-					nonNullGroups++;
-			}
-			DateTimeFieldType[] dateTimeFieldTypes = new DateTimeFieldType[nonNullGroups];
-			int[] values = new int[nonNullGroups];
-			switch(nonNullGroups) {
-			case 7:
-				dateTimeFieldTypes[6] = DateTimeFieldType.millisOfSecond();
-				values[6] = Integer.parseInt(matcher.group(7));
-			case 6:
-				dateTimeFieldTypes[5] = DateTimeFieldType.secondOfMinute();
-				values[5] = Integer.parseInt(matcher.group(6));
-			case 5:
-				dateTimeFieldTypes[4] = DateTimeFieldType.minuteOfHour();
-				values[4] = Integer.parseInt(matcher.group(5));
-			case 4:
-				dateTimeFieldTypes[3] = DateTimeFieldType.hourOfDay();
-				values[3] = Integer.parseInt(matcher.group(4));
-			case 3:
-				dateTimeFieldTypes[2] = DateTimeFieldType.dayOfMonth();
-				values[2] = Integer.parseInt(matcher.group(3));
-			case 2:
-				dateTimeFieldTypes[1] = DateTimeFieldType.monthOfYear();
-				values[1] = Integer.parseInt(matcher.group(2));
-			case 1:
-				dateTimeFieldTypes[0] = DateTimeFieldType.year();
-				values[0] = Integer.parseInt(matcher.group(1));
-			}
-			return new Partial(dateTimeFieldTypes, values);
+			Partial result = Partial.of(
+					parseGroup(matcher, 1),
+					parseGroup(matcher, 2),
+					parseGroup(matcher, 3),
+					parseGroup(matcher, 4),
+					parseGroup(matcher, 5),
+					parseGroup(matcher, 6),
+					parseGroup(matcher, 7));
+			return result;
 		} else {
 			throw new RuntimeException("Could not parse " + string + " with regex " + PartialAdapter.REGEX);
 		}
+	}
+
+	private static Integer parseGroup(Matcher matcher, int group) {
+		String value = matcher.group(group);
+		return value == null ? null : Integer.parseInt(value);
 	}
 
 }

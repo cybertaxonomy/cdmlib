@@ -10,15 +10,12 @@ package eu.etaxonomy.cdm.io.media.in;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -29,6 +26,7 @@ import eu.etaxonomy.cdm.io.media.in.MediaExcelImportConfigurator.MediaTitleEnum;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Partial;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -203,11 +201,7 @@ public class MediaExcelImport
         if (partial == null){
             return null;
         }
-        List<DateTimeFieldType> typeList = Arrays.asList(partial.getFieldTypes());
-        if ( typeList.contains(DateTimeFieldType.year())
-                && typeList.contains(DateTimeFieldType.monthOfYear())
-                && typeList.contains(DateTimeFieldType.dayOfMonth())
-                ){
+        if (partial.hasYear() && partial.hasMonth() && partial.hasDay()){
             ZonedDateTime result = TimePeriod.zonedDateTimeFromPartial(partial, ZonedDateTime.now());
             return result;
         }else{

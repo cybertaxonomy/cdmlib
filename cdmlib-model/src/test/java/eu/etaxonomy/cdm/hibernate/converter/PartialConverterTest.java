@@ -11,8 +11,7 @@ package eu.etaxonomy.cdm.hibernate.converter;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
+import eu.etaxonomy.cdm.model.common.Partial;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,10 +31,7 @@ public class PartialConverterTest {
 
     @Test
     public void testRoundTripDate() {
-        Partial partial = new Partial()
-                .with(DateTimeFieldType.year(), 2008)
-                .with(DateTimeFieldType.monthOfYear(), 11)
-                .with(DateTimeFieldType.dayOfMonth(), 15);
+        Partial partial = Partial.of(2008, 11, 15);
         String db = converter.convertToDatabaseColumn(partial);
         assertEquals("20081115", db);
         Partial restored = converter.convertToEntityAttribute(db);

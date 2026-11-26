@@ -15,8 +15,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
+import eu.etaxonomy.cdm.model.common.Partial;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -40,7 +39,7 @@ public class ReferenceFiltersTest extends CdmTransactionalSpringIntegrationTest 
     private IReferenceDao refDao;
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.api.filter.ReferenceFilters#isBeforeDatePublished(org.joda.time.DateTime)}.
+     * Test method for {@link eu.etaxonomy.cdm.api.filter.ReferenceFilters#isBeforeDatePublished(java.time.ZonedDateTime)}.
      */
     @Test
     public void testIsBeforeDatePublished() {
@@ -60,8 +59,7 @@ public class ReferenceFiltersTest extends CdmTransactionalSpringIntegrationTest 
         //.. without year
         Reference ref3 = ReferenceFactory.newBook();
         ref3.setTitle(title);
-        ref3.getDatePublished().setStart(new Partial()
-                .with(DateTimeFieldType.monthOfYear(), 5));
+        ref3.getDatePublished().setStart(Partial.ofMonth(5));
         refDao.save(ref3);
         //.. without date
         Reference ref4 = ReferenceFactory.newBook();

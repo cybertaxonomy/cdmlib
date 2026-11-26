@@ -14,8 +14,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
+import eu.etaxonomy.cdm.model.common.Partial;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
@@ -245,14 +244,14 @@ public class TimePeriodParser {
             if(start == null || (periods.length == 2 && (end == null || isContinued))){
                 result.setFreeText(dateString);
             }else if (end != null){
-                if (end.isSupported(TimePeriod.YEAR_TYPE)&& !start.isSupported(TimePeriod.YEAR_TYPE)){
-                    start = start.with(TimePeriod.YEAR_TYPE, end.get(TimePeriod.YEAR_TYPE));
+                if (end.hasYear() && !start.hasYear()){
+                    start = start.withYear(end.getYear());
                 }
-                if(start.isSupported(TimePeriod.YEAR_TYPE)&& end.isSupported(TimePeriod.YEAR_TYPE) &&
-                        (start.get(TimePeriod.YEAR_TYPE) == end.get(TimePeriod.YEAR_TYPE)) ||
-                        (!start.isSupported(TimePeriod.YEAR_TYPE)&& !end.isSupported(TimePeriod.YEAR_TYPE))){
-                    if (!start.isSupported(TimePeriod.MONTH_TYPE)&& end.isSupported(TimePeriod.MONTH_TYPE)){
-                        start = start.with(TimePeriod.MONTH_TYPE, end.get(TimePeriod.MONTH_TYPE));
+                if(start.hasYear() && end.hasYear() &&
+                        (start.getYear().equals(end.getYear())) ||
+                        (!start.hasYear() && !end.hasYear())){
+                    if (!start.hasMonth() && end.hasMonth()){
+                        start = start.withMonth(end.getMonth());
                     }
                 }
             }
@@ -382,16 +381,16 @@ public class TimePeriodParser {
                 logger.warn("Not a valid year: " + year + ". Year must be between 1000 and 2100");
             }else if (year < 1700 && year > 2100){
                 logger.warn("Not a valid taxonomic year: " + year + ". Year must be between 1750 and 2100");
-                partial = partial.with(TimePeriod.YEAR_TYPE, year);
+                partial = partial.withYear(year);
             }else{
-                partial = partial.with(TimePeriod.YEAR_TYPE, year);
+                partial = partial.withYear(year);
             }
         }
         if (month != null && month != 0){
-            partial = partial.with(TimePeriod.MONTH_TYPE, month);
+            partial = partial.withMonth(month);
         }
         if (day != null && day != 0){
-            partial = partial.with(TimePeriod.DAY_TYPE, day);
+            partial = partial.withDay(day);
         }
         return partial;
     }
@@ -510,8 +509,8 @@ public class TimePeriodParser {
 				//end
 				if (years.length >= 2 && ! StringUtils.isBlank(years[1])){
 					years[1] = years[1].trim();
-					if (years[1].length()==2 && dtStart != null && dtStart.isSupported(DateTimeFieldType.year())){
-						years[1] = String.valueOf(dtStart.get(DateTimeFieldType.year())/100) + years[1];
+					if (years[1].length()==2 && dtStart != null && dtStart.hasYear()){
+						years[1] = String.valueOf(dtStart.getYear()/100) + years[1];
 					}
 					dtEnd = parseSingleDate(years[1]);
 				}
@@ -608,9 +607,9 @@ public class TimePeriodParser {
 					logger.warn("Not a valid year: " + year + ". Year must be between 1000 and 2100");
 				}else if (year < 1700 && year > 2100){
 					logger.warn("Not a valid taxonomic year: " + year + ". Year must be between 1750 and 2100");
-					partial = partial.with(TimePeriod.YEAR_TYPE, year);
+					partial = partial.withYear(year);
 				}else{
-					partial = partial.with(TimePeriod.YEAR_TYPE, year);
+					partial = partial.withYear(year);
 				}
 			} catch (NumberFormatException e) {
 				logger.debug("Not a Integer format in getCalendar()");
@@ -643,15 +642,15 @@ public class TimePeriodParser {
                 logger.warn("Not a valid year: " + year + ". Year must be between 1000 and 2100");
             }else if (year < 1700 && year > 2100){
                 logger.warn("Not a valid taxonomic year: " + year + ". Year must be between 1750 and 2100");
-                partial = partial.with(TimePeriod.YEAR_TYPE, year);
+                partial = partial.withYear(year);
             }else{
-                partial = partial.with(TimePeriod.YEAR_TYPE, year);
+                partial = partial.withYear(year);
             }
             if (month != null && month != 0){
-                partial = partial.with(TimePeriod.MONTH_TYPE, month);
+                partial = partial.withMonth(month);
             }
             if (day != null && day != 0){
-                partial = partial.with(TimePeriod.DAY_TYPE, day);
+                partial = partial.withDay(day);
             }
         } catch (NumberFormatException e) {
             logger.debug("Not a Integer format somewhere in " + singleDateString);
@@ -681,15 +680,15 @@ public class TimePeriodParser {
 				logger.warn("Not a valid year: " + year + ". Year must be between 1000 and 2100");
 			}else if (year < 1700 && year > 2100){
 				logger.warn("Not a valid taxonomic year: " + year + ". Year must be between 1750 and 2100");
-				partial = partial.with(TimePeriod.YEAR_TYPE, year);
+				partial = partial.withYear(year);
 			}else{
-				partial = partial.with(TimePeriod.YEAR_TYPE, year);
+				partial = partial.withYear(year);
 			}
 			if (month != null && month != 0){
-				partial = partial.with(TimePeriod.MONTH_TYPE, month);
+				partial = partial.withMonth(month);
 			}
 			if (day != null && day != 0){
-				partial = partial.with(TimePeriod.DAY_TYPE, day);
+				partial = partial.withDay(day);
 			}
 		} catch (NumberFormatException e) {
 			logger.debug("Not a Integer format somewhere in " + singleDateString);

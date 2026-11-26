@@ -30,8 +30,7 @@ import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
+import eu.etaxonomy.cdm.model.common.Partial;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -163,7 +162,7 @@ public class AssemblerTest {
         book.setTitle("Book.title");
         book.setAuthorship(authorship);
         book.setCreated(ZonedDateTime.of(2004, 12, 25, 12, 0, 0, 0, DateTimeUtil.BERLIN));
-        book.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(new Partial(DateTimeFieldType.year(), 1800)));
+        book.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(Partial.ofYear(1800)));
         book.setEdition("1st Edition");
         book.setIsbn("isbn");
         book.setPlacePublished("placePublished");
@@ -180,7 +179,7 @@ public class AssemblerTest {
         bookSection.setTitle("BookSection.title");
         bookSection.setAuthorship(authorship);
         bookSection.setCreated(ZonedDateTime.of(2004, 12, 25, 12, 0, 0, 0, DateTimeUtil.BERLIN));
-        bookSection.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(new Partial(DateTimeFieldType.year(), 1800)));
+        bookSection.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(Partial.ofYear(1800)));
         bookSection.setReferenceAbstract("referenceAbstract");
         bookSection.setUri(new URI("http://persitent.books.foo/myBookSection"));
         bookSection.setUuid(UUID.randomUUID());

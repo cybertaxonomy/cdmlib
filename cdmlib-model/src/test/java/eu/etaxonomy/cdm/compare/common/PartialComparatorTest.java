@@ -10,8 +10,7 @@ package eu.etaxonomy.cdm.compare.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
+import eu.etaxonomy.cdm.model.common.Partial;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,18 +28,18 @@ public class PartialComparatorTest {
     public void setUp() throws Exception {
         comparator = PartialComparator.INSTANCE();
 
-        year1978 = new Partial(DateTimeFieldType.year(), 1978);
-        monthMay = new Partial(DateTimeFieldType.monthOfYear(), 4);
+        year1978 = Partial.ofYear(1978);
+        monthMay = Partial.ofMonth(4);
     }
 
     @Test
     public void test() {
         assertEquals(-1, comparator.compare(year1978, monthMay));
-        monthMay = monthMay.with(DateTimeFieldType.year(), 1978);
+        monthMay = monthMay.withYear(1978);
         assertEquals(1, comparator.compare(year1978, monthMay));
-        monthMay = monthMay.with(DateTimeFieldType.year(), 1979);
+        monthMay = monthMay.withYear(1979);
         assertEquals(-1, comparator.compare(year1978, monthMay));
-        Partial may1979 = new Partial(DateTimeFieldType.year(), 1979).with(DateTimeFieldType.monthOfYear(), 4);
+        Partial may1979 = Partial.ofYear(1979).withMonth(4);
         assertEquals(0, comparator.compare(may1979, monthMay));
     }
 
@@ -48,11 +47,11 @@ public class PartialComparatorTest {
     public void testNullSmallest() {
         comparator = PartialComparator.INSTANCE_NULL_SMALLEST();
         assertEquals(1, comparator.compare(year1978, monthMay));
-        monthMay = monthMay.with(DateTimeFieldType.year(), 1978);
+        monthMay = monthMay.withYear(1978);
         assertEquals(-1, comparator.compare(year1978, monthMay));
-        monthMay = monthMay.with(DateTimeFieldType.year(), 1979);
+        monthMay = monthMay.withYear(1979);
         assertEquals(-1, comparator.compare(year1978, monthMay));
-        Partial may1979 = new Partial(DateTimeFieldType.year(), 1979).with(DateTimeFieldType.monthOfYear(), 4);
+        Partial may1979 = Partial.ofYear(1979).withMonth(4);
         assertEquals(0, comparator.compare(may1979, monthMay));
     }
 }

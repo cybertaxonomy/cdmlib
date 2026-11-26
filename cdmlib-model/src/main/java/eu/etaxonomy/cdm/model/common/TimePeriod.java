@@ -16,8 +16,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.joda.time.Partial;
-import org.joda.time.ReadableInstant;
 
 import jakarta.persistence.Embeddable;
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -78,15 +76,6 @@ public class TimePeriod extends TimePeriodBase {
     }
 
     /**
-     * Factory method to create a TimePeriod from a <code>ReadableInstant</code>(e.g. <code>DateTime</code>).
-     * The <code>ReadableInstant</code> is stored as the starting instant.
-     * @return
-     */
-    public static final TimePeriod NewInstance(ReadableInstant readableInstant){
-        return NewInstance(readableInstant, null);
-    }
-
-    /**
      * Factory method to create a TimePeriod from a starting and an ending <code>Calendar</code>
      * @return
      */
@@ -108,14 +97,6 @@ public class TimePeriod extends TimePeriodBase {
      */
     public static final TimePeriod NewInstance(Date startDate, Date endDate){
         return NewInstance(dateToPartial(startDate), dateToPartial(endDate));
-    }
-
-    /**
-     * Factory method to create a TimePeriod from a starting and an ending <code>ReadableInstant</code>(e.g. <code>DateTime</code>)
-     * @return
-     */
-    public static final TimePeriod NewInstance(ReadableInstant startInstant, ReadableInstant endInstant){
-        return new TimePeriod(readableInstantToPartial(startInstant), readableInstantToPartial(endInstant), null);
     }
 
 //****************** TIME PERIOD CONVERTERS ******************/

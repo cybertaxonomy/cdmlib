@@ -9,8 +9,6 @@
 package eu.etaxonomy.cdm.format.common;
 
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.format.DateTimeFormatter;
 
 import eu.etaxonomy.cdm.model.common.ExtendedTimePeriod;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -20,12 +18,6 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
  * @since 27.06.2020
  */
 public class ExtendedTimePeriodFormatter {
-
-    public static final DateTimeFieldType YEAR_TYPE = DateTimeFieldType.year();
-    public static final DateTimeFieldType MONTH_TYPE = DateTimeFieldType.monthOfYear();
-    public static final DateTimeFieldType DAY_TYPE = DateTimeFieldType.dayOfMonth();
-    public static final DateTimeFieldType HOUR_TYPE = DateTimeFieldType.hourOfDay();
-    public static final DateTimeFieldType MINUTE_TYPE = DateTimeFieldType.minuteOfHour();
 
     private static final TimePeriodFormatter timePeriodFormatter = TimePeriodFormatter.NewDefaultInstance();
 
@@ -40,12 +32,12 @@ public class ExtendedTimePeriodFormatter {
             return tp.getFreeText();
         }else{
             String result = timePeriodFormatter.getTimePeriod(tp);
-            DateTimeFormatter formatter = TimePeriodPartialFormatter.INSTANCE();
+            TimePeriodPartialFormatter formatter = TimePeriodPartialFormatter.INSTANCE();
             if (tp.getExtremeStart() != null){
-                result = "(" + tp.getExtremeStart().toString(formatter) + TimePeriod.SEP + ")" + result;
+                result = "(" + formatter.print(tp.getExtremeStart()) + TimePeriod.SEP + ")" + result;
             }
             if (tp.getExtremeEnd() != null){
-                result += "(" + TimePeriod.SEP + tp.getExtremeEnd().toString(formatter)+")";
+                result += "(" + TimePeriod.SEP + formatter.print(tp.getExtremeEnd())+")";
             }
             return result;
         }

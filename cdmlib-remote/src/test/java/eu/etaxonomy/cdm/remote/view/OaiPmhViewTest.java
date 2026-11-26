@@ -19,7 +19,6 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.RevisionType;
-import org.joda.time.format.ISODateTimeFormat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -135,7 +134,7 @@ public class OaiPmhViewTest {
         model.put("deletedRecord",DeletedRecord.TRANSIENT);
         model.put("granularity",Granularity.YYYY_MM_DD_THH_MM_SS_Z);
 
-        model.put("earliestDatestamp",ISODateTimeFormat.dateTimeParser().parseDateTime("1990-02-01T12:00:00Z"));
+        model.put("earliestDatestamp", ZonedDateTime.parse("1990-02-01T12:00:00Z"));
         model.put("adminEmail","somebody@loc.gov");
         model.put("description","<oai-identifier xmlns=\"http://www.openarchives.org/OAI/2.0/oai-identifier\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai-identifier  http://www.openarchives.org/OAI/2.0/oai-identifier.xsd\"><scheme>oai</scheme><repositoryIdentifier>lcoa1.loc.gov</repositoryIdentifier><delimiter>:</delimiter><sampleIdentifier>oai:lcoa1.loc.gov:loc.music/musdi.002</sampleIdentifier></oai-identifier>");
 

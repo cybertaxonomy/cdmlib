@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.InputStreamReader;
 
-import org.joda.time.DateTimeFieldType;
 import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -37,7 +36,7 @@ public class AgentsTest {
 		assertEquals("Miller", person.getFamilyName(), "Person.getFamilyName should return \'Miller\'");
 		assertNotNull(person.getLifespan(), "Person.getLifespan should not be null");
 		assertNotNull(person.getLifespan().getStart(), "Person.getLifespan.getStart should not be null");
-		assertEquals(person.getLifespan().getStart().get(DateTimeFieldType.year()), 1691, "Person.getLifespan.getStart should equal 1691");
+		assertEquals(person.getLifespan().getStart().getYear(), 1691, "Person.getLifespan.getStart should equal 1691");
         assertNotNull(person.getInstitutionalMemberships(), "Person.getInstitutionalMemberships should not be null");
         assertEquals(1, person.getInstitutionalMemberships().size(), "There should be one institutional membership");
         InstitutionalMembership institutionalMembership = person.getInstitutionalMemberships().iterator().next();

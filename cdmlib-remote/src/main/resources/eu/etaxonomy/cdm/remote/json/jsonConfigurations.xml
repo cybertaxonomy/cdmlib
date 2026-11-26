@@ -227,7 +227,7 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.CalendarJSONValueProcessor" />
         </entry>
-        <entry key="org.joda.time.Partial">
+        <entry key="eu.etaxonomy.cdm.model.common.Partial">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
         </entry>
@@ -324,7 +324,7 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.CalendarJSONValueProcessor" />
         </entry>
-        <entry key="org.joda.time.Partial">
+        <entry key="eu.etaxonomy.cdm.model.common.Partial">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
         </entry>
@@ -524,7 +524,7 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.CalendarJSONValueProcessor" />
         </entry>
-        <entry key="org.joda.time.Partial">
+        <entry key="eu.etaxonomy.cdm.model.common.Partial">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
         </entry>
@@ -608,7 +608,7 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.CalendarJSONValueProcessor" />
         </entry>
-        <entry key="org.joda.time.Partial">
+        <entry key="eu.etaxonomy.cdm.model.common.Partial">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
         </entry>
@@ -663,7 +663,7 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.CalendarJSONValueProcessor" />
         </entry>
-        <entry key="org.joda.time.Partial">
+        <entry key="eu.etaxonomy.cdm.model.common.Partial">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
         </entry>

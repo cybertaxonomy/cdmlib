@@ -10,22 +10,22 @@ package eu.etaxonomy.cdm.hibernate.search;
 
 import org.hibernate.search.mapper.pojo.bridge.ValueBridge;
 import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeToIndexedValueContext;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
+
+import eu.etaxonomy.cdm.model.common.Partial;
 
 public class PartialBridge implements ValueBridge<Partial, String> {
 
 	@Override
     public String toIndexedValue(Partial value, ValueBridgeToIndexedValueContext context) {
-		if(value == null || !value.isSupported(DateTimeFieldType.year())) {
+		if(value == null || !value.hasYear()) {
 		    return null;
 		}
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(value.get(DateTimeFieldType.year()));
-		if(value.isSupported(DateTimeFieldType.monthOfYear())) {
-		    stringBuilder.append(value.get(DateTimeFieldType.monthOfYear()));
-		    if(value.isSupported(DateTimeFieldType.dayOfYear())) {
-			    stringBuilder.append(value.get(DateTimeFieldType.dayOfYear()));
+		stringBuilder.append(value.getYear());
+		if(value.hasMonth()) {
+		    stringBuilder.append(value.getMonth());
+		    if(value.hasDay()) {
+			    stringBuilder.append(value.getDay());
 		    }
 		}
 		return stringBuilder.toString();

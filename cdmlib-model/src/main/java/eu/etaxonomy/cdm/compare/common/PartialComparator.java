@@ -10,9 +10,7 @@ package eu.etaxonomy.cdm.compare.common;
 
 import java.util.Comparator;
 
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
-
+import eu.etaxonomy.cdm.model.common.Partial;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 
 /**
@@ -75,11 +73,11 @@ public class PartialComparator implements Comparator<Partial> {
 
     private Integer[] getArray(Partial p1) {
         Integer[] result = new Integer[5];
-        result[0] = TimePeriod.getPartialValue(p1, DateTimeFieldType.year());
-        result[1] = TimePeriod.getPartialValue(p1, DateTimeFieldType.monthOfYear());
-        result[2] = TimePeriod.getPartialValue(p1, DateTimeFieldType.dayOfMonth());
-        result[3] = TimePeriod.getPartialValue(p1, DateTimeFieldType.hourOfDay());
-        result[4] = TimePeriod.getPartialValue(p1, DateTimeFieldType.minuteOfHour());
+        result[0] = TimePeriod.getYear(p1);
+        result[1] = TimePeriod.getMonth(p1);
+        result[2] = TimePeriod.getDay(p1);
+        result[3] = TimePeriod.getHour(p1);
+        result[4] = TimePeriod.getMinute(p1);
         return result;
     }
 

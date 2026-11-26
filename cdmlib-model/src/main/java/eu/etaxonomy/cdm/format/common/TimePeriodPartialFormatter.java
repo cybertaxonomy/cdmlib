@@ -8,10 +8,8 @@
 */
 package eu.etaxonomy.cdm.format.common;
 
-import org.joda.time.ReadablePartial;
-import org.joda.time.format.DateTimeFormatter;
-
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.Partial;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 
 /**
@@ -19,7 +17,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
  * @author a.mueller
  * @since 14-Jul-2013 (formerly inner class in {@link TimePeriod})
  */
-public class TimePeriodPartialFormatter extends DateTimeFormatter{
+public class TimePeriodPartialFormatter {
 
     private final String ENDASH = TimePeriod.SEP;
 
@@ -34,17 +32,14 @@ public class TimePeriodPartialFormatter extends DateTimeFormatter{
 	}
 
 	protected TimePeriodPartialFormatter(){
-		super(null, null);
 	}
 
-	@Override
-    public String print(ReadablePartial partial){
+    public String print(Partial partial){
 
-	    String yearStr = (partial.isSupported(TimePeriod.YEAR_TYPE))? String.valueOf(partial.get(TimePeriod.YEAR_TYPE)):null;
-		Month month = (partial.isSupported(TimePeriod.MONTH_TYPE))?
-		        Month.valueOf(partial.get(TimePeriod.MONTH_TYPE)):null;
+	    String yearStr = partial.hasYear() ? String.valueOf(partial.getYear()) : null;
+		Month month = partial.hasMonth() ? Month.valueOf(partial.getMonth()) : null;
 		String monthStr = month != null? month.abbrev():null;
-		String dayStr = (partial.isSupported(TimePeriod.DAY_TYPE))? String.valueOf(partial.get(TimePeriod.DAY_TYPE)):null;
+		String dayStr = partial.hasDay() ? String.valueOf(partial.getDay()) : null;
 
 		if (dayStr == null && monthStr == null && yearStr == null){
 		    return ENDASH;
@@ -58,10 +53,10 @@ public class TimePeriodPartialFormatter extends DateTimeFormatter{
 		return result;
 	}
 
-	public String printSortableDateString(ReadablePartial partial) {
-        String yearStr = (partial.isSupported(TimePeriod.YEAR_TYPE))? String.valueOf(partial.get(TimePeriod.YEAR_TYPE)):"zzzz";
-        String monthStr = (partial.isSupported(TimePeriod.MONTH_TYPE))? String.valueOf(partial.get(TimePeriod.MONTH_TYPE)):"zz";
-        String dayStr = (partial.isSupported(TimePeriod.DAY_TYPE))? String.valueOf(partial.get(TimePeriod.DAY_TYPE)):"zz";
+	public String printSortableDateString(Partial partial) {
+        String yearStr = partial.hasYear() ? String.valueOf(partial.getYear()) : "zzzz";
+        String monthStr = partial.hasMonth() ? String.valueOf(partial.getMonth()) : "zz";
+        String dayStr = partial.hasDay() ? String.valueOf(partial.getDay()) : "zz";
         String result = CdmUtils.concat("-", yearStr, monthStr, dayStr);
         return result;
 	}

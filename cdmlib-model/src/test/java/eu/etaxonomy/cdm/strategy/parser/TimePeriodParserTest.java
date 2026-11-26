@@ -16,8 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
+import eu.etaxonomy.cdm.model.common.Partial;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -58,19 +57,12 @@ public class TimePeriodParserTest {
 		String strDate = "1756";
 		Partial date = TimePeriodParser.parseSingleDate(strDate);
 		assertNotNull(date);
-		assertEquals(Integer.parseInt(strDate), date.get(DateTimeFieldType.year()));
-		try {
-			date.get(DateTimeFieldType.monthOfYear());
-			assertFalse(true); //should not be reached
-		} catch (Exception e) {
-			assertTrue(e instanceof IllegalArgumentException);
-		}
-		try {
-			date.get(DateTimeFieldType.dayOfMonth());
-			assertFalse(true); //should not be reached
-		} catch (Exception e) {
-			assertTrue(e instanceof IllegalArgumentException);
-		}
+		assertEquals(Integer.parseInt(strDate), date.getYear().intValue());
+		assertFalse(date.hasMonth());
+		assertNull(date.getMonth());
+		assertFalse(date.hasDay());
+		assertNull(date.getDay());
+
 		//to be continued
 	}
 

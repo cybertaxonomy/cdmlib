@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.remote.dto.assembler.converter;
 
 import java.time.ZonedDateTime;
 
-import org.joda.time.Partial;
+import eu.etaxonomy.cdm.model.common.Partial;
 
 import com.github.dozermapper.core.CustomConverter;
 import com.github.dozermapper.core.MappingException;

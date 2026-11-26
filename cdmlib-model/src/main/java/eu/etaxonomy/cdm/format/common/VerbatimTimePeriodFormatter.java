@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.format.common;
 
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTimeFieldType;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
@@ -19,12 +18,6 @@ import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
  * @since 27.06.2020
  */
 public class VerbatimTimePeriodFormatter {
-
-    public static final DateTimeFieldType YEAR_TYPE = DateTimeFieldType.year();
-    public static final DateTimeFieldType MONTH_TYPE = DateTimeFieldType.monthOfYear();
-    public static final DateTimeFieldType DAY_TYPE = DateTimeFieldType.dayOfMonth();
-    public static final DateTimeFieldType HOUR_TYPE = DateTimeFieldType.hourOfDay();
-    public static final DateTimeFieldType MINUTE_TYPE = DateTimeFieldType.minuteOfHour();
 
     private static final TimePeriodFormatter timePeriodFormatter = TimePeriodFormatter.NewDefaultInstance();
 

@@ -28,7 +28,7 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmb
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 import org.hibernate.type.SqlTypes;
-import org.joda.time.Partial;
+import eu.etaxonomy.cdm.model.common.Partial;
 
 import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.URI;
@@ -332,7 +332,7 @@ public class Reference
 	@XmlElement(name = "URI")
 	@KeywordField(valueBridge = @ValueBridgeRef(type = UriBridge.class))
 	@Convert(converter = UriConverter.class)
-	// Envers can drop @Lob on _AUD (→ varchar(255) vs legacy CLOB). LONG32 exceeds dialect max VARCHAR
+	// Envers can drop @Lob on _AUD (? varchar(255) vs legacy CLOB). LONG32 exceeds dialect max VARCHAR
 	// so expected type upgrades to CLOB; @JdbcTypeCode reinforces CLOB. Keep until Envers preserves LOB reliably.
 	@Column(length = Length.LONG32)
 	@Lob

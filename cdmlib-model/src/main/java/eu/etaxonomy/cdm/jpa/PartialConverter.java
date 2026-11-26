@@ -13,8 +13,8 @@ import jakarta.persistence.Converter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
+
+import eu.etaxonomy.cdm.model.common.Partial;
 
 /**
  * Persist {@link Partial} as VARCHAR (yyyyMMdd or yyyyMMdd_HHmm).
@@ -55,36 +55,36 @@ public class PartialConverter implements AttributeConverter<Partial, String> {
             minute = Integer.valueOf(dbData.substring(11, 13));
         }
         if (year != 0) {
-            result = result.with(DateTimeFieldType.year(), year);
+            result = result.withYear(year);
         }
         if (month != 0) {
-            result = result.with(DateTimeFieldType.monthOfYear(), month);
+            result = result.withMonth(month);
         }
         if (day != 0) {
-            result = result.with(DateTimeFieldType.dayOfMonth(), day);
+            result = result.withDay(day);
         }
         if (hour != null) {
-            result = result.with(DateTimeFieldType.hourOfDay(), hour);
+            result = result.withHour(hour);
         }
         if (minute != null) {
-            result = result.with(DateTimeFieldType.minuteOfHour(), minute);
+            result = result.withMinute(minute);
         }
         return isEmptyOrNull(result) ? null : result;
     }
 
     private static boolean isEmptyOrNull(Partial partial) {
-        return partial == null || partial.getValues().length == 0;
+        return partial == null || partial.isEmpty();
     }
 
     /**
      * @return an ISO 8601 like time representation of the form yyyyMMdd[_HHmm]
      */
     public static String partialToString(Partial p) {
-        String strYear = getNullFilledString(p, DateTimeFieldType.year(), 4);
-        String strMonth = getNullFilledString(p, DateTimeFieldType.monthOfYear(), 2);
-        String strDay = getNullFilledString(p, DateTimeFieldType.dayOfMonth(), 2);
-        String strHour = getNullFilledString(p, DateTimeFieldType.hourOfDay(), 2);
-        String strMinute = getNullFilledString(p, DateTimeFieldType.minuteOfHour(), 2);
+        String strYear = getNullFilledString(p.getYear(), 4);
+        String strMonth = getNullFilledString(p.getMonth(), 2);
+        String strDay = getNullFilledString(p.getDay(), 2);
+        String strHour = getNullFilledString(p.getHour(), 2);
+        String strMinute = getNullFilledString(p.getMinute(), 2);
         boolean timeExists = timeExists(p);
         String result = strYear + strMonth + strDay;
         if (timeExists) {
@@ -94,16 +94,14 @@ public class PartialConverter implements AttributeConverter<Partial, String> {
     }
 
     private static boolean timeExists(Partial partial) {
-        return partial.isSupported(DateTimeFieldType.hourOfDay())
-                || partial.isSupported(DateTimeFieldType.minuteOfHour());
+        return partial.hasHour() || partial.hasMinute();
     }
 
-    private static String getNullFilledString(Partial partial, DateTimeFieldType type, int count) {
+    private static String getNullFilledString(Integer value, int count) {
         String nul = "0000000000";
-        if (!partial.isSupported(type)) {
+        if (value == null) {
             return nul.substring(0, count);
         }
-        int value = partial.get(type);
         String result = String.valueOf(value);
         if (result.length() > count) {
             logger.error("value to long");

@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.format.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.joda.time.Partial;
+import eu.etaxonomy.cdm.model.common.Partial;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +35,7 @@ public class TimePeriodPartialFormatterTest {
 
     @Test
     public void test() {
-        assertEquals("15 Apr 1782", start.toString(formatter));
+        assertEquals("15 Apr 1782", formatter.print(start));
     }
 
 }

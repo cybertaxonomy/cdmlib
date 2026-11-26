@@ -18,7 +18,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.Partial;
+import eu.etaxonomy.cdm.model.common.Partial;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.DateTimeUtil;

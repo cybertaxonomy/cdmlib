@@ -8,12 +8,12 @@
 */
 package eu.etaxonomy.cdm.format.common;
 
+import java.util.Objects;
+
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
-import org.joda.time.format.DateTimeFormatter;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.Partial;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.TimePeriodBase;
 
@@ -23,13 +23,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriodBase;
  */
 public class TimePeriodFormatter {
 
-    public static final DateTimeFieldType YEAR_TYPE = DateTimeFieldType.year();
-    public static final DateTimeFieldType MONTH_TYPE = DateTimeFieldType.monthOfYear();
-    public static final DateTimeFieldType DAY_TYPE = DateTimeFieldType.dayOfMonth();
-    public static final DateTimeFieldType HOUR_TYPE = DateTimeFieldType.hourOfDay();
-    public static final DateTimeFieldType MINUTE_TYPE = DateTimeFieldType.minuteOfHour();
-
-    private DateTimeFormatter partialFormatter = TimePeriodPartialFormatter.INSTANCE();
+    private TimePeriodPartialFormatter partialFormatter = TimePeriodPartialFormatter.INSTANCE();
 
     public static final TimePeriodFormatter NewDefaultInstance(){
         return new TimePeriodFormatter();
@@ -53,29 +47,29 @@ public class TimePeriodFormatter {
     public String getTimePeriod(TimePeriodBase tp){
         String result = null;
         if (tp.isContinued()){
-            String strStart = tp.getStart() != null ? tp.getStart().toString(partialFormatter): null;
+            String strStart = tp.getStart() != null ? partialFormatter.print(tp.getStart()): null;
             result = CdmUtils.concat("", strStart, "+");
         }else{
             Partial start = tp.getStart();
             Partial end = tp.getEnd();
             if (start != null && end != null){
-                if (start.isSupported(YEAR_TYPE) && end.isSupported(YEAR_TYPE)
-                        && start.get(YEAR_TYPE) == end.get(YEAR_TYPE)){
-                    if (start.getFields().length == 1){
+                if (start.hasYear() && end.hasYear()
+                        && Objects.equals(start.getYear(), end.getYear())){
+                    if (!start.hasMonth() && !start.hasDay() && !start.hasHour() && !start.hasMinute()){
                         end = null;
                     }else{
-                        start = start.without(YEAR_TYPE);
+                        start = start.withoutYear();
                     }
                 }
-                if (end != null && !start.isSupported(YEAR_TYPE) && start.isSupported(MONTH_TYPE) &&
-                        end.isSupported(MONTH_TYPE) && start.get(MONTH_TYPE) == end.get(MONTH_TYPE)){
-                    start = start.without(MONTH_TYPE);
+                if (end != null && !start.hasYear() && start.hasMonth() &&
+                        end.hasMonth() && Objects.equals(start.getMonth(), end.getMonth())){
+                    start = start.withoutMonth();
                 }
             }
             @SuppressWarnings("null")
-            String strStart = isNotEmpty(start) ? start.toString(partialFormatter): null;
+            String strStart = isNotEmpty(start) ? partialFormatter.print(start): null;
             @SuppressWarnings("null")
-            String strEnd = isNotEmpty(end) ? end.toString(partialFormatter): null;
+            String strEnd = isNotEmpty(end) ? partialFormatter.print(end): null;
             result = CdmUtils.concat(TimePeriod.SEP, strStart, strEnd);
         }
 
@@ -83,7 +77,7 @@ public class TimePeriodFormatter {
     }
 
     private boolean isNotEmpty(Partial partial) {
-        return partial != null && partial.getFields().length>0;
+        return partial != null && !partial.isEmpty();
     }
 
     public String getYear(TimePeriodBase tp){

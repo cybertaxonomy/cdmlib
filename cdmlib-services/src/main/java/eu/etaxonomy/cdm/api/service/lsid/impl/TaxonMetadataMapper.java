@@ -14,8 +14,6 @@ package eu.etaxonomy.cdm.api.service.lsid.impl;
 //import org.cateproject.model.taxon.TaxonBase;
 //import org.cateproject.model.taxon.TaxonRelationship;
 //import org.cateproject.service.lsid.LSIDMetadataMapper;
-//import org.joda.time.format.DateTimeFormatter;
-//import org.joda.time.format.ISODateTimeFormat;
 //import org.tdwg.ontology.RDF;
 //import org.tdwg.ontology.Relation;
 //import org.tdwg.ontology.TaxonName;

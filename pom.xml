@@ -1049,13 +1049,6 @@
           </exclusion>
         </exclusions>
       </dependency>
-      <!-- joda-time -->
-      <dependency>
-        <groupId>joda-time</groupId>
-        <artifactId>joda-time</artifactId>
-        <version>2.15.1</version>
-      </dependency>
-
       <dependency>
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-core</artifactId>

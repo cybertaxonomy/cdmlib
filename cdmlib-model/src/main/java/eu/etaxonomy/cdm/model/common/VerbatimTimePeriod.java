@@ -14,8 +14,6 @@ import java.util.Date;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.joda.time.Partial;
-import org.joda.time.ReadableInstant;
 
 import eu.etaxonomy.cdm.format.common.VerbatimTimePeriodFormatter;
 import jakarta.persistence.Embeddable;
@@ -91,15 +89,6 @@ public class VerbatimTimePeriod extends TimePeriodBase {
      }
 
      /**
-      * Factory method to create a TimePeriod from a <code>ReadableInstant</code>(e.g. <code>DateTime</code>).
-      * The <code>ReadableInstant</code> is stored as the starting instant.
-      * @return
-      */
-     public static final VerbatimTimePeriod NewVerbatimInstance(ReadableInstant readableInstant){
-         return NewVerbatimInstance(readableInstant, null);
-     }
-
-     /**
       * Factory method to create a TimePeriod from a starting and an ending <code>Calendar</code>
       * @return
       */
@@ -113,14 +102,6 @@ public class VerbatimTimePeriod extends TimePeriodBase {
       */
      public static final VerbatimTimePeriod NewVerbatimInstance(Date startDate, Date endDate){
          return NewVerbatimInstance(dateToPartial(startDate), dateToPartial(endDate));
-     }
-
-     /**
-      * Factory method to create a TimePeriod from a starting and an ending <code>ReadableInstant</code>(e.g. <code>DateTime</code>)
-      * @return
-      */
-     public static final VerbatimTimePeriod NewVerbatimInstance(ReadableInstant startInstant, ReadableInstant endInstant){
-         return new VerbatimTimePeriod(readableInstantToPartial(startInstant), readableInstantToPartial(endInstant), null);
      }
 
 //*********************** CONSTRUCTOR *********************************/

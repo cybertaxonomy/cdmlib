@@ -10,10 +10,9 @@ package eu.etaxonomy.cdm.remote.json.processor.value;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.Partial;
-import org.joda.time.format.ISODateTimeFormat;
 
 import eu.etaxonomy.cdm.jpa.PartialConverter;
+import eu.etaxonomy.cdm.model.common.Partial;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;
 
@@ -34,9 +33,9 @@ public class PartialJSONValueProcessor implements JsonValueProcessor {
 		}
 		Partial partial = (Partial) object;
 		if (logger.isDebugEnabled()) {
-			logger.debug("processArrayValue of joda.time.DateTime: " + PartialConverter.partialToString(partial));
+			logger.debug("processArrayValue of Partial: " + PartialConverter.partialToString(partial));
 		}
-        return partial.toString(ISODateTimeFormat.date());
+        return partial.toIsoDate();
 	}
 
 	@Override
@@ -46,8 +45,8 @@ public class PartialJSONValueProcessor implements JsonValueProcessor {
 		}
 		Partial partial = (Partial) object;
 		if (logger.isDebugEnabled()) {
-			logger.debug("processObjectValue of joda.time.DateTime: " + PartialConverter.partialToString(partial));
+			logger.debug("processObjectValue of Partial: " + PartialConverter.partialToString(partial));
 		}
-		return partial.toString(ISODateTimeFormat.date());
+		return partial.toIsoDate();
 	}
 }
