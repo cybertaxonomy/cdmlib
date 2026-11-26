@@ -18,24 +18,17 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Assumptions;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.ClientHttpRequest;
-import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.NoOpResponseErrorHandler;
-import org.springframework.web.client.RequestCallback;
-import org.springframework.web.client.ResponseExtractor;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 import org.springframework.web.util.UriUtils;
 
@@ -83,7 +76,7 @@ public class ServerRunning {
 
     private String hostName = DEFAULT_HOST;
 
-    private RestTemplate client;
+    private RestClient client;
 
     /**
      * @return a new rule that assumes an existing running broker
@@ -115,7 +108,7 @@ public class ServerRunning {
         if (!serverOnline.containsKey(port)) {
             serverOnline.put(port, true);
         }
-        client = getRestTemplate();
+        client = createRestClient();
     }
 
     /**
@@ -135,12 +128,15 @@ public class ServerRunning {
             Assumptions.assumeTrue(serverOffline.get(port));
         }
 
-        RestTemplate probeClient = new RestTemplate();
+        RestClient probeClient = createRestClient();
         boolean followRedirects = HttpURLConnection.getFollowRedirects();
         HttpURLConnection.setFollowRedirects(false);
         boolean online = false;
         try {
-            probeClient.getForEntity(new UriTemplate(getUrl(CONNECT_TEST_PATH)).toString(), String.class);
+            probeClient.get()
+                    .uri(new UriTemplate(getUrl(CONNECT_TEST_PATH)).toString())
+                    .retrieve()
+                    .toEntity(String.class);
             online = true;
             logger.info("Basic connectivity test passed");
         } catch (RestClientException e) {
@@ -180,8 +176,12 @@ public class ServerRunning {
     public ResponseEntity<String> postForString(String path, MultiValueMap<String, String> formData) {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_FORM_URLENCODED));
-        return client.exchange(getUrl(path), HttpMethod.POST, new HttpEntity<MultiValueMap<String, String>>(formData,
-                headers), String.class);
+        return client.post()
+                .uri(getUrl(path))
+                .headers(h -> h.addAll(headers))
+                .body(formData)
+                .retrieve()
+                .toEntity(String.class);
     }
 
     public ResponseEntity<Void> postForStatus(String path, MultiValueMap<String, String> formData) {
@@ -192,8 +192,12 @@ public class ServerRunning {
         HttpHeaders actualHeaders = new HttpHeaders();
         actualHeaders.putAll(headers);
         actualHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        return client.exchange(getUrl(path), HttpMethod.POST, new HttpEntity<MultiValueMap<String, String>>(formData,
-                actualHeaders), (Class<Void>)null);
+        return client.post()
+                .uri(getUrl(path))
+                .headers(h -> h.addAll(actualHeaders))
+                .body(formData)
+                .retrieve()
+                .toBodilessEntity();
     }
 
     public HttpHeaders postForHeaders(String path, MultiValueMap<String, String> formData) {
@@ -201,16 +205,6 @@ public class ServerRunning {
     }
 
     public HttpHeaders postForHeaders(String path, MultiValueMap<String, String> formData, final HttpHeaders headers) {
-
-        RequestCallback requestCallback = new NullRequestCallback();
-        if (headers != null) {
-            requestCallback = new RequestCallback() {
-                @Override
-                public void doWithRequest(ClientHttpRequest request) throws IOException {
-                    request.getHeaders().putAll(headers);
-                }
-            };
-        }
 
         StringBuilder builder = new StringBuilder(getUrl(path));
         if (!path.contains("?")) {
@@ -225,25 +219,34 @@ public class ServerRunning {
             }
         }
         builder.deleteCharAt(builder.length() - 1);
-        return client.execute(builder.toString(), HttpMethod.POST, requestCallback,
-                new ResponseExtractor<HttpHeaders>() {
-                    @Override
-                    public HttpHeaders extractData(ClientHttpResponse response) throws IOException {
-                        return response.getHeaders();
+        return client.post()
+                .uri(builder.toString())
+                .headers(h -> {
+                    if (headers != null) {
+                        h.addAll(headers);
                     }
-                });
+                })
+                .exchange((request, response) -> response.getHeaders());
     }
 
     public ResponseEntity<String> postForString(String path, HttpHeaders headers, MultiValueMap<String, String> formData) {
         HttpHeaders actualHeaders = new HttpHeaders();
         actualHeaders.putAll(headers);
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_FORM_URLENCODED));
-        return client.exchange(getUrl(path), HttpMethod.POST, new HttpEntity<MultiValueMap<String, String>>(formData,
-                headers), String.class);
+        actualHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_FORM_URLENCODED));
+        return client.post()
+                .uri(getUrl(path))
+                .headers(h -> h.addAll(actualHeaders))
+                .body(formData)
+                .retrieve()
+                .toEntity(String.class);
     }
 
     public ResponseEntity<String> getForString(String path, final HttpHeaders headers) {
-        return client.exchange(getUrl(path), HttpMethod.GET, new HttpEntity<Void>((Void) null, headers), String.class);
+        return client.get()
+                .uri(getUrl(path))
+                .headers(h -> h.addAll(headers))
+                .retrieve()
+                .toEntity(String.class);
     }
 
     public ResponseEntity<String> getForString(String path) {
@@ -251,8 +254,11 @@ public class ServerRunning {
     }
 
     public String getForRedirect(String path, final HttpHeaders headers) {
-        ResponseEntity<Void> response = client.exchange(getUrl(path), HttpMethod.GET, new HttpEntity<Void>((Void) null,
-                headers), Void.class);
+        ResponseEntity<Void> response = client.get()
+                .uri(getUrl(path))
+                .headers(h -> h.addAll(headers))
+                .retrieve()
+                .toBodilessEntity();
         URI location = new URI(response.getHeaders().getLocation());
         try {
             return URLDecoder.decode(location.toString(), "UTF-8");
@@ -262,23 +268,17 @@ public class ServerRunning {
     }
 
     public HttpStatus getStatusCode(String path, final HttpHeaders headers) {
-        RequestCallback requestCallback = new NullRequestCallback();
-        if (headers != null) {
-            requestCallback = new RequestCallback() {
-                @Override
-                public void doWithRequest(ClientHttpRequest request) throws IOException {
-                    request.getHeaders().putAll(headers);
-                }
-            };
-        }
-        HttpStatusCode statusCode = client.execute(getUrl(path), HttpMethod.GET, requestCallback,
-                new ResponseExtractor<ResponseEntity<Void>>() {
-                    @Override
-                    public ResponseEntity<Void> extractData(ClientHttpResponse response) throws IOException {
-                        FileCopyUtils.copyToByteArray(response.getBody());
-                        return new ResponseEntity<>(response.getStatusCode());
+        HttpStatusCode statusCode = client.get()
+                .uri(getUrl(path))
+                .headers(h -> {
+                    if (headers != null) {
+                        h.addAll(headers);
                     }
-                }).getStatusCode();
+                })
+                .exchange((request, response) -> {
+                    FileCopyUtils.copyToByteArray(response.getBody());
+                    return response.getStatusCode();
+                });
         return HttpStatus.valueOf(statusCode.value());
     }
 
@@ -286,28 +286,28 @@ public class ServerRunning {
         return getStatusCode(getUrl(path), null);
     }
 
-    public RestTemplate getRestTemplate() {
-        RestTemplate client = new RestTemplate();
-        client.setRequestFactory(new SimpleClientHttpRequestFactory() {
+    public RestClient getRestClient() {
+        return createRestClient();
+    }
+
+    private RestClient createRestClient() {
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory() {
             @Override
             protected void prepareConnection(HttpURLConnection connection, String httpMethod) throws IOException {
                 super.prepareConnection(connection, httpMethod);
                 connection.setInstanceFollowRedirects(false);
             }
-        });
+        };
         // Pass errors through in response entity for status code analysis
-        client.setErrorHandler(new NoOpResponseErrorHandler());
-        return client;
+        // (equivalent to RestTemplate + NoOpResponseErrorHandler)
+        return RestClient.builder()
+                .requestFactory(requestFactory)
+                .defaultStatusHandler(HttpStatusCode::isError, (request, response) -> { })
+                .build();
     }
 
     public UriBuilder buildUri(String url) {
         return UriBuilder.fromUri(url.startsWith("http:") ? url : getUrl(url));
-    }
-
-    private static final class NullRequestCallback implements RequestCallback {
-        @Override
-        public void doWithRequest(ClientHttpRequest request) throws IOException {
-        }
     }
 
     public static class UriBuilder {
