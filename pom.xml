@@ -647,11 +647,6 @@
       </dependency>
       <dependency>
         <groupId>eu.etaxonomy</groupId>
-        <artifactId>cdm-server</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-ext</artifactId>
         <version>${project.version}</version>
       </dependency>
