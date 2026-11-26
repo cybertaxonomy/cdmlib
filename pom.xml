@@ -67,7 +67,8 @@
     <mysql.version>26.7.0</mysql.version>
     <mariadb.version>3.5.10</mariadb.version>
     <postgresql.version>42.7.13</postgresql.version>
-    <c3p0.version>0.9.5.2</c3p0.version>
+    <c3p0.version>0.15.1</c3p0.version>
+    <mchange-commons.version>0.7.1</mchange-commons.version>
     <!-- 1.83 adds META-INF/versions/25 (class file 69); Jetty annotation scan / older ASM fail on it -->
     <bouncycastle.version>1.82</bouncycastle.version>
     <!-- springdoc 3.2.x ↔ Boot 4.2 / Spring 7 / Jackson 3 (swagger-core 3.0) -->
@@ -1344,22 +1345,17 @@
       <dependency>
         <groupId>com.mchange</groupId>
         <artifactId>c3p0</artifactId>
-        <!-- 
-          IMPORTANT!!!
-          when changing the version of this artifact, the 
-          version in cdm-server pom.xml must be changed 
-          the same otherwise db connections through jndi 
-          will not work!
-		  NOTE: not so critical anymore as we use cdmlib-db
-		  now for both projects
+        <!--
+          Align with hibernate-c3p0 (7.4.x ships ≥0.12) and keep in sync with
+          cdmlib-db / cdm-server so JNDI datasources see the same pool classes.
         -->
         <version>${c3p0.version}</version>
       </dependency>
       <dependency>
         <groupId>com.mchange</groupId>
         <artifactId>mchange-commons-java</artifactId>
-        <!-- mchange-commons-java needs to match the version as defined in the c3p0/pom.xml -->
-        <version>0.2.11</version>
+        <!-- must match c3p0's transitive dependency -->
+        <version>${mchange-commons.version}</version>
       </dependency>
       <dependency>
         <groupId>org.hibernate.common</groupId>
