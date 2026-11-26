@@ -19,11 +19,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.CollectionType;
-
 import eu.etaxonomy.cdm.api.service.IPreferenceService;
 import eu.etaxonomy.cdm.api.service.media.DefaultMediaTransformations;
 import eu.etaxonomy.cdm.api.service.media.MediaUriTransformation;
@@ -36,6 +31,11 @@ import eu.etaxonomy.cdm.model.metadata.CdmPreference;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 import eu.etaxonomy.cdm.model.metadata.PreferencePredicate;
 import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.DatabindException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.type.CollectionType;
 
 /**
  * Utility service which creates volatile objects which must not be persisted.
@@ -131,15 +131,15 @@ public class MediaToolbox implements IMediaToolbox {
         if(pref != null && pref.getValue() != null) {
             if(mediaRepresentationTransformationsLastHash == null || mediaRepresentationTransformationsLastHash != pref.getValue().hashCode()) {
                 // loaded value is different from last value
-                ObjectMapper mapper = new ObjectMapper();
+                ObjectMapper mapper = new JsonMapper();
                 CollectionType javaType = mapper.getTypeFactory()
                         .constructCollectionType(List.class, MediaUriTransformation.class);
                 try {
                     transformations = mapper.readValue(pref.getValue(), javaType);
                     mediaRepresentationTransformationsLastHash = pref.getValue().hashCode();
-                } catch (JsonMappingException e) {
+                } catch (DatabindException e) {
                     logger.error(e);
-                } catch (JsonProcessingException e) {
+                } catch (JacksonException e) {
                     logger.error(e);
                 }
             }
@@ -154,11 +154,11 @@ public class MediaToolbox implements IMediaToolbox {
     /**
      * @param trans the list of MediaUriTransformation to be serialized
      * @return the JSON string
-     * @throws JsonProcessingException
+     * @throws JacksonException
      */
-    static protected String transformationsToJson(List<MediaUriTransformation> trans) throws JsonProcessingException {
+    static protected String transformationsToJson(List<MediaUriTransformation> trans) throws JacksonException {
 
-      ObjectMapper mapper = new ObjectMapper();
+      ObjectMapper mapper = new JsonMapper();
       CollectionType javaType = mapper.getTypeFactory()
               .constructCollectionType(List.class, MediaUriTransformation.class);
 
@@ -169,9 +169,9 @@ public class MediaToolbox implements IMediaToolbox {
     /**
      *
      * @param args
-     * @throws JsonProcessingException
+     * @throws JacksonException
      */
-    public static void main(String[] args) throws JsonProcessingException {
+    public static void main(String[] args) throws JacksonException {
 
         System.out.println("Default tansformations for digilib");
         System.out.println("========================================");

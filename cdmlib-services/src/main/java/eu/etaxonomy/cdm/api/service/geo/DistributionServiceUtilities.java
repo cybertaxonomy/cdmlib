@@ -22,11 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.MapType;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-
 import eu.etaxonomy.cdm.api.dto.portal.DistributionDto;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionTreeDto;
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
@@ -41,6 +36,11 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.type.MapType;
+import tools.jackson.databind.type.TypeFactory;
 
 /**
  * Class implementing the business logic for creating the map service string for
@@ -76,12 +76,12 @@ public class DistributionServiceUtilities {
      * @param statusColorJson for example: {@code {"n":"#ff0000","p":"#ffff00"}}
      */
     public static Map<UUID,Color> buildStatusColorMap(String statusColorJson)
-            throws JsonProcessingException {
+            throws JacksonException {
 
         Map<UUID,Color> presenceAbsenceTermColors = null;
         if(StringUtils.isNotEmpty(statusColorJson)){
 
-            ObjectMapper mapper = new ObjectMapper();
+            ObjectMapper mapper = new JsonMapper();
             // TODO cache the color maps to speed this up?
 
             TypeFactory typeFactory = mapper.getTypeFactory();

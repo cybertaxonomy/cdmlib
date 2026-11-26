@@ -24,12 +24,6 @@ import org.apache.hc.core5.http.HttpException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import eu.etaxonomy.cdm.api.service.media.MediaInfoFileReader;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -51,6 +45,12 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.DatabindException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
  * Utility class which provides the functionality to convert a JSON response
@@ -63,7 +63,7 @@ public class GbifJsonOccurrenceParser {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new JsonMapper();
 
     private static final String DATASET_KEY = "datasetKey";
     private static final String DATASET_PROTOCOL = "protocol";
@@ -168,10 +168,10 @@ public class GbifJsonOccurrenceParser {
         JsonNode neoJsonNode = null;
         try {
             neoJsonNode = mapper.readTree(jsonString);
-        } catch (JsonMappingException e) {
+        } catch (DatabindException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -518,10 +518,10 @@ public class GbifJsonOccurrenceParser {
         JsonNode neoJsonNode = null;
         try {
             neoJsonNode = mapper.readTree(jsonString);
-        } catch (JsonMappingException e) {
+        } catch (DatabindException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

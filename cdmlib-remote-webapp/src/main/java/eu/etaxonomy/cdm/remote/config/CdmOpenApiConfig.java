@@ -22,8 +22,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.type.TypeFactory;
+import tools.jackson.databind.type.TypeFactory;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
@@ -142,8 +141,7 @@ public class CdmOpenApiConfig {
         if (type instanceof Class<?> clazz) {
             return clazz;
         }
-        JavaType javaType = TypeFactory.defaultInstance().constructType(type);
-        return javaType.getRawClass();
+        return TypeFactory.rawClass(type);
     }
 
     private static boolean isCdmDomainType(Class<?> clazz) {

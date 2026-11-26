@@ -43,18 +43,16 @@
     <httpcomponents.version>4.5.14</httpcomponents.version>
     <doxia.version>2.1.0</doxia.version>
     <poi.version>5.5.1</poi.version>                    <!-- checked 2026-05 -->
-    <!-- Jackson 2 for existing CDM code; Jackson 3 required by Spring Framework 7.1 / Security 7.2 -->
-    <jackson.version>2.22.3</jackson.version>
+    <!-- Jackson 3 (tools.jackson) for CDM + Spring 7.1; annotations stay com.fasterxml -->
+    <jackson.version>3.2.4</jackson.version>
     <jackson.annotations.version>2.22</jackson.annotations.version>
-    <jackson3.version>3.2.4</jackson3.version>
+    <!-- Jackson 2 retained only for iiif-apis (IiifObjectMapper) -->
+    <jackson2.version>2.22.3</jackson2.version>
 	<slf4j.version>2.0.19</slf4j.version>
 	<log4j.version>2.26.1</log4j.version>
-	<jaxb.version>2.3.3</jaxb.version>
-	<jaxb.api.version>2.3.1</jaxb.api.version>
-	<jaxb.api.jakarta.version>4.0.5</jaxb.api.jakarta.version>
-	<jaxb.jakarta.version>4.0.9</jaxb.jakarta.version>
-    <javax.activation.version>1.2.0</javax.activation.version>
-    <jakarta.activation.version>2.0.1</jakarta.activation.version>
+	<!-- Jakarta XML Binding 4.x (javax / JAXB 2.3 stack removed) -->
+	<jaxb.version>4.0.9</jaxb.version>
+	<jaxb.api.version>4.0.5</jaxb.api.version>
     <cglib.version>3.3.0</cglib.version>
 	<aspectj.version>1.9.25.1</aspectj.version>            <!-- checked 2022-05 -->
 	<geotools.version>35.1</geotools.version>
@@ -72,8 +70,9 @@
     <c3p0.version>0.9.5.2</c3p0.version>
     <!-- 1.83 adds META-INF/versions/25 (class file 69); Jetty annotation scan / older ASM fail on it -->
     <bouncycastle.version>1.82</bouncycastle.version>
-    <!-- springdoc 2.6.x ↔ Boot 3.3 / Spring 6.1; 2.8.x needs Spring 6.2 (isDefaultCandidate) -->
-    <springdoc.version>2.6.0</springdoc.version>
+    <!-- springdoc 3.2.x ↔ Boot 4.2 / Spring 7 / Jackson 3 (swagger-core 3.0) -->
+    <springdoc.version>3.2.1</springdoc.version>
+    <swagger-annotations.version>3.0.0</swagger-annotations.version>
   </properties>
   
   <scm>
@@ -657,65 +656,50 @@
         <version>${project.version}</version>
       </dependency>
       
-      <!--*********** JAXB********* -->
+      <!--*********** JAXB (Jakarta XML Binding 4.x) ********* -->
       <dependency>
         <groupId>jakarta.xml.bind</groupId>
         <artifactId>jakarta.xml.bind-api</artifactId>
-        <version>${jaxb.api.jakarta.version}</version>
+        <version>${jaxb.api.version}</version>
       </dependency>
       <dependency>
         <groupId>org.glassfish.jaxb</groupId>
         <artifactId>jaxb-core</artifactId>
-        <version>${jaxb.jakarta.version}</version>
-      </dependency>
-      <dependency>
-        <!-- old jaxb version, still required for Spring 5 -->
-        <groupId>com.sun.xml.bind</groupId>
-        <artifactId>jaxb-impl</artifactId>
         <version>${jaxb.version}</version>
-      </dependency>
-       <dependency> 
-         <!-- old jaxb version, still required for Spring 5 --> 
-         <groupId>javax.xml.bind</groupId> 
-         <artifactId>jaxb-api</artifactId> 
-         <version>${jaxb.api.version}</version>
-       </dependency> 
-      <dependency>
-         <!-- dependency for jaxb-api -->
-         <groupId>javax.activation</groupId>
-         <artifactId>javax.activation-api</artifactId>
-         <version>${javax.activation.version}</version>
-      </dependency>
-      <dependency>
-         <!-- dependency for jaxb-api -->
-         <groupId>com.sun.activation</groupId>
-         <artifactId>javax.activation</artifactId>
-         <version>${javax.activation.version}</version>
-      </dependency>
-      <dependency>
-         <!-- dependency for jaxb-api -->
-         <groupId>com.sun.activation</groupId>
-         <artifactId>jakarta.activation</artifactId>
-         <version>${jakarta.activation.version}</version>
       </dependency>
  	  <dependency>
 		<groupId>org.glassfish.jaxb</groupId>
 		<artifactId>jaxb-runtime</artifactId>
-		<version>${jaxb.jakarta.version}</version>
+		<version>${jaxb.version}</version>
 	  </dependency>
 	  <dependency>
 		<groupId>org.glassfish.jaxb</groupId>
 		<artifactId>jaxb-jxc</artifactId>
 		<version>${jaxb.version}</version>
 	  </dependency>
+      <!-- dozer → jaxb-xjc 4.0.4; pin stack to match jaxb-runtime -->
+	  <dependency>
+		<groupId>org.glassfish.jaxb</groupId>
+		<artifactId>jaxb-xjc</artifactId>
+		<version>${jaxb.version}</version>
+	  </dependency>
+	  <dependency>
+		<groupId>org.glassfish.jaxb</groupId>
+		<artifactId>xsom</artifactId>
+		<version>${jaxb.version}</version>
+	  </dependency>
+	  <dependency>
+		<groupId>org.glassfish.jaxb</groupId>
+		<artifactId>codemodel</artifactId>
+		<version>${jaxb.version}</version>
+	  </dependency>
       <dependency>
-          <!-- currently required as xsom references older version -->
           <groupId>com.sun.xml.bind.external</groupId>
           <artifactId>relaxng-datatype</artifactId>
           <version>${jaxb.version}</version>
       </dependency>
       <dependency>
-          <!-- jaxb-runtime dependency -->
+          <!-- jaxb-runtime / bind-api dependency -->
           <groupId>jakarta.activation</groupId>
           <artifactId>jakarta.activation-api</artifactId>
           <version>2.1.4</version>
@@ -729,8 +713,7 @@
       <!--  JAXB END -->
       
 	  <dependency>
-	    <!-- only for version management org.apache.ant:ant depends in different versions from 
-             org.glassfish.jaxb:jaxb-jxc:2.2.11 -->
+	    <!-- version management: ant pulled transitively in differing versions via jaxb-jxc/xjc -->
 	    <groupId>org.apache.ant</groupId>
 	    <artifactId>ant</artifactId>
 	    <version>1.10.18</version>
@@ -1007,16 +990,7 @@
         <artifactId>iiif-apis</artifactId>
         <version>0.3.11</version>
       </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.datatype</groupId>
-        <artifactId>jackson-datatype-jsr310</artifactId>
-        <version>${jackson.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.module</groupId>
-        <artifactId>jackson-module-parameter-names</artifactId>
-        <version>${jackson.version}</version>
-    </dependency>
+      <!-- jackson-datatype-jsr310 / parameter-names: bundled in Jackson 3 databind -->
       <dependency>
         <groupId>org.apache.poi</groupId>
         <artifactId>poi</artifactId>
@@ -1671,26 +1645,31 @@
       	<artifactId>plexus-utils</artifactId>
       	<version>4.1.0</version>
       </dependency>
-      <!-- OpenAPI annotations (controllers); formerly swagger-annotations 1.5 / springfox -->
+      <!-- OpenAPI annotations (controllers); springdoc 3.2 / swagger-core 3.0 renamed -jakarta → plain -->
       <dependency>
         <groupId>io.swagger.core.v3</groupId>
-        <artifactId>swagger-annotations-jakarta</artifactId>
-        <version>2.2.28</version>
+        <artifactId>swagger-annotations</artifactId>
+        <version>${swagger-annotations.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springdoc</groupId>
         <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
         <version>${springdoc.version}</version>
       </dependency>
-      <!-- Jackson pins (also used outside springdoc) -->
+      <!-- Jackson 3 (tools.jackson) — CDM + Spring 7.1 baseline -->
       <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
+        <groupId>tools.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
         <version>${jackson.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
+        <groupId>tools.jackson.core</groupId>
         <artifactId>jackson-core</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>tools.jackson.dataformat</groupId>
+        <artifactId>jackson-dataformat-yaml</artifactId>
         <version>${jackson.version}</version>
       </dependency>
       <dependency>
@@ -1698,16 +1677,16 @@
         <artifactId>jackson-annotations</artifactId>
         <version>${jackson.annotations.version}</version>
       </dependency>
-      <!-- Jackson 3 (tools.jackson) — Spring 7.1 / Security 7.2 baseline -->
+      <!-- Jackson 2 pins for iiif-apis (IiifObjectMapper); coexists with tools.jackson -->
       <dependency>
-        <groupId>tools.jackson.core</groupId>
+        <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>${jackson3.version}</version>
+        <version>${jackson2.version}</version>
       </dependency>
       <dependency>
-        <groupId>tools.jackson.core</groupId>
+        <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-core</artifactId>
-        <version>${jackson3.version}</version>
+        <version>${jackson2.version}</version>
       </dependency>
       
       <!-- ******* DATABASES DRIVER ******* -->

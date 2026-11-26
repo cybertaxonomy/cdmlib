@@ -16,11 +16,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cybertaxonomy.media.info.model.MediaInfo;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Reads media metadata and file information from a
@@ -43,7 +43,7 @@ public class MediaInfoServiceReader extends AbstactMediaMetadataReader {
         try (InputStream jsonStream = UriUtils.getInputStream(metadataUri)){
             logger.info("reading metadata from " + metadataUri);
 
-            ObjectMapper mapper = new ObjectMapper();
+            ObjectMapper mapper = new JsonMapper();
             MediaInfo mediaInfo = mapper.readValue(jsonStream, MediaInfo.class);
             mapMediaInfo(mediaInfo, getCdmImageInfo());
             mediaInfo.getMetaData().entrySet().forEach(e -> processPutMetadataEntry(e.getKey(), e.getValue()));

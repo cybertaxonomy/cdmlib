@@ -25,12 +25,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.test.integration.spring.CdmServicesSpringIntegrationTest;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * @author a.kohlbecker
@@ -121,7 +121,7 @@ public class MediaInfoFactoryTest extends CdmServicesSpringIntegrationTest {
         assertEquals("https://image.bgbm.org/metadata/info?file=mediacloud/org1/1adb62d8-0b67-4128-927b-b713d164f98e/original", transformedUri.toString());
         if(UriUtils.isInternetAvailable(new URI("https://image.bgbm.org/"))){
             try (InputStream jsonStream = UriUtils.getInputStream(transformedUri)){
-                ObjectMapper mapper = new ObjectMapper();
+                ObjectMapper mapper = new JsonMapper();
                 MediaInfo mediaInfo = mapper.readValue(jsonStream, MediaInfo.class);
                 assertEquals(937, mediaInfo.getHeight());
                 assertEquals(1400, mediaInfo.getWidth());

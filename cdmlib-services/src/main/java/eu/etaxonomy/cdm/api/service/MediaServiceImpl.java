@@ -27,11 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.MediaDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
@@ -64,6 +59,11 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @Service
 @Transactional(readOnly=true)
@@ -440,12 +440,12 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
     }
     private Map<String, String> readJson(String json) {
         JsonNode tree = null;
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = new JsonMapper();
         try {
             Map<String, String> map
             = mapper.readValue(json, new TypeReference<>(){});
             return map;
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
            logger.error(e.getMessage());
         }
         return null;

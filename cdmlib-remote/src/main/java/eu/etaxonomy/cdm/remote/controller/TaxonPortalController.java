@@ -40,9 +40,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto.InfoPart;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
@@ -90,6 +87,9 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * The TaxonPortalController class is a Spring MVC Controller.
@@ -571,7 +571,7 @@ public class TaxonPortalController extends TaxonController{
         } catch (Exception e) {
             logger.error("doGetTaxonPage() - parsing error" + e.getMessage());
         }
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = new JsonMapper();
         JsonNode jsonNode = mapper.readTree(jsonStringBuilder.toString());
         JSONObject jsonObject = new JSONObject(jsonStringBuilder.toString());
         boolean includeUnpublished = NO_UNPUBLISHED;

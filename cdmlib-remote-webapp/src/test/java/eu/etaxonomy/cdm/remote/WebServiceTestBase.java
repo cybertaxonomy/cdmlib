@@ -10,17 +10,12 @@ package eu.etaxonomy.cdm.remote;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.util.Collections;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 
 /**
  * @author a.kohlbecker
@@ -33,7 +28,7 @@ public class WebServiceTestBase {
     private int port = 9180;
     private String baseUri = "";
 
-    RestTemplate template = new RestTemplate();
+    RestClient client = RestClient.create();
 
 
     @BeforeEach
@@ -62,10 +57,11 @@ public class WebServiceTestBase {
             uri.append("?").append(query);
         }
         logger.debug("httpGetJson: " + uri.toString());
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        ResponseEntity<String> entity = template.exchange(
-                uri.toString(), HttpMethod.GET, new HttpEntity<>(headers), String.class);
+        ResponseEntity<String> entity = client.get()
+                .uri(uri.toString())
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .toEntity(String.class);
         assertNotNull(entity.getBody(), "HTTP response body is null for " + uri
                 + " (status=" + entity.getStatusCode() + ")");
         return entity.getBody();

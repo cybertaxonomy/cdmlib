@@ -31,8 +31,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import tools.jackson.core.exc.StreamReadException;
+import tools.jackson.databind.DatabindException;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto;
@@ -259,8 +259,8 @@ public class DescriptionListController
      *  The recipe for creating the condensed distribution status
      * @return
      * @throws IOException
-     * @throws JsonMappingException
-     * @throws JsonParseException
+     * @throws DatabindException
+     * @throws StreamReadException
      */
     @RequestMapping(value = "distributionInfoFor/{uuid}", method = RequestMethod.GET)
     public ModelAndView doGetDistributionInfo(
@@ -277,7 +277,7 @@ public class DescriptionListController
             @RequestParam(value = "distributionOrder", required = false, defaultValue="LABEL") DistributionOrder distributionOrder,
             @RequestParam(value = "recipe", required = false, defaultValue="EuroPlusMed") CondensedDistributionRecipe recipe,
             HttpServletRequest request,
-            HttpServletResponse response) throws JsonParseException, JsonMappingException, IOException {
+            HttpServletResponse response) throws StreamReadException, DatabindException, IOException {
 
             logger.info("doGetDistributionInfo() - " + requestPathAndQuery(request));
 

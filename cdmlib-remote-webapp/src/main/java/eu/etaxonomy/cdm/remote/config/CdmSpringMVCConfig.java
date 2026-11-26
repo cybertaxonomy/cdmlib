@@ -30,7 +30,7 @@ import org.springframework.web.servlet.config.annotation.DefaultServletHandlerCo
 import org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 import eu.etaxonomy.cdm.remote.controller.interceptor.LocaleContextHandlerInterceptor;
 import eu.etaxonomy.cdm.remote.converter.RestrictionConverter;

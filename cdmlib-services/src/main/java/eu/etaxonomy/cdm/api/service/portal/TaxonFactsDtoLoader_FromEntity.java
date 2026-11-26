@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.dto.portal.CommonNameDto;
@@ -444,8 +444,8 @@ public class TaxonFactsDtoLoader_FromEntity extends TaxonFactsDtoLoaderBase {
         try {
             distributionStatusColors = DistributionServiceUtilities.buildStatusColorMap(
                     statusColorsString);
-        } catch (JsonProcessingException e) {
-            pageDto.addMessage(MessagesDto.NewErrorInstance("JsonProcessingException when reading distribution status colors", e));
+        } catch (JacksonException e) {
+            pageDto.addMessage(MessagesDto.NewErrorInstance("JacksonException when reading distribution status colors", e));
             //TODO is null allowed?
             distributionStatusColors = null;
         }

@@ -14,9 +14,9 @@ import java.util.UUID;
 
 import org.springframework.core.convert.converter.Converter;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.exc.StreamReadException;
+import tools.jackson.databind.DatabindException;
+import tools.jackson.databind.ObjectMapper;
 
 import eu.etaxonomy.cdm.api.filter.Restriction;
 
@@ -54,7 +54,7 @@ public class RestrictionConverter implements Converter<String, Restriction<?>>  
             }
             restriction.setValues(convertedValues);
             return restriction ;
-        } catch (JsonParseException | JsonMappingException e) {
+        } catch (StreamReadException | DatabindException e) {
             throw new IllegalArgumentException("Json for 'restriction' could not be parsed or mapped correctly", e);
         }catch (Exception e) {
             // TODO more specific unchecked exception type?
