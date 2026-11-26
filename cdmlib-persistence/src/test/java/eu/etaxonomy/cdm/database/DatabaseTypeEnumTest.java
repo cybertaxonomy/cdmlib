@@ -86,7 +86,7 @@ public class DatabaseTypeEnumTest {
 		assertEquals("jdbc:mysql://192.168.2.10:3306/cdm_test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull", DatabaseTypeEnumTest.dbEnumMySql.getConnectionString(cdmDataSource));
 
 		ICdmDataSource mariadbDataSource = CdmDataSource.NewMariaDbInstance("192.168.2.10", "cdm_test", null, null);
-        assertEquals("jdbc:mariadb://192.168.2.10:3306/cdm_test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull", DatabaseTypeEnumTest.dbEnumMariaDb.getConnectionString(mariadbDataSource));
+        assertEquals("jdbc:mariadb://192.168.2.10:3306/cdm_test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&sslMode=disable", DatabaseTypeEnumTest.dbEnumMariaDb.getConnectionString(mariadbDataSource));
 
 		ICdmDataSource sqlServerDataSource = CdmDataSource.NewSqlServerInstance("192.168.2.10", "cdm_test", -1, null, null);
 		assertEquals("jdbc:sqlserver://192.168.2.10:1433;databaseName=cdm_test;SelectMethod=cursor", DatabaseTypeEnumTest.dbEnumSql.getConnectionString(sqlServerDataSource));

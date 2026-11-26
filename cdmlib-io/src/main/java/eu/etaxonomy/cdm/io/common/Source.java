@@ -372,7 +372,8 @@ public class Source {
             else if (mDbms.equalsIgnoreCase(MARIADB)) {
                 Class.forName(clsMariaDB);
                 server = mServer + ":" + mPort;
-                mUrl = urlMariaDB + server+ "/" + mDb + "?useUnicode=true&characterEncoding=utf8" + "&zeroDateTimeBehavior=convertToNull";
+                // Connector/J 4.0 defaults sslMode=verify-full; keep prior non-TLS behavior
+                mUrl = urlMariaDB + server+ "/" + mDb + "?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&sslMode=disable";
             }
 	        else {
 	            throw new RuntimeException("Unsupported Database type");

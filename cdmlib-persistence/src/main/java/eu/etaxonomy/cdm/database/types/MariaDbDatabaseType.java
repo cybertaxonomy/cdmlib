@@ -44,7 +44,9 @@ public class MariaDbDatabaseType extends DatabaseTypeBase {
     //connection String
 	@Override
     public String getConnectionString(ICdmDataSource ds, int port){
-        return urlString + ds.getServer() + ":" + port + dbSeparator + ds.getDatabase() + "?useUnicode=true&characterEncoding=utf8" + "&zeroDateTimeBehavior=convertToNull";
+        // Connector/J 4.0 defaults sslMode=verify-full; keep prior non-TLS behavior unless callers opt in
+        return urlString + ds.getServer() + ":" + port + dbSeparator + ds.getDatabase()
+                + "?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&sslMode=disable";
         //return urlString + ds.getServer() + ":" + port + "/" + ds.getDatabase() + "?useUnicode=true&characterEncoding=utf8&connectionCollation=utf8_general_ci&characterSetResults=utf8&jdbcCompliantTruncation=false";
     }
 

@@ -44,7 +44,7 @@
     <doxia.version>2.2.0</doxia.version>
     <poi.version>6.0.0</poi.version>
     <!-- Jackson 3 (tools.jackson) for CDM + Spring 7.1; annotations / Jackson 2 for iiif -->
-    <jackson.version>3.2.4</jackson.version>
+    <jackson.version>3.3.0</jackson.version>
     <jackson.annotations.version>2.23</jackson.annotations.version>
     <jackson2.version>2.23.0</jackson2.version>
 	<slf4j.version>2.0.20</slf4j.version>
@@ -64,7 +64,7 @@
     <!-- DBs -->
     <h2.version>2.5.252</h2.version>
     <mysql.version>26.10.0</mysql.version>
-    <mariadb.version>3.5.10</mariadb.version>
+    <mariadb.version>4.0.0</mariadb.version>
     <postgresql.version>42.7.15</postgresql.version>
     <c3p0.version>0.15.1</c3p0.version>
     <mchange-commons.version>0.7.1</mchange-commons.version>
