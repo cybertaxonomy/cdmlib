@@ -33,7 +33,7 @@
     <!-- security  -->
     <bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
     <bean id="daoAuthenticationProvider" class="eu.etaxonomy.cdm.api.security.CdmDaoAuthenticationProvider">
-        <property name="userDetailsService" ref="userService"/>
+        <constructor-arg ref="userService"/>
         <property name="passwordEncoder" ref="passwordEncoder"/>
     </bean>
     <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">

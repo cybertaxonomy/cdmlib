@@ -53,17 +53,21 @@ import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadataFac
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import jakarta.persistence.Lob;
+import jakarta.persistence.criteria.CollectionJoin;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.From;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.ListJoin;
+import jakarta.persistence.criteria.MapJoin;
 import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Selection;
+import jakarta.persistence.criteria.SetJoin;
 import jakarta.persistence.metamodel.EntityType;
 
 /**
@@ -589,8 +593,23 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
                 } catch (IllegalArgumentException noAttr) {
                     continue;
                 }
+                // Dispatch to the matching treat() overload. Casting a SetJoin/ListJoin
+                // to Join picks CriteriaBuilder.treat(Join,…) which Hibernate 6+/7
+                // implements only for singular joins and then ClassCastExceptions.
                 if (from instanceof Root) {
                     return cb.treat((Root) from, subClass);
+                }
+                if (from instanceof SetJoin) {
+                    return cb.treat((SetJoin) from, subClass);
+                }
+                if (from instanceof ListJoin) {
+                    return cb.treat((ListJoin) from, subClass);
+                }
+                if (from instanceof MapJoin) {
+                    return cb.treat((MapJoin) from, subClass);
+                }
+                if (from instanceof CollectionJoin) {
+                    return cb.treat((CollectionJoin) from, subClass);
                 }
                 if (from instanceof Join) {
                     return cb.treat((Join) from, subClass);

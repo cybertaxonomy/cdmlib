@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
+import org.springframework.security.authorization.AuthorizationResult;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -62,7 +63,7 @@ public abstract class CdmPermissionVoter implements AuthorizationManager<CdmAuth
     }
 
     @Override
-    public AuthorizationDecision check(Supplier<Authentication> authentication, CdmAuthorizationTarget object) {
+    public AuthorizationResult authorize(Supplier<? extends Authentication> authentication, CdmAuthorizationTarget object) {
         CdmVote vote = vote(authentication.get(), object.getTargetEntityStates(), object.getRequiredAuthority());
         if (vote == CdmVote.ABSTAIN) {
             return null;

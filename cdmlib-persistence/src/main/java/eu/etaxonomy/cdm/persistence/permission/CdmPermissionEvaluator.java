@@ -15,8 +15,8 @@ import java.util.EnumSet;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
+import org.springframework.security.authorization.AuthorizationResult;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -179,7 +179,7 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
 
         // === run AuthorizationManager (voters via UnanimousBasedUnrevokable)
         logger.debug("AuthorizationManager will decide ...");
-        AuthorizationDecision decision = authorizationManager.check(
+        AuthorizationResult decision = authorizationManager.authorize(
                 () -> authentication,
                 new CdmAuthorizationTarget(targetEntityStates, evalPermission));
         boolean granted = decision != null && decision.isGranted();

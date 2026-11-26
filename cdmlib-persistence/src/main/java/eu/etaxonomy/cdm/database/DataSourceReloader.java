@@ -10,10 +10,13 @@ package eu.etaxonomy.cdm.database;
 
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 import org.hibernate.SessionFactory;
+import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-import org.springframework.orm.hibernate5.SessionFactoryUtils;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,8 +30,15 @@ public class DataSourceReloader {
 	}
 
 	public UpdatableRoutingDataSource getDataSource() {
-		UpdatableRoutingDataSource as = (UpdatableRoutingDataSource)SessionFactoryUtils.getDataSource(factory);
+		UpdatableRoutingDataSource as = (UpdatableRoutingDataSource) dataSourceFrom(factory);
 		return as;
+	}
+
+	private static DataSource dataSourceFrom(SessionFactory sessionFactory) {
+		return sessionFactory.unwrap(SessionFactoryImplementor.class)
+				.getServiceRegistry()
+				.requireService(ConnectionProvider.class)
+				.unwrap(DataSource.class);
 	}
 
 	public Map<String,DataSourceInfo> reload() {

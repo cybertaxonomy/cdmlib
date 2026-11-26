@@ -29,8 +29,9 @@
     </bean>
 
     <bean id="daoAuthenticationProvider" class="eu.etaxonomy.cdm.api.security.CdmDaoAuthenticationProvider">
-        <property name="userDetailsService" ref="userService"/>
+        <constructor-arg ref="userService"/>
         <property name="passwordEncoder" ref="passwordEncoder"/>
+        <property name="userDetailsPasswordService" ref="userService"/>
     </bean>
 
     <bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>

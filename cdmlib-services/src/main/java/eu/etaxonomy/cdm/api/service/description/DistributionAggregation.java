@@ -445,6 +445,11 @@ public class DistributionAggregation
                 }
             }
 
+            // Hibernate 7+: setReadOnly on an entity with still-dirty collections
+            // (e.g. descriptions updated earlier in this batch) fails at flush with
+            // "Immutable collection was modified". Flush pending changes first.
+            getSession().flush();
+
             while(childStack.size() > 0){
 
                 Taxon childTaxon = childStack.pop();

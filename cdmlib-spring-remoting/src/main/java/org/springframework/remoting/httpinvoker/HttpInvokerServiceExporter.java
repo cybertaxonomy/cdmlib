@@ -30,7 +30,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.remoting.support.RemoteInvocation;
 import org.springframework.remoting.support.RemoteInvocationResult;
 import org.springframework.web.HttpRequestHandler;
-import org.springframework.web.util.NestedServletException;
 
 /**
  * Servlet-API-based HTTP request handler that exports the specified service bean
@@ -79,7 +78,7 @@ public class HttpInvokerServiceExporter extends org.springframework.remoting.rmi
 			writeRemoteInvocationResult(request, response, result);
 		}
 		catch (ClassNotFoundException ex) {
-			throw new NestedServletException("Class not found during deserialization", ex);
+			throw new ServletException("Class not found during deserialization", ex);
 		}
 	}
 

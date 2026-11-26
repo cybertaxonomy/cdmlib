@@ -30,13 +30,12 @@ import org.springframework.web.servlet.config.annotation.DefaultServletHandlerCo
 import org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
-import org.springframework.web.servlet.view.XmlViewResolver;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.etaxonomy.cdm.remote.controller.interceptor.LocaleContextHandlerInterceptor;
 import eu.etaxonomy.cdm.remote.converter.RestrictionConverter;
 import eu.etaxonomy.cdm.remote.view.PatternViewResolver;
+import eu.etaxonomy.cdm.remote.view.XmlViewResolver;
 
 /**
  * This is the main configuration for spring MVC application context.
@@ -151,7 +150,7 @@ public abstract class CdmSpringMVCConfig extends DelegatingWebMvcConfiguration  
     protected void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
         super.configureContentNegotiation(configurer);
         configurer
-            .favorPathExtension(true)   //TODO remove after adapting dataportal code #10216
+            // favorPathExtension removed in Spring Framework 7; use ?format= / Accept header
             .favorParameter(true)
             .ignoreAcceptHeader(false)  //should be default anyway
             .defaultContentType(MediaType.APPLICATION_JSON)

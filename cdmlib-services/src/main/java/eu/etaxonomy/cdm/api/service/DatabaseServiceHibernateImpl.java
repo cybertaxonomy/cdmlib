@@ -15,15 +15,18 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.SessionFactory;
+import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.datasource.AbstractDriverBasedDataSource;
-import org.springframework.orm.hibernate5.SessionFactoryUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -119,8 +122,15 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 	 * @return the AbstractDriverBasedDataSource from the hibernate layer
 	 */
 	private AbstractDriverBasedDataSource getDataSource(){
-		AbstractDriverBasedDataSource ds = (AbstractDriverBasedDataSource)SessionFactoryUtils.getDataSource(factory);
+		AbstractDriverBasedDataSource ds = (AbstractDriverBasedDataSource) dataSourceFrom(factory);
 		return ds;
+	}
+
+	private static DataSource dataSourceFrom(SessionFactory sessionFactory) {
+		return sessionFactory.unwrap(SessionFactoryImplementor.class)
+				.getServiceRegistry()
+				.requireService(ConnectionProvider.class)
+				.unwrap(DataSource.class);
 	}
 
 	@Override
@@ -161,7 +171,7 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
         //ResultSet resultSet = executeQuery(query);
         ResultSet resultSet = null;
 
-        Connection connection = SessionFactoryUtils.getDataSource(factory).getConnection();
+        Connection connection = dataSourceFrom(factory).getConnection();
         if (connection != null){
 
             Statement statement = connection.createStatement();

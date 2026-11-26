@@ -317,7 +317,7 @@ public class XmlHelp {
 		result.setSecondResult(false);
 
 		if (parentElement == null){
-			logger.warn("Parent element is null");
+			logger.info("Parent element is null");
 			return result;
 		}
 		List<Element> elList = getChildren(parentElement, childName, nsChild);

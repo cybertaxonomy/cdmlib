@@ -26,7 +26,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
-import org.springframework.orm.hibernate5.SpringSessionContext;
+import org.springframework.orm.jpa.hibernate.SpringSessionContext;
 
 import eu.etaxonomy.cdm.persistence.hibernate.search.CdmHibernateSearchSettings;
 

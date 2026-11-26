@@ -163,9 +163,14 @@
       <artifactId>hibernate-core</artifactId>
     </dependency>
     <dependency>
-      <!-- SchemaExport / hbm2ddl (DdlCreator) -->
+      <!-- SchemaExportTask -->
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-ant</artifactId>
+    </dependency>
+    <dependency>
+      <!-- SchemaExport for DdlCreator (moved out of hibernate-ant in ORM 7.4) -->
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-reveng</artifactId>
     </dependency>
     <dependency>
       <groupId>eu.etaxonomy</groupId>

@@ -19,7 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.GrantedAuthority;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -67,7 +66,7 @@ import eu.etaxonomy.cdm.model.permission.PermissionClass;
  * @author k.luther
  * @author Andreas Kohlbecker
  */
-public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGrantedAuthorityConverter {
+public class CdmAuthority implements GrantedAuthority, IGrantedAuthorityConverter {
 
     private static final long serialVersionUID = -41894743719582595L;
     private static final Logger logger = LogManager.getLogger();
@@ -239,11 +238,9 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * same as {@link #toString()} and  {@link #getAuthority()}
+     * Permission string form; same as {@link #toString()} and {@link #getAuthority()}.
+     * (Formerly {@code ConfigAttribute#getAttribute()}, removed in Spring Security 7.)
      */
-    @Override
     public String getAttribute() {
         return toString();
     }

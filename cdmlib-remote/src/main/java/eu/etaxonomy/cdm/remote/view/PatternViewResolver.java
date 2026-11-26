@@ -20,7 +20,6 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.util.Assert;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.view.XmlViewResolver;
 
 /**
  * Resolves views by using a {@link PathMatcher} to match the view name to the bean names.

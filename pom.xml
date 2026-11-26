@@ -29,21 +29,24 @@
     <maven.compiler.release>21</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <spring.version>6.2.18</spring.version>
-    <spring-security.version>6.5.10</spring-security.version>
-    <spring-authorization-server.version>1.5.8</spring-authorization-server.version>
-	<hibernate.version>7.2.26.Final</hibernate.version>
+    <spring.version>7.1.0</spring.version>
+    <spring-security.version>7.2.0</spring-security.version>
+    <!-- authorization-server is version-aligned with spring-security since 7.0 -->
+    <spring-authorization-server.version>${spring-security.version}</spring-authorization-server.version>
+	<hibernate.version>7.4.17.Final</hibernate.version>
     <hibernate-validator.version>9.2.0.Final</hibernate-validator.version>
-    <hibernate-search.version>8.2.3.Final</hibernate-search.version>
-    <!-- Hibernate Search 8.2.x lucene backend uses Lucene 9.12 -->
+    <hibernate-search.version>8.4.1.Final</hibernate-search.version>
+    <!-- Hibernate Search 8.4.x lucene backend uses Lucene 9.12 -->
     <lucene.version>9.12.3</lucene.version>
     <junit-jupiter.version>6.1.3</junit-jupiter.version>
     <dbunit.version>2.7.3</dbunit.version>
     <httpcomponents.version>4.5.14</httpcomponents.version>
     <doxia.version>2.1.0</doxia.version>
     <poi.version>5.5.1</poi.version>                    <!-- checked 2026-05 -->
+    <!-- Jackson 2 for existing CDM code; Jackson 3 required by Spring Framework 7.1 / Security 7.2 -->
     <jackson.version>2.22.3</jackson.version>
     <jackson.annotations.version>2.22</jackson.annotations.version>
+    <jackson3.version>3.2.4</jackson3.version>
 	<slf4j.version>2.0.19</slf4j.version>
 	<log4j.version>2.26.1</log4j.version>
 	<jaxb.version>2.3.3</jaxb.version>
@@ -1324,6 +1327,12 @@
         <version>${hibernate.version}</version>
       </dependency>
       <dependency>
+        <!-- converge Hibernate ORM 7.4 (1.1.2) and Hibernate Search 8.4 (1.1.1) -->
+        <groupId>org.hibernate.models</groupId>
+        <artifactId>hibernate-models</artifactId>
+        <version>1.1.2</version>
+      </dependency>
+      <dependency>
         <groupId>org.hibernate.orm</groupId>
         <artifactId>hibernate-envers</artifactId>
         <version>${hibernate.version}</version>
@@ -1334,10 +1343,29 @@
         <version>${hibernate.version}</version>
       </dependency>
       <dependency>
-        <!-- SchemaExport / hbm2ddl moved out of hibernate-core in Hibernate 6 -->
+        <!-- SchemaExportTask; SchemaExport itself lives in hibernate-reveng since ORM 7.4 -->
         <groupId>org.hibernate.orm</groupId>
         <artifactId>hibernate-ant</artifactId>
         <version>${hibernate.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-reveng</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <!-- SchemaExport (hbm2ddl) moved here in Hibernate ORM 7.4 -->
+        <groupId>org.hibernate.orm</groupId>
+        <artifactId>hibernate-reveng</artifactId>
+        <version>${hibernate.version}</version>
+        <exclusions>
+          <!-- JDT only needed for reverse-engineering codegen; pulls conflicting Eclipse platform jars -->
+          <exclusion>
+            <groupId>org.eclipse.jdt</groupId>
+            <artifactId>org.eclipse.jdt.core</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>com.mchange</groupId>
@@ -1507,6 +1535,12 @@
         <version>${spring-security.version}</version>
       </dependency>
       <dependency>
+        <!-- SS 7: RunAs*, ConfigAttribute, AccessDecisionVoter moved out of spring-security-core -->
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-access</artifactId>
+        <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-config</artifactId>
         <version>${spring-security.version}</version>
@@ -1553,7 +1587,7 @@
       <dependency>
         <groupId>jakarta.servlet</groupId>
         <artifactId>jakarta.servlet-api</artifactId>
-        <version>6.0.0</version>
+        <version>6.1.0</version>
       </dependency>
       <!-- kept for any remaining transitive/legacy consumers -->
       <dependency>
@@ -1573,7 +1607,7 @@
       <dependency>
           <groupId>jakarta.validation</groupId>
           <artifactId>jakarta.validation-api</artifactId>
-          <version>3.0.2</version>
+          <version>3.1.1</version>
       </dependency>
       <dependency>
         <groupId>org.hibernate.validator</groupId>
@@ -1663,6 +1697,17 @@
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-annotations</artifactId>
         <version>${jackson.annotations.version}</version>
+      </dependency>
+      <!-- Jackson 3 (tools.jackson) — Spring 7.1 / Security 7.2 baseline -->
+      <dependency>
+        <groupId>tools.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson3.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>tools.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson3.version}</version>
       </dependency>
       
       <!-- ******* DATABASES DRIVER ******* -->

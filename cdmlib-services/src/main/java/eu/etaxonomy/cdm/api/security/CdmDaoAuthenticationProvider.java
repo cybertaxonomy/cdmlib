@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.api.security;
 
 import java.nio.charset.StandardCharsets;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -18,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsPasswordService;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.util.DigestUtils;
 
 /**
@@ -29,8 +29,11 @@ import org.springframework.util.DigestUtils;
  */
 public class CdmDaoAuthenticationProvider extends DaoAuthenticationProvider {
 
-    @Autowired
     private UserDetailsPasswordService passwordService;
+
+    public CdmDaoAuthenticationProvider(UserDetailsService userDetailsService) {
+        super(userDetailsService);
+    }
 
     @Override
     protected void additionalAuthenticationChecks(

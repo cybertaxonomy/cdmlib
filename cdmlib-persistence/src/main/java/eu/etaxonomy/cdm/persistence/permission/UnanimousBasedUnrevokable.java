@@ -19,6 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
+import org.springframework.security.authorization.AuthorizationResult;
 import org.springframework.security.core.Authentication;
 
 import eu.etaxonomy.cdm.persistence.permission.voter.CdmPermissionVoter;
@@ -49,7 +50,7 @@ public class UnanimousBasedUnrevokable implements AuthorizationManager<CdmAuthor
     }
 
     @Override
-    public AuthorizationDecision check(Supplier<Authentication> authentication,
+    public AuthorizationResult authorize(Supplier<? extends Authentication> authentication,
             CdmAuthorizationTarget object) {
 
         Authentication auth = authentication.get();
