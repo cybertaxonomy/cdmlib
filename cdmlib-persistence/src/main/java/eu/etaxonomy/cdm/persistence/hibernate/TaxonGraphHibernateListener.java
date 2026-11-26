@@ -67,7 +67,7 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
                 try {
                     ProcessConstructorData<? extends BeforeTransactionCompletionProcess> pcd = beforeTransactionCompletionProcessTypes.get(type);
                     BeforeTransactionCompletionProcess processorInstance = pcd.postUpdateEventConstructor.newInstance(pcd.buildConstructorArgs(event));
-                    event.getSession().getActionQueue().registerProcess(processorInstance);
+                    event.getSession().asEventSource().getActionQueue().registerCallback(processorInstance);
                 } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                         | InvocationTargetException | SecurityException e) {
                     logger.error("Error creating new instance of " + type.toString(), e);
@@ -84,7 +84,7 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
                 try {
                     ProcessConstructorData<? extends BeforeTransactionCompletionProcess> pcd = beforeTransactionCompletionProcessTypes.get(type);
                     BeforeTransactionCompletionProcess processorInstance = pcd.postInsertEventConstructor.newInstance(pcd.buildConstructorArgs(event));
-                    event.getSession().getActionQueue().registerProcess(processorInstance);
+                    event.getSession().asEventSource().getActionQueue().registerCallback(processorInstance);
                 } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                         | InvocationTargetException | SecurityException e) {
                     logger.error("Error creating new instance of " + type.toString(), e);
@@ -101,7 +101,7 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
                 try {
                     ProcessConstructorData<? extends BeforeTransactionCompletionProcess> pcd = beforeTransactionCompletionProcessTypes.get(type);
                     BeforeTransactionCompletionProcess processorInstance = pcd.preDeleteEventConstructor.newInstance(pcd.buildConstructorArgs(event));
-                    event.getSession().getActionQueue().registerProcess(processorInstance);
+                    event.getSession().asEventSource().getActionQueue().registerCallback(processorInstance);
                 } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                         | InvocationTargetException | SecurityException e) {
                     logger.error("Error creating new instance of " + type.toString(), e);

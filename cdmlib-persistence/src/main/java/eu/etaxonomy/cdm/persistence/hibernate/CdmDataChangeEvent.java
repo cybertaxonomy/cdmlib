@@ -13,8 +13,8 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.event.spi.AbstractEvent;
-import org.hibernate.event.spi.EventSource;
 import org.hibernate.event.spi.PostDeleteEvent;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostLoadEvent;
@@ -61,7 +61,7 @@ public class CdmDataChangeEvent extends AbstractEvent{
             Object[] state,
             Object[] oldState,
             EntityPersister persister,
-            EventSource source,
+            SharedSessionContractImplementor source,
             EventType eventType
             ) {
 
@@ -133,6 +133,10 @@ public class CdmDataChangeEvent extends AbstractEvent{
         return eventType == EventType.DELETE;
     }
 
+    /**
+     * Factory for insert/update/delete events. In Hibernate 7.2 {@link PostLoadEvent}
+     * no longer extends {@link AbstractEvent}; use {@link #NewInstance(PostLoadEvent)} instead.
+     */
     public static CdmDataChangeEvent NewInstance(AbstractEvent event) {
 
         CdmDataChangeEvent mediationEvent = null;
@@ -147,18 +151,6 @@ public class CdmDataChangeEvent extends AbstractEvent{
                         postEvent.getPersister(),
                         postEvent.getSession(),
                         EventType.INSERT
-                        );
-            }
-            if(event instanceof PostLoadEvent){
-                PostLoadEvent updateEvent = (PostLoadEvent) event;
-                mediationEvent = new CdmDataChangeEvent(
-                        (CdmBase)updateEvent.getEntity(),
-                        (Serializable) updateEvent.getId(),
-                        null,
-                        null,
-                        updateEvent.getPersister(),
-                        updateEvent.getSession(),
-                        EventType.LOAD
                         );
             }
             if(event instanceof PostUpdateEvent){
@@ -191,6 +183,23 @@ public class CdmDataChangeEvent extends AbstractEvent{
         }
 
         return mediationEvent;
+    }
+
+    public static CdmDataChangeEvent NewInstance(PostLoadEvent event) {
+        try {
+            return new CdmDataChangeEvent(
+                    (CdmBase) event.getEntity(),
+                    (Serializable) event.getId(),
+                    null,
+                    null,
+                    event.getPersister(),
+                    event.getSession(),
+                    EventType.LOAD
+                    );
+        } catch (ClassCastException e) {
+            logger.warn("tried to instantiate event for non CdmBase entity");
+            return null;
+        }
     }
 
     public static CdmDataChangeEvent NewInstance(CdmBase entity, Set<CdmBase> affectedObjects, EventType eventType) {

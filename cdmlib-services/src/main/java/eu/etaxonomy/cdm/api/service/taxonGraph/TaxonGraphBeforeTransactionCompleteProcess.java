@@ -21,6 +21,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.action.spi.BeforeTransactionCompletionProcess;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PreDeleteEvent;
@@ -177,7 +178,8 @@ public class TaxonGraphBeforeTransactionCompleteProcess
     }
 
     @Override
-    public void doBeforeTransactionCompletion(SessionImplementor session) {
+    public void doBeforeTransactionCompletion(SharedSessionContractImplementor session) {
+        SessionImplementor sessionImplementor = (SessionImplementor) session;
 
         if(logger.isDebugEnabled()) {
             String message = eventType.name() + " for ";
@@ -201,14 +203,14 @@ public class TaxonGraphBeforeTransactionCompleteProcess
                             logger.warn("TaxonName.nomenclaturalSource or TaxonName.nomenclaturalSource.citation must never be null. (" + taxonName.toString() + ")");
                         }
                     }
-                    createTempSession(session);
+                    createTempSession(sessionImplementor);
                     onNewTaxonName(taxonName);
                     getSession().flush();
                 } else if(nomenclaturalSource != null) {
                     TaxonName taxonName =  (TaxonName)findValueByName(state, NOMENCLATURALSOURCE_SOURCEDNAME);
                     Reference reference =  (Reference)findValueByName(state, NOMENCLATURALSOURCE_CITATION);
                     if(taxonName != null && reference != null) {
-                        createTempSession(session);
+                        createTempSession(sessionImplementor);
                         // load name and reference also into this session
                         taxonName = getSession().getReference(TaxonName.class, taxonName.getId());
                         reference = getSession().getReference(Reference.class, reference.getId());
@@ -222,7 +224,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
                     // hibernate
                     Reference reference =  (Reference)oldState[Arrays.binarySearch(propertyNames, TAXONNAME_NOMENCLATURALSOURCE)];
                     if(reference != null) {
-                        createTempSession(session);
+                        createTempSession(sessionImplementor);
                         onTaxonNameDeleted(taxonName, reference);
                         getSession().flush();
                     }
@@ -230,7 +232,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
                    TaxonName taxonName =  (TaxonName)findValueByName(oldState, NOMENCLATURALSOURCE_SOURCEDNAME);
                    Reference reference =  (Reference)findValueByName(oldState, NOMENCLATURALSOURCE_CITATION);
                    if(taxonName != null && reference != null) {
-                       createTempSession(session);
+                       createTempSession(sessionImplementor);
                        onNomReferenceRemoved(taxonName, reference);
                        getSession().flush();
                    }
@@ -249,7 +251,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
                          if(((NomenclaturalSource)changedNomenclaturalSourceProp.get(TAXONNAME_NOMENCLATURALSOURCE[0]).newState).getCitation() == null){
                              throw new TaxonGraphException("TaxonName.nomenclaturalSource.citation must never be reverted to null.");
                          }
-                         createTempSession(session);
+                         createTempSession(sessionImplementor);
                          NomenclaturalSource oldNomenclaturalSource = (NomenclaturalSource)changedNomenclaturalSourceProp.get(TAXONNAME_NOMENCLATURALSOURCE[0]).oldState;
                          onNomReferenceChange(taxonName, oldNomenclaturalSource.getCitation());
                          getSession().flush();
@@ -257,7 +259,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
                     // 2. update the graph
                     Map<String, PropertyStateChange> changedProps = checkStateChange(TAXONNAME_NAMEPARTS_OR_RANK_PROPS);
                     if(!changedProps.isEmpty()){
-                        createTempSession(session);
+                        createTempSession(sessionImplementor);
                         onNameOrRankChange(taxonName);
                         getSession().flush();
                     }
@@ -279,18 +281,18 @@ public class TaxonGraphBeforeTransactionCompleteProcess
                         }
                         // 1. do the sanity checks first
                         if(oldTaxonNameState != null && oldTaxonNameState.getNomenclaturalSource() == null) {
-                            createTempSession(session);
+                            createTempSession(sessionImplementor);
                             onNomReferenceChange(oldTaxonNameState, null);
                             getSession().flush();
                         }
                         // 2. update the graph
                         if(newTaxonNameState != null && newCitationState == null) {
-                            createTempSession(session);
+                            createTempSession(sessionImplementor);
                             onNomReferenceChange(newTaxonNameState, nomenclaturalSource.getCitation());
                             getSession().flush();
                         }
                         if(newTaxonNameState == null && newCitationState != null) {
-                            createTempSession(session);
+                            createTempSession(sessionImplementor);
                             onNomReferenceChange(nomenclaturalSource.getSourcedName(), oldCitationState);
                             getSession().flush();
                         }

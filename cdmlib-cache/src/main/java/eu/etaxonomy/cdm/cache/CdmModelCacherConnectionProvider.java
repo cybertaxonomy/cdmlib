@@ -14,7 +14,7 @@ import java.net.URL;
 
 import javax.sql.DataSource;
 
-import org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl;
+import org.hibernate.engine.jdbc.connections.internal.DataSourceConnectionProvider;
 
 import eu.etaxonomy.cdm.database.CdmDataSource;
 
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.database.CdmDataSource;
  *
  * @author a.mueller
  */
-public class CdmModelCacherConnectionProvider extends DatasourceConnectionProviderImpl{
+public class CdmModelCacherConnectionProvider extends DataSourceConnectionProvider{
 
     private static final long serialVersionUID = 454393966637126346L;
 
