@@ -216,7 +216,9 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @XmlElement(name = "DerivationEvent")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @ManyToMany(fetch=FetchType.LAZY
+//        , cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}
+    )
     @NotNull
     protected Set<DerivationEvent> derivationEvents = new HashSet<>();
 
