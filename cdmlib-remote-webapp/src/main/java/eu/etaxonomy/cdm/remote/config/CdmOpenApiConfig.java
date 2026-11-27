@@ -9,11 +9,13 @@
 package eu.etaxonomy.cdm.remote.config;
 
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springdoc.core.customizers.ServerBaseUrlCustomizer;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springdoc.core.utils.SpringDocUtils;
 import org.springframework.context.annotation.Bean;
@@ -269,6 +271,28 @@ public class CdmOpenApiConfig {
     @Bean
     public OpenAPI cdmOpenAPI() {
         return new OpenAPI().info(apiInfo("CDM REST API", "EDIT CDM Library remote services"));
+    }
+
+    /**
+     * springdoc builds an absolute server URL from the inbound request (scheme/host/port).
+     * Behind TLS-terminating proxies that becomes {@code http://…} while Swagger UI is served
+     * over {@code https://…}, so Try-it-out fails with mixed-content / NetworkError.
+     * Keep only the context path so the browser reuses the page origin (https).
+     */
+    @Bean
+    public ServerBaseUrlCustomizer relativeServerBaseUrlCustomizer() {
+        return (serverBaseUrl, request) -> {
+            if (serverBaseUrl == null || serverBaseUrl.isBlank()) {
+                return "";
+            }
+            try {
+                String path = URI.create(serverBaseUrl).getPath();
+                return path == null || path.isEmpty() ? "/" : path;
+            } catch (IllegalArgumentException e) {
+                logger.warn("Could not relativize OpenAPI server URL '{}': {}", serverBaseUrl, e.toString());
+                return serverBaseUrl;
+            }
+        };
     }
 
     private Collection<Class<? extends Object>> allCdmTypes() {
