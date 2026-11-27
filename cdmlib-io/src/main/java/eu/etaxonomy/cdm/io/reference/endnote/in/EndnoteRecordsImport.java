@@ -179,7 +179,7 @@ public class EndnoteRecordsImport
 				reference.setId(num);
 				cdmBase.setId(num);
 			} else {
-				logger.warn("The type was not found...");
+//				logger.warn("The type was not found...");
 				success = false;
 			}
 
@@ -647,11 +647,11 @@ public class EndnoteRecordsImport
 				    			reference=bookSection;
 				    		}
 				    	}else {
-							logger.warn("The type was not found...");
+//							logger.warn("The type was not found...");
 							map_generic.put(secondary_title, generic);
 							Reference give_generic = map_generic.get(secondary_title);
 							give_generic.setTitle(secondary_title);
-							reference=give_generic;
+							reference = give_generic;
 							success = false;
 						}
 					}

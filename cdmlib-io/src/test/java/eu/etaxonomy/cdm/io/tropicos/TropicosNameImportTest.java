@@ -94,7 +94,7 @@ public class TropicosNameImportTest extends CdmIoTransactionalSpringIntegrationT
         assertEquals(expected, result.getNewRecords(TaxonName.class));
 
         assertTrue(report.length() > 0);
-        System.out.println(report);
+//        System.out.println(report);
 
         List<TaxonName> list = nameService.list(TaxonName.class, null, null, null, null);
         assertEquals(2, list.size(), "There should be 2 new taxon names");
@@ -128,7 +128,7 @@ public class TropicosNameImportTest extends CdmIoTransactionalSpringIntegrationT
     public void testLongFile() {
         ImportResult result = defaultImport.invoke(configLong);
         String report = result.createReport().toString();
-        System.out.println(report);
+//        System.out.println(report);
 
         Integer expected = 118;  //did not count yet
         assertEquals(expected, result.getNewRecords(Reference.class));
