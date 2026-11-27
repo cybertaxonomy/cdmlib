@@ -24,6 +24,8 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 /**
  * Serves swagger-ui webjar assets under {@code /swagger-ui/**}.
  * <p>
@@ -37,33 +39,38 @@ public class SwaggerUiWebjarController {
 
     private final String webjarVersion = resolveSwaggerUiVersion();
 
+    /**
+     * With profile {@code swagger}, send instance root to live Swagger UI.
+     * Without that profile this controller is inactive and {@code index.html}
+     * explains that documentation is unavailable.
+     */
+    @GetMapping({"/", "/index.html"})
+    public ResponseEntity<Void> redirectRoot(HttpServletRequest request) {
+        return redirectToSwaggerUi(request);
+    }
+
     @GetMapping("/swagger-ui.html")
-    public ResponseEntity<Void> redirectHtml() {
-        return ResponseEntity.status(HttpStatus.FOUND)
-                .header("Location", "/swagger-ui/index.html")
-                .build();
+    public ResponseEntity<Void> redirectHtml(HttpServletRequest request) {
+        return redirectToSwaggerUi(request);
     }
 
     @GetMapping("/swagger-ui/")
-    public ResponseEntity<Void> redirectTrailingSlash() {
-        return ResponseEntity.status(HttpStatus.FOUND)
-                .header("Location", "/swagger-ui/index.html")
-                .build();
+    public ResponseEntity<Void> redirectTrailingSlash(HttpServletRequest request) {
+        return redirectToSwaggerUi(request);
     }
 
     @GetMapping("/swagger-ui/{*resourcePath}")
-    public ResponseEntity<?> swaggerUiAsset(@PathVariable("resourcePath") String resourcePath)
-            throws IOException {
+    public ResponseEntity<?> swaggerUiAsset(
+            @PathVariable("resourcePath") String resourcePath,
+            HttpServletRequest request) throws IOException {
         String relative = resourcePath.startsWith("/") ? resourcePath.substring(1) : resourcePath;
         if (relative.isBlank()) {
-            return ResponseEntity.status(HttpStatus.FOUND)
-                    .header("Location", "/swagger-ui/index.html")
-                    .build();
+            return redirectToSwaggerUi(request);
         }
         if ("swagger-initializer.js".equals(relative)) {
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType("application/javascript"))
-                    .body(swaggerInitializerJs().getBytes(StandardCharsets.UTF_8));
+                    .body(swaggerInitializerJs(contextPath(request)).getBytes(StandardCharsets.UTF_8));
         }
         String classpath = "META-INF/resources/webjars/swagger-ui/" + webjarVersion + "/" + relative;
         Resource resource = new ClassPathResource(classpath);
@@ -79,11 +86,17 @@ public class SwaggerUiWebjarController {
                 .body(body);
     }
 
-    private static String swaggerInitializerJs() {
+    /**
+     * Use servlet context path so deployments under e.g.
+     * {@code /cdmserver/phycobank} fetch {@code .../phycobank/v3/api-docs}
+     * instead of host-root {@code /v3/api-docs}.
+     */
+    private static String swaggerInitializerJs(String contextPath) {
+        String apiDocsUrl = contextPath + "/v3/api-docs";
         return """
                 window.onload = function() {
                   window.ui = SwaggerUIBundle({
-                    url: "/v3/api-docs",
+                    url: "%s",
                     dom_id: '#swagger-ui',
                     deepLinking: true,
                     presets: [
@@ -93,7 +106,18 @@ public class SwaggerUiWebjarController {
                     layout: "StandaloneLayout"
                   });
                 };
-                """;
+                """.formatted(apiDocsUrl);
+    }
+
+    private static ResponseEntity<Void> redirectToSwaggerUi(HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .header("Location", contextPath(request) + "/swagger-ui/index.html")
+                .build();
+    }
+
+    private static String contextPath(HttpServletRequest request) {
+        String path = request.getContextPath();
+        return path == null ? "" : path;
     }
 
     private static MediaType guessMediaType(String path) {
